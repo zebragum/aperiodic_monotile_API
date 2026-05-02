@@ -29,17 +29,22 @@ const examples = {
 };
 
 const shapeSelect = document.querySelector("#shapeSelect");
-const zoomRange = document.querySelector("#zoomRange");
-const contrastRange = document.querySelector("#contrastRange");
-const demoImage = document.querySelector("#demoImage");
+const tileScaleRange = document.querySelector("#tileScaleRange");
+const strokeRange = document.querySelector("#strokeRange");
+const demoSvgHost = document.querySelector("#demoSvgHost");
 const demoStats = document.querySelector("#demoStats");
 const previewFrame = document.querySelector(".preview-frame");
+
+/** Example SVGs encode outlines at stroke-width 0.25 in canonical units. */
+const DEMO_BASE_STROKE = 0.25;
+const svgTextCache = new Map();
 const checkoutButtons = [document.querySelector("#studioCheckout"), document.querySelector("#ctaCheckout")].filter(Boolean);
 const checkoutStatus = document.querySelector("#checkoutStatus");
 const leadForm = document.querySelector("#leadForm");
 const apiBase = "https://aperiodic-monotile-api.onrender.com";
 
 function renderStats(example) {
+  if (!demoStats) return;
   demoStats.innerHTML = `
     <strong>${example.shape}</strong>
     <span>${example.units}</span>
@@ -49,24 +54,70 @@ function renderStats(example) {
   `;
 }
 
-function updateDemo() {
+function computeCanonicalStrokeWidth() {
+  const v = Number(strokeRange?.value ?? 50);
+  return (v / 50) * DEMO_BASE_STROKE;
+}
+
+function applyDemoStroke(svg, canonicalWidth) {
+  if (!svg) return;
+  const w = Number(canonicalWidth);
+  const groups = svg.querySelectorAll("g[stroke]");
+  groups.forEach((g) => {
+    const stroke = g.getAttribute("stroke");
+    if (!stroke || stroke.toLowerCase() === "none") return;
+    if (!Number.isFinite(w) || w <= 0) {
+      g.setAttribute("stroke-width", "0");
+    } else {
+      g.setAttribute("stroke-width", String(w));
+    }
+  });
+}
+
+async function fetchSvgMarkup(url) {
+  if (svgTextCache.has(url)) return svgTextCache.get(url);
+  const response = await fetch(url, {cache: "force-cache"});
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const text = await response.text();
+  svgTextCache.set(url, text);
+  return text;
+}
+
+async function updateDemo() {
   const example = examples[shapeSelect.value];
-  demoImage.src = example.src;
-  demoImage.alt = example.alt;
   renderStats(example);
+  if (!demoSvgHost) return;
+  demoSvgHost.innerHTML = "<p class=\"demo-loading\">Loading preview…</p>";
+  try {
+    const markup = await fetchSvgMarkup(example.src);
+    demoSvgHost.innerHTML = markup;
+    const svg = demoSvgHost.querySelector("svg");
+    if (!svg) throw new Error("Markup did not contain an <svg>");
+    svg.removeAttribute("width");
+    svg.removeAttribute("height");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    svg.setAttribute("aria-label", example.alt);
+    applyDemoStroke(svg, computeCanonicalStrokeWidth());
+  } catch (err) {
+    demoSvgHost.innerHTML = "<p class=\"demo-error\">Could not load this example SVG.</p>";
+    console.error(err);
+  }
 }
 
 function updateDisplay() {
-  previewFrame.style.setProperty("--zoom", String(Number(zoomRange.value) / 100));
-  previewFrame.style.setProperty("--contrast", String(Number(contrastRange.value) / 100));
+  if (previewFrame && tileScaleRange) {
+    previewFrame.style.setProperty("--tile-scale", String(Number(tileScaleRange.value) / 100));
+  }
+  const svg = demoSvgHost?.querySelector("svg");
+  applyDemoStroke(svg, computeCanonicalStrokeWidth());
 }
 
-if (shapeSelect && zoomRange && contrastRange && demoImage && demoStats && previewFrame) {
-  shapeSelect.addEventListener("change", updateDemo);
-  zoomRange.addEventListener("input", updateDisplay);
-  contrastRange.addEventListener("input", updateDisplay);
+if (shapeSelect && tileScaleRange && strokeRange && demoSvgHost && demoStats && previewFrame) {
+  shapeSelect.addEventListener("change", () => void updateDemo());
+  tileScaleRange.addEventListener("input", updateDisplay);
+  strokeRange.addEventListener("input", updateDisplay);
 
-  updateDemo();
+  void updateDemo();
   updateDisplay();
 }
 

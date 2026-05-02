@@ -348,17 +348,43 @@ textarea {
     #05060a;
   background-size: 28px 28px;
 }
+.demo-svg-scale-wrap {
+  width: 92%;
+  height: 92%;
+  max-width: 100%;
+  max-height: 100%;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
 
-.preview-frame img {
-  max-width: 92%;
-  max-height: 92%;
-  transform: scale(var(--zoom, 1));
-  filter: contrast(var(--contrast, 1));
-  transition: transform 180ms ease, filter 180ms ease;
+.demo-svg-host {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-svg-host svg {
+  max-width: 100%;
+  max-height: min(72vh, 720px);
+  width: auto;
+  height: auto;
+  transform: scale(var(--tile-scale, 1));
+  transform-origin: center center;
+  transition: transform 180ms ease;
   pointer-events: none;
   user-select: none;
 }
 
+.demo-loading,
+.demo-error {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
 .cards,
 .pricing-grid {
   display: grid;

@@ -108,22 +108,38 @@
               </select>
             </label>
             <label>
-              Preview zoom
-              <input id="zoomRange" type="range" min="70" max="150" value="100" />
+              Tile size (preview)
+              <input
+                id="tileScaleRange"
+                type="range"
+                min="70"
+                max="150"
+                value="100"
+                aria-description="Magnifies the example SVG inside the fixed mask; same tile count and geometry."
+              />
             </label>
             <label>
-              Line weight
-              <input id="contrastRange" type="range" min="70" max="140" value="100" />
+              Stroke width (SVG only)
+              <input
+                id="strokeRange"
+                type="range"
+                min="0"
+                max="120"
+                value="50"
+                aria-description="Outline width in canonical units; 0 for filled tiles only. STL meshes are solid by default."
+              />
             </label>
             <div class="demo-stats" id="demoStats"></div>
             <p class="demo-note">
-              View-only previews are not a security boundary. Public web images
-              can always be inspected by a determined user. Paid plans unlock
-              convenient downloads, higher limits, and commercial workflow support.
+              View-only previews are not a security boundary. Tile size zooms in on the clipped example SVG—the mask and tile count stay the same unless you regenerate via the API with different substitution depth, atlas LOD, or <code>scale</code>.
+              Stroke width changes real SVG outlines (canonical units); at zero you get filled tiles only—closer visually to STL-style solid meshes, which omit outline strokes unless you intentionally export them separately.
+              Paid plans unlock convenient downloads and higher limits.
             </p>
           </aside>
           <div class="preview-frame">
-            <img id="demoImage" src="assets/examples/circle-100u.svg" alt="Selected monotile demo output" />
+            <div class="demo-svg-scale-wrap">
+              <div id="demoSvgHost" class="demo-svg-host" aria-live="polite"></div>
+            </div>
           </div>
         </div>
       </section>
