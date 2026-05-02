@@ -293,6 +293,19 @@ def create_app() -> FastAPI:
         # Default to free. Auth dependency upgrades this from the server-side
         # API key map; in production we must not trust X-API-Tier from clients.
         setattr(request.state, "monotile_tier", "tier_free")
+        origin = request.headers.get("origin")
+        cors_allowed = _split_csv(cfg.cors_allow_origins)
+        cors_ok = bool(origin and ("*" in cors_allowed or origin in cors_allowed))
+        if request.method == "OPTIONS" and cors_ok:
+            return Response(
+                status_code=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*" if "*" in cors_allowed else origin,
+                    "Access-Control-Allow-Methods": cfg.cors_allow_methods,
+                    "Access-Control-Allow-Headers": cfg.cors_allow_headers,
+                    "Access-Control-Max-Age": "600",
+                },
+            )
         started = time.perf_counter()
         try:
             response: Response = await call_next(request)
@@ -302,6 +315,10 @@ def create_app() -> FastAPI:
             raise
         elapsed = time.perf_counter() - started
         response.headers["X-Request-ID"] = rid
+        if cors_ok:
+            response.headers["Access-Control-Allow-Origin"] = "*" if "*" in cors_allowed else origin
+            response.headers["Access-Control-Allow-Methods"] = cfg.cors_allow_methods
+            response.headers["Access-Control-Allow-Headers"] = cfg.cors_allow_headers
         # Security headers (modest defaults, override at the proxy if needed).
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("Referrer-Policy", "no-referrer")

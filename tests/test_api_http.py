@@ -91,6 +91,31 @@ def test_request_id_passthrough():
             assert r.headers.get("x-request-id") == rid
 
 
+def test_configured_cors_origin_is_returned():
+    os.environ["SPECTRE_PATCH_CORS_ALLOW_ORIGINS"] = "https://site.example"
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(_build_app(Path(tmp))) as client:
+                r = client.get(
+                    "/v1/billing/status",
+                    headers={"Origin": "https://site.example"},
+                )
+                assert r.status_code == 200
+                assert r.headers["access-control-allow-origin"] == "https://site.example"
+
+                r = client.options(
+                    "/v1/billing/status",
+                    headers={
+                        "Origin": "https://site.example",
+                        "Access-Control-Request-Method": "POST",
+                    },
+                )
+                assert r.status_code == 204
+                assert r.headers["access-control-allow-origin"] == "https://site.example"
+    finally:
+        os.environ.pop("SPECTRE_PATCH_CORS_ALLOW_ORIGINS", None)
+
+
 def test_api_key_required_when_configured():
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
     os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","pro-secret":"tier_pro"}'
