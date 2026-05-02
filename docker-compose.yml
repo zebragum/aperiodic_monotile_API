@@ -1,0 +1,54 @@
+# Production-ish single-host deployment.
+#
+# Bring up:
+#   export SPECTRE_PATCH_API_SECRET=$(openssl rand -hex 32)
+#   export SPECTRE_PATCH_VALID_API_KEYS=$(uuidgen)
+#   docker compose up -d --build
+#
+# Tail logs:
+#   docker compose logs -f api worker
+#
+# The worker scales horizontally with `docker compose up -d --scale worker=N`.
+# All replicas share the same SQLite DB via the bind-mounted ./data directory.
+
+services:
+  api:
+    build: .
+    image: spectre-patch:local
+    command: ["api"]
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      SPECTRE_PATCH_API_SECRET: ${SPECTRE_PATCH_API_SECRET:?set this to a 32-byte hex string}
+      SPECTRE_PATCH_REQUIRE_API_KEY: ${SPECTRE_PATCH_REQUIRE_API_KEY:-true}
+      SPECTRE_PATCH_VALID_API_KEYS: ${SPECTRE_PATCH_VALID_API_KEYS:?set at least one client API key}
+      SPECTRE_PATCH_RUN_JOBS_IN_PROCESS: "false"
+      SPECTRE_PATCH_CORS_ALLOW_ORIGINS: ${SPECTRE_PATCH_CORS_ALLOW_ORIGINS:-}
+      SPECTRE_PATCH_RATE_LIMIT_POST_PATCH: ${SPECTRE_PATCH_RATE_LIMIT_POST_PATCH:-30/minute}
+      UVICORN_WORKERS: ${UVICORN_WORKERS:-2}
+      SPECTRE_PATCH_LOG_LEVEL: INFO
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 20s
+
+  worker:
+    build: .
+    image: spectre-patch:local
+    command: ["worker"]
+    restart: unless-stopped
+    environment:
+      SPECTRE_PATCH_API_SECRET: ${SPECTRE_PATCH_API_SECRET:?inherits from API}
+      SPECTRE_PATCH_LOG_LEVEL: INFO
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      api:
+        condition: service_healthy
+    deploy:
+      replicas: ${WORKER_REPLICAS:-1}

@@ -1,0 +1,37 @@
+# Keep the build context small.
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.venv
+.env
+.git
+.idea
+.vscode
+.pytest_cache
+.ruff_cache
+*.egg-info
+build/
+dist/
+htmlcov/
+.coverage
+.coverage.*
+
+# Repo-local artifacts that should never ship in the image.
+data/
+demo_atlas*.svg
+demo_atlas*.svgz
+core_patch_*.svg
+core_patch_*.png
+core_patch_*.svgz
+core_preview_*.png
+
+# Big notebook outputs.
+notebooks/*.ipynb_checkpoints
+notebooks/*.html
+
+# Don't ship the host's local sqlite junk if any.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

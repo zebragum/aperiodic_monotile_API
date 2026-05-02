@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+*.egg-info/
+build/
+dist/
+
+# Test / lint / coverage
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+
+# Runtime data and generated artifacts
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+core_patch_*.svg
+core_patch_*.svgz
+core_patch_*.png
+core_preview_*.png
+demo_atlas*.svg
+demo_atlas*.svgz
+
+# Large atlas / generated geometry
+core_spectre_tile_1_1_n*.npz
+spectre_atlas_n*.zip
+*.stl
+*.glb
+
+# Notebook checkpoints / exported notebooks
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
