@@ -106,6 +106,9 @@ def run_patch_job(
                 stroke_width=float(req.get("svg_stroke_width", 0.04)),
                 opacity=float(req.get("svg_opacity", 1.0)),
                 deterministic_colors=bool(req.get("svg_deterministic_palette")),
+                pixel_target=int(req.get("svg_pixel_target") or 1200),
+                margin=float(req.get("svg_margin", 1.0)),
+                compact=bool(req.get("svg_compact", False)),
             )
             svg_text = svg_document(
                 emitted,

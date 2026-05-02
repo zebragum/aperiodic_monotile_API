@@ -43,6 +43,22 @@ curl -X POST http://127.0.0.1:8000/v1/patch ^
   -d "{\"formats\":[\"svg\",\"csv\",\"json\",\"stl\",\"instance_json\"],\"coverage_half_extent\":2.75,\"scale\":1,\"rotation_deg\":0,\"mask\":{\"type\":\"circle\",\"radius\":120,\"center\":[0,0]}}"
 ```
 
+For a pixel-exact SVG tile patch, keep geometry in canonical units and set the
+client scale. Example: a 100 px square at 8 px per canonical unit is a 12.5-unit
+square mask:
+
+```json
+{
+  "scale": 8,
+  "mask": {"type": "square", "center": [0, 0], "half_side": 6.25},
+  "retention": "clip",
+  "formats": ["svg"],
+  "svg_pixel_target": 100,
+  "svg_margin": 0,
+  "svg_compact": true
+}
+```
+
 ## Atlas (depth-quantised LOD cores)
 
 Most API requests crop a small region from a much larger fully-tiled patch.

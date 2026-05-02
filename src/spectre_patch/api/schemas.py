@@ -103,6 +103,9 @@ class PatchRequest(BaseModel):
     svg_stroke_width: Annotated[float, Field(ge=0.0, le=100.0)] | None = None
     svg_opacity: Annotated[float, Field(ge=0.0, le=1.0)] | None = None
     svg_deterministic_palette: bool = False
+    svg_pixel_target: Annotated[int, Field(gt=0, le=32_000)] | None = None
+    svg_margin: Annotated[float, Field(ge=0.0, le=10_000.0)] | None = None
+    svg_compact: bool = False
     force_svg_large: bool = False
 
     mask: dict
