@@ -80,13 +80,14 @@ case "${1:-api}" in
     if [ "${SPECTRE_PATCH_BOOTSTRAP_ATLAS:-false}" = "true" ]; then
       python /app/scripts/bootstrap_atlas.py
     fi
+    UVICORN_LOG_LEVEL="$(printf '%s' "${SPECTRE_PATCH_LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
     exec uvicorn spectre_patch.api.main:app \
       --host 0.0.0.0 \
       --port "${SPECTRE_PATCH_API_PORT:-8000}" \
       --workers "${UVICORN_WORKERS:-1}" \
       --proxy-headers \
       --forwarded-allow-ips '*' \
-      --log-level "${SPECTRE_PATCH_LOG_LEVEL:-info}"
+      --log-level "$UVICORN_LOG_LEVEL"
     ;;
   worker)
     exec spectre-patch-worker
