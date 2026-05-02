@@ -6,7 +6,7 @@ services:
     branch: main
     plan: starter
     region: oregon
-    dockerCommand: api
+    dockerCommand: /usr/bin/tini -- /app/entrypoint.sh api
     healthCheckPath: /healthz
     disk:
       name: spectre-data

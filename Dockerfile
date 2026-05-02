@@ -71,10 +71,6 @@ VOLUME ["/app/data"]
 # 8000 is the default uvicorn port. The worker doesn't bind a socket.
 EXPOSE 8000
 
-# tini reaps zombies cleanly when uvicorn or the worker get SIGTERM'd.
-ENTRYPOINT ["/usr/bin/tini", "--", "/app/entrypoint.sh"]
-CMD ["api"]
-
 COPY --chown=spectre:spectre <<'EOF' /app/entrypoint.sh
 #!/bin/sh
 set -eu
@@ -101,6 +97,10 @@ case "${1:-api}" in
 esac
 EOF
 RUN chmod +x /app/entrypoint.sh
+
+# tini reaps zombies cleanly when uvicorn or the worker get SIGTERM'd.
+ENTRYPOINT ["/usr/bin/tini", "--", "/app/entrypoint.sh"]
+CMD ["api"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD curl -fsS "http://127.0.0.1:${SPECTRE_PATCH_API_PORT:-8000}/healthz" >/dev/null || exit 1
