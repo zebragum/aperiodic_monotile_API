@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import secrets
+import hashlib
 import sqlite3
 import time
 from dataclasses import dataclass
@@ -28,6 +30,21 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_patch_jobs_idem
   WHERE idempotency_key IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ix_patch_jobs_status_created
   ON patch_jobs(status, created);
+CREATE TABLE IF NOT EXISTS api_keys (
+  key_hash TEXT PRIMARY KEY,
+  key_prefix TEXT NOT NULL,
+  tier TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active',
+  created REAL NOT NULL,
+  label TEXT,
+  customer_email TEXT,
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  stripe_checkout_session_id TEXT UNIQUE,
+  one_time_plaintext TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_api_keys_status
+  ON api_keys(status, tier);
 """
 
 
@@ -50,6 +67,27 @@ def _migrate(conn: sqlite3.Connection) -> None:
         "CREATE INDEX IF NOT EXISTS ix_patch_jobs_status_created"
         " ON patch_jobs(status, created)"
     )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS api_keys (
+          key_hash TEXT PRIMARY KEY,
+          key_prefix TEXT NOT NULL,
+          tier TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'active',
+          created REAL NOT NULL,
+          label TEXT,
+          customer_email TEXT,
+          stripe_customer_id TEXT,
+          stripe_subscription_id TEXT,
+          stripe_checkout_session_id TEXT UNIQUE,
+          one_time_plaintext TEXT
+        )
+        """
+    )
+    api_cols = {row["name"] for row in conn.execute("PRAGMA table_info(api_keys)")}
+    if api_cols and "one_time_plaintext" not in api_cols:
+        conn.execute("ALTER TABLE api_keys ADD COLUMN one_time_plaintext TEXT")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_api_keys_status ON api_keys(status, tier)")
     conn.commit()
 
 
@@ -203,3 +241,74 @@ def artifact_dir(storage_root: Path | str, job_id: str) -> Path:
     p = Path(storage_root) / job_id
     p.mkdir(parents=True, exist_ok=True)
     return p
+
+
+def hash_api_key(api_key: str) -> str:
+    return hashlib.sha256(api_key.encode("utf-8")).hexdigest()
+
+
+def generate_api_key(prefix: str = "mono_live") -> str:
+    return f"{prefix}_{secrets.token_urlsafe(32)}"
+
+
+def lookup_api_key(conn: sqlite3.Connection, api_key: str) -> sqlite3.Row | None:
+    cur = conn.execute(
+        "SELECT * FROM api_keys WHERE key_hash=? AND status='active' LIMIT 1",
+        (hash_api_key(api_key),),
+    )
+    return cur.fetchone()
+
+
+def create_api_key(
+    conn: sqlite3.Connection,
+    *,
+    tier: str,
+    label: str | None = None,
+    customer_email: str | None = None,
+    stripe_customer_id: str | None = None,
+    stripe_subscription_id: str | None = None,
+    stripe_checkout_session_id: str | None = None,
+    reveal_once: bool = False,
+) -> str:
+    api_key = generate_api_key()
+    conn.execute(
+        """
+        INSERT INTO api_keys(
+            key_hash, key_prefix, tier, status, created, label, customer_email,
+            stripe_customer_id, stripe_subscription_id, stripe_checkout_session_id,
+            one_time_plaintext
+        )
+        VALUES(?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (
+            hash_api_key(api_key),
+            api_key[:18],
+            tier,
+            "active",
+            time.time(),
+            label,
+            customer_email,
+            stripe_customer_id,
+            stripe_subscription_id,
+            stripe_checkout_session_id,
+            api_key if reveal_once else None,
+        ),
+    )
+    conn.commit()
+    return api_key
+
+
+def find_api_key_by_checkout_session(
+    conn: sqlite3.Connection,
+    stripe_checkout_session_id: str,
+) -> sqlite3.Row | None:
+    cur = conn.execute(
+        "SELECT * FROM api_keys WHERE stripe_checkout_session_id=? LIMIT 1",
+        (stripe_checkout_session_id,),
+    )
+    return cur.fetchone()
+
+
+def clear_one_time_plaintext(conn: sqlite3.Connection, key_hash: str) -> None:
+    conn.execute("UPDATE api_keys SET one_time_plaintext=NULL WHERE key_hash=?", (key_hash,))
+    conn.commit()

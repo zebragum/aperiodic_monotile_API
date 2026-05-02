@@ -118,6 +118,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           API keys should unlock custom geometry, larger masks, commercial usage,
           batch generation, longer artifact retention, and design-tool plugins.
         </p>
+        <div id="checkoutClaim" class="demo-stats"></div>
         <div class="hero-actions">
           <a class="button" href="https://aperiodic-monotile-api.onrender.com/v1/capabilities">View live capabilities</a>
           <a class="button secondary" href="index.html#pricing">See pricing direction</a>
@@ -129,5 +130,32 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       <p>Documentation starter for the Aperiodic Monotile API.</p>
       <p><a href="index.html">Home</a></p>
     </footer>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+      const claimBox = document.querySelector("#checkoutClaim");
+      async function claimKey() {
+        if (!sessionId || !claimBox) return;
+        claimBox.textContent = "Payment complete. Claiming your Studio API key...";
+        try {
+          const response = await fetch("https://aperiodic-monotile-api.onrender.com/v1/billing/claim-key", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({session_id: sessionId})
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(JSON.stringify(payload));
+          if (payload.api_key) {
+            claimBox.innerHTML = `<strong>Your Studio API key</strong><code>${payload.api_key}</code><span>Save it now. It is shown once.</span>`;
+          } else {
+            claimBox.textContent = `This checkout was already claimed. Key prefix: ${payload.key_prefix || "unknown"}.`;
+          }
+        } catch (err) {
+          claimBox.textContent = "Could not claim an API key yet. If Stripe was just connected, contact support with your checkout session ID.";
+          console.error(err);
+        }
+      }
+      claimKey();
+    </script>
   </body>
 </html>

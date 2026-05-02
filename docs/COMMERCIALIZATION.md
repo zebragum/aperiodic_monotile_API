@@ -34,16 +34,24 @@ the storefront.
 Do not put Stripe secrets in the static site. The payment flow needs a tiny
 backend endpoint or serverless function:
 
-1. Landing page sends user to Stripe Checkout.
-2. Stripe webhook receives `checkout.session.completed`.
-3. Webhook creates or activates an API key.
-4. API key is inserted into `SPECTRE_PATCH_API_KEY_TIERS_JSON` storage or a
-   future database-backed key table.
-5. Customer receives a welcome email with docs and examples.
+1. Landing page sends user to `POST /v1/billing/checkout`.
+2. API creates a Stripe Checkout session.
+3. Stripe redirects back to `docs.html?session_id={CHECKOUT_SESSION_ID}`.
+4. The docs page calls `POST /v1/billing/claim-key`.
+5. The API verifies the paid session with Stripe and creates a persistent
+   `tier_pro` API key in SQLite.
+6. Stripe webhook support is available for automatic provisioning/recovery.
 
-The current Render deployment stores API key tier mapping in an environment
-variable. That is good for manual launch. For self-serve paid signup, replace it
-with a persistent API key table.
+The current Render deployment supports both the original environment-variable
+key map and persistent database-backed keys. Manual launch can keep using
+`SPECTRE_PATCH_API_KEY_TIERS_JSON`; Stripe launch should use the DB-backed flow.
+
+Required Stripe env vars:
+
+- `SPECTRE_PATCH_STRIPE_SECRET_KEY`
+- `SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO`
+- `SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET` (recommended for webhook recovery)
+- `SPECTRE_PATCH_PUBLIC_SITE_URL`
 
 ## Minimal Pricing Hypothesis
 

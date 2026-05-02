@@ -13,6 +13,12 @@ def _build_app(tmp: Path, *, atlas_dir: Path | None = None):
     os.environ["SPECTRE_PATCH_STORAGE_DIR"] = str(tmp / "jobs")
     os.environ["SPECTRE_PATCH_DB_PATH"] = str(tmp / "monotile.db")
     os.environ["SPECTRE_PATCH_API_SECRET"] = "test-secret"
+    for k in (
+        "SPECTRE_PATCH_STRIPE_SECRET_KEY",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO",
+        "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
+    ):
+        os.environ.pop(k, None)
     # Tests run jobs inside the request lifecycle; production deployments use
     # the dedicated worker process and would leave this off.
     os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = "true"
@@ -140,6 +146,45 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
         os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_database_api_key_authenticates_paid_tier():
+    os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
+    os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            app = _build_app(Path(tmp))
+            with TestClient(app) as client:
+                from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+                api_key = job_repo.create_api_key(app.state.db, tier="tier_pro", label="test")
+                r = client.get("/v1/capabilities", headers={"X-API-Key": api_key})
+                assert r.status_code == 200
+
+                body = {
+                    "tile_family": "spectre_tile_1_1",
+                    "scale": 1.0,
+                    "coverage_half_extent": 1.5,
+                    "substitution_iterations": 2,
+                    "formats": ["csv"],
+                    "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                }
+                r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
+                assert r.status_code == 200
+                assert r.json()["tier"] == "tier_pro"
+    finally:
+        os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
+
+
+def test_billing_endpoints_report_disabled_without_stripe_config():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            r = client.get("/v1/billing/status")
+            assert r.status_code == 200
+            assert r.json()["stripe_configured"] is False
+
+            r = client.post("/v1/billing/checkout", json={"email": "buyer@example.com"})
+            assert r.status_code == 503
 
 
 def test_capabilities_with_built_atlas():

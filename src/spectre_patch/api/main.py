@@ -30,10 +30,13 @@ import json
 import sqlite3
 import time
 import uuid
+import hmac
+import hashlib
 from contextlib import asynccontextmanager, suppress
 from functools import lru_cache
 from pathlib import Path
 
+import httpx
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -94,6 +97,12 @@ class ServiceSettings(BaseSettings):
     # Logging
     log_level: str = "INFO"
 
+    # Billing / self-serve signup. Leave unset to disable billing endpoints.
+    public_site_url: str = "https://aperiodic-monotile-site.onrender.com"
+    stripe_secret_key: str = ""
+    stripe_price_id_studio: str = ""
+    stripe_webhook_secret: str = ""
+
 
 @lru_cache
 def svc_settings() -> ServiceSettings:
@@ -143,21 +152,80 @@ def _dump_request(body: PatchRequest) -> dict:
     return body.model_dump(exclude_none=False)
 
 
+def _tier_for_api_key(request: Request, api_key: str, cfg: ServiceSettings) -> str | None:
+    tier_map = _api_key_tier_map(cfg)
+    if api_key in tier_map:
+        return tier_map[api_key]
+    conn = getattr(request.app.state, "db", None)
+    if conn is not None:
+        row = job_repo.lookup_api_key(conn, api_key)
+        if row is not None:
+            return str(row["tier"])
+    return None
+
+
 def _api_key_dependency(request: Request, api_key: str | None = Header(default=None, alias="X-API-Key")) -> str | None:
     """Enforce X-API-Key when configured. Used by every ``/v1/*`` endpoint."""
 
     cfg = svc_settings()
-    tier_map = _api_key_tier_map(cfg)
     if not cfg.require_api_key:
-        if api_key and api_key in tier_map:
-            setattr(request.state, "monotile_tier", tier_map[api_key])
+        if api_key:
+            tier = _tier_for_api_key(request, api_key, cfg)
+            if tier:
+                setattr(request.state, "monotile_tier", tier)
         return api_key
     if not api_key:
         raise HTTPException(status_code=401, detail="Missing X-API-Key")
-    if tier_map and api_key not in tier_map:
+    tier = _tier_for_api_key(request, api_key, cfg)
+    if tier is None:
         raise HTTPException(status_code=403, detail="Invalid X-API-Key")
-    setattr(request.state, "monotile_tier", tier_map.get(api_key, "tier_free"))
+    setattr(request.state, "monotile_tier", tier)
     return api_key
+
+
+def _billing_configured(cfg: ServiceSettings) -> bool:
+    return bool(cfg.stripe_secret_key and cfg.stripe_price_id_studio)
+
+
+def _verify_stripe_signature(payload: bytes, sig_header: str, secret: str) -> bool:
+    parts: dict[str, list[str]] = {}
+    for item in sig_header.split(","):
+        if "=" not in item:
+            continue
+        k, v = item.split("=", 1)
+        parts.setdefault(k, []).append(v)
+    try:
+        ts = int(parts.get("t", ["0"])[0])
+    except ValueError:
+        return False
+    if abs(time.time() - ts) > 300:
+        return False
+    signed = f"{ts}.".encode("utf-8") + payload
+    expected = hmac.new(secret.encode("utf-8"), signed, hashlib.sha256).hexdigest()
+    return any(hmac.compare_digest(expected, sig) for sig in parts.get("v1", []))
+
+
+async def _stripe_post(cfg: ServiceSettings, path: str, data: dict[str, str]) -> dict:
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        resp = await client.post(
+            f"https://api.stripe.com/v1/{path.lstrip('/')}",
+            data=data,
+            auth=(cfg.stripe_secret_key, ""),
+        )
+    if resp.status_code >= 400:
+        raise HTTPException(status_code=502, detail={"stripe_error": resp.text})
+    return resp.json()
+
+
+async def _stripe_get(cfg: ServiceSettings, path: str) -> dict:
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        resp = await client.get(
+            f"https://api.stripe.com/v1/{path.lstrip('/')}",
+            auth=(cfg.stripe_secret_key, ""),
+        )
+    if resp.status_code >= 400:
+        raise HTTPException(status_code=502, detail={"stripe_error": resp.text})
+    return resp.json()
 
 
 def create_app() -> FastAPI:
@@ -197,6 +265,7 @@ def create_app() -> FastAPI:
         openapi_tags=[
             {"name": "ops"},
             {"name": "capabilities"},
+            {"name": "billing"},
             {"name": "jobs"},
         ],
         lifespan=lifespan,
@@ -359,6 +428,99 @@ def create_app() -> FastAPI:
                 "download_ttl_seconds_max": 7 * 24 * 3600,
             },
         }
+
+    # ------------------------------------------------------ billing ----
+    @app.get("/v1/billing/status", tags=["billing"])
+    async def billing_status() -> dict:
+        return {
+            "stripe_configured": _billing_configured(cfg),
+            "studio_checkout_available": _billing_configured(cfg),
+            "public_site_url": cfg.public_site_url,
+        }
+
+    @app.post("/v1/billing/checkout", tags=["billing"])
+    async def create_checkout(request: Request) -> dict:
+        if not _billing_configured(cfg):
+            raise HTTPException(status_code=503, detail="Billing is not configured yet")
+        body = await request.json()
+        email = str(body.get("email") or "").strip() or None
+        success_url = f"{cfg.public_site_url.rstrip('/')}/docs.html?checkout=success&session_id={{CHECKOUT_SESSION_ID}}#access"
+        cancel_url = f"{cfg.public_site_url.rstrip('/')}/#pricing"
+        data = {
+            "mode": "subscription",
+            "line_items[0][price]": cfg.stripe_price_id_studio,
+            "line_items[0][quantity]": "1",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata[tier]": "tier_pro",
+            "allow_promotion_codes": "true",
+        }
+        if email:
+            data["customer_email"] = email
+        session = await _stripe_post(cfg, "checkout/sessions", data)
+        return {"checkout_url": session["url"], "session_id": session["id"]}
+
+    @app.post("/v1/billing/claim-key", tags=["billing"])
+    async def claim_checkout_key(request: Request) -> dict:
+        if not _billing_configured(cfg):
+            raise HTTPException(status_code=503, detail="Billing is not configured yet")
+        body = await request.json()
+        session_id = str(body.get("session_id") or "").strip()
+        if not session_id.startswith("cs_"):
+            raise HTTPException(status_code=422, detail="session_id is required")
+
+        existing = job_repo.find_api_key_by_checkout_session(app.state.db, session_id)
+        if existing is not None:
+            api_key = existing["one_time_plaintext"]
+            if not api_key:
+                return {
+                    "status": "already_claimed",
+                    "key_prefix": existing["key_prefix"],
+                    "tier": existing["tier"],
+                }
+            job_repo.clear_one_time_plaintext(app.state.db, existing["key_hash"])
+            return {"status": "created", "api_key": api_key, "tier": existing["tier"]}
+
+        session = await _stripe_get(cfg, f"checkout/sessions/{session_id}")
+        if session.get("payment_status") != "paid":
+            raise HTTPException(status_code=402, detail="Checkout session is not paid")
+        tier = str(session.get("metadata", {}).get("tier") or "tier_pro")
+        api_key = job_repo.create_api_key(
+            app.state.db,
+            tier=tier,
+            label="stripe-checkout",
+            customer_email=session.get("customer_email") or session.get("customer_details", {}).get("email"),
+            stripe_customer_id=session.get("customer"),
+            stripe_subscription_id=session.get("subscription"),
+            stripe_checkout_session_id=session_id,
+        )
+        return {"status": "created", "api_key": api_key, "tier": tier}
+
+    @app.post("/v1/billing/webhook", tags=["billing"], include_in_schema=False)
+    async def stripe_webhook(request: Request) -> dict:
+        if not cfg.stripe_webhook_secret:
+            raise HTTPException(status_code=503, detail="Stripe webhook is not configured")
+        payload = await request.body()
+        sig = request.headers.get("stripe-signature", "")
+        if not _verify_stripe_signature(payload, sig, cfg.stripe_webhook_secret):
+            raise HTTPException(status_code=400, detail="Invalid Stripe signature")
+        event = json.loads(payload.decode("utf-8"))
+        if event.get("type") == "checkout.session.completed":
+            session = event.get("data", {}).get("object", {})
+            session_id = str(session.get("id") or "")
+            if session_id and job_repo.find_api_key_by_checkout_session(app.state.db, session_id) is None:
+                tier = str(session.get("metadata", {}).get("tier") or "tier_pro")
+                job_repo.create_api_key(
+                    app.state.db,
+                    tier=tier,
+                    label="stripe-webhook",
+                    customer_email=session.get("customer_email") or session.get("customer_details", {}).get("email"),
+                    stripe_customer_id=session.get("customer"),
+                    stripe_subscription_id=session.get("subscription"),
+                    stripe_checkout_session_id=session_id,
+                    reveal_once=True,
+                )
+        return {"received": True}
 
     # -------------------------------------------------------- jobs ----
     @app.post("/v1/patch", tags=["jobs"])

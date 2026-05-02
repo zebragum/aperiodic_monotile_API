@@ -34,6 +34,9 @@ const contrastRange = document.querySelector("#contrastRange");
 const demoImage = document.querySelector("#demoImage");
 const demoStats = document.querySelector("#demoStats");
 const previewFrame = document.querySelector(".preview-frame");
+const checkoutButtons = [document.querySelector("#studioCheckout"), document.querySelector("#ctaCheckout")].filter(Boolean);
+const checkoutStatus = document.querySelector("#checkoutStatus");
+const apiBase = "https://aperiodic-monotile-api.onrender.com";
 
 function renderStats(example) {
   demoStats.innerHTML = `
@@ -63,3 +66,32 @@ contrastRange.addEventListener("input", updateDisplay);
 
 updateDemo();
 updateDisplay();
+
+async function startCheckout() {
+  const email = window.prompt("Email for your Studio API key:");
+  if (!email) return;
+  if (checkoutStatus) checkoutStatus.textContent = "Opening secure checkout...";
+  try {
+    const response = await fetch(`${apiBase}/v1/billing/checkout`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email})
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || `Checkout unavailable (${response.status})`);
+    }
+    const payload = await response.json();
+    window.location.href = payload.checkout_url;
+  } catch (err) {
+    if (checkoutStatus) {
+      checkoutStatus.textContent =
+        "Checkout is not enabled yet. The live API and manual API-key tiers are ready; connect Stripe to turn this button on.";
+    }
+    console.error(err);
+  }
+}
+
+for (const button of checkoutButtons) {
+  button.addEventListener("click", startCheckout);
+}
