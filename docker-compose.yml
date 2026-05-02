@@ -2,7 +2,9 @@
 #
 # Bring up:
 #   export SPECTRE_PATCH_API_SECRET=$(openssl rand -hex 32)
-#   export SPECTRE_PATCH_VALID_API_KEYS=$(uuidgen)
+#   export FREE_API_KEY=free_$(openssl rand -hex 16)
+#   export PRO_API_KEY=pro_$(openssl rand -hex 16)
+#   export SPECTRE_PATCH_API_KEY_TIERS_JSON="{\"$FREE_API_KEY\":\"tier_free\",\"$PRO_API_KEY\":\"tier_pro\"}"
 #   docker compose up -d --build
 #
 # Tail logs:
@@ -22,7 +24,7 @@ services:
     environment:
       SPECTRE_PATCH_API_SECRET: ${SPECTRE_PATCH_API_SECRET:?set this to a 32-byte hex string}
       SPECTRE_PATCH_REQUIRE_API_KEY: ${SPECTRE_PATCH_REQUIRE_API_KEY:-true}
-      SPECTRE_PATCH_VALID_API_KEYS: ${SPECTRE_PATCH_VALID_API_KEYS:?set at least one client API key}
+      SPECTRE_PATCH_API_KEY_TIERS_JSON: ${SPECTRE_PATCH_API_KEY_TIERS_JSON:?map API keys to tier_free/tier_pro}
       SPECTRE_PATCH_RUN_JOBS_IN_PROCESS: "false"
       SPECTRE_PATCH_CORS_ALLOW_ORIGINS: ${SPECTRE_PATCH_CORS_ALLOW_ORIGINS:-}
       SPECTRE_PATCH_RATE_LIMIT_POST_PATCH: ${SPECTRE_PATCH_RATE_LIMIT_POST_PATCH:-30/minute}

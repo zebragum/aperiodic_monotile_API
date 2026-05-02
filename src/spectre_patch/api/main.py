@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import logging
 import os
+import json
 import sqlite3
 import time
 import uuid
@@ -67,6 +68,11 @@ class ServiceSettings(BaseSettings):
     # Auth
     require_api_key: bool = False
     valid_api_keys: str = ""  # comma-separated; if non-empty, key must be in this set
+    api_key_tiers_json: str = ""
+    """JSON object mapping API key -> tier, e.g.
+    {"free_xxx":"tier_free","pro_yyy":"tier_pro"}. Production deployments
+    should use this instead of trusting client-supplied tier headers.
+    """
 
     # Job execution
     run_jobs_in_process: bool = False
@@ -103,6 +109,33 @@ def _split_csv(s: str) -> list[str]:
     return [p.strip() for p in s.split(",") if p.strip()]
 
 
+def _api_key_tier_map(cfg: ServiceSettings | None = None) -> dict[str, str]:
+    """Parse the server-side API-key tier map.
+
+    ``valid_api_keys`` remains as a backwards-compatible allow-list, mapping
+    every listed key to ``tier_pro``. ``api_key_tiers_json`` is the production
+    path because it lets us issue distinct free/pro keys without trusting
+    `X-API-Tier`.
+    """
+
+    cfg = cfg or svc_settings()
+    out = {k: "tier_pro" for k in _split_csv(cfg.valid_api_keys)}
+    if cfg.api_key_tiers_json.strip():
+        try:
+            parsed = json.loads(cfg.api_key_tiers_json)
+        except json.JSONDecodeError as e:
+            raise RuntimeError("SPECTRE_PATCH_API_KEY_TIERS_JSON is not valid JSON") from e
+        if not isinstance(parsed, dict):
+            raise RuntimeError("SPECTRE_PATCH_API_KEY_TIERS_JSON must be a JSON object")
+        for key, tier in parsed.items():
+            if not isinstance(key, str) or not key.strip():
+                raise RuntimeError("API key map contains an empty/non-string key")
+            if not isinstance(tier, str) or not tier.strip():
+                raise RuntimeError(f"API key {key!r} maps to an invalid tier")
+            out[key] = tier.strip().lower()
+    return out
+
+
 limiter = Limiter(key_func=get_remote_address)
 
 
@@ -114,13 +147,16 @@ def _api_key_dependency(request: Request, api_key: str | None = Header(default=N
     """Enforce X-API-Key when configured. Used by every ``/v1/*`` endpoint."""
 
     cfg = svc_settings()
+    tier_map = _api_key_tier_map(cfg)
     if not cfg.require_api_key:
+        if api_key and api_key in tier_map:
+            setattr(request.state, "monotile_tier", tier_map[api_key])
         return api_key
     if not api_key:
         raise HTTPException(status_code=401, detail="Missing X-API-Key")
-    valid = set(_split_csv(cfg.valid_api_keys))
-    if valid and api_key not in valid:
+    if tier_map and api_key not in tier_map:
         raise HTTPException(status_code=403, detail="Invalid X-API-Key")
+    setattr(request.state, "monotile_tier", tier_map.get(api_key, "tier_free"))
     return api_key
 
 
@@ -185,12 +221,9 @@ def create_app() -> FastAPI:
         # downstream tools and the worker can correlate per-request work.
         rid = request.headers.get("x-request-id") or str(uuid.uuid4())
         setattr(request.state, "request_id", rid)
-        tier_hdr = (
-            request.headers.get("x-api-tier")
-            or request.headers.get("x-monotile-tier")
-            or "tier_free"
-        )
-        setattr(request.state, "monotile_tier", str(tier_hdr).strip().lower() or "tier_free")
+        # Default to free. Auth dependency upgrades this from the server-side
+        # API key map; in production we must not trust X-API-Tier from clients.
+        setattr(request.state, "monotile_tier", "tier_free")
         started = time.perf_counter()
         try:
             response: Response = await call_next(request)

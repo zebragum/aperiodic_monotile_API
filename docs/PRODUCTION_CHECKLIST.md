@@ -23,8 +23,10 @@ Generate two secrets and inject as env vars (NOT into the image):
 
 - [ ] `SPECTRE_PATCH_API_SECRET` — 32-byte hex; signs all download URLs.
       `openssl rand -hex 32`
-- [ ] `SPECTRE_PATCH_VALID_API_KEYS` — comma-separated list of client API keys.
-      One key per integrator. Rotate per-key.
+- [ ] `SPECTRE_PATCH_API_KEY_TIERS_JSON` — JSON object mapping client API key
+      to server-side tier, for example:
+      `{"free_xxx":"tier_free","pro_yyy":"tier_pro"}`.
+      Do not trust client-supplied `X-API-Tier`; the API ignores it in production.
 - [ ] `SPECTRE_PATCH_REQUIRE_API_KEY=true` (default in `docker-compose.yml`).
 
 If you forget the API secret, **all signed download URLs become forgeable** —
@@ -66,7 +68,9 @@ The DB is a single-file SQLite with WAL mode (`monotile.db`, `*.db-wal`,
 
 ```bash
 export SPECTRE_PATCH_API_SECRET=$(openssl rand -hex 32)
-export SPECTRE_PATCH_VALID_API_KEYS=$(uuidgen)
+export FREE_API_KEY=free_$(openssl rand -hex 16)
+export PRO_API_KEY=pro_$(openssl rand -hex 16)
+export SPECTRE_PATCH_API_KEY_TIERS_JSON="{\"$FREE_API_KEY\":\"tier_free\",\"$PRO_API_KEY\":\"tier_pro\"}"
 export SPECTRE_PATCH_CORS_ALLOW_ORIGINS=https://your-frontend.example.com
 export WORKER_REPLICAS=2
 docker compose up -d --build
@@ -79,7 +83,7 @@ docker compose up -d --build
       ```bash
       curl -X POST http://localhost:8000/v1/patch \
         -H "Content-Type: application/json" \
-        -H "X-API-Key: $SPECTRE_PATCH_VALID_API_KEYS" \
+        -H "X-API-Key: $FREE_API_KEY" \
         -H "Idempotency-Key: smoke-001" \
         -d '{
           "tile_family": "spectre_tile_1_1",
@@ -135,8 +139,9 @@ The job table grows unboundedly; artifacts grow even faster.
 - [ ] In production, fronting the API with a CDN/WAF that does coarse-grained
       throttling is advisable; slowapi is a fine inner layer but not a DDoS
       shield.
-- [ ] Per-tier overrides: read `request.state.monotile_tier` in custom
-      middleware and dispatch tier-specific limiters.
+- [ ] Per-tier overrides are resolved server-side from
+      `SPECTRE_PATCH_API_KEY_TIERS_JSON`; free users cannot self-upgrade with
+      `X-API-Tier`.
 
 ## 9. Upgrade procedure
 

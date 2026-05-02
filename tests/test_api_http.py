@@ -16,6 +16,7 @@ def _build_app(tmp: Path, *, atlas_dir: Path | None = None):
     # Tests run jobs inside the request lifecycle; production deployments use
     # the dedicated worker process and would leave this off.
     os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = "true"
+    os.environ["SPECTRE_PATCH_RATE_LIMIT_POST_PATCH"] = "10000/minute"
     if atlas_dir is None:
         atlas_dir = tmp / "atlas_empty"
         atlas_dir.mkdir(parents=True, exist_ok=True)
@@ -85,7 +86,7 @@ def test_request_id_passthrough():
 
 def test_api_key_required_when_configured():
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
-    os.environ["SPECTRE_PATCH_VALID_API_KEYS"] = "secret-1,secret-2"
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","pro-secret":"tier_pro"}'
     try:
         with tempfile.TemporaryDirectory() as tmp:
             with TestClient(_build_app(Path(tmp))) as client:
@@ -96,11 +97,48 @@ def test_api_key_required_when_configured():
                 r = client.get("/v1/capabilities", headers={"X-API-Key": "wrong"})
                 assert r.status_code == 403
                 # Valid key → 200
-                r = client.get("/v1/capabilities", headers={"X-API-Key": "secret-1"})
+                r = client.get("/v1/capabilities", headers={"X-API-Key": "free-secret"})
                 assert r.status_code == 200
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
-        os.environ.pop("SPECTRE_PATCH_VALID_API_KEYS", None)
+        os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_api_key_tier_map_overrides_client_claimed_tier():
+    """A free key must not become paid just because the client sends X-API-Tier."""
+
+    os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","pro-secret":"tier_pro"}'
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(_build_app(Path(tmp))) as client:
+                body = {
+                    "tile_family": "spectre_tile_1_1",
+                    "scale": 1.0,
+                    "rotation_deg": 0.0,
+                    "coverage_half_extent": 1.5,
+                    "substitution_iterations": 2,
+                    "formats": ["csv"],
+                    "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                }
+                r = client.post(
+                    "/v1/patch",
+                    json=body,
+                    headers={"X-API-Key": "free-secret", "X-API-Tier": "tier_pro"},
+                )
+                assert r.status_code == 200
+                assert r.json()["tier"] == "tier_free"
+
+                r = client.post(
+                    "/v1/patch",
+                    json={**body, "seed": "paid"},
+                    headers={"X-API-Key": "pro-secret"},
+                )
+                assert r.status_code == 200
+                assert r.json()["tier"] == "tier_pro"
+    finally:
+        os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
+        os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
 
 
 def test_capabilities_with_built_atlas():
