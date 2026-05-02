@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aperiodic Monotile API Documentation | Spectre Tile Geometry</title>
+    <meta
+      name="description"
+      content="Documentation for generating Spectre monotile geometry with the Aperiodic Monotile API, including masks, SVG options, signed downloads, and free/paid API access."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://aperiodic-monotile-site.onrender.com/docs.html" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aperiodic Monotile API home">
+        <span class="brand-mark"></span>
+        <span>Aperiodic Monotile API</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#use-cases">Use Cases</a>
+        <a href="docs.html">Docs</a>
+        <a href="index.html#pricing">Pricing</a>
+      </nav>
+      <a class="button small" href="#access">Get API Access</a>
+    </header>
+
+    <main>
+      <section class="section docs-hero">
+        <p class="eyebrow">Developer docs</p>
+        <h1>Generate Spectre monotile geometry from one JSON request.</h1>
+        <p class="hero-text">
+          The API accepts canonical geometry masks and returns job artifacts:
+          compact SVG for design tools, CSV/JSON for instancing, and mesh formats
+          for 3D workflows.
+        </p>
+      </section>
+
+      <section class="section docs-section">
+        <div>
+          <p class="eyebrow">Endpoint</p>
+          <h2>POST /v1/patch</h2>
+          <p>
+            Create a deterministic patch job. Use `Idempotency-Key` to safely
+            retry requests without creating duplicates.
+          </p>
+        </div>
+        <pre class="code-card"><code>curl -X POST https://aperiodic-monotile-api.onrender.com/v1/patch \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Idempotency-Key: demo-001" \
+  -d '{
+    "scale": 1,
+    "mask": {"type": "circle", "center": [0, 0], "radius": 50},
+    "retention": "clip",
+    "formats": ["svg", "json"],
+    "svg_pixel_target": 1000,
+    "svg_margin": 0,
+    "svg_compact": true
+  }'</code></pre>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Supported masks</p>
+          <h2>Shape-first requests for practical design work.</h2>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Circle</h3>
+            <pre><code>{"type":"circle","center":[0,0],"radius":50}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Rectangle</h3>
+            <pre><code>{"type":"rectangle","bounds":{"xmin":-45,"ymin":-20,"xmax":45,"ymax":20}}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Triangle</h3>
+            <pre><code>{"type":"triangle","center":[0,0],"side_length":50}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Square</h3>
+            <pre><code>{"type":"square","center":[0,0],"half_side":6.25}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Hexagon</h3>
+            <pre><code>{"type":"regular_hexagon","center":[0,0],"circumradius":50}</code></pre>
+          </article>
+          <article class="card">
+            <h3>Rounded rectangle</h3>
+            <pre><code>{"type":"rounded_rect","center":[0,0],"width":90,"height":40,"corner_radius":5}</code></pre>
+          </article>
+        </div>
+      </section>
+
+      <section class="section docs-section">
+        <div>
+          <p class="eyebrow">Job lifecycle</p>
+          <h2>Poll once, then fetch signed URLs.</h2>
+          <p>
+            The patch endpoint returns a `job_id`. Poll `GET /v1/jobs/{job_id}`
+            until the job is complete, then call `/v1/jobs/{job_id}/urls` to get
+            signed download URLs for the generated artifacts.
+          </p>
+        </div>
+        <pre class="code-card"><code>GET /v1/jobs/{job_id}
+GET /v1/jobs/{job_id}/urls?ttl_seconds=900
+GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
+      </section>
+
+      <section id="access" class="section cta">
+        <p class="eyebrow">Access model</p>
+        <h2>Free previews, paid production downloads.</h2>
+        <p>
+          The public website can stay inexpensive by showing preloaded examples.
+          API keys should unlock custom geometry, larger masks, commercial usage,
+          batch generation, longer artifact retention, and design-tool plugins.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="https://aperiodic-monotile-api.onrender.com/v1/capabilities">View live capabilities</a>
+          <a class="button secondary" href="index.html#pricing">See pricing direction</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Documentation starter for the Aperiodic Monotile API.</p>
+      <p><a href="index.html">Home</a></p>
+    </footer>
+  </body>
+</html>

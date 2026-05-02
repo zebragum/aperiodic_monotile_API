@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aperiodic-monotile-site.onrender.com/sitemap.xml
