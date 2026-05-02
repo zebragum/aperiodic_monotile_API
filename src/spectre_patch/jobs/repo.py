@@ -45,6 +45,20 @@ CREATE TABLE IF NOT EXISTS api_keys (
 );
 CREATE INDEX IF NOT EXISTS ix_api_keys_status
   ON api_keys(status, tier);
+CREATE TABLE IF NOT EXISTS leads (
+  id TEXT PRIMARY KEY,
+  created REAL NOT NULL,
+  email TEXT NOT NULL,
+  name TEXT,
+  company TEXT,
+  use_case TEXT,
+  source TEXT,
+  status TEXT NOT NULL DEFAULT 'new'
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_leads_email
+  ON leads(email);
+CREATE INDEX IF NOT EXISTS ix_leads_created
+  ON leads(created);
 """
 
 
@@ -88,6 +102,22 @@ def _migrate(conn: sqlite3.Connection) -> None:
     if api_cols and "one_time_plaintext" not in api_cols:
         conn.execute("ALTER TABLE api_keys ADD COLUMN one_time_plaintext TEXT")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_api_keys_status ON api_keys(status, tier)")
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS leads (
+          id TEXT PRIMARY KEY,
+          created REAL NOT NULL,
+          email TEXT NOT NULL,
+          name TEXT,
+          company TEXT,
+          use_case TEXT,
+          source TEXT,
+          status TEXT NOT NULL DEFAULT 'new'
+        )
+        """
+    )
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_leads_email ON leads(email)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_created ON leads(created)")
     conn.commit()
 
 
@@ -312,3 +342,41 @@ def find_api_key_by_checkout_session(
 def clear_one_time_plaintext(conn: sqlite3.Connection, key_hash: str) -> None:
     conn.execute("UPDATE api_keys SET one_time_plaintext=NULL WHERE key_hash=?", (key_hash,))
     conn.commit()
+
+
+def create_or_update_lead(
+    conn: sqlite3.Connection,
+    *,
+    email: str,
+    name: str | None = None,
+    company: str | None = None,
+    use_case: str | None = None,
+    source: str | None = None,
+) -> tuple[str, bool]:
+    normalized_email = email.strip().lower()
+    existing = conn.execute("SELECT id FROM leads WHERE email=? LIMIT 1", (normalized_email,)).fetchone()
+    if existing is not None:
+        conn.execute(
+            """
+            UPDATE leads
+               SET name=COALESCE(?, name),
+                   company=COALESCE(?, company),
+                   use_case=COALESCE(?, use_case),
+                   source=COALESCE(?, source)
+             WHERE id=?
+            """,
+            (name, company, use_case, source, existing["id"]),
+        )
+        conn.commit()
+        return existing["id"], False
+
+    lead_id = str(uuid4())
+    conn.execute(
+        """
+        INSERT INTO leads(id, created, email, name, company, use_case, source, status)
+        VALUES(?,?,?,?,?,?,?,'new')
+        """,
+        (lead_id, time.time(), normalized_email, name, company, use_case, source),
+    )
+    conn.commit()
+    return lead_id, True

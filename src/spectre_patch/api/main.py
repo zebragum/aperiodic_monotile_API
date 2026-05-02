@@ -32,6 +32,7 @@ import time
 import uuid
 import hmac
 import hashlib
+import re
 from contextlib import asynccontextmanager, suppress
 from functools import lru_cache
 from pathlib import Path
@@ -447,6 +448,27 @@ def create_app() -> FastAPI:
         }
 
     # ------------------------------------------------------ billing ----
+    @app.post("/v1/leads", tags=["billing"])
+    async def create_lead(request: Request) -> dict:
+        body = await request.json()
+        email = str(body.get("email") or "").strip().lower()
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+            raise HTTPException(status_code=422, detail="Valid email is required")
+
+        def clean(key: str, max_len: int = 500) -> str | None:
+            value = str(body.get(key) or "").strip()
+            return value[:max_len] if value else None
+
+        lead_id, created = job_repo.create_or_update_lead(
+            app.state.db,
+            email=email,
+            name=clean("name", 120),
+            company=clean("company", 160),
+            use_case=clean("use_case", 1000),
+            source=clean("source", 120) or "website",
+        )
+        return {"lead_id": lead_id, "status": "created" if created else "updated"}
+
     @app.get("/v1/billing/status", tags=["billing"])
     async def billing_status() -> dict:
         return {

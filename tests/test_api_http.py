@@ -212,6 +212,31 @@ def test_billing_endpoints_report_disabled_without_stripe_config():
             assert r.status_code == 503
 
 
+def test_lead_capture_creates_and_updates_lead():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            body = {
+                "email": "Designer@Example.com",
+                "name": "Designer",
+                "company": "Studio",
+                "use_case": "Blender panels",
+                "source": "test",
+            }
+            r = client.post("/v1/leads", json=body)
+            assert r.status_code == 200
+            first = r.json()
+            assert first["status"] == "created"
+
+            r = client.post("/v1/leads", json={**body, "use_case": "Laser cutting"})
+            assert r.status_code == 200
+            second = r.json()
+            assert second["status"] == "updated"
+            assert second["lead_id"] == first["lead_id"]
+
+            r = client.post("/v1/leads", json={"email": "not-an-email"})
+            assert r.status_code == 422
+
+
 def test_capabilities_with_built_atlas():
     """Build a small atlas in a tmpdir and verify /v1/capabilities reflects it."""
 

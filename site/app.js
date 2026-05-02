@@ -36,6 +36,7 @@ const demoStats = document.querySelector("#demoStats");
 const previewFrame = document.querySelector(".preview-frame");
 const checkoutButtons = [document.querySelector("#studioCheckout"), document.querySelector("#ctaCheckout")].filter(Boolean);
 const checkoutStatus = document.querySelector("#checkoutStatus");
+const leadForm = document.querySelector("#leadForm");
 const apiBase = "https://aperiodic-monotile-api.onrender.com";
 
 function renderStats(example) {
@@ -60,12 +61,14 @@ function updateDisplay() {
   previewFrame.style.setProperty("--contrast", String(Number(contrastRange.value) / 100));
 }
 
-shapeSelect.addEventListener("change", updateDemo);
-zoomRange.addEventListener("input", updateDisplay);
-contrastRange.addEventListener("input", updateDisplay);
+if (shapeSelect && zoomRange && contrastRange && demoImage && demoStats && previewFrame) {
+  shapeSelect.addEventListener("change", updateDemo);
+  zoomRange.addEventListener("input", updateDisplay);
+  contrastRange.addEventListener("input", updateDisplay);
 
-updateDemo();
-updateDisplay();
+  updateDemo();
+  updateDisplay();
+}
 
 async function startCheckout() {
   const email = window.prompt("Email for your Studio API key:");
@@ -94,4 +97,29 @@ async function startCheckout() {
 
 for (const button of checkoutButtons) {
   button.addEventListener("click", startCheckout);
+}
+
+if (leadForm) {
+  leadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(leadForm);
+    if (checkoutStatus) checkoutStatus.textContent = "Saving your request...";
+    try {
+      const response = await fetch(`${apiBase}/v1/leads`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          email: data.get("email"),
+          use_case: data.get("use_case"),
+          source: "homepage"
+        })
+      });
+      if (!response.ok) throw new Error(await response.text());
+      leadForm.reset();
+      if (checkoutStatus) checkoutStatus.textContent = "You're on the launch list. We'll use this to prioritize demos and access.";
+    } catch (err) {
+      if (checkoutStatus) checkoutStatus.textContent = "Could not save that yet. Try again in a moment.";
+      console.error(err);
+    }
+  });
 }

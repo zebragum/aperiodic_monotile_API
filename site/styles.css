@@ -291,17 +291,33 @@ label {
 }
 
 select,
-input[type="range"] {
+input[type="range"],
+input[type="email"],
+textarea {
   width: 100%;
   accent-color: var(--accent);
 }
 
-select {
+select,
+input[type="email"],
+textarea {
   padding: 0.8rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
   background: #0c101c;
   color: var(--text);
+}
+
+textarea {
+  resize: vertical;
+  font: inherit;
+}
+
+.lead-form {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 560px;
+  margin-top: 1.4rem;
 }
 
 .demo-stats {
