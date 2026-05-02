@@ -45,6 +45,15 @@ class MaskHexagon:
 
 
 @dataclass(frozen=True, slots=True)
+class MaskTriangle:
+    """Equilateral triangle centered at its centroid."""
+
+    center: tuple[float, float]
+    side_length: float
+    rotation_deg: float = 90.0
+
+
+@dataclass(frozen=True, slots=True)
 class MaskRoundedRect:
     """Axis-aligned rectangle with equal corner radii."""
 
@@ -59,6 +68,7 @@ Mask = Union[
     MaskSquare,
     MaskCircle,
     MaskHexagon,
+    MaskTriangle,
     MaskRoundedRect,
 ]
 
@@ -67,6 +77,16 @@ def hexagon_polygon(center: tuple[float, float], R: float) -> BaseGeometry:
     cx, cy = center
     angles = np.deg2rad(30.0 + 60.0 * np.arange(6))
     pts = np.column_stack([cx + R * np.cos(angles), cy + R * np.sin(angles)])
+    from shapely.geometry import Polygon  # noqa: PLC0415
+
+    return Polygon(pts)
+
+
+def triangle_polygon(center: tuple[float, float], side_length: float, rotation_deg: float = 90.0) -> BaseGeometry:
+    cx, cy = center
+    radius = float(side_length) / np.sqrt(3.0)
+    angles = np.deg2rad(float(rotation_deg) + 120.0 * np.arange(3))
+    pts = np.column_stack([cx + radius * np.cos(angles), cy + radius * np.sin(angles)])
     from shapely.geometry import Polygon  # noqa: PLC0415
 
     return Polygon(pts)
@@ -106,6 +126,8 @@ def mask_polygon(mask: Mask) -> BaseGeometry:
         return Point(cx, cy).buffer(mask.radius, resolution=96)
     if isinstance(mask, MaskHexagon):
         return hexagon_polygon(mask.center, mask.circumradius)
+    if isinstance(mask, MaskTriangle):
+        return triangle_polygon(mask.center, mask.side_length, mask.rotation_deg)
     if isinstance(mask, MaskRoundedRect):
         return _rounded_rectangle(mask.center, mask.width, mask.height, mask.corner_radius)
     raise TypeError(f"Unknown mask type {type(mask)!r}")

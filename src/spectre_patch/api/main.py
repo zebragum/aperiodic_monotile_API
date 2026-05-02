@@ -329,6 +329,7 @@ def create_app() -> FastAPI:
                 "rectangle",
                 "circle",
                 "regular_hexagon",
+                "triangle",
                 "rounded_rect",
             ],
             "supported_formats": [

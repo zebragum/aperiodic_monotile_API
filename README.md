@@ -59,6 +59,72 @@ square mask:
 }
 ```
 
+## API Usage Examples
+
+All geometry is authored in canonical Tile(1,1) units. SVG pixel size is an
+export setting; it does not change the raw geometry unless you also set
+`scale`.
+
+### 100-Unit Circle, 1000px SVG
+
+```json
+{
+  "scale": 1,
+  "mask": {"type": "circle", "center": [0, 0], "radius": 50},
+  "retention": "clip",
+  "formats": ["svg"],
+  "svg_pixel_target": 1000,
+  "svg_margin": 0,
+  "svg_compact": true
+}
+```
+
+### 9:4 Rectangle
+
+```json
+{
+  "scale": 1,
+  "mask": {
+    "type": "rectangle",
+    "bounds": {"xmin": -45, "ymin": -20, "xmax": 45, "ymax": 20}
+  },
+  "retention": "clip",
+  "formats": ["svg"],
+  "svg_pixel_target": 900,
+  "svg_margin": 0,
+  "svg_compact": true
+}
+```
+
+### 50-Unit Equilateral Triangle
+
+```json
+{
+  "scale": 1,
+  "mask": {"type": "triangle", "center": [0, 0], "side_length": 50},
+  "retention": "clip",
+  "formats": ["svg"],
+  "svg_pixel_target": 500,
+  "svg_margin": 0,
+  "svg_compact": true
+}
+```
+
+The triangle is centered at its centroid. `rotation_deg` is optional and
+defaults to `90`, which points one vertex upward in canonical coordinates.
+
+## Auth, Tiers, and Downloads
+
+Production deployments set `SPECTRE_PATCH_REQUIRE_API_KEY=true`. Clients pass
+their key as `X-API-Key`; the server maps that key to `tier_free` or `tier_pro`
+with `SPECTRE_PATCH_API_KEY_TIERS_JSON`. Client-supplied tier headers are
+ignored when API keys are configured.
+
+`POST /v1/patch` returns a `job_id`. Poll `GET /v1/jobs/{job_id}` until
+`status` is `completed`, then call `GET /v1/jobs/{job_id}/urls` to receive
+signed relative URLs for artifacts such as `patch.svg`, `tiles.csv`, or
+`tiles.json`. Signed URLs expire; request a fresh bundle when needed.
+
 ## Atlas (depth-quantised LOD cores)
 
 Most API requests crop a small region from a much larger fully-tiled patch.

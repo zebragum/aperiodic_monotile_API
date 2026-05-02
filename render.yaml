@@ -32,7 +32,7 @@ services:
       - key: SPECTRE_PATCH_RATE_LIMIT_POST_PATCH
         value: 30/minute
       - key: SPECTRE_PATCH_LOG_LEVEL
-        value: INFO
+        value: info
       - key: UVICORN_WORKERS
         value: "1"
       # Set this in the Render Dashboard after deploy:

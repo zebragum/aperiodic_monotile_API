@@ -40,6 +40,9 @@ core_patch_*.png
 core_preview_*.png
 demo_atlas*.svg
 demo_atlas*.svgz
+api_*_*.svg
+api_*_*.svgz
+api_*_*.png
 
 # Large atlas / generated geometry
 core_spectre_tile_1_1_n*.npz

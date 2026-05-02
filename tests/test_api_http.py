@@ -36,6 +36,7 @@ def test_capabilities_ok():
             body = resp.json()
             assert "spectre_tile_1_1" in body["supported_tile_families"]
             assert "circle" in body["supported_masks"]
+            assert "triangle" in body["supported_masks"]
             assert "atlas" in body
             # Empty atlas dir → no cores available, but the field still surfaces.
             assert body["atlas"]["available"] is False
@@ -212,3 +213,59 @@ def test_signed_url_bundle_after_completion():
             urls = client.get(f"/v1/jobs/{job_id}/urls").json()
             assert "tiles.csv" in urls["urls"]
             assert urls["urls"]["tiles.csv"].startswith("/v1/downloads/")
+
+
+def test_shape_svg_smoke_requests_complete():
+    cases = [
+        {
+            "name": "100u-circle-1000px",
+            "scale": 1.0,
+            "svg_pixel_target": 1000,
+            "mask": {"type": "circle", "center": [0, 0], "radius": 50.0},
+        },
+        {
+            "name": "9x4-rectangle",
+            "scale": 1.0,
+            "svg_pixel_target": 900,
+            "mask": {
+                "type": "rectangle",
+                "bounds": {"xmin": -45.0, "ymin": -20.0, "xmax": 45.0, "ymax": 20.0},
+            },
+        },
+        {
+            "name": "50u-triangle",
+            "scale": 1.0,
+            "svg_pixel_target": 500,
+            "mask": {"type": "triangle", "center": [0, 0], "side_length": 50.0},
+        },
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            for case in cases:
+                body = {
+                    "tile_family": "spectre_tile_1_1",
+                    "scale": case["scale"],
+                    "coverage_half_extent": 80.0,
+                    "substitution_iterations": 4,
+                    "formats": ["svg"],
+                    "retention": "clip",
+                    "svg_compact": True,
+                    "svg_fill": "#d94738",
+                    "svg_stroke": "#1b1b1b",
+                    "svg_stroke_width": 0.25,
+                    "svg_margin": 0.0,
+                    "svg_pixel_target": case["svg_pixel_target"],
+                    "mask": case["mask"],
+                }
+                r = client.post(
+                    "/v1/patch",
+                    json=body,
+                    headers={"Idempotency-Key": f"shape-smoke-{case['name']}"},
+                )
+                assert r.status_code == 200, r.text
+                job_id = r.json()["job_id"]
+                job = client.get(f"/v1/jobs/{job_id}").json()
+                assert job["status"] == "completed", job
+
+                urls = client.get(f"/v1/jobs/{job_id}/urls").json()
+                assert "patch.svg" in urls["urls"]

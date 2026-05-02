@@ -99,6 +99,23 @@ docker compose up -d --build
       curl http://localhost:8000/v1/jobs/<id>/urls -H "X-API-Key: $key"
       ```
 
+### Render deployment notes
+
+- [ ] `render.yaml` should keep `SPECTRE_PATCH_LOG_LEVEL=info`; Uvicorn rejects
+      uppercase log levels.
+- [ ] The current single-service Render deployment uses
+      `SPECTRE_PATCH_RUN_JOBS_IN_PROCESS=true` so jobs finish without a separate
+      worker service. For heavier traffic, split API and worker into separate
+      services sharing the same persistent disk or move job state/artifacts to
+      managed storage.
+- [ ] Keep `SPECTRE_PATCH_API_KEY_TIERS_JSON` only in Render environment
+      variables. Do not commit real free/pro keys.
+- [ ] Before pointing a custom web domain at Render, verify `/healthz`,
+      `/readyz`, `/v1/capabilities`, and one signed artifact download over the
+      Render hostname. Repeat after DNS/TLS is live on the domain.
+- [ ] Configure Render health checks against `/healthz`. Use `/readyz` for
+      deploy smoke checks because it verifies DB, storage, and atlas count.
+
 ## 6. Observability
 
 The API logs **structured JSON** to stdout with request-id, path, status,
@@ -168,8 +185,22 @@ the previous image's atlas dir and `git revert` the `PATCH_ENGINE_SEMVER` bump.
       against the artifact path's resolved prefix — keep it that way.
 - [ ] `pip-audit` on every release: `pip-audit -r <requirements.txt>` (the
       `dev` extras include it).
+- [ ] Rotate any setup keys that were pasted into local shells, chat, or shared
+      terminals. Render API keys and public API keys should live only in the
+      provider dashboard or a secret manager.
+- [ ] Keep generated test artifacts out of git. `.gitignore` excludes atlas
+      archives, local DBs, and ad-hoc `api_*` visual SVG/PNG files.
 
-## 11. Disaster recovery
+## 11. CI / release gate
+
+- [ ] GitHub Actions should run `python -m pytest -q` on every push and pull
+      request.
+- [ ] Before deploying, run the local full test suite and one live smoke test
+      against the Render service.
+- [ ] For release candidates that touch dependencies, run `pip-audit` locally
+      or in a scheduled CI workflow.
+
+## 12. Disaster recovery
 
 - [ ] Document the steps for rebuilding `data/atlas/` from the Colab notebook;
       n=5..n=7 takes < 10 minutes total.
@@ -178,7 +209,7 @@ the previous image's atlas dir and `git revert` the `PATCH_ENGINE_SEMVER` bump.
 - [ ] Store an off-host backup of `data/` so you can restore the DB + atlas
       after a host loss.
 
-## 12. Done?
+## 13. Done?
 
 If every box is ticked, the API can serve production traffic with one
 unattended replica each of API + worker, no database other than SQLite, and

@@ -20,6 +20,7 @@ from spectre_patch.masking import (
     MaskRect,
     MaskRoundedRect,
     MaskSquare,
+    MaskTriangle,
     RetentionMode,
 )
 
@@ -38,6 +39,13 @@ def coerce_mask(ms: dict):
     if mt in ("regular_hexagon", "hexagon"):
         cx, cy = float(ms["center"][0]), float(ms["center"][1])
         return MaskHexagon((cx, cy), float(ms["circumradius"]))
+    if mt == "triangle":
+        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        return MaskTriangle(
+            (cx, cy),
+            float(ms["side_length"]),
+            float(ms.get("rotation_deg", 90.0)),
+        )
     if mt in ("rounded_rect", "rounded-rect"):
         cx, cy = float(ms["center"][0]), float(ms["center"][1])
         return MaskRoundedRect(

@@ -57,6 +57,14 @@ class MaskHexagonBody(BaseModel):
     circumradius: Annotated[float, Field(gt=0, le=1.0e7)]
 
 
+class MaskTriangleBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["triangle"] = "triangle"
+    center: list[float] = Field(..., min_length=2, max_length=2)
+    side_length: Annotated[float, Field(gt=0, le=1.0e7)]
+    rotation_deg: Annotated[float, Field(ge=-3600.0, le=3600.0)] = 90.0
+
+
 class MaskRoundedRectBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["rounded_rect", "rounded-rect"] = "rounded_rect"
@@ -150,12 +158,14 @@ class PatchRequest(BaseModel):
             MaskCircleBody.model_validate(m)
         elif mt in ("regular_hexagon", "hexagon"):
             MaskHexagonBody.model_validate(m)
+        elif mt == "triangle":
+            MaskTriangleBody.model_validate(m)
         elif mt in ("rounded_rect", "rounded-rect"):
             MaskRoundedRectBody.model_validate(m)
         else:
             raise ValueError(
                 f"unsupported mask.type={mt!r}; supported="
-                "[rectangle, square, circle, regular_hexagon, rounded_rect]"
+                "[rectangle, square, circle, regular_hexagon, triangle, rounded_rect]"
             )
 
         if self.png_width_px is not None and self.png_height_px is None:
