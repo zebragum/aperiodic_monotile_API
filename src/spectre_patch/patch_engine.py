@@ -7,6 +7,7 @@ from typing import Any, Iterator
 
 import numpy as np
 from shapely.geometry import Polygon
+from shapely.geometry.base import BaseGeometry
 from shapely.validation import make_valid
 
 from spectre_patch.config_limits import LimitsSettings
@@ -41,7 +42,7 @@ class EmittedTile:
     rotation_deg: float
     scale_world: float
 
-    clip_geom: Polygon | None  # canonical intersection geometry if clipped
+    clip_geom: BaseGeometry | None  # canonical intersection geometry if clipped
 
 
 def affine6_tuple(M: np.ndarray) -> tuple[float, float, float, float, float, float]:
@@ -147,10 +148,8 @@ def enumerate_emitted(
 
         tpoly = _tile_polygon_canonical(gen6)
         keep, clipped_geom = retains_tile_result(retention, tpoly, mp, cen_c)
-        clip_polygon: Polygon | None = None
+        clip_polygon: BaseGeometry | None = None
         if retention == RetentionMode.clip and keep and clipped_geom is not None:
-            if clipped_geom.geom_type != "Polygon":
-                continue
             clip_polygon = clipped_geom
 
         if not keep:

@@ -10,6 +10,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from shapely.geometry import box as shp_box
+from shapely.ops import unary_union
 
 from spectre_patch import PATCH_ENGINE_SEMVER
 from spectre_patch.atlas import (
@@ -176,6 +178,32 @@ def test_dispatch_uses_atlas_when_available(tmp_path: Path):
     assert res.selected_iterations == 4
     assert res.fallback_reason is None
     assert len(emitted) > 0
+
+
+def test_atlas_clip_square_has_no_voids(tmp_path: Path):
+    """Clipped atlas output must cover the requested square completely."""
+
+    _, core = _build_n4(tmp_path)
+    half = min(6.25, core.inscribed_half_side * 0.5)
+    mask = MaskSquare((0.0, 0.0), half_side=half)
+    emitted = enumerate_emitted_from_core(
+        core,
+        tile_family="spectre_tile_1_1",
+        patch_version=PATCH_ENGINE_SEMVER,
+        seed="atlas-clip-coverage",
+        scale=1.0,
+        tx=0.0,
+        ty=0.0,
+        rotation_deg=0.0,
+        mask=mask,
+        retention=RetentionMode.clip,
+    )
+    mask_poly = shp_box(-half, -half, half, half)
+    clipped = [tile.clip_geom for tile in emitted if tile.clip_geom is not None]
+    assert clipped
+
+    missing = mask_poly.difference(unary_union(clipped))
+    assert missing.area < 1e-7
 
 
 def test_dispatch_falls_back_when_mask_too_big(tmp_path: Path):

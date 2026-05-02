@@ -9,7 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-from shapely.geometry import Polygon
+from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
+from shapely.geometry.base import BaseGeometry
 
 from spectre_patch.core.spectre_t11 import PROTOTILE_RING
 from spectre_patch.export.svg_utils import deterministic_palette, prototile_path_d, svg_matrix_tuple_from_world6
@@ -66,8 +67,25 @@ def world_affine_rowmajor(
     )
 
 
-def _polygon_path_d_world(geom: Polygon, world: np.ndarray) -> str:
-    """Map a canonical-space polygon (single ring; holes ignored for Tier-1) into world XY SVG path."""
+def _iter_polygons(geom: BaseGeometry) -> list[Polygon]:
+    """Return polygonal components from a Shapely geometry."""
+
+    if geom.is_empty:
+        return []
+    if isinstance(geom, Polygon):
+        return [geom]
+    if isinstance(geom, MultiPolygon):
+        return [poly for poly in geom.geoms if not poly.is_empty]
+    if isinstance(geom, GeometryCollection):
+        polys: list[Polygon] = []
+        for child in geom.geoms:
+            polys.extend(_iter_polygons(child))
+        return polys
+    return []
+
+
+def _polygon_path_d_world(geom: BaseGeometry, world: np.ndarray) -> str:
+    """Map canonical clipped geometry into a world XY SVG compound path."""
 
     def world_xy(x: float, y: float) -> tuple[float, float]:
         return (
@@ -75,14 +93,17 @@ def _polygon_path_d_world(geom: Polygon, world: np.ndarray) -> str:
             float(world[1, 0] * x + world[1, 1] * y + world[1, 2]),
         )
 
-    coords = list(geom.exterior.coords)
-    if len(coords) < 3:
-        return ""
     cmds: list[str] = []
-    for i, (x, y) in enumerate(coords[:-1]):
-        wx, wy = world_xy(x, y)
-        cmds.append(f"{'M' if i == 0 else 'L'}{wx:.8g} {wy:.8g}")
-    cmds.append("Z")
+    for poly in _iter_polygons(geom):
+        rings = [poly.exterior, *poly.interiors]
+        for ring in rings:
+            coords = list(ring.coords)
+            if len(coords) < 3:
+                continue
+            for i, (x, y) in enumerate(coords[:-1]):
+                wx, wy = world_xy(x, y)
+                cmds.append(f"{'M' if i == 0 else 'L'}{wx:.8g} {wy:.8g}")
+            cmds.append("Z")
     return " ".join(cmds)
 
 
@@ -258,7 +279,12 @@ def _world_bbox(
     for tile in tiles:
         if tile.clip_geom is not None:
             cli = similarity_client(scale, rotation_deg, tx, ty)
-            xs, ys = tile.clip_geom.exterior.coords.xy
+            coords: list[tuple[float, float]] = []
+            for poly in _iter_polygons(tile.clip_geom):
+                coords.extend((float(x), float(y)) for x, y in poly.exterior.coords)
+            if not coords:
+                continue
+            xs, ys = np.asarray(coords, dtype=np.float64).T
             xs = np.asarray(xs, dtype=np.float64)
             ys = np.asarray(ys, dtype=np.float64)
             wx = cli[0, 0] * xs + cli[0, 1] * ys + cli[0, 2]

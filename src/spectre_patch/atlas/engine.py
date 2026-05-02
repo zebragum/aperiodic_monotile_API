@@ -28,6 +28,7 @@ from typing import Any
 import numpy as np
 from shapely.affinity import translate as shp_translate
 from shapely.geometry import Polygon
+from shapely.geometry.base import BaseGeometry
 from shapely.validation import make_valid
 
 from spectre_patch.atlas.loader import LoadedCore
@@ -110,10 +111,8 @@ def enumerate_emitted_from_core(
         tpoly_core = _tile_polygon_canonical(gen6_core)
         cen_pt_core = np.array([float(cen_core[0]), float(cen_core[1])], dtype=np.float64)
         keep, clipped_geom = retains_tile_result(retention, tpoly_core, mp_core, cen_pt_core)
-        clip_polygon_user: Polygon | None = None
+        clip_polygon_user: BaseGeometry | None = None
         if retention == RetentionMode.clip and keep and clipped_geom is not None:
-            if clipped_geom.geom_type != "Polygon":
-                continue
             clip_polygon_user = (
                 clipped_geom
                 if (shift_dx == 0.0 and shift_dy == 0.0)
