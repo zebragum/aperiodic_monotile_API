@@ -56,6 +56,7 @@ RUN apt-get update -qq \
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY src /app/src
+COPY scripts /app/scripts
 COPY README.md /app/README.md
 
 # Run as a non-root account.
@@ -80,6 +81,9 @@ set -eu
 
 case "${1:-api}" in
   api)
+    if [ "${SPECTRE_PATCH_BOOTSTRAP_ATLAS:-false}" = "true" ]; then
+      python /app/scripts/bootstrap_atlas.py
+    fi
     exec uvicorn spectre_patch.api.main:app \
       --host 0.0.0.0 \
       --port "${SPECTRE_PATCH_API_PORT:-8000}" \

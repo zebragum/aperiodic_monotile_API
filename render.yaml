@@ -1,0 +1,41 @@
+services:
+  - type: web
+    runtime: docker
+    name: aperiodic-monotile-api
+    repo: https://github.com/zebragum/aperiodic_monotile_API.git
+    branch: main
+    plan: starter
+    region: oregon
+    dockerCommand: api
+    healthCheckPath: /healthz
+    disk:
+      name: spectre-data
+      mountPath: /app/data
+      sizeGB: 10
+    envVars:
+      - key: SPECTRE_PATCH_API_SECRET
+        generateValue: true
+      - key: SPECTRE_PATCH_REQUIRE_API_KEY
+        value: "true"
+      - key: SPECTRE_PATCH_RUN_JOBS_IN_PROCESS
+        value: "true"
+      - key: SPECTRE_PATCH_BOOTSTRAP_ATLAS
+        value: "true"
+      - key: SPECTRE_PATCH_DB_PATH
+        value: /app/data/monotile.db
+      - key: SPECTRE_PATCH_STORAGE_DIR
+        value: /app/data/jobs
+      - key: SPECTRE_PATCH_ATLAS_DIR
+        value: /app/data/atlas
+      - key: SPECTRE_PATCH_ATLAS_RELEASE_URL
+        value: https://github.com/zebragum/aperiodic_monotile_API/releases/download/atlas-v1
+      - key: SPECTRE_PATCH_RATE_LIMIT_POST_PATCH
+        value: 30/minute
+      - key: SPECTRE_PATCH_LOG_LEVEL
+        value: INFO
+      - key: UVICORN_WORKERS
+        value: "1"
+      # Set this in the Render Dashboard after deploy:
+      # {"free_xxx":"tier_free","pro_yyy":"tier_pro"}
+      - key: SPECTRE_PATCH_API_KEY_TIERS_JSON
+        sync: false
