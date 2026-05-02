@@ -49,6 +49,11 @@ def coerce_mask(ms: dict):
     raise ValueError(f"Unsupported mask type {mt!r}")
 
 
+def _value_or_default(req: dict, key: str, default):
+    value = req.get(key)
+    return default if value is None else value
+
+
 def run_patch_job(
     conn: sqlite3.Connection,
     *,
@@ -103,11 +108,11 @@ def run_patch_job(
             svg_opts = SvgRenderOpts(
                 fill=req.get("svg_fill") or "#cdd6ea",
                 stroke=req.get("svg_stroke") or "#171b38",
-                stroke_width=float(req.get("svg_stroke_width", 0.04)),
-                opacity=float(req.get("svg_opacity", 1.0)),
+                stroke_width=float(_value_or_default(req, "svg_stroke_width", 0.04)),
+                opacity=float(_value_or_default(req, "svg_opacity", 1.0)),
                 deterministic_colors=bool(req.get("svg_deterministic_palette")),
-                pixel_target=int(req.get("svg_pixel_target") or 1200),
-                margin=float(req.get("svg_margin", 1.0)),
+                pixel_target=int(_value_or_default(req, "svg_pixel_target", 1200)),
+                margin=float(_value_or_default(req, "svg_margin", 1.0)),
                 compact=bool(req.get("svg_compact", False)),
             )
             svg_text = svg_document(

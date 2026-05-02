@@ -10,6 +10,7 @@ from pathlib import Path
 
 from spectre_patch.config_limits import LimitsSettings
 from spectre_patch.jobs import repo as job_repo
+from spectre_patch.jobs.tasks import run_patch_job
 from spectre_patch.jobs.worker import _SHUTDOWN, run_loop
 
 
@@ -80,6 +81,51 @@ def test_worker_drains_queued_job():
         finally:
             _SHUTDOWN.set()
             thread.join(timeout=5.0)
+
+
+def test_svg_job_accepts_null_optional_render_fields():
+    """Serialized Pydantic requests include explicit nulls for omitted SVG knobs."""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        db_path = tmp_path / "jobs.db"
+        store = tmp_path / "jobs"
+        store.mkdir(parents=True, exist_ok=True)
+        conn = job_repo.connect(db_path)
+        body = {
+            "tile_family": "spectre_tile_1_1",
+            "scale": 8.0,
+            "rotation_deg": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "coverage_half_extent": 4.5,
+            "substitution_iterations": 2,
+            "formats": ["svg"],
+            "retention": "clip",
+            "mask": {"type": "square", "center": [0.0, 0.0], "half_side": 6.25},
+            "svg_compact": True,
+            "svg_fill": "#d94738",
+            "svg_margin": 0.0,
+            "svg_opacity": None,
+            "svg_pixel_target": 100,
+            "svg_stroke": "#1b1b1b",
+            "svg_stroke_width": None,
+        }
+        job_id, created = job_repo.enqueue_job(conn, "tier_free", body)
+        assert created
+
+        run_patch_job(
+            conn,
+            job_id=job_id,
+            storage_root=store,
+            base_limits=LimitsSettings(),
+        )
+
+        row = job_repo.fetch_job(conn, job_id)
+        assert row is not None
+        assert row["status"] == "completed", row["error"]
+        assert (job_repo.artifact_dir(store, job_id) / "patch.svg").exists()
+        conn.close()
 
 
 def test_requeue_stale_running():
