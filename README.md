@@ -1,6 +1,6 @@
 # Spectre / Tile(1,1) Monotile Patch API (Tier 1)
 
-Deterministic, pipeline-oriented HTTP service and worker for gap-free patches of the weakly chiral aperiodic monotile **Tile(1,1)** (Smith–Myers–Kaplan–Goodman–Strauss), using the same substitution construction as the reference [Waterloo Spectre explorer](https://cs.uwaterloo.ca/~csk/spectre/) (see `docs/ATTRIBUTION.md`).
+Deterministic, pipeline-oriented HTTP service and worker for **clipped spectral patches** of the weakly chiral aperiodic monotile **Tile(1,1)** (Smith–Myers–Kaplan–Goodman–Strauss), using the same substitution construction as the reference [Waterloo Spectre explorer](https://cs.uwaterloo.ca/~csk/spectre/) (see `docs/ATTRIBUTION.md`).
 
 ## Quick start
 
@@ -22,6 +22,8 @@ Open `http://127.0.0.1:8000/docs` for OpenAPI.
 - `GET /v1/jobs/{job_id}` — status / error / result manifest
 - `GET /v1/jobs/{job_id}/urls?ttl_seconds=...` — bundle of signed download URLs
 - `GET /v1/downloads/{job_id}/{filename}?exp={unix}&sig={hmac-sha256}` — signed download
+- `POST /v1/leads` — public launch-list capture for the static site
+- `GET /v1/admin/leads?fmt=json|csv` — private lead export, guarded by `X-Admin-Token`
 
 ## Formats
 
@@ -124,6 +126,24 @@ ignored when API keys are configured.
 `status` is `completed`, then call `GET /v1/jobs/{job_id}/urls` to receive
 signed relative URLs for artifacts such as `patch.svg`, `tiles.csv`, or
 `tiles.json`. Signed URLs expire; request a fresh bundle when needed.
+
+## Launch Leads
+
+The public website can collect early users before Stripe is fully configured:
+
+```powershell
+Invoke-RestMethod -Method Post https://aperiodic-monotile-api.onrender.com/v1/leads `
+  -ContentType "application/json" `
+  -Body '{"email":"designer@example.com","use_case":"Blender panels","source":"homepage"}'
+```
+
+Lead export is intentionally separate from customer API keys. Set
+`SPECTRE_PATCH_ADMIN_TOKEN` in the deployment environment, then export leads:
+
+```powershell
+Invoke-RestMethod https://aperiodic-monotile-api.onrender.com/v1/admin/leads?fmt=csv `
+  -Headers @{"X-Admin-Token"=$env:SPECTRE_PATCH_ADMIN_TOKEN}
+```
 
 ## Atlas (depth-quantised LOD cores)
 

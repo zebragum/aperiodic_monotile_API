@@ -9,7 +9,7 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 
 
-def _build_app(tmp: Path, *, atlas_dir: Path | None = None):
+def _build_app(tmp: Path, *, atlas_dir: Path | None = None, admin_token: str | None = None):
     os.environ["SPECTRE_PATCH_STORAGE_DIR"] = str(tmp / "jobs")
     os.environ["SPECTRE_PATCH_DB_PATH"] = str(tmp / "monotile.db")
     os.environ["SPECTRE_PATCH_API_SECRET"] = "test-secret"
@@ -19,6 +19,10 @@ def _build_app(tmp: Path, *, atlas_dir: Path | None = None):
         "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
     ):
         os.environ.pop(k, None)
+    if admin_token is None:
+        os.environ.pop("SPECTRE_PATCH_ADMIN_TOKEN", None)
+    else:
+        os.environ["SPECTRE_PATCH_ADMIN_TOKEN"] = admin_token
     # Tests run jobs inside the request lifecycle; production deployments use
     # the dedicated worker process and would leave this off.
     os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = "true"
@@ -49,6 +53,8 @@ def test_capabilities_ok():
             assert body["atlas"]["cores"] == []
             assert body["atlas"]["max_canonical_full_side"] == 0.0
             assert "operational" in body
+            assert "roadmap" in body
+            assert any(f.get("status") == "planned" for f in body["roadmap"]["tile_families"])
 
 
 def test_healthz_and_readyz():
@@ -235,6 +241,47 @@ def test_lead_capture_creates_and_updates_lead():
 
             r = client.post("/v1/leads", json={"email": "not-an-email"})
             assert r.status_code == 422
+
+
+def test_lead_capture_rejects_malformed_json():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            r = client.post(
+                "/v1/leads",
+                content="{not-json",
+                headers={"Content-Type": "application/json"},
+            )
+            assert r.status_code == 400
+
+
+def test_admin_leads_requires_token_and_exports_json_csv():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp), admin_token="admin-secret")) as client:
+            client.post(
+                "/v1/leads",
+                json={
+                    "email": "buyer@example.com",
+                    "name": "Buyer",
+                    "company": "Studio",
+                    "use_case": "Laser cutting",
+                    "source": "test",
+                },
+            )
+
+            r = client.get("/v1/admin/leads")
+            assert r.status_code == 401
+
+            headers = {"X-Admin-Token": "admin-secret"}
+            r = client.get("/v1/admin/leads", headers=headers)
+            assert r.status_code == 200
+            body = r.json()
+            assert body["count"] == 1
+            assert body["leads"][0]["email"] == "buyer@example.com"
+
+            r = client.get("/v1/admin/leads?fmt=csv", headers=headers)
+            assert r.status_code == 200
+            assert "buyer@example.com" in r.text
+            assert r.headers["content-type"].startswith("text/csv")
 
 
 def test_capabilities_with_built_atlas():

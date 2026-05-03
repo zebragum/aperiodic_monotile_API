@@ -282,6 +282,11 @@ dd {
   border-radius: 1.5rem;
 }
 
+.controls .muted-label {
+  opacity: 0.88;
+  font-weight: 600;
+}
+
 label {
   display: grid;
   gap: 0.45rem;

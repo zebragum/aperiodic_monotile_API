@@ -1,41 +1,46 @@
-const examples = {
-  circle: {
+const demoPresets = [
+  {
+    id: "circle-100u",
     src: "assets/examples/circle-100u.svg",
-    alt: "A 100-unit circular Spectre monotile patch",
-    shape: "Circle",
-    units: "100 units wide",
-    pixels: "1000px preview",
-    tiles: "1,036 tiles",
-    formats: "SVG now; CSV/JSON/STL/glTF via API"
+    alt: "A circular Spectre / Tile(1,1) monotile patch",
+    headline: "Circle mask",
+    extent: "~100-unit diameter · circle clip",
+    approxTiles: "~1,036 tiles",
+    rasterNote: "~1000px SVG canvas",
+    formatsHint: "Pre-cached SVG; regenerate any extent via API"
   },
-  rectangle: {
+  {
+    id: "rect-9x4",
     src: "assets/examples/rectangle-9x4.svg",
-    alt: "A 9:4 rectangular Spectre monotile patch",
-    shape: "Rectangle",
-    units: "90 x 40 units",
-    pixels: "9:4 aspect",
-    tiles: "500 tiles",
-    formats: "SVG now; CSV/JSON/STL/glTF via API"
+    alt: "A rectangular Spectre monotile patch",
+    headline: "9∶4 rectangle",
+    extent: "90 × 40 canonical units · axis-aligned rectangle",
+    approxTiles: "~500 tiles",
+    rasterNote: "900×400 SVG canvas",
+    formatsHint: "Pre-cached SVG; regenerate via API"
   },
-  triangle: {
+  {
+    id: "tri-50u",
     src: "assets/examples/triangle-50u.svg",
-    alt: "A 50-unit equilateral triangular Spectre monotile patch",
-    shape: "Triangle",
-    units: "50-unit side",
-    pixels: "500px preview",
-    tiles: "166 tiles",
-    formats: "SVG now; CSV/JSON/STL/glTF via API"
+    alt: "An equilateral triangular Spectre monotile patch",
+    headline: "Equilateral triangle",
+    extent: "50-unit edges · centroid-centered mask",
+    approxTiles: "~166 tiles",
+    rasterNote: "500×433 SVG canvas",
+    formatsHint: "Pre-cached SVG; regenerate via API"
   }
-};
+];
 
-const shapeSelect = document.querySelector("#shapeSelect");
-const tileScaleRange = document.querySelector("#tileScaleRange");
+const presetSelect = document.querySelector("#presetSelect");
+const tileFamilySelect = document.querySelector("#tileFamilySelect");
+const outlineStyleSelect = document.querySelector("#outlineStyleSelect");
+const previewMagnifyRange = document.querySelector("#previewMagnifyRange");
 const strokeRange = document.querySelector("#strokeRange");
 const demoSvgHost = document.querySelector("#demoSvgHost");
 const demoStats = document.querySelector("#demoStats");
 const previewFrame = document.querySelector(".preview-frame");
 
-/** Example SVGs encode outlines at stroke-width 0.25 in canonical units. */
+/** Example SVGs ship with strokes at stroke-width 0.25 in canonical units. */
 const DEMO_BASE_STROKE = 0.25;
 const svgTextCache = new Map();
 const checkoutButtons = [document.querySelector("#studioCheckout"), document.querySelector("#ctaCheckout")].filter(Boolean);
@@ -43,14 +48,20 @@ const checkoutStatus = document.querySelector("#checkoutStatus");
 const leadForm = document.querySelector("#leadForm");
 const apiBase = "https://aperiodic-monotile-api.onrender.com";
 
+function currentPreset() {
+  const id = presetSelect?.value ?? demoPresets[0].id;
+  const found = demoPresets.find((p) => p.id === id);
+  return found ?? demoPresets[0];
+}
+
 function renderStats(example) {
   if (!demoStats) return;
   demoStats.innerHTML = `
-    <strong>${example.shape}</strong>
-    <span>${example.units}</span>
-    <span>${example.pixels}</span>
-    <span>${example.tiles}</span>
-    <span>${example.formats}</span>
+    <strong>${example.headline}</strong>
+    <span>${example.extent}</span>
+    <span>${example.approxTiles}</span>
+    <span>${example.rasterNote}</span>
+    <span>${example.formatsHint}</span>
   `;
 }
 
@@ -74,6 +85,80 @@ function applyDemoStroke(svg, canonicalWidth) {
   });
 }
 
+/** Preview-only modulation: stroke cosmetics + subtle SVG displacement ("curvy"). Topology unchanged. */
+function ensureCurvyDisplacementFilter(svg) {
+  let defs = svg.querySelector("defs");
+  if (!defs) {
+    defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    svg.insertBefore(defs, svg.firstChild);
+  }
+  if (defs.querySelector("#monotileDemoCurvyFilter")) return;
+
+  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+  filter.setAttribute("id", "monotileDemoCurvyFilter");
+  filter.setAttribute("x", "-50%");
+  filter.setAttribute("y", "-50%");
+  filter.setAttribute("width", "200%");
+  filter.setAttribute("height", "200%");
+
+  const turb = document.createElementNS("http://www.w3.org/2000/svg", "feTurbulence");
+  turb.setAttribute("type", "fractalNoise");
+  turb.setAttribute("baseFrequency", "0.045");
+  turb.setAttribute("numOctaves", "1");
+  turb.setAttribute("seed", "2");
+  turb.setAttribute("result", "noise");
+
+  const disp = document.createElementNS("http://www.w3.org/2000/svg", "feDisplacementMap");
+  disp.setAttribute("in", "SourceGraphic");
+  disp.setAttribute("in2", "noise");
+  disp.setAttribute("scale", "0");
+  disp.setAttribute("xChannelSelector", "R");
+  disp.setAttribute("yChannelSelector", "G");
+
+  filter.appendChild(turb);
+  filter.appendChild(disp);
+  defs.appendChild(filter);
+}
+
+function syncCurvyDisplacement(svg, enabled) {
+  const disp = svg.querySelector("#monotileDemoCurvyFilter feDisplacementMap");
+  if (!disp) return;
+  disp.setAttribute("scale", enabled ? "0.45" : "0");
+}
+
+function applyOutlineStyle(svg) {
+  if (!svg || !outlineStyleSelect) return;
+  const mode = outlineStyleSelect.value ?? "flat";
+  ensureCurvyDisplacementFilter(svg);
+
+  svg.querySelectorAll("g[stroke]").forEach((g) => {
+    const stroke = g.getAttribute("stroke");
+    if (!stroke || stroke.toLowerCase() === "none") return;
+
+    switch (mode) {
+      case "curvy":
+        g.setAttribute("stroke-linejoin", "round");
+        g.setAttribute("stroke-linecap", "round");
+        g.setAttribute("stroke-miterlimit", "10");
+        break;
+      case "spiky":
+        g.setAttribute("stroke-linejoin", "miter");
+        g.setAttribute("stroke-linecap", "butt");
+        g.setAttribute("stroke-miterlimit", "1.12");
+        break;
+      case "flat":
+      default:
+        g.setAttribute("stroke-linejoin", "miter");
+        g.setAttribute("stroke-linecap", "square");
+        g.setAttribute("stroke-miterlimit", "8");
+        break;
+    }
+  });
+
+  syncCurvyDisplacement(svg, mode === "curvy");
+  svg.style.filter = mode === "curvy" ? "url(#monotileDemoCurvyFilter)" : "";
+}
+
 async function fetchSvgMarkup(url) {
   if (svgTextCache.has(url)) return svgTextCache.get(url);
   const response = await fetch(url, {cache: "force-cache"});
@@ -84,37 +169,51 @@ async function fetchSvgMarkup(url) {
 }
 
 async function updateDemo() {
-  const example = examples[shapeSelect.value];
-  renderStats(example);
+  const preset = currentPreset();
+  renderStats(preset);
   if (!demoSvgHost) return;
-  demoSvgHost.innerHTML = "<p class=\"demo-loading\">Loading preview…</p>";
+  demoSvgHost.innerHTML = '<p class="demo-loading">Loading preview…</p>';
   try {
-    const markup = await fetchSvgMarkup(example.src);
+    const markup = await fetchSvgMarkup(preset.src);
     demoSvgHost.innerHTML = markup;
     const svg = demoSvgHost.querySelector("svg");
     if (!svg) throw new Error("Markup did not contain an <svg>");
     svg.removeAttribute("width");
     svg.removeAttribute("height");
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-    svg.setAttribute("aria-label", example.alt);
+    svg.setAttribute("aria-label", preset.alt);
+
+    applyOutlineStyle(svg);
     applyDemoStroke(svg, computeCanonicalStrokeWidth());
   } catch (err) {
-    demoSvgHost.innerHTML = "<p class=\"demo-error\">Could not load this example SVG.</p>";
+    demoSvgHost.innerHTML = '<p class="demo-error">Could not load this example SVG.</p>';
     console.error(err);
   }
 }
 
 function updateDisplay() {
-  if (previewFrame && tileScaleRange) {
-    previewFrame.style.setProperty("--tile-scale", String(Number(tileScaleRange.value) / 100));
+  if (previewFrame && previewMagnifyRange) {
+    previewFrame.style.setProperty("--tile-scale", String(Number(previewMagnifyRange.value) / 100));
   }
   const svg = demoSvgHost?.querySelector("svg");
+  if (svg && outlineStyleSelect) applyOutlineStyle(svg);
   applyDemoStroke(svg, computeCanonicalStrokeWidth());
 }
 
-if (shapeSelect && tileScaleRange && strokeRange && demoSvgHost && demoStats && previewFrame) {
-  shapeSelect.addEventListener("change", () => void updateDemo());
-  tileScaleRange.addEventListener("input", updateDisplay);
+if (
+  presetSelect &&
+  outlineStyleSelect &&
+  previewMagnifyRange &&
+  strokeRange &&
+  demoSvgHost &&
+  demoStats &&
+  previewFrame &&
+  tileFamilySelect
+) {
+  presetSelect.addEventListener("change", () => void updateDemo());
+  outlineStyleSelect.addEventListener("change", () => updateDisplay());
+  outlineStyleSelect.addEventListener("input", () => updateDisplay());
+  previewMagnifyRange.addEventListener("input", updateDisplay);
   strokeRange.addEventListener("input", updateDisplay);
 
   void updateDemo();

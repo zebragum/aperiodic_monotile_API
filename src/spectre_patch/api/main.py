@@ -33,12 +33,14 @@ import uuid
 import hmac
 import hashlib
 import re
+import csv
+from io import StringIO
 from contextlib import asynccontextmanager, suppress
 from functools import lru_cache
 from pathlib import Path
 
 import httpx
-from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -77,6 +79,7 @@ class ServiceSettings(BaseSettings):
     {"free_xxx":"tier_free","pro_yyy":"tier_pro"}. Production deployments
     should use this instead of trusting client-supplied tier headers.
     """
+    admin_token: str = ""
 
     # Job execution
     run_jobs_in_process: bool = False
@@ -90,7 +93,7 @@ class ServiceSettings(BaseSettings):
     cors_allow_origins: str = ""  # comma-separated, "*" allows all
     cors_allow_credentials: bool = False
     cors_allow_methods: str = "GET,POST,OPTIONS"
-    cors_allow_headers: str = "Content-Type,Idempotency-Key,X-API-Key,X-API-Tier,X-Request-ID"
+    cors_allow_headers: str = "Content-Type,Idempotency-Key,X-API-Key,X-API-Tier,X-Request-ID,X-Admin-Token"
 
     # Rate limit (slowapi)
     rate_limit_post_patch: str = "30/minute"
@@ -153,6 +156,16 @@ def _dump_request(body: PatchRequest) -> dict:
     return body.model_dump(exclude_none=False)
 
 
+async def _json_object_body(request: Request) -> dict:
+    try:
+        body = await request.json()
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail="Request body must be valid JSON") from e
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=422, detail="Request body must be a JSON object")
+    return body
+
+
 def _tier_for_api_key(request: Request, api_key: str, cfg: ServiceSettings) -> str | None:
     tier_map = _api_key_tier_map(cfg)
     if api_key in tier_map:
@@ -163,6 +176,18 @@ def _tier_for_api_key(request: Request, api_key: str, cfg: ServiceSettings) -> s
         if row is not None:
             return str(row["tier"])
     return None
+
+
+def _admin_token_dependency(
+    admin_token: str | None = Header(default=None, alias="X-Admin-Token"),
+) -> None:
+    cfg = svc_settings()
+    if not cfg.admin_token:
+        raise HTTPException(status_code=503, detail="Admin API is not configured")
+    if not admin_token:
+        raise HTTPException(status_code=401, detail="Missing X-Admin-Token")
+    if not hmac.compare_digest(admin_token, cfg.admin_token):
+        raise HTTPException(status_code=403, detail="Invalid X-Admin-Token")
 
 
 def _api_key_dependency(request: Request, api_key: str | None = Header(default=None, alias="X-API-Key")) -> str | None:
@@ -411,6 +436,22 @@ def create_app() -> FastAPI:
         return {
             "patch_engine_semver": PATCH_ENGINE_SEMVER,
             "supported_tile_families": ["spectre_tile_1_1"],
+            "roadmap": {
+                "tile_families": [
+                    {"id": "spectre_tile_1_1", "status": "supported", "label": "Spectre / Tile(1,1)"},
+                    {"id": "einstein_hat_tile", "status": "planned", "label": "Einstein Hat monotile (same API hooks)"},
+                    {"id": "turtle_tile", "status": "planned", "label": "Companion turtle monotile family"},
+                ],
+                "outline_styles": [
+                    {"id": "flat", "status": "supported", "label": "Canonical flat polygon boundaries"},
+                    {"id": "curvy", "status": "planned", "label": "Curvy eased boundary modulation"},
+                    {"id": "spiky", "status": "planned", "label": "Spiky / puzzle-piece boundary modulation"},
+                ],
+                "outline_styles_note": (
+                    "Exports today use planar Spectre substitution; ornamental outline modulation for SVG meshes is roadmap work. "
+                    "STL meshes remain solid volumetric slabs without strokes unless/until outline geometry ships."
+                ),
+            },
             "supported_masks": [
                 "square",
                 "rectangle",
@@ -450,7 +491,7 @@ def create_app() -> FastAPI:
     # ------------------------------------------------------ billing ----
     @app.post("/v1/leads", tags=["billing"])
     async def create_lead(request: Request) -> dict:
-        body = await request.json()
+        body = await _json_object_body(request)
         email = str(body.get("email") or "").strip().lower()
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
             raise HTTPException(status_code=422, detail="Valid email is required")
@@ -469,6 +510,41 @@ def create_app() -> FastAPI:
         )
         return {"lead_id": lead_id, "status": "created" if created else "updated"}
 
+    @app.get("/v1/admin/leads", tags=["billing"], include_in_schema=False, response_model=None)
+    async def admin_leads(
+        _: None = Depends(_admin_token_dependency),
+        fmt: str = Query(default="json", pattern="^(json|csv)$"),
+        limit: int = Query(default=500, ge=1, le=5000),
+    ):
+        rows = job_repo.list_leads(app.state.db, limit=limit)
+        payload = [
+            {
+                "id": row["id"],
+                "created": row["created"],
+                "email": row["email"],
+                "name": row["name"],
+                "company": row["company"],
+                "use_case": row["use_case"],
+                "source": row["source"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+        if fmt == "csv":
+            buf = StringIO()
+            writer = csv.DictWriter(
+                buf,
+                fieldnames=["id", "created", "email", "name", "company", "use_case", "source", "status"],
+            )
+            writer.writeheader()
+            writer.writerows(payload)
+            return Response(
+                buf.getvalue(),
+                media_type="text/csv; charset=utf-8",
+                headers={"Content-Disposition": 'attachment; filename="monotile-leads.csv"'},
+            )
+        return {"leads": payload, "count": len(payload)}
+
     @app.get("/v1/billing/status", tags=["billing"])
     async def billing_status() -> dict:
         return {
@@ -481,7 +557,7 @@ def create_app() -> FastAPI:
     async def create_checkout(request: Request) -> dict:
         if not _billing_configured(cfg):
             raise HTTPException(status_code=503, detail="Billing is not configured yet")
-        body = await request.json()
+        body = await _json_object_body(request)
         email = str(body.get("email") or "").strip() or None
         success_url = f"{cfg.public_site_url.rstrip('/')}/docs.html?checkout=success&session_id={{CHECKOUT_SESSION_ID}}#access"
         cancel_url = f"{cfg.public_site_url.rstrip('/')}/#pricing"
@@ -503,7 +579,7 @@ def create_app() -> FastAPI:
     async def claim_checkout_key(request: Request) -> dict:
         if not _billing_configured(cfg):
             raise HTTPException(status_code=503, detail="Billing is not configured yet")
-        body = await request.json()
+        body = await _json_object_body(request)
         session_id = str(body.get("session_id") or "").strip()
         if not session_id.startswith("cs_"):
             raise HTTPException(status_code=422, detail="session_id is required")
