@@ -6,11 +6,11 @@
     <title>Aperiodic Monotile API | Spectre Geometry for Designers and Developers</title>
     <meta
       name="description"
-      content="Aperiodic monotile tiling API powered by deterministic Spectre / Tile(1,1). Export SVG, CSV, JSON, STL, and glTF with tunable masks, seeds, and retention. Blender, CAD, laser cutting, and generative art workflows."
+      content="Pattern-free aperiodic monotile geometry on demand: customizable arrays, gap-free polygon fills, and multi-format export (SVG, CSV, JSON, STL, glTF). Design, simulation, fabrication, and creative pipelines."
     />
     <meta
       name="keywords"
-      content="aperiodic monotile, einstein hat, turtle monotile, spectre tile, monotile API, einstein tile, aperiodic tiling, SVG tiling, Blender tiling, procedural geometry, CAD pattern generator"
+      content="aperiodic monotile, spectre tile, Tile(1,1), monotile API, aperiodic tiling, SVG tiling, Blender tiling, procedural geometry, CAD pattern generator, wave propagation, anti-aliasing patterns"
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
@@ -21,7 +21,7 @@
     <meta property="og:title" content="Aperiodic Monotile API" />
     <meta
       property="og:description"
-      content="Parameterized aperiodic monotile meshes and vectors—the production engine today is Spectre / Tile(1,1); Hat and Turtle families are roadmap targets on the same API surface."
+      content="Customizable aperiodic monotile arrays with gap-free polygon fills. Export SVG, CSV, JSON, STL, and glTF for design, tooling, fabrication, and research."
     />
     <meta property="og:image" content="assets/examples/circle-100u.svg" />
     <meta property="og:url" content="https://aperiodic-monotile-site.onrender.com/" />
@@ -34,7 +34,7 @@
         "name": "Aperiodic Monotile API",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web API",
-        "description": "Parameterized Spectre / Tile(1,1) aperiodic monotiles with masks, deterministic seeds, and multi-format exporters. Planned expansion to Einstein Hat and turtle companion tiles plus ornamental outline modulation.",
+        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, CSV, JSON, STL, glTF.",
         "offers": [
           {"@type": "Offer", "name": "Free API tier", "price": "0", "priceCurrency": "USD"},
           {"@type": "Offer", "name": "Paid API tier", "priceSpecification": {"@type": "PriceSpecification", "priceCurrency": "USD"}}
@@ -60,23 +60,21 @@
     <main id="top">
       <section class="hero section">
         <div class="hero-copy">
-          <p class="eyebrow">Spectre / Tile(1,1) default · Hat & Turtle on the roadmap</p>
+          <p class="eyebrow">Pattern-free geometry on-demand for wide-ranging design usage</p>
           <h1>Aperiodic monotile patches for pipelines that ship real geometry.</h1>
           <p class="hero-text">
-            A production API centered on parameterized Spectre / Tile(1,1)
-            substitutions—masked circles, rectangles, triangles, squares, hexagons, and rounded
-            rectangles with deterministic IDs and reproducible seeds. Extend the coverage with atlas
-            depth, global scale/rotation, and clip-friendly retention modes. Einstein Hat tiles and turtle
-            companion families reuse the same request surface but are queued behind the roadmap.
+            A production API centered on customizable aperiodic monotile arrays. Superior geometry for
+            improved aliasing, wave propagation, novel design, and exploring the frontiers of the useful
+            properties of this newly-discovered shape. Generate polygons full of gap-free tiles by simply
+            specifying a few parameters: polygon shape (e.g., a 4∶3 rectangle), tile size, and more. Ready
+            for integration with your favorite tools.
           </p>
           <div class="hero-actions">
             <a class="button" href="#demo">Try the visual demo</a>
             <a class="button secondary" href="docs.html">Read the API docs</a>
           </div>
-          <dl class="proof-grid" aria-label="Product highlights">
-            <div><dt>Engine</dt><dd>Spectre / Tile(1,1) · Einstein Hat · Turtle roadmap</dd></div>
-            <div><dt>Formats</dt><dd>SVG, CSV, JSON, STL, glTF</dd></div>
-            <div><dt>Outputs</dt><dd>Masked vectors · instanced meshes</dd></div>
+          <dl class="proof-grid proof-grid--single" aria-label="Product highlights">
+            <div><dt>Output formats</dt><dd>SVG, CSV, JSON, STL, glTF</dd></div>
           </dl>
         </div>
         <div class="hero-card" aria-label="Aperiodic monotile preview">
@@ -110,16 +108,8 @@
               </select>
             </label>
             <label>
-              Tile family
-              <select id="tileFamilySelect">
-                <option value="spectre_tile_1_1">Spectre / Tile(1,1)</option>
-                <option value="einstein_hat_tile" disabled title="Coming soon">Einstein Hat (planned)</option>
-                <option value="turtle_tile" disabled title="Coming soon">Turtle monotile (planned)</option>
-              </select>
-            </label>
-            <label>
               Edge styling (preview)
-              <select id="outlineStyleSelect" aria-description="COSMETIC strokes + SVG filters for the browser preview—planar tiling matches Spectre substitutions. STL geometry stays facet-accurate.">
+              <select id="outlineStyleSelect" aria-description="Preview-only stroke and filter styling in the browser. Exported meshes use the precise planar geometry from the API.">
                 <option value="flat">Flat polygons</option>
                 <option value="curvy">Soft / eased outline (DisplacementMap)</option>
                 <option value="spiky">Tight junctions (“spiky joins”)</option>
@@ -147,9 +137,9 @@
             </label>
             <div class="demo-stats" id="demoStats"></div>
             <p class="demo-note">
-              View-only previews are not a security boundary. Each bundled example encodes fixed mask extents and tessellation snapshots—change tile counts by hitting the production API with a different atlas depth/mask/size.
-              The edge-style menu is illustrative: real curvy/spiky silhouette sculpting lands on <code>/v1/capabilities.roadmap</code> milestones; STL output remains solid unless explicit outline meshes ship later.
-              Paid tiers unlock downloadable artifacts and generous limits for production runs.
+              View-only previews are not a security boundary. Each bundled example fixes its mask geometry and tessellation snapshot; in production you regenerate with parameter changes (aspect ratio, mask size, tessellation depth, scale, retention, formats).
+              Edge styling controls here only dress the SVG preview; STL meshes stay volumetric slabs with solid facets.
+              Paid tiers unlock downloadable artifacts and higher limits for production runs.
             </p>
           </aside>
           <div class="preview-frame">

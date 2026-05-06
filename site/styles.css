@@ -203,6 +203,9 @@ h3 {
   margin: 2rem 0 0;
 }
 
+.proof-grid--single {
+  grid-template-columns: minmax(0, min(28rem, 100%));
+}
 .proof-grid div,
 .card,
 .price-card,

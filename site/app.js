@@ -32,7 +32,6 @@ const demoPresets = [
 ];
 
 const presetSelect = document.querySelector("#presetSelect");
-const tileFamilySelect = document.querySelector("#tileFamilySelect");
 const outlineStyleSelect = document.querySelector("#outlineStyleSelect");
 const previewMagnifyRange = document.querySelector("#previewMagnifyRange");
 const strokeRange = document.querySelector("#strokeRange");
@@ -207,8 +206,7 @@ if (
   strokeRange &&
   demoSvgHost &&
   demoStats &&
-  previewFrame &&
-  tileFamilySelect
+  previewFrame
 ) {
   presetSelect.addEventListener("change", () => void updateDemo());
   outlineStyleSelect.addEventListener("change", () => updateDisplay());
