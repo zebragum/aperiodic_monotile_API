@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 bl_info = {
     "name": "Aperiodic Monotile API Demo",
     "author": "Aperiodic Monotile API",
@@ -43,17 +44,14 @@ def _download_file(url: str, path: Path) -> None:
 
 def _mask_body(settings: bpy.types.PropertyGroup) -> dict:
     if settings.shape == "CIRCLE":
-        return {"type": "circle", "center": [0, 0], "radius": settings.size / 2.0}
+        return {"type": "circle", "radius": settings.size / 2.0}
     if settings.shape == "RECTANGLE":
         width = settings.size
         height = settings.size / 2.25
-        return {
-            "type": "rectangle",
-            "bounds": {"xmin": -width / 2.0, "ymin": -height / 2.0, "xmax": width / 2.0, "ymax": height / 2.0},
-        }
+        return {"type": "rectangle", "width": width, "height": height}
     if settings.shape == "TRIANGLE":
-        return {"type": "triangle", "center": [0, 0], "side_length": settings.size}
-    return {"type": "square", "center": [0, 0], "half_side": settings.size / 2.0}
+        return {"type": "triangle", "side_length": settings.size}
+    return {"type": "square", "half_side": settings.size / 2.0}
 
 
 class MonotileSettings(bpy.types.PropertyGroup):
@@ -100,8 +98,6 @@ class MONOTILE_OT_generate_svg(bpy.types.Operator):
 
         body = {
             "scale": 1,
-            "coverage_half_extent": max(settings.size, 80.0),
-            "retention": "clip",
             "formats": ["svg"],
             "svg_pixel_target": int(settings.pixel_target),
             "svg_margin": 0,

@@ -32,17 +32,23 @@ Open `http://127.0.0.1:8000/docs` for OpenAPI.
 | `svg` | Vector tools (Illustrator, Inkscape) | Auto-downgrades to STL+JSON above `svg_max_tiles_hard` unless `force_svg_large=true` |
 | `csv` | CSV importers, Blender drivers | Columns: `id,tx,ty,rotation_deg,scale,patch_version,seed,tile_family,label` |
 | `json` | Pipeline metadata + per-tile transforms | Mirrors CSV with extra context |
-| `stl` | Printing or boolean ops | Combined mesh below `stl_tile_instancing_floor`; otherwise prototile + manifest |
+| `stl` | Printing or boolean ops | Whole-panel mesh output |
+| `stl_zip` / `obj_zip` | Independent tile objects | One movable/exportable file per tile in a ZIP archive |
 | `glb` | Three.js / Babylon / glTF-Transform | Single prototile + `EXT_mesh_gpu_instancing` |
 | `instance_json` | Custom instancers (USD, Houdini, custom shaders) | 4×4 row lists per instance |
 | `png` | Raster previews (requires `[png]` extra) | Bounded by `png_max_pixels` |
+| `jpg` / `jpeg` | Raster previews (requires `[png]` extra) | Uses JPEG quality options |
+
+Geometry clipping uses Shapely internally. API users do not install or call Shapely; hosted requests just send masks
+and receive artifacts. The Docker image used on Render installs the Cairo/Pillow raster stack, so JPG/PNG exports are
+available in production even if a local Windows test skips when Cairo is not installed.
 
 ## Curl smoke
 
 ```powershell
 curl -X POST http://127.0.0.1:8000/v1/patch ^
   -H "Content-Type: application/json" ^
-  -d "{\"formats\":[\"svg\",\"csv\",\"json\",\"stl\",\"instance_json\"],\"coverage_half_extent\":2.75,\"scale\":1,\"rotation_deg\":0,\"mask\":{\"type\":\"circle\",\"radius\":120,\"center\":[0,0]}}"
+  -d "{\"formats\":[\"png\"],\"png_width_px\":1200,\"png_height_px\":1200,\"mask\":{\"type\":\"circle\",\"radius\":120}}"
 ```
 
 For a pixel-exact SVG tile patch, keep geometry in canonical units and set the
@@ -52,8 +58,7 @@ square mask:
 ```json
 {
   "scale": 8,
-  "mask": {"type": "square", "center": [0, 0], "half_side": 6.25},
-  "retention": "clip",
+  "mask": {"type": "square", "half_side": 6.25},
   "formats": ["svg"],
   "svg_pixel_target": 100,
   "svg_margin": 0,
@@ -72,8 +77,7 @@ export setting; it does not change the raw geometry unless you also set
 ```json
 {
   "scale": 1,
-  "mask": {"type": "circle", "center": [0, 0], "radius": 50},
-  "retention": "clip",
+  "mask": {"type": "circle", "radius": 50},
   "formats": ["svg"],
   "svg_pixel_target": 1000,
   "svg_margin": 0,
@@ -86,11 +90,7 @@ export setting; it does not change the raw geometry unless you also set
 ```json
 {
   "scale": 1,
-  "mask": {
-    "type": "rectangle",
-    "bounds": {"xmin": -45, "ymin": -20, "xmax": 45, "ymax": 20}
-  },
-  "retention": "clip",
+  "mask": {"type": "rectangle", "width": 90, "height": 40},
   "formats": ["svg"],
   "svg_pixel_target": 900,
   "svg_margin": 0,
@@ -103,8 +103,7 @@ export setting; it does not change the raw geometry unless you also set
 ```json
 {
   "scale": 1,
-  "mask": {"type": "triangle", "center": [0, 0], "side_length": 50},
-  "retention": "clip",
+  "mask": {"type": "triangle", "side_length": 50},
   "formats": ["svg"],
   "svg_pixel_target": 500,
   "svg_margin": 0,

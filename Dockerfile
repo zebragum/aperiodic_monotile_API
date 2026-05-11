@@ -102,7 +102,16 @@ case "${1:-api}" in
     ;;
   api-worker)
     bootstrap_atlas
-    spectre-patch-worker &
+    # Worker auto-respawn: a single bad job should not take the API offline.
+    # Render restarts the container if the API exits, but the worker is just a
+    # child process; we want it to come back without losing in-flight HTTP.
+    (
+      while true; do
+        spectre-patch-worker || true
+        echo "spectre-patch-worker exited; respawning in 5s" >&2
+        sleep 5
+      done
+    ) &
     worker_pid="$!"
     UVICORN_LOG_LEVEL="$(printf '%s' "${SPECTRE_PATCH_LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
     uvicorn spectre_patch.api.main:app \
@@ -114,13 +123,35 @@ case "${1:-api}" in
       --log-level "$UVICORN_LOG_LEVEL" &
     api_pid="$!"
 
+    GC_INTERVAL_SEC="${SPECTRE_PATCH_GC_INTERVAL_SEC:-21600}"
+    GC_OLDER_THAN_HOURS="${SPECTRE_PATCH_GC_OLDER_THAN_HOURS:-24}"
+    if [ "${GC_INTERVAL_SEC}" -gt 0 ] 2>/dev/null; then
+      (
+        # First pass sleeps so we don't double-up at boot if a deploy restarts
+        # the container near the previous GC window. After that, run every
+        # SPECTRE_PATCH_GC_INTERVAL_SEC seconds. Failures are non-fatal so a
+        # transient disk error never takes down API or worker.
+        sleep "${SPECTRE_PATCH_GC_FIRST_DELAY_SEC:-300}"
+        while true; do
+          spectre-patch-gc --older-than-hours "${GC_OLDER_THAN_HOURS}" || true
+          sleep "${GC_INTERVAL_SEC}"
+        done
+      ) &
+      gc_pid="$!"
+    else
+      gc_pid=""
+    fi
+
     terminate() {
-      kill "$api_pid" "$worker_pid" 2>/dev/null || true
-      wait "$api_pid" "$worker_pid" 2>/dev/null || true
+      kill "$api_pid" "$worker_pid" ${gc_pid:-} 2>/dev/null || true
+      wait "$api_pid" "$worker_pid" ${gc_pid:-} 2>/dev/null || true
     }
     trap 'terminate; exit 0' INT TERM
 
-    while kill -0 "$api_pid" 2>/dev/null && kill -0 "$worker_pid" 2>/dev/null; do
+    # We monitor the API process specifically: if the worker supervisor dies
+    # (e.g., signal during shutdown) we still want to keep serving. Render
+    # restarts the container if and only if Uvicorn exits.
+    while kill -0 "$api_pid" 2>/dev/null; do
       sleep 2
     done
 

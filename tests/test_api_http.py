@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import os
 import tempfile
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -195,12 +196,11 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
                     "tile_family": "spectre_tile_1_1",
                     "scale": 1.0,
                     "rotation_deg": 0.0,
-                    "coverage_half_extent": 1.5,
                     "substitution_iterations": 2,
                     "formats": ["jpg"],
                     "jpg_width_px": 256,
                     "jpg_height_px": 256,
-                    "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                    "mask": {"type": "square", "half_side": 8.0},
                 }
                 r = client.post(
                     "/v1/patch",
@@ -228,13 +228,33 @@ def test_free_tier_patch_rejects_vector_formats():
             body = {
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
-                "coverage_half_extent": 1.5,
                 "substitution_iterations": 2,
                 "formats": ["svg"],
-                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                "mask": {"type": "square", "half_side": 8.0},
             }
             r = client.post("/v1/patch", json=body)
             assert r.status_code == 422
+
+
+def test_public_patch_request_rejects_internal_geometry_knobs():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            base = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "substitution_iterations": 2,
+                "formats": ["jpg"],
+                "jpg_width_px": 240,
+                "jpg_height_px": 240,
+                "mask": {"type": "square", "half_side": 8.0},
+            }
+            for patch in (
+                {"retention": "centroid"},
+                {"coverage_half_extent": 1.5},
+                {"mask": {"type": "square", "center": [0, 0], "half_side": 8.0}},
+            ):
+                r = client.post("/v1/patch", json={**base, **patch})
+                assert r.status_code == 422
 
 
 @pytest.mark.skipif(
@@ -247,12 +267,11 @@ def test_free_tier_patch_jpeg_smoke():
             body = {
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
-                "coverage_half_extent": 1.5,
                 "substitution_iterations": 2,
                 "formats": ["jpg"],
                 "jpg_width_px": 240,
                 "jpg_height_px": 240,
-                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                "mask": {"type": "square", "half_side": 8.0},
             }
             r = client.post("/v1/patch", json=body)
             assert r.status_code == 200
@@ -283,16 +302,55 @@ def test_database_api_key_authenticates_paid_tier():
                 body = {
                     "tile_family": "spectre_tile_1_1",
                     "scale": 1.0,
-                    "coverage_half_extent": 1.5,
                     "substitution_iterations": 2,
                     "formats": ["csv"],
-                    "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                    "mask": {"type": "square", "half_side": 8.0},
                 }
                 r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
                 assert r.status_code == 200
                 assert r.json()["tier"] == "tier_solo"
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
+
+
+def test_paid_patch_writes_independent_3d_zip_artifacts():
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(Path(tmp))
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="zip-3d")
+            body = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "substitution_iterations": 2,
+                "formats": ["stl_zip", "obj_zip"],
+                "stl_extrusion_mm": 1.25,
+                "mask": {"type": "square", "half_side": 8.0},
+            }
+            r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
+            assert r.status_code == 200, r.text
+            job_id = r.json()["job_id"]
+            row = {}
+            for _ in range(40):
+                row = client.get(f"/v1/jobs/{job_id}").json()
+                if row["status"] in ("completed", "failed"):
+                    break
+            assert row["status"] == "completed", row
+            urls = client.get(f"/v1/jobs/{job_id}/urls").json()
+            assert "tiles_stl.zip" in urls["urls"]
+            assert "tiles_obj.zip" in urls["urls"]
+
+            art = Path(tmp) / "jobs" / job_id
+            with zipfile.ZipFile(art / "tiles_stl.zip") as stl_zip:
+                names = stl_zip.namelist()
+                assert "manifest.json" in names
+                assert any(name.startswith("tiles/") and name.endswith(".stl") for name in names)
+            with zipfile.ZipFile(art / "tiles_obj.zip") as obj_zip:
+                names = obj_zip.namelist()
+                obj_name = next(name for name in names if name.startswith("tiles/") and name.endswith(".obj"))
+                assert "manifest.json" in names
+                assert b"\nv " in obj_zip.read(obj_name)
 
 
 def test_billing_endpoints_report_disabled_without_stripe_config():
@@ -360,10 +418,9 @@ def test_database_api_key_expiry_blocks_authentication():
             body = {
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
-                "coverage_half_extent": 1.5,
                 "substitution_iterations": 2,
                 "formats": ["svg"],
-                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                "mask": {"type": "square", "half_side": 8.0},
             }
             r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
             assert r.status_code == 422
@@ -471,10 +528,9 @@ def test_idempotency_dedupes_jobs():
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
                 "rotation_deg": 0.0,
-                "coverage_half_extent": 1.5,
                 "substitution_iterations": 2,
                 "formats": ["csv"],
-                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                "mask": {"type": "square", "half_side": 8.0},
             }
             h = {"Idempotency-Key": "abc-123", "X-API-Key": api_key}
             r1 = client.post("/v1/patch", json=body, headers=h)
@@ -495,10 +551,9 @@ def test_signed_url_bundle_after_completion():
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
                 "rotation_deg": 0.0,
-                "coverage_half_extent": 1.5,
                 "substitution_iterations": 2,
                 "formats": ["csv", "json"],
-                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+                "mask": {"type": "square", "half_side": 8.0},
             }
             r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
             assert r.status_code == 200
@@ -522,28 +577,19 @@ def test_shape_svg_smoke_requests_complete():
             "name": "100u-circle-1000px",
             "scale": 1.0,
             "svg_pixel_target": 1000,
-            "mask": {"type": "circle", "center": [0, 0], "radius": 50.0},
+            "mask": {"type": "circle", "radius": 50.0},
         },
         {
             "name": "9x4-rectangle",
             "scale": 1.0,
             "svg_pixel_target": 900,
-            "mask": {
-                "type": "rectangle",
-                "bounds": {"xmin": -45.0, "ymin": -20.0, "xmax": 45.0, "ymax": 20.0},
-            },
-        },
-        {
-            "name": "9x4-rectangle-center-size",
-            "scale": 1.0,
-            "svg_pixel_target": 900,
-            "mask": {"type": "rectangle", "center": [0.0, 0.0], "width": 90.0, "height": 40.0},
+            "mask": {"type": "rectangle", "width": 90.0, "height": 40.0},
         },
         {
             "name": "50u-triangle",
             "scale": 1.0,
             "svg_pixel_target": 500,
-            "mask": {"type": "triangle", "center": [0, 0], "side_length": 50.0},
+            "mask": {"type": "triangle", "side_length": 50.0},
         },
     ]
     with tempfile.TemporaryDirectory() as tmp:
@@ -556,10 +602,8 @@ def test_shape_svg_smoke_requests_complete():
                 body = {
                     "tile_family": "spectre_tile_1_1",
                     "scale": case["scale"],
-                    "coverage_half_extent": 80.0,
                     "substitution_iterations": 4,
                     "formats": ["svg"],
-                    "retention": "clip",
                     "svg_compact": True,
                     "svg_fill": "#d94738",
                     "svg_stroke": "#1b1b1b",

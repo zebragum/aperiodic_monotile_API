@@ -15,13 +15,13 @@
         "type": "object"
       },
       "PatchRequest": {
+        "additionalProperties": false,
+        "description": "The ``POST /v1/patch`` request body.",
         "properties": {
-          "coverage_half_extent": {
-            "default": 4.5,
-            "description": "Half side length of canonical axis-aligned square that must be fully covered before masking.",
-            "exclusiveMinimum": 0.0,
-            "title": "Coverage Half Extent",
-            "type": "number"
+          "force_substitution": {
+            "default": false,
+            "title": "Force Substitution",
+            "type": "boolean"
           },
           "force_svg_large": {
             "default": false,
@@ -35,6 +35,45 @@
             "title": "Formats",
             "type": "array"
           },
+          "jpg_height_px": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 32000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jpg Height Px"
+          },
+          "jpg_quality": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 40.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jpg Quality"
+          },
+          "jpg_width_px": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 32000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jpg Width Px"
+          },
           "mask": {
             "additionalProperties": true,
             "title": "Mask",
@@ -43,6 +82,7 @@
           "patch_version": {
             "anyOf": [
               {
+                "maxLength": 64,
                 "type": "string"
               },
               {
@@ -54,6 +94,8 @@
           "png_height_px": {
             "anyOf": [
               {
+                "exclusiveMinimum": 0.0,
+                "maximum": 32000.0,
                 "type": "integer"
               },
               {
@@ -65,6 +107,8 @@
           "png_width_px": {
             "anyOf": [
               {
+                "exclusiveMinimum": 0.0,
+                "maximum": 32000.0,
                 "type": "integer"
               },
               {
@@ -73,30 +117,24 @@
             ],
             "title": "Png Width Px"
           },
-          "retention": {
-            "default": "centroid",
-            "enum": [
-              "centroid",
-              "intersection",
-              "clip"
-            ],
-            "title": "Retention",
-            "type": "string"
-          },
           "rotation_deg": {
             "default": 0.0,
+            "maximum": 3600.0,
+            "minimum": -3600.0,
             "title": "Rotation Deg",
             "type": "number"
           },
           "scale": {
             "default": 1.0,
             "exclusiveMinimum": 0.0,
+            "maximum": 1000000.0,
             "title": "Scale",
             "type": "number"
           },
           "seed": {
             "anyOf": [
               {
+                "maxLength": 128,
                 "type": "string"
               },
               {
@@ -108,12 +146,14 @@
           "stl_extrusion_mm": {
             "default": 1.0,
             "exclusiveMinimum": 0.0,
+            "maximum": 10000.0,
             "title": "Stl Extrusion Mm",
             "type": "number"
           },
           "substitution_iterations": {
             "anyOf": [
               {
+                "maximum": 12.0,
                 "minimum": 0.0,
                 "type": "integer"
               },
@@ -123,6 +163,11 @@
             ],
             "title": "Substitution Iterations"
           },
+          "svg_compact": {
+            "default": false,
+            "title": "Svg Compact",
+            "type": "boolean"
+          },
           "svg_deterministic_palette": {
             "default": false,
             "title": "Svg Deterministic Palette",
@@ -131,6 +176,7 @@
           "svg_fill": {
             "anyOf": [
               {
+                "maxLength": 32,
                 "type": "string"
               },
               {
@@ -138,6 +184,19 @@
               }
             ],
             "title": "Svg Fill"
+          },
+          "svg_margin": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Svg Margin"
           },
           "svg_opacity": {
             "anyOf": [
@@ -152,9 +211,23 @@
             ],
             "title": "Svg Opacity"
           },
+          "svg_pixel_target": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 32000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Svg Pixel Target"
+          },
           "svg_stroke": {
             "anyOf": [
               {
+                "maxLength": 32,
                 "type": "string"
               },
               {
@@ -166,6 +239,8 @@
           "svg_stroke_width": {
             "anyOf": [
               {
+                "maximum": 100.0,
+                "minimum": 0.0,
                 "type": "number"
               },
               {
@@ -182,11 +257,15 @@
           },
           "tx": {
             "default": 0.0,
+            "maximum": 1000000000.0,
+            "minimum": -1000000000.0,
             "title": "Tx",
             "type": "number"
           },
           "ty": {
             "default": 0.0,
+            "maximum": 1000000000.0,
+            "minimum": -1000000000.0,
             "title": "Ty",
             "type": "number"
           }
@@ -246,9 +325,121 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/v1/billing/checkout": {
+      "post": {
+        "description": "Start Stripe Checkout.\n\nBody JSON (optional unless defaulting): ``email``, ``plan`` \u2014 one of\n``day_pass``, ``solo_monthly``, ``solo_yearly``, ``teams_monthly``, ``teams_yearly``.\nOmitted ``plan`` defaults to ``solo_monthly`` (falls back to\n``stripe_price_id_studio`` when ``stripe_price_id_solo_monthly`` is unset).",
+        "operationId": "create_checkout_v1_billing_checkout_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Checkout V1 Billing Checkout Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Checkout",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/v1/billing/claim-key": {
+      "post": {
+        "operationId": "claim_checkout_key_v1_billing_claim_key_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Claim Checkout Key V1 Billing Claim Key Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Claim Checkout Key",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/v1/billing/status": {
+      "get": {
+        "operationId": "billing_status_v1_billing_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Billing Status V1 Billing Status Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Billing Status",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/v1/bug-reports": {
+      "post": {
+        "description": "Capture a customer bug report.\n\nBody JSON: ``summary`` (required, <= 240 chars), optional ``details``\n(<= 8000 chars), ``email``, ``request_id``, ``severity``, ``page_url``,\n``user_agent``. The endpoint is intentionally unauthenticated so docs\nand dashboards can submit on a customer's behalf; auth would just slow\npeople down when they're already frustrated.",
+        "operationId": "create_bug_report_v1_bug_reports_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Bug Report V1 Bug Reports Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Bug Report",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
     "/v1/capabilities": {
       "get": {
         "operationId": "caps_v1_capabilities_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -257,9 +448,22 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
-        "summary": "Caps"
+        "summary": "Caps",
+        "tags": [
+          "capabilities"
+        ]
       }
     },
     "/v1/downloads/{job_id}/{filename}": {
@@ -323,7 +527,10 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Signed Download"
+        "summary": "Signed Download",
+        "tags": [
+          "jobs"
+        ]
       }
     },
     "/v1/jobs/{job_id}": {
@@ -337,6 +544,22 @@
             "schema": {
               "title": "Job Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
             }
           }
         ],
@@ -360,7 +583,10 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Get Job"
+        "summary": "Get Job",
+        "tags": [
+          "jobs"
+        ]
       }
     },
     "/v1/jobs/{job_id}/urls": {
@@ -384,6 +610,22 @@
               "default": 900,
               "title": "Ttl Seconds",
               "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
             }
           }
         ],
@@ -411,7 +653,33 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Signed Url Bundle"
+        "summary": "Signed Url Bundle",
+        "tags": [
+          "jobs"
+        ]
+      }
+    },
+    "/v1/leads": {
+      "post": {
+        "operationId": "create_lead_v1_leads_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Lead V1 Leads Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Lead",
+        "tags": [
+          "billing"
+        ]
       }
     },
     "/v1/patch": {
@@ -485,13 +753,22 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Post Patch"
+        "summary": "Post Patch",
+        "tags": [
+          "jobs"
+        ]
       }
     }
   },
   "tags": [
     {
+      "name": "ops"
+    },
+    {
       "name": "capabilities"
+    },
+    {
+      "name": "billing"
     },
     {
       "name": "jobs"

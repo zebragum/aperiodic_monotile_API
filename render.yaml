@@ -45,6 +45,19 @@ services:
         value: info
       - key: UVICORN_WORKERS
         value: "1"
+      # In-container periodic GC. The cron runs alongside API + worker because
+      # Render disks attach to a single service, so a standalone cron service
+      # cannot see this disk. Set to 0 to disable.
+      - key: SPECTRE_PATCH_GC_INTERVAL_SEC
+        value: "21600"
+      - key: SPECTRE_PATCH_GC_OLDER_THAN_HOURS
+        value: "24"
+      - key: SPECTRE_PATCH_GC_FIRST_DELAY_SEC
+        value: "600"
+      # Support contact surfaced in error envelopes and bug reports. Override
+      # to point at a Linear/Sentry/email intake if you wire one up.
+      - key: SPECTRE_PATCH_SUPPORT_BUG_REPORT_URL
+        value: https://aperiodic-monotile-site.onrender.com/contact.html
       # Set this in the Render Dashboard after deploy:
       # {"free_xxx":"tier_free","day_xxx":"tier_day_pass","solo_xxx":"tier_solo","teams_xxx":"tier_teams"}
       - key: SPECTRE_PATCH_API_KEY_TIERS_JSON

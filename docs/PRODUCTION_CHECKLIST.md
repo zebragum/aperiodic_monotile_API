@@ -105,12 +105,12 @@ docker compose up -d --build
         -H "X-API-Key: $FREE_API_KEY" \
         -H "Idempotency-Key: smoke-001" \
         -d '{
-          "tile_family": "spectre_tile_1_1",
-          "scale": 1.0, "rotation_deg": 0.0,
-          "coverage_half_extent": 12,
-          "formats": ["svg", "csv"],
-          "retention": "centroid",
-          "mask": {"type": "circle", "center": [0,0], "radius": 12}
+          "formats": ["png", "jpg"],
+          "png_width_px": 512,
+          "png_height_px": 512,
+          "jpg_width_px": 512,
+          "jpg_height_px": 512,
+          "mask": {"type": "circle", "radius": 12}
         }'
       ```
       Poll `GET /v1/jobs/{id}` until `status: completed`, then bundle URLs:

@@ -29,11 +29,9 @@ def main() -> int:
     body = {
         "tile_family": "spectre_tile_1_1",
         "scale": 1.0, "rotation_deg": 0.0, "tx": 0.0, "ty": 0.0,
-        "coverage_half_extent": 1.5,
         "substitution_iterations": 3,
-        "formats": ["csv", "json"],
-        "retention": "centroid",
-        "mask": {"type": "circle", "center": [0.0, 0.0], "radius": 8.0},
+        "formats": ["csv", "json", "stl_zip", "obj_zip"],
+        "mask": {"type": "circle", "radius": 8.0},
     }
     job_id, _ = job_repo.enqueue_job(conn, "tier_solo", body)
     conn.close()

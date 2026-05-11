@@ -22,6 +22,7 @@ from spectre_patch.masking import (
     MaskSquare,
     MaskTriangle,
     RetentionMode,
+    mask_polygon,
 )
 
 
@@ -31,27 +32,33 @@ def coerce_mask(ms: dict):
         if "bounds" in ms and ms["bounds"] is not None:
             r = ms["bounds"]
             return MaskRect(float(r["xmin"]), float(r["ymin"]), float(r["xmax"]), float(r["ymax"]))
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         half_w, half_h = float(ms["width"]) / 2.0, float(ms["height"]) / 2.0
         return MaskRect(cx - half_w, cy - half_h, cx + half_w, cy + half_h)
     if mt == "square":
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         return MaskSquare((cx, cy), float(ms["half_side"]))
     if mt == "circle":
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         return MaskCircle((cx, cy), float(ms["radius"]))
     if mt in ("regular_hexagon", "hexagon"):
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         return MaskHexagon((cx, cy), float(ms["circumradius"]))
     if mt == "triangle":
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         return MaskTriangle(
             (cx, cy),
             float(ms["side_length"]),
             float(ms.get("rotation_deg", 90.0)),
         )
     if mt in ("rounded_rect", "rounded-rect"):
-        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        center = ms.get("center") or [0.0, 0.0]
+        cx, cy = float(center[0]), float(center[1])
         return MaskRoundedRect(
             (cx, cy),
             float(ms["width"]),
@@ -64,6 +71,16 @@ def coerce_mask(ms: dict):
 def _value_or_default(req: dict, key: str, default):
     value = req.get(key)
     return default if value is None else value
+
+
+def _coverage_half_extent_for(mask, requested: float | None) -> float:
+    if requested is not None:
+        return float(requested)
+    bounds = mask_polygon(mask).bounds
+    extent = max(abs(float(v)) for v in bounds)
+    # The enumerator needs enough source geometry beyond the requested crop to
+    # cover boundary-crossing tiles. Keep a small absolute floor for tiny masks.
+    return max(4.5, extent * 1.15 + 2.0)
 
 
 def run_patch_job(
@@ -84,16 +101,25 @@ def run_patch_job(
 
     try:
         mask = coerce_mask(req["mask"])
-        retention = RetentionMode(req.get("retention", "centroid"))
+        retention = RetentionMode(req.get("retention", "clip"))
+        coverage_half_extent = _coverage_half_extent_for(
+            mask, req.get("coverage_half_extent") or req.get("half_extent")
+        )
+        tile_family = str(req.get("tile_family") or "spectre_tile_1_1")
+        patch_version = str(req.get("patch_version") or PATCH_ENGINE_SEMVER)
+        scale = float(req.get("scale", 1.0))
+        rotation_deg = float(req.get("rotation_deg", 0.0))
+        tx = float(req.get("tx", 0.0))
+        ty = float(req.get("ty", 0.0))
         emitted, atlas_resolution = enumerate_emitted_or_atlas(
-            tile_family=req["tile_family"],
-            patch_version=str(req.get("patch_version") or PATCH_ENGINE_SEMVER),
+            tile_family=tile_family,
+            patch_version=patch_version,
             seed=req.get("seed"),
-            half_extent_cover=float(req.get("coverage_half_extent") or req.get("half_extent") or 4.5),
-            scale=float(req["scale"]),
-            tx=float(req.get("tx", 0.0)),
-            ty=float(req.get("ty", 0.0)),
-            rotation_deg=float(req.get("rotation_deg", 0.0)),
+            half_extent_cover=coverage_half_extent,
+            scale=scale,
+            tx=tx,
+            ty=ty,
+            rotation_deg=rotation_deg,
             mask=mask,
             retention=retention,
             limits=limits,
@@ -139,10 +165,10 @@ def run_patch_job(
             svg_text_for_rasters = svg_document(
                 emitted,
                 patch_meta=meta,
-                scale=float(req["scale"]),
-                rotation_deg=float(req.get("rotation_deg", 0.0)),
-                tx=float(req.get("tx", 0.0)),
-                ty=float(req.get("ty", 0.0)),
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
                 opts=svg_opts,
             )
             if len(svg_text_for_rasters) > limits.svg_max_chars:
@@ -161,8 +187,8 @@ def run_patch_job(
             (art / "tiles.csv").write_bytes(
                 tiles_to_csv_rows(
                     emitted,
-                    patch_version=str(req.get("patch_version") or PATCH_ENGINE_SEMVER),
-                    tile_family=req["tile_family"],
+                    patch_version=patch_version,
+                    tile_family=tile_family,
                     seed=req.get("seed"),
                 )
             )
@@ -171,8 +197,8 @@ def run_patch_job(
             (art / "tiles.json").write_bytes(
                 tiles_to_json_doc(
                     emitted,
-                    patch_version=str(req.get("patch_version") or PATCH_ENGINE_SEMVER),
-                    tile_family=req["tile_family"],
+                    patch_version=patch_version,
+                    tile_family=tile_family,
                     seed=req.get("seed"),
                     extra={"transform_convention": "World = client_similarity ⊗ generator"},
                 )
@@ -182,13 +208,13 @@ def run_patch_job(
 
         manifest_inst = stl_export.instancing_manifest_bytes(
             emitted,
-            patch_version=str(req.get("patch_version") or PATCH_ENGINE_SEMVER),
-            tile_family=req["tile_family"],
+            patch_version=patch_version,
+            tile_family=tile_family,
             seed=req.get("seed"),
-            scale=float(req["scale"]),
-            rotation_deg=float(req.get("rotation_deg", 0.0)),
-            tx=float(req.get("tx", 0.0)),
-            ty=float(req.get("ty", 0.0)),
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
         )
 
         if "stl" in fmts:
@@ -198,13 +224,37 @@ def run_patch_job(
             else:
                 facets = stl_export.combined_stl_facets(
                     emitted,
-                    scale=float(req["scale"]),
-                    rotation_deg=float(req.get("rotation_deg", 0.0)),
-                    tx=float(req.get("tx", 0.0)),
-                    ty=float(req.get("ty", 0.0)),
+                    scale=scale,
+                    rotation_deg=rotation_deg,
+                    tx=tx,
+                    ty=ty,
                     thickness_mm=thickness,
                 )
                 stl_export.write_binary_stl(str(art / "patch.stl"), facets)
+
+        if "stl_zip" in fmts:
+            stl_export.write_independent_tiles_zip(
+                art / "tiles_stl.zip",
+                emitted,
+                format_name="stl",
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
+                thickness_mm=thickness,
+            )
+
+        if "obj_zip" in fmts:
+            stl_export.write_independent_tiles_zip(
+                art / "tiles_obj.zip",
+                emitted,
+                format_name="obj",
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
+                thickness_mm=thickness,
+            )
 
         if "instance_json" in fmts and not (art / "spectre_instances.json").exists():
             (art / "spectre_instances.json").write_bytes(manifest_inst)
@@ -215,15 +265,15 @@ def run_patch_job(
             write_glb_instanced(
                 art / "patch.glb",
                 emitted,
-                scale=float(req["scale"]),
-                rotation_deg=float(req.get("rotation_deg", 0.0)),
-                tx=float(req.get("tx", 0.0)),
-                ty=float(req.get("ty", 0.0)),
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
                 thickness_mm=thickness,
                 patch_meta={
                     "patch_engine": PATCH_ENGINE_SEMVER,
-                    "tile_family": req["tile_family"],
-                    "patch_version": str(req.get("patch_version") or PATCH_ENGINE_SEMVER),
+                    "tile_family": tile_family,
+                    "patch_version": patch_version,
                     "seed": req.get("seed"),
                 },
             )

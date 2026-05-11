@@ -50,8 +50,9 @@
           <p class="eyebrow">Endpoint</p>
           <h2>POST /v1/patch</h2>
           <p>
-            Create a deterministic patch job. Use `Idempotency-Key` to safely
-            retry requests without creating duplicates.
+            Create a deterministic patch job from a mask and output formats. The backend assumes an
+            infinite Spectre tiling, clips it to your requested shape, and chooses the atlas/core depth
+            automatically.
           </p>
         </div>
         <pre class="code-card"><code>curl -X POST https://aperiodic-monotile-api.onrender.com/v1/patch \
@@ -59,13 +60,10 @@
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Idempotency-Key: demo-001" \
   -d '{
-    "scale": 1,
-    "mask": {"type": "circle", "center": [0, 0], "radius": 50},
-    "retention": "clip",
-    "formats": ["svg", "json"],
-    "svg_pixel_target": 1000,
-    "svg_margin": 0,
-    "svg_compact": true
+    "mask": {"type": "circle", "radius": 50},
+    "formats": ["svg", "png"],
+    "png_width_px": 1200,
+    "png_height_px": 1200
   }'</code></pre>
       </section>
 
@@ -73,56 +71,129 @@
         <div class="section-heading">
           <p class="eyebrow">Supported masks</p>
           <h2>Shape-first requests for practical design work.</h2>
+          <p>
+            Shape sizes are in canonical units. Masks are centered automatically, so the request only needs the shape
+            type and dimensions.
+          </p>
         </div>
         <div class="cards">
           <article class="card">
             <h3>Circle</h3>
-            <pre><code>{"type":"circle","center":[0,0],"radius":50}</code></pre>
+            <pre><code>{"type":"circle","radius":50}</code></pre>
           </article>
           <article class="card">
             <h3>Rectangle</h3>
-            <pre><code>{"type":"rectangle","center":[0,0],"width":90,"height":40}</code></pre>
+            <pre><code>{"type":"rectangle","width":90,"height":40}</code></pre>
           </article>
           <article class="card">
             <h3>Triangle</h3>
-            <pre><code>{"type":"triangle","center":[0,0],"side_length":50}</code></pre>
+            <pre><code>{"type":"triangle","side_length":50}</code></pre>
           </article>
           <article class="card">
             <h3>Square</h3>
-            <pre><code>{"type":"square","center":[0,0],"half_side":6.25}</code></pre>
+            <pre><code>{"type":"square","half_side":6.25}</code></pre>
           </article>
           <article class="card">
             <h3>Hexagon</h3>
-            <pre><code>{"type":"regular_hexagon","center":[0,0],"circumradius":50}</code></pre>
+            <pre><code>{"type":"regular_hexagon","circumradius":50}</code></pre>
           </article>
           <article class="card">
             <h3>Rounded rectangle</h3>
-            <pre><code>{"type":"rounded_rect","center":[0,0],"width":90,"height":40,"corner_radius":5}</code></pre>
+            <pre><code>{"type":"rounded_rect","width":90,"height":40,"corner_radius":5}</code></pre>
           </article>
         </div>
       </section>
 
       <section class="section">
         <div class="section-heading">
-          <p class="eyebrow">Retention modes</p>
-          <h2>Choose how the patch meets the boundary.</h2>
+          <p class="eyebrow">Boundary behavior</p>
+          <h2>Default to a fully tiled clipped panel.</h2>
           <p>
-            Use <code>clip</code> for finished panels and image fills, <code>centroid</code> for whole-tile kits,
-            and <code>intersection</code> when you need whole source tiles that touch the requested region.
+            The default launch behavior is <code>clip</code>: every tile that reaches the mask boundary is trimmed
+            exactly to the requested outline, so the output reads as a crop from a fully tiled infinite plane.
           </p>
         </div>
         <div class="cards">
           <article class="card">
-            <h3>clip</h3>
+            <h3>Clipped edge tiles</h3>
             <p>Trims edge tiles to the mask so the exported outline lands exactly where you asked.</p>
           </article>
           <article class="card">
-            <h3>centroid</h3>
-            <p>Keeps complete tiles whose centers are inside the mask. Useful when pieces must remain full tiles.</p>
+            <h3>Whole-tile modes</h3>
+            <p>Whole-tile modes can remain internal or advanced. Most users should not need to think about them.</p>
           </article>
           <article class="card">
-            <h3>intersection</h3>
-            <p>Keeps complete tiles that overlap the mask at all. Useful for analysis or post-processing.</p>
+            <h3>Future polygons</h3>
+            <p>Arbitrary polygons and Spectre-shaped masks are feasible, but they should ship with validation and simple examples.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Color and labels</p>
+          <h2>White tiles and black strokes by default. Labels when you want control.</h2>
+          <p>
+            Each emitted tile already carries a label such as <code>Gamma</code> or <code>Psi</code>. That makes
+            label-driven palettes possible: color one tile class, hide another, or make only one class opaque.
+          </p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Default</h3>
+            <p>White fill, black stroke, fully opaque. Good for fabrication, CAD import, and clean previews.</p>
+          </article>
+          <article class="card">
+            <h3>Deterministic palette</h3>
+            <p>Current option: stable per-tile colors generated from tile IDs. Useful for debugging and visual variety.</p>
+          </article>
+          <article class="card">
+            <h3>Palette by label</h3>
+            <p>Planned option: assign fill, stroke, and opacity by tile label, with <code>*</code> as the default fallback.</p>
+          </article>
+        </div>
+        <pre class="code-card"><code>{
+  "style": {
+    "fill": "#ffffff",
+    "stroke": "#000000",
+    "palette_by_label": {
+      "Gamma": {"fill": "#ff6600", "opacity": 1},
+      "Psi": {"fill": "#3366ff", "opacity": 0.25},
+      "*": {"fill": "#ffffff", "opacity": 1}
+    }
+  }
+}</code></pre>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Outputs</p>
+          <h2>Choose preview images, vectors, data, or 3D scene files.</h2>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>JPG / PNG</h3>
+            <p>Hosted raster previews. Render includes CairoSVG and Pillow, so users can request image files directly from the API.</p>
+          </article>
+          <article class="card">
+            <h3>SVG / CSV / JSON</h3>
+            <p>SVG for design tools; CSV/JSON when your own pipeline needs tile IDs, labels, and transforms.</p>
+          </article>
+          <article class="card">
+            <h3>GLB</h3>
+            <p>Efficient instanced 3D scene: one prototile mesh plus per-tile transforms. Best for Three.js, Blender, and realtime scenes.</p>
+          </article>
+          <article class="card">
+            <h3>STL</h3>
+            <p>Fabrication mesh output. Best when the tiling is treated as one locked panel or printable surface.</p>
+          </article>
+          <article class="card">
+            <h3>STL_ZIP / OBJ_ZIP</h3>
+            <p>Independent-tile exports: one movable object/file per tile, clearly separate from whole-panel mesh output.</p>
+          </article>
+          <article class="card">
+            <h3>instance_json</h3>
+            <p>Lightweight transform manifest for custom importers, USD/Houdini workflows, and scripts that instantiate tiles themselves.</p>
           </article>
         </div>
       </section>
@@ -176,8 +247,36 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
 
     <footer class="footer">
       <p>Documentation for the Aperiodic Monotile API.</p>
-      <p><a href="index.html">Home</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a></p>
+      <p><a href="index.html">Home</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a> · <button type="button" id="bugReportTrigger" class="button-link">Report a bug</button></p>
     </footer>
+
+    <dialog id="bugReportDialog" class="dialog">
+      <form id="bugReportForm" method="dialog" class="dialog-form">
+        <h3>Report a bug</h3>
+        <p class="dialog-help">If you saw an error, this form auto-attaches the last <code>request_id</code> we returned. Add anything that would help us reproduce it.</p>
+        <label>
+          <span>Summary</span>
+          <input type="text" name="summary" maxlength="240" required>
+        </label>
+        <label>
+          <span>What happened?</span>
+          <textarea name="details" rows="5" maxlength="8000"></textarea>
+        </label>
+        <label>
+          <span>Email (optional, so we can follow up)</span>
+          <input type="email" name="email" maxlength="160">
+        </label>
+        <input type="hidden" name="request_id">
+        <input type="hidden" name="severity" value="user_report">
+        <p class="dialog-help" id="bugReportRidLine"></p>
+        <div class="dialog-actions">
+          <button type="button" id="bugReportCancel" class="button secondary">Cancel</button>
+          <button type="submit" class="button" id="bugReportSubmit">Send report</button>
+        </div>
+        <p id="bugReportStatus" class="dialog-status"></p>
+      </form>
+    </dialog>
+
     <script>
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get("session_id");
@@ -212,6 +311,134 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         }
       }
       claimKey();
+
+      const API_BASE = "https://aperiodic-monotile-api.onrender.com";
+      const BUG_STORE_KEY = "monotile.bugReport.draft.v1";
+      const RID_STORE_KEY = "monotile.lastRequestId.v1";
+
+      function rememberRequestId(rid) {
+        if (!rid) return;
+        try { sessionStorage.setItem(RID_STORE_KEY, rid); } catch (_) { /* private mode */ }
+      }
+
+      // Wrap fetch so any X-Request-ID surfaced by the API gets stashed for the
+      // bug report form. This means the most recent failure already has the
+      // correct request_id prefilled, with zero copy/paste required.
+      const originalFetch = window.fetch.bind(window);
+      window.fetch = async function patchedFetch(input, init) {
+        const response = await originalFetch(input, init);
+        const rid = response.headers && response.headers.get && response.headers.get("X-Request-ID");
+        if (rid) rememberRequestId(rid);
+        return response;
+      };
+
+      const bugDialog = document.querySelector("#bugReportDialog");
+      const bugForm = document.querySelector("#bugReportForm");
+      const bugTrigger = document.querySelector("#bugReportTrigger");
+      const bugCancel = document.querySelector("#bugReportCancel");
+      const bugStatus = document.querySelector("#bugReportStatus");
+      const bugRidLine = document.querySelector("#bugReportRidLine");
+
+      function loadDraft() {
+        try {
+          const raw = localStorage.getItem(BUG_STORE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function saveDraft() {
+        if (!bugForm) return;
+        const data = new FormData(bugForm);
+        try {
+          localStorage.setItem(BUG_STORE_KEY, JSON.stringify({
+            summary: data.get("summary") || "",
+            details: data.get("details") || "",
+            email: data.get("email") || ""
+          }));
+        } catch (_) { /* ignore */ }
+      }
+
+      function clearDraft() {
+        try { localStorage.removeItem(BUG_STORE_KEY); } catch (_) { /* ignore */ }
+      }
+
+      function openBugDialog() {
+        if (!bugDialog || !bugForm) return;
+        const draft = loadDraft();
+        if (draft) {
+          bugForm.querySelector("[name=summary]").value = draft.summary || "";
+          bugForm.querySelector("[name=details]").value = draft.details || "";
+          bugForm.querySelector("[name=email]").value = draft.email || "";
+        }
+        let rid = "";
+        try { rid = sessionStorage.getItem(RID_STORE_KEY) || ""; } catch (_) { /* ignore */ }
+        bugForm.querySelector("[name=request_id]").value = rid;
+        bugRidLine.textContent = rid
+          ? `request_id ${rid} attached automatically.`
+          : "No request_id captured yet. That's OK — describe the steps to reproduce.";
+        bugStatus.textContent = "";
+        if (typeof bugDialog.showModal === "function") {
+          bugDialog.showModal();
+        } else {
+          bugDialog.setAttribute("open", "open");
+        }
+      }
+
+      function closeBugDialog() {
+        if (!bugDialog) return;
+        if (typeof bugDialog.close === "function") {
+          bugDialog.close();
+        } else {
+          bugDialog.removeAttribute("open");
+        }
+      }
+
+      if (bugTrigger) bugTrigger.addEventListener("click", openBugDialog);
+      if (bugCancel) bugCancel.addEventListener("click", () => { saveDraft(); closeBugDialog(); });
+
+      if (bugForm) {
+        bugForm.addEventListener("input", saveDraft);
+        bugForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const data = new FormData(bugForm);
+          const payload = {
+            summary: (data.get("summary") || "").toString().trim(),
+            details: (data.get("details") || "").toString().trim(),
+            email: (data.get("email") || "").toString().trim(),
+            request_id: (data.get("request_id") || "").toString().trim(),
+            severity: "user_report",
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+          };
+          if (!payload.summary) {
+            bugStatus.textContent = "Summary is required.";
+            return;
+          }
+          bugStatus.textContent = "Sending report...";
+          try {
+            const response = await fetch(`${API_BASE}/v1/bug-reports`, {
+              method: "POST",
+              headers: {"Content-Type": "application/json"},
+              body: JSON.stringify(payload)
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              const friendly = (body && body.error && body.error.message) || `HTTP ${response.status}`;
+              bugStatus.textContent = `Could not send report (${friendly}). Try email: support@aperiodic-monotile.com.`;
+              return;
+            }
+            bugStatus.textContent = `Thanks — bug_id ${body.bug_id} received.`;
+            clearDraft();
+            setTimeout(closeBugDialog, 1500);
+          } catch (err) {
+            bugStatus.textContent = "Network error. Please try again or email support@aperiodic-monotile.com.";
+            console.error(err);
+          }
+        });
+      }
     </script>
   </body>
 </html>

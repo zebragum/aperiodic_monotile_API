@@ -71,15 +71,13 @@ def main() -> int:
     print(f"smoke: capabilities tier={caps.get('tier')} formats={caps.get('supported_formats')}")
 
     body = {
-        "tile_family": "spectre_tile_1_1",
-        "scale": 1.0,
-        "coverage_half_extent": 16.0,
-        "substitution_iterations": 3,
-        "formats": ["svg", "png"],
-        "retention": "clip",
-        "mask": {"type": "circle", "center": [0, 0], "radius": 16.0},
+        "formats": ["png", "jpg"],
+        "mask": {"type": "circle", "radius": 16.0},
         "png_width_px": 512,
         "png_height_px": 512,
+        "jpg_width_px": 512,
+        "jpg_height_px": 512,
+        "jpg_quality": 90,
     }
     job = _json("POST", f"{base}/v1/patch", api_key=api_key, body=body)
     job_id = job["job_id"]
@@ -98,12 +96,15 @@ def main() -> int:
         raise RuntimeError(f"job did not complete: {final}")
 
     urls = _json("GET", f"{base}/v1/jobs/{job_id}/urls?ttl_seconds=300", api_key=api_key)
-    rel_url = next(iter(urls["urls"].values()))
-    download_url = urllib.parse.urljoin(base, rel_url)
-    status, artifact = _request("GET", download_url, api_key=api_key, timeout=60.0)
-    if status != 200 or len(artifact) < 100:
-        raise RuntimeError(f"artifact download failed HTTP {status} bytes={len(artifact)}")
-    print(f"smoke: downloaded artifact bytes={len(artifact)}")
+    for filename in ("patch.png", "patch.jpg"):
+        rel_url = urls["urls"].get(filename)
+        if not rel_url:
+            raise RuntimeError(f"missing expected raster artifact: {filename}; urls={urls}")
+        download_url = urllib.parse.urljoin(base, rel_url)
+        status, artifact = _request("GET", download_url, api_key=api_key, timeout=60.0)
+        if status != 200 or len(artifact) < 100:
+            raise RuntimeError(f"{filename} download failed HTTP {status} bytes={len(artifact)}")
+        print(f"smoke: downloaded {filename} bytes={len(artifact)}")
     print("smoke: ok")
     return 0
 

@@ -16,66 +16,36 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 # ---------------------------------------------------------- masks ----
 class MaskRectangleBody(BaseModel):
-    """Axis-aligned rectangle in canonical coordinates."""
+    """Axis-aligned rectangle centered at the canonical origin."""
 
     model_config = ConfigDict(extra="forbid")
 
     type: Literal["rectangle"] = "rectangle"
-    bounds: dict | None = None  # {xmin, ymin, xmax, ymax}
-    center: list[float] | None = Field(default=None, min_length=2, max_length=2)
-    width: Annotated[float, Field(gt=0, le=1.0e7)] | None = None
-    height: Annotated[float, Field(gt=0, le=1.0e7)] | None = None
-
-    @field_validator("bounds")
-    @classmethod
-    def _check_bounds(cls, v: dict | None) -> dict | None:
-        if v is None:
-            return v
-        for k in ("xmin", "ymin", "xmax", "ymax"):
-            if k not in v:
-                raise ValueError(f"rectangle.bounds missing key: {k}")
-            if not isinstance(v[k], (int, float)):
-                raise ValueError(f"rectangle.bounds.{k} must be a number")
-        if v["xmin"] >= v["xmax"] or v["ymin"] >= v["ymax"]:
-            raise ValueError("rectangle.bounds must satisfy xmin<xmax, ymin<ymax")
-        return v
-
-    @model_validator(mode="after")
-    def _check_rectangle_shape(self) -> "MaskRectangleBody":
-        has_bounds = self.bounds is not None
-        has_center_size = self.center is not None and self.width is not None and self.height is not None
-        if has_bounds == has_center_size:
-            raise ValueError(
-                "rectangle requires exactly one of bounds or center+width+height"
-            )
-        return self
+    width: Annotated[float, Field(gt=0, le=1.0e7)]
+    height: Annotated[float, Field(gt=0, le=1.0e7)]
 
 
 class MaskSquareBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["square"] = "square"
-    center: list[float] = Field(..., min_length=2, max_length=2)
     half_side: Annotated[float, Field(gt=0, le=1.0e7)]
 
 
 class MaskCircleBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["circle"] = "circle"
-    center: list[float] = Field(..., min_length=2, max_length=2)
     radius: Annotated[float, Field(gt=0, le=1.0e7)]
 
 
 class MaskHexagonBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["regular_hexagon", "hexagon"] = "regular_hexagon"
-    center: list[float] = Field(..., min_length=2, max_length=2)
     circumradius: Annotated[float, Field(gt=0, le=1.0e7)]
 
 
 class MaskTriangleBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["triangle"] = "triangle"
-    center: list[float] = Field(..., min_length=2, max_length=2)
     side_length: Annotated[float, Field(gt=0, le=1.0e7)]
     rotation_deg: Annotated[float, Field(ge=-3600.0, le=3600.0)] = 90.0
 
@@ -83,13 +53,25 @@ class MaskTriangleBody(BaseModel):
 class MaskRoundedRectBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["rounded_rect", "rounded-rect"] = "rounded_rect"
-    center: list[float] = Field(..., min_length=2, max_length=2)
     width: Annotated[float, Field(gt=0, le=1.0e7)]
     height: Annotated[float, Field(gt=0, le=1.0e7)]
     corner_radius: Annotated[float, Field(ge=0, le=1.0e7)] = 0.0
 
 
-_SUPPORTED_FORMATS = {"svg", "svgz", "csv", "json", "stl", "glb", "instance_json", "png", "jpg", "jpeg"}
+_SUPPORTED_FORMATS = {
+    "svg",
+    "svgz",
+    "csv",
+    "json",
+    "stl",
+    "stl_zip",
+    "obj_zip",
+    "glb",
+    "instance_json",
+    "png",
+    "jpg",
+    "jpeg",
+}
 
 # ------------------------------------------------------- request ----
 class PatchRequest(BaseModel):
@@ -107,10 +89,7 @@ class PatchRequest(BaseModel):
     ty: Annotated[float, Field(ge=-1.0e9, le=1.0e9)] = 0.0
     rotation_deg: Annotated[float, Field(ge=-3600.0, le=3600.0)] = 0.0
 
-    coverage_half_extent: Annotated[float, Field(gt=0.0, le=2.0e7)] = 4.5
     substitution_iterations: Annotated[int, Field(ge=0, le=12)] | None = None
-
-    retention: Literal["centroid", "intersection", "clip"] = "centroid"
 
     formats: list[str] = Field(default_factory=lambda: ["svg", "csv", "json"])
     force_substitution: bool = False

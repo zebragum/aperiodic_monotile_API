@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import json
+import re
 import struct
+import zipfile
+from pathlib import Path
 
 import numpy as np
 import triangle as tr_lib
+from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
+from shapely.geometry.base import BaseGeometry
 
 from spectre_patch.core.spectre_t11 import PROTOTILE_RING
-from spectre_patch.geometry_affine import compose_world_affine
+from spectre_patch.geometry_affine import compose_world_affine, similarity_client
 from spectre_patch.patch_engine import EmittedTile
 
 
@@ -19,6 +24,46 @@ def _triangulate_cap(xy: np.ndarray) -> np.ndarray:
     segs = np.array([[i, (i + 1) % n] for i in range(n)], dtype=np.int32)
     result = tr_lib.triangulate({"vertices": verts, "segments": segs}, "p")
     return np.asarray(result["triangles"], dtype=np.int32)
+
+
+def _iter_polygons(geom: BaseGeometry) -> list[Polygon]:
+    if geom.is_empty:
+        return []
+    if isinstance(geom, Polygon):
+        return [geom]
+    if isinstance(geom, MultiPolygon):
+        return [poly for poly in geom.geoms if not poly.is_empty]
+    if isinstance(geom, GeometryCollection):
+        polys: list[Polygon] = []
+        for child in geom.geoms:
+            polys.extend(_iter_polygons(child))
+        return polys
+    return []
+
+
+def _prism_tris_from_xy(xy: np.ndarray, thickness: float) -> list[np.ndarray]:
+    verts = xy[:, :2].astype(np.float64, copy=False)
+    z0, zt = 0.0, float(thickness)
+    tris_idx = _triangulate_cap(verts)
+    faces: list[np.ndarray] = []
+
+    for idx in tris_idx:
+        a = verts[int(idx[0])]
+        b = verts[int(idx[1])]
+        c = verts[int(idx[2])]
+        faces.append(np.array([[a[0], a[1], zt], [b[0], b[1], zt], [c[0], c[1], zt]], dtype=np.float64))
+        faces.append(np.array([[a[0], a[1], z0], [c[0], c[1], z0], [b[0], b[1], z0]], dtype=np.float64))
+
+    n_ring = len(verts)
+    for i in range(n_ring):
+        j = (i + 1) % n_ring
+        p0 = np.array([verts[i, 0], verts[i, 1], z0], dtype=np.float64)
+        p1 = np.array([verts[j, 0], verts[j, 1], z0], dtype=np.float64)
+        p2 = np.array([verts[j, 0], verts[j, 1], zt], dtype=np.float64)
+        p3 = np.array([verts[i, 0], verts[i, 1], zt], dtype=np.float64)
+        faces.append(np.stack([p0, p1, p2]))
+        faces.append(np.stack([p0, p2, p3]))
+    return faces
 
 
 def _triangle_normal(v0: np.ndarray, v1: np.ndarray, v2: np.ndarray) -> tuple[float, float, float]:
@@ -45,27 +90,7 @@ def prototype_prism_tris(thickness_mm: float) -> list[np.ndarray]:
     """Triangles (XYZ) for an extruded Tile(1,1) prism with thickness along local +Z."""
 
     xy = PROTOTILE_RING[:, :2].astype(np.float64, copy=False)
-    z0, zt = 0.0, float(thickness_mm)
-    tris_idx = _triangulate_cap(xy)
-    faces: list[np.ndarray] = []
-
-    for idx in tris_idx:
-        a = xy[int(idx[0])]
-        b = xy[int(idx[1])]
-        c = xy[int(idx[2])]
-        faces.append(np.array([[a[0], a[1], zt], [b[0], b[1], zt], [c[0], c[1], zt]], dtype=np.float64))
-        faces.append(np.array([[a[0], a[1], z0], [c[0], c[1], z0], [b[0], b[1], z0]], dtype=np.float64))
-
-    n_ring = len(xy)
-    for i in range(n_ring):
-        j = (i + 1) % n_ring
-        p0 = np.array([xy[i, 0], xy[i, 1], z0], dtype=np.float64)
-        p1 = np.array([xy[j, 0], xy[j, 1], z0], dtype=np.float64)
-        p2 = np.array([xy[j, 0], xy[j, 1], zt], dtype=np.float64)
-        p3 = np.array([xy[i, 0], xy[i, 1], zt], dtype=np.float64)
-        faces.append(np.stack([p0, p1, p2]))
-        faces.append(np.stack([p0, p2, p3]))
-    return faces
+    return _prism_tris_from_xy(xy, thickness_mm)
 
 
 def _planar_xy_scale(W: np.ndarray) -> float:
@@ -93,6 +118,11 @@ def write_binary_stl(path: str, facets: list[bytes], header_note: bytes | None =
             f.write(face)
 
 
+def binary_stl_bytes(facets: list[bytes], header_note: bytes | None = None) -> bytes:
+    hdr = (header_note or b"spectre_patch_api")[:80].ljust(80, b"\0")
+    return hdr + struct.pack("<I", len(facets)) + b"".join(facets)
+
+
 def combined_stl_facets(
     tiles: list[EmittedTile],
     *,
@@ -118,6 +148,168 @@ def combined_stl_facets(
             nrm = _triangle_normal(world_tri[0], world_tri[1], world_tri[2])
             facets.append(_facet_record(nrm, world_tri))
     return facets
+
+
+def _facets_from_tris(tris: list[np.ndarray]) -> list[bytes]:
+    return [_facet_record(_triangle_normal(tri[0], tri[1], tri[2]), tri) for tri in tris]
+
+
+def _world_xy_for_clip_geom(tile: EmittedTile, *, scale: float, rotation_deg: float, tx: float, ty: float) -> list[np.ndarray]:
+    assert tile.clip_geom is not None
+    client_world = similarity_client(scale, rotation_deg, tx, ty)
+    rings: list[np.ndarray] = []
+    for poly in _iter_polygons(tile.clip_geom):
+        coords = np.asarray(poly.exterior.coords[:-1], dtype=np.float64)
+        if len(coords) < 3:
+            continue
+        ones = np.ones((len(coords), 1), dtype=np.float64)
+        hom = np.column_stack([coords, ones])
+        mapped = hom @ client_world.T
+        rings.append(mapped[:, :2])
+    return rings
+
+
+def tile_prism_tris(
+    tile: EmittedTile,
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+) -> list[np.ndarray]:
+    """Triangles for one independent tile object, honoring clipped edge geometry."""
+
+    if tile.clip_geom is not None:
+        tris: list[np.ndarray] = []
+        thickness = float(thickness_mm) * float(tile.scale_world)
+        for xy in _world_xy_for_clip_geom(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty):
+            tris.extend(_prism_tris_from_xy(xy, thickness))
+        return tris
+
+    gen6 = np.asarray(tile.affine_canonical_gen6, dtype=np.float64)
+    W = compose_world_affine(
+        canonical_gen6=gen6,
+        scale=scale,
+        rotation_deg=rotation_deg,
+        tx=tx,
+        ty=ty,
+    )
+    return [_transform_triangle_xyz(tri, W) for tri in prototype_prism_tris(thickness_mm)]
+
+
+def tile_stl_bytes(
+    tile: EmittedTile,
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+) -> bytes:
+    tris = tile_prism_tris(
+        tile,
+        scale=scale,
+        rotation_deg=rotation_deg,
+        tx=tx,
+        ty=ty,
+        thickness_mm=thickness_mm,
+    )
+    return binary_stl_bytes(_facets_from_tris(tris), header_note=tile.tile_id.encode("utf-8"))
+
+
+def tile_obj_bytes(
+    tile: EmittedTile,
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+) -> bytes:
+    tris = tile_prism_tris(
+        tile,
+        scale=scale,
+        rotation_deg=rotation_deg,
+        tx=tx,
+        ty=ty,
+        thickness_mm=thickness_mm,
+    )
+    lines = [
+        "# Generated by spectre_patch_api",
+        f"o {safe_object_name(tile.tile_id)}",
+        f"# tile_id {tile.tile_id}",
+        f"# tile_label {tile.tile_label}",
+    ]
+    vertex_index = 1
+    for tri in tris:
+        for x, y, z in tri:
+            lines.append(f"v {float(x):.9g} {float(y):.9g} {float(z):.9g}")
+        lines.append(f"f {vertex_index} {vertex_index + 1} {vertex_index + 2}")
+        vertex_index += 3
+    return ("\n".join(lines) + "\n").encode("utf-8")
+
+
+def safe_object_name(value: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("._")
+    return cleaned[:96] or "tile"
+
+
+def independent_tiles_manifest(tiles: list[EmittedTile], *, file_extension: str) -> bytes:
+    doc = {
+        "export_kind": f"independent_tile_{file_extension.lower()}_zip",
+        "notes": "Each file is a separate movable tile object. Boundary tiles may be clipped to the requested mask.",
+        "tiles": [
+            {
+                "id": tile.tile_id,
+                "label": tile.tile_label,
+                "filename": f"tiles/{i:06d}_{safe_object_name(tile.tile_id)}.{file_extension.lower()}",
+                "clipped": tile.clip_geom is not None,
+            }
+            for i, tile in enumerate(tiles)
+        ],
+    }
+    return json.dumps(doc, sort_keys=True, indent=2).encode("utf-8")
+
+
+def write_independent_tiles_zip(
+    path: Path | str,
+    tiles: list[EmittedTile],
+    *,
+    format_name: str,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+) -> None:
+    fmt = format_name.lower()
+    if fmt not in {"stl", "obj"}:
+        raise ValueError("format_name must be 'stl' or 'obj'")
+
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("manifest.json", independent_tiles_manifest(tiles, file_extension=fmt))
+        for i, tile in enumerate(tiles):
+            filename = f"tiles/{i:06d}_{safe_object_name(tile.tile_id)}.{fmt}"
+            if fmt == "stl":
+                payload = tile_stl_bytes(
+                    tile,
+                    scale=scale,
+                    rotation_deg=rotation_deg,
+                    tx=tx,
+                    ty=ty,
+                    thickness_mm=thickness_mm,
+                )
+            else:
+                payload = tile_obj_bytes(
+                    tile,
+                    scale=scale,
+                    rotation_deg=rotation_deg,
+                    tx=tx,
+                    ty=ty,
+                    thickness_mm=thickness_mm,
+                )
+            zf.writestr(filename, payload)
 
 
 def write_prototype_stl(path: str, thickness_mm: float) -> None:

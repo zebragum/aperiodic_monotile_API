@@ -59,6 +59,23 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_leads_email
   ON leads(email);
 CREATE INDEX IF NOT EXISTS ix_leads_created
   ON leads(created);
+CREATE TABLE IF NOT EXISTS bug_reports (
+  id TEXT PRIMARY KEY,
+  created REAL NOT NULL,
+  request_id TEXT,
+  email TEXT,
+  severity TEXT,
+  summary TEXT NOT NULL,
+  details TEXT,
+  page_url TEXT,
+  user_agent TEXT,
+  status TEXT NOT NULL DEFAULT 'new',
+  client_ip_hash TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_bug_reports_created
+  ON bug_reports(created);
+CREATE INDEX IF NOT EXISTS ix_bug_reports_request
+  ON bug_reports(request_id);
 """
 
 
@@ -121,6 +138,25 @@ def _migrate(conn: sqlite3.Connection) -> None:
     )
     conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_leads_email ON leads(email)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_created ON leads(created)")
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS bug_reports (
+          id TEXT PRIMARY KEY,
+          created REAL NOT NULL,
+          request_id TEXT,
+          email TEXT,
+          severity TEXT,
+          summary TEXT NOT NULL,
+          details TEXT,
+          page_url TEXT,
+          user_agent TEXT,
+          status TEXT NOT NULL DEFAULT 'new',
+          client_ip_hash TEXT
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_bug_reports_created ON bug_reports(created)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_bug_reports_request ON bug_reports(request_id)")
     conn.commit()
 
 
@@ -398,6 +434,65 @@ def list_leads(conn: sqlite3.Connection, *, limit: int = 500) -> list[sqlite3.Ro
         """
         SELECT id, created, email, name, company, use_case, source, status
           FROM leads
+         ORDER BY created DESC
+         LIMIT ?
+        """,
+        (int(limit),),
+    )
+    return list(cur.fetchall())
+
+
+def create_bug_report(
+    conn: sqlite3.Connection,
+    *,
+    summary: str,
+    details: str | None = None,
+    email: str | None = None,
+    request_id: str | None = None,
+    severity: str | None = None,
+    page_url: str | None = None,
+    user_agent: str | None = None,
+    client_ip_hash: str | None = None,
+) -> str:
+    """Persist a bug report and return its id.
+
+    All free-form fields are size-clamped by the caller. This helper is the
+    single place that touches the bug_reports table so admin export queries can
+    rely on a stable column shape.
+    """
+
+    bug_id = str(uuid4())
+    conn.execute(
+        """
+        INSERT INTO bug_reports(
+            id, created, request_id, email, severity, summary, details,
+            page_url, user_agent, status, client_ip_hash
+        )
+        VALUES(?,?,?,?,?,?,?,?,?,'new',?)
+        """,
+        (
+            bug_id,
+            time.time(),
+            request_id,
+            email,
+            severity,
+            summary,
+            details,
+            page_url,
+            user_agent,
+            client_ip_hash,
+        ),
+    )
+    conn.commit()
+    return bug_id
+
+
+def list_bug_reports(conn: sqlite3.Connection, *, limit: int = 500) -> list[sqlite3.Row]:
+    cur = conn.execute(
+        """
+        SELECT id, created, request_id, email, severity, summary, details,
+               page_url, user_agent, status
+          FROM bug_reports
          ORDER BY created DESC
          LIMIT ?
         """,

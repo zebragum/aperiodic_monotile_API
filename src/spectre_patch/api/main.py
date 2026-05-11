@@ -41,6 +41,7 @@ from pathlib import Path
 
 import httpx
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -106,6 +107,10 @@ class ServiceSettings(BaseSettings):
 
     # Billing / self-serve signup. Leave unset to disable billing endpoints.
     public_site_url: str = "https://aperiodic-monotile-site.onrender.com"
+    support_bug_report_url: str = ""
+    """Public-facing URL the API points users to when something goes wrong.
+    Falls back to ``{public_site_url}/contact.html`` (with a ``rid`` query
+    param) when unset. Override per-deployment to point at Linear/Sentry/etc."""
     stripe_secret_key: str = ""
     stripe_price_id_day_pass: str = ""
     # Legacy Solo monthly Stripe Price id — used when the explicit Solo monthly id below is unset.
@@ -129,6 +134,70 @@ def limits_defaults() -> LimitsSettings:
 
 def _split_csv(s: str) -> list[str]:
     return [p.strip() for p in s.split(",") if p.strip()]
+
+
+# Map HTTP status codes to short, stable, machine-readable slugs so clients
+# (and our own JS widget) can branch on them without parsing English. New codes
+# only get added here — never returned ad-hoc from request handlers.
+_HTTP_STATUS_ERROR_CODE: dict[int, str] = {
+    400: "bad_request",
+    401: "missing_api_key",
+    402: "payment_required",
+    403: "forbidden",
+    404: "not_found",
+    409: "conflict",
+    410: "gone",
+    415: "unsupported_media_type",
+    422: "invalid_request",
+    429: "rate_limited",
+    500: "internal_error",
+    502: "upstream_error",
+    503: "unavailable",
+    504: "upstream_timeout",
+}
+
+
+def _support_url_for(cfg: ServiceSettings, request_id: str | None) -> str:
+    base = cfg.support_bug_report_url.strip() or (
+        f"{cfg.public_site_url.rstrip('/')}/contact.html"
+    )
+    if not request_id:
+        return base
+    sep = "&" if "?" in base else "?"
+    return f"{base}{sep}rid={request_id}"
+
+
+def _error_envelope(
+    *,
+    cfg: ServiceSettings,
+    status_code: int,
+    message: object,
+    request_id: str | None,
+    error_code: str | None = None,
+    extras: dict | None = None,
+) -> dict:
+    """Build the customer-facing error body.
+
+    `message` is whatever the handler passed to ``HTTPException(detail=...)``.
+    For Pydantic / validation errors we pass a list; for everything else a
+    string. We never include traceback text, the local filesystem path, the
+    request body, or internal worker error strings in the response — those are
+    only kept in the structured server log, addressable by ``request_id``.
+    """
+
+    code = error_code or _HTTP_STATUS_ERROR_CODE.get(status_code, "error")
+    body: dict = {
+        "error": {
+            "code": code,
+            "status": status_code,
+            "message": message if isinstance(message, (str, list, dict)) else str(message),
+            "request_id": request_id,
+            "support": _support_url_for(cfg, request_id),
+        }
+    }
+    if extras:
+        body["error"].update(extras)
+    return body
 
 
 def _api_key_tier_map(cfg: ServiceSettings | None = None) -> dict[str, str]:
@@ -240,6 +309,20 @@ _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
 )
 
 
+def _plan_defaults(plan_slug: str) -> tuple[str | None, float | None]:
+    """Return ``(tier, key_ttl_seconds)`` for a known plan slug.
+
+    Used as a server-side fallback when Stripe session metadata is missing or
+    malformed, so a webhook can't silently grant a permanent Solo key to a Day
+    Pass purchase. Returns ``(None, None)`` for unrecognised plan slugs.
+    """
+
+    for slug, tier, _attr, _mode, ttl in _CHECKOUT_PLAN_TO_FIELD:
+        if slug == plan_slug:
+            return tier, ttl
+    return None, None
+
+
 def _checkout_price_and_tier(
     cfg: ServiceSettings,
     plan_raw: object,
@@ -306,7 +389,13 @@ async def _stripe_post(cfg: ServiceSettings, path: str, data: dict[str, str]) ->
             auth=(cfg.stripe_secret_key, ""),
         )
     if resp.status_code >= 400:
-        raise HTTPException(status_code=502, detail={"stripe_error": resp.text})
+        # Stripe's response can contain product/customer metadata we shouldn't
+        # ship downstream. Log for ourselves, surface a generic detail.
+        logger.error("stripe POST %s failed status=%s body=%s", path, resp.status_code, resp.text)
+        raise HTTPException(
+            status_code=502,
+            detail="Payment provider rejected the request. Please try again or contact support.",
+        )
     return resp.json()
 
 
@@ -317,7 +406,11 @@ async def _stripe_get(cfg: ServiceSettings, path: str) -> dict:
             auth=(cfg.stripe_secret_key, ""),
         )
     if resp.status_code >= 400:
-        raise HTTPException(status_code=502, detail={"stripe_error": resp.text})
+        logger.error("stripe GET %s failed status=%s body=%s", path, resp.status_code, resp.text)
+        raise HTTPException(
+            status_code=502,
+            detail="Payment provider rejected the request. Please try again or contact support.",
+        )
     return resp.json()
 
 
@@ -382,6 +475,61 @@ def create_app() -> FastAPI:
     )
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+        rid = getattr(request.state, "request_id", None)
+        return JSONResponse(
+            _error_envelope(
+                cfg=cfg,
+                status_code=exc.status_code,
+                message=exc.detail,
+                request_id=rid,
+            ),
+            status_code=exc.status_code,
+            headers={"X-Request-ID": rid or ""},
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
+        rid = getattr(request.state, "request_id", None)
+        # Pydantic errors are already structured and don't leak server paths.
+        return JSONResponse(
+            _error_envelope(
+                cfg=cfg,
+                status_code=422,
+                message=exc.errors(),
+                request_id=rid,
+                error_code="invalid_request",
+            ),
+            status_code=422,
+            headers={"X-Request-ID": rid or ""},
+        )
+
+    @app.exception_handler(Exception)
+    async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+        rid = getattr(request.state, "request_id", None)
+        # The full traceback already lands in the structured log thanks to the
+        # `request_context` middleware logger.exception() call. We only return
+        # a generic body so private details (paths, SQL, env state) never reach
+        # the wire. Operators correlate via request_id.
+        logger.exception("unhandled error rid=%s exc=%r", rid, exc)
+        return JSONResponse(
+            _error_envelope(
+                cfg=cfg,
+                status_code=500,
+                message=(
+                    "Something went wrong on our side. Include the request_id "
+                    "below when filing a bug report and we can find the matching log."
+                ),
+                request_id=rid,
+                error_code="internal_error",
+            ),
+            status_code=500,
+            headers={"X-Request-ID": rid or ""},
+        )
 
     cors_origins = _split_csv(cfg.cors_allow_origins)
     if cors_origins:
@@ -541,13 +689,21 @@ def create_app() -> FastAPI:
                 "csv",
                 "json",
                 "stl",
+                "stl_zip",
+                "obj_zip",
                 "glb",
                 "instance_json",
                 "png",
                 "jpg",
                 "jpeg",
             ],
-            "supported_retention": ["centroid", "intersection", "clip"],
+            "output_notes": {
+                "glb": "Instanced 3D scene: one prototile mesh plus per-tile transforms.",
+                "stl": "Whole-panel mesh output.",
+                "stl_zip": "Independent STL files, one per tile.",
+                "obj_zip": "Independent OBJ files, one per tile.",
+            },
+            "boundary_behavior": "clip",
             "limits": lim.model_dump(),
             "atlas": {
                 "available": bool(atlas_entries),
@@ -588,6 +744,107 @@ def create_app() -> FastAPI:
             source=clean("source", 120) or "website",
         )
         return {"lead_id": lead_id, "status": "created" if created else "updated"}
+
+    @app.post("/v1/bug-reports", tags=["billing"])
+    @limiter.limit(cfg.rate_limit_leads)
+    async def create_bug_report(request: Request) -> dict:
+        """Capture a customer bug report.
+
+        Body JSON: ``summary`` (required, <= 240 chars), optional ``details``
+        (<= 8000 chars), ``email``, ``request_id``, ``severity``, ``page_url``,
+        ``user_agent``. The endpoint is intentionally unauthenticated so docs
+        and dashboards can submit on a customer's behalf; auth would just slow
+        people down when they're already frustrated.
+        """
+
+        body = await _json_object_body(request)
+
+        def clean(key: str, max_len: int) -> str | None:
+            value = str(body.get(key) or "").strip()
+            return value[:max_len] if value else None
+
+        summary = clean("summary", 240)
+        if not summary:
+            raise HTTPException(status_code=422, detail="summary is required")
+
+        # Hash the client IP so repeat abusers can be rate-limited / pruned
+        # without storing PII.
+        client_host = (request.client.host if request.client else "") or ""
+        ip_hash = hashlib.sha256(
+            (client_host + cfg.api_secret).encode("utf-8")
+        ).hexdigest()[:16] if client_host else None
+
+        bug_id = job_repo.create_bug_report(
+            app.state.db,
+            summary=summary,
+            details=clean("details", 8000),
+            email=clean("email", 160),
+            request_id=clean("request_id", 80),
+            severity=clean("severity", 16),
+            page_url=clean("page_url", 500),
+            user_agent=clean("user_agent", 500),
+            client_ip_hash=ip_hash,
+        )
+        rid = getattr(request.state, "request_id", None)
+        return {
+            "bug_id": bug_id,
+            "status": "received",
+            "request_id": rid,
+            "support": _support_url_for(cfg, rid),
+        }
+
+    @app.get(
+        "/v1/admin/bug-reports",
+        tags=["billing"],
+        include_in_schema=False,
+        response_model=None,
+    )
+    async def admin_bug_reports(
+        _: None = Depends(_admin_token_dependency),
+        fmt: str = Query(default="json", pattern="^(json|csv)$"),
+        limit: int = Query(default=500, ge=1, le=5000),
+    ):
+        rows = job_repo.list_bug_reports(app.state.db, limit=limit)
+        payload = [
+            {
+                "id": row["id"],
+                "created": row["created"],
+                "request_id": row["request_id"],
+                "email": row["email"],
+                "severity": row["severity"],
+                "summary": row["summary"],
+                "details": row["details"],
+                "page_url": row["page_url"],
+                "user_agent": row["user_agent"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+        if fmt == "csv":
+            buf = StringIO()
+            writer = csv.DictWriter(
+                buf,
+                fieldnames=[
+                    "id",
+                    "created",
+                    "request_id",
+                    "email",
+                    "severity",
+                    "summary",
+                    "details",
+                    "page_url",
+                    "user_agent",
+                    "status",
+                ],
+            )
+            writer.writeheader()
+            writer.writerows(payload)
+            return Response(
+                buf.getvalue(),
+                media_type="text/csv; charset=utf-8",
+                headers={"Content-Disposition": 'attachment; filename="monotile-bug-reports.csv"'},
+            )
+        return {"bug_reports": payload, "count": len(payload)}
 
     @app.get("/v1/admin/leads", tags=["billing"], include_in_schema=False, response_model=None)
     async def admin_leads(
@@ -708,7 +965,29 @@ def create_app() -> FastAPI:
         session = await _stripe_get(cfg, f"checkout/sessions/{session_id}")
         if session.get("payment_status") != "paid":
             raise HTTPException(status_code=402, detail="Checkout session is not paid")
-        tier = str(session.get("metadata", {}).get("tier") or "tier_solo")
+        metadata = session.get("metadata") or {}
+        tier = str(metadata.get("tier") or "").strip().lower()
+        plan_slug = str(metadata.get("checkout_plan") or "").strip().lower()
+        plan_tier, plan_ttl = _plan_defaults(plan_slug)
+        if not tier and plan_tier:
+            tier = plan_tier
+        if not tier:
+            logger.error(
+                "stripe claim: session=%s missing tier metadata (plan=%r); refusing to mint",
+                session_id, metadata.get("checkout_plan"),
+            )
+            raise HTTPException(
+                status_code=409,
+                detail="Could not determine plan for this checkout. Contact support with the session id.",
+            )
+        expires_at = _checkout_key_expires_at(session)
+        if expires_at is None and plan_ttl is not None:
+            created = session.get("created")
+            try:
+                start = float(created)
+            except (TypeError, ValueError):
+                start = time.time()
+            expires_at = start + plan_ttl
         api_key = job_repo.create_api_key(
             app.state.db,
             tier=tier,
@@ -717,7 +996,7 @@ def create_app() -> FastAPI:
             stripe_customer_id=session.get("customer"),
             stripe_subscription_id=session.get("subscription"),
             stripe_checkout_session_id=session_id,
-            expires_at=_checkout_key_expires_at(session),
+            expires_at=expires_at,
         )
         return {"status": "created", "api_key": api_key, "tier": tier}
 
@@ -733,8 +1012,28 @@ def create_app() -> FastAPI:
         if event.get("type") == "checkout.session.completed":
             session = event.get("data", {}).get("object", {})
             session_id = str(session.get("id") or "")
-            if session_id and job_repo.find_api_key_by_checkout_session(app.state.db, session_id) is None:
-                tier = str(session.get("metadata", {}).get("tier") or "tier_solo")
+            metadata = session.get("metadata") or {}
+            tier = str(metadata.get("tier") or "").strip().lower()
+            plan_slug = str(metadata.get("checkout_plan") or "").strip().lower()
+            plan_tier, plan_ttl = _plan_defaults(plan_slug)
+            if not tier and plan_tier:
+                tier = plan_tier
+            if (
+                session_id
+                and tier
+                and job_repo.find_api_key_by_checkout_session(app.state.db, session_id) is None
+            ):
+                expires_at = _checkout_key_expires_at(session)
+                # Day Pass and similar finite-TTL plans must always have an
+                # expiry; falling back to the canonical plan TTL prevents a
+                # malformed session from minting a permanent key.
+                if expires_at is None and plan_ttl is not None:
+                    created = session.get("created")
+                    try:
+                        start = float(created)
+                    except (TypeError, ValueError):
+                        start = time.time()
+                    expires_at = start + plan_ttl
                 job_repo.create_api_key(
                     app.state.db,
                     tier=tier,
@@ -743,8 +1042,17 @@ def create_app() -> FastAPI:
                     stripe_customer_id=session.get("customer"),
                     stripe_subscription_id=session.get("subscription"),
                     stripe_checkout_session_id=session_id,
-                    expires_at=_checkout_key_expires_at(session),
+                    expires_at=expires_at,
                     reveal_once=True,
+                )
+            elif session_id and not tier:
+                # Stripe still expects a 200 ack to stop redelivery, but we
+                # log loudly so a malformed session never silently mints keys.
+                logger.error(
+                    "stripe webhook: cannot mint API key for session=%s — missing tier metadata "
+                    "(checkout_plan=%r). Inspect the Stripe Dashboard.",
+                    session_id,
+                    metadata.get("checkout_plan"),
                 )
         return {"received": True}
 
@@ -859,6 +1167,7 @@ def create_app() -> FastAPI:
             ".png": "image/png",
             ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",
+            ".zip": "application/zip",
             ".csv": "text/csv",
             ".json": "application/json",
             ".glb": "model/gltf-binary",
