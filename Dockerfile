@@ -102,13 +102,15 @@ case "${1:-api}" in
     ;;
   api-worker)
     bootstrap_atlas
+    echo "[entrypoint] launching worker supervisor at $(date -u +%FT%TZ)"
     # Worker auto-respawn: a single bad job should not take the API offline.
     # Render restarts the container if the API exits, but the worker is just a
     # child process; we want it to come back without losing in-flight HTTP.
     (
       while true; do
-        spectre-patch-worker || true
-        echo "spectre-patch-worker exited; respawning in 5s" >&2
+        echo "[worker-supervisor] starting spectre-patch-worker at $(date -u +%FT%TZ)"
+        spectre-patch-worker 2>&1 || rc=$?
+        echo "[worker-supervisor] spectre-patch-worker exited rc=${rc:-0}; respawning in 5s" 1>&2
         sleep 5
       done
     ) &
