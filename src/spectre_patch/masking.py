@@ -7,9 +7,18 @@ from enum import Enum
 from typing import Union
 
 import numpy as np
+from shapely import make_valid
 from shapely.geometry import Point
 from shapely.geometry import box as shp_box
 from shapely.geometry.base import BaseGeometry
+
+
+def _ensure_valid(geom: BaseGeometry) -> BaseGeometry:
+    """Repair rare GEOS-invalid inputs (e.g. rounded-rect ring self-touch)."""
+
+    if geom.is_valid:
+        return geom
+    return make_valid(geom)
 
 
 class RetentionMode(str, Enum):
@@ -116,21 +125,23 @@ def _rounded_rectangle(center: tuple[float, float], w: float, h: float, r: float
 
 def mask_polygon(mask: Mask) -> BaseGeometry:
     if isinstance(mask, MaskRect):
-        return shp_box(mask.xmin, mask.ymin, mask.xmax, mask.ymax)
-    if isinstance(mask, MaskSquare):
+        g = shp_box(mask.xmin, mask.ymin, mask.xmax, mask.ymax)
+    elif isinstance(mask, MaskSquare):
         cx, cy = mask.center
         h = mask.half_side
-        return shp_box(cx - h, cy - h, cx + h, cy + h)
-    if isinstance(mask, MaskCircle):
+        g = shp_box(cx - h, cy - h, cx + h, cy + h)
+    elif isinstance(mask, MaskCircle):
         cx, cy = mask.center
-        return Point(cx, cy).buffer(mask.radius, resolution=96)
-    if isinstance(mask, MaskHexagon):
-        return hexagon_polygon(mask.center, mask.circumradius)
-    if isinstance(mask, MaskTriangle):
-        return triangle_polygon(mask.center, mask.side_length, mask.rotation_deg)
-    if isinstance(mask, MaskRoundedRect):
-        return _rounded_rectangle(mask.center, mask.width, mask.height, mask.corner_radius)
-    raise TypeError(f"Unknown mask type {type(mask)!r}")
+        g = Point(cx, cy).buffer(mask.radius, resolution=96)
+    elif isinstance(mask, MaskHexagon):
+        g = hexagon_polygon(mask.center, mask.circumradius)
+    elif isinstance(mask, MaskTriangle):
+        g = triangle_polygon(mask.center, mask.side_length, mask.rotation_deg)
+    elif isinstance(mask, MaskRoundedRect):
+        g = _rounded_rectangle(mask.center, mask.width, mask.height, mask.corner_radius)
+    else:
+        raise TypeError(f"Unknown mask type {type(mask)!r}")
+    return _ensure_valid(g)
 
 
 def centroid_inside(mask_poly: BaseGeometry, xy: np.ndarray) -> bool:
