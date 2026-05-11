@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Tile(1,1) Spectre monotile outline">
+  <defs>
+    <linearGradient id="brand-mark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6a4a"/>
+      <stop offset="100%" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#brand-mark-grad)" stroke="rgba(255,255,255,0.14)" stroke-width="0.35" d="M7.682428 21.898967 L13.325839 21.898967 L16.147545 26.786305 L21.034883 23.964599 L21.034883 18.321188 L26.678294 18.321188 L29.5 13.43385 L24.612662 10.612144 L19.725325 13.43385 L16.903619 8.5465123 L11.260207 8.5465123 L5.616796 8.5465123 L2.7950903 13.43385 L7.682428 16.255556 Z"/>
+</svg>

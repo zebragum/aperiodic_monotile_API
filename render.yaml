@@ -4,21 +4,21 @@ services:
     name: aperiodic-monotile-api
     repo: https://github.com/zebragum/aperiodic_monotile_API.git
     branch: main
-    plan: starter
+    plan: standard
     region: oregon
-    dockerCommand: /usr/bin/tini -- /app/entrypoint.sh api
+    dockerCommand: /usr/bin/tini -- /app/entrypoint.sh api-worker
     healthCheckPath: /healthz
     disk:
       name: spectre-data
       mountPath: /app/data
-      sizeGB: 10
+      sizeGB: 64
     envVars:
       - key: SPECTRE_PATCH_API_SECRET
         generateValue: true
       - key: SPECTRE_PATCH_REQUIRE_API_KEY
         value: "true"
       - key: SPECTRE_PATCH_RUN_JOBS_IN_PROCESS
-        value: "true"
+        value: "false"
       - key: SPECTRE_PATCH_BOOTSTRAP_ATLAS
         value: "true"
       - key: SPECTRE_PATCH_DB_PATH
@@ -31,6 +31,14 @@ services:
         value: https://github.com/zebragum/aperiodic_monotile_API/releases/download/atlas-v1
       - key: SPECTRE_PATCH_RATE_LIMIT_POST_PATCH
         value: 30/minute
+      - key: SPECTRE_PATCH_RATE_LIMIT_BILLING_CHECKOUT
+        value: 10/minute
+      - key: SPECTRE_PATCH_RATE_LIMIT_BILLING_CLAIM
+        value: 20/minute
+      - key: SPECTRE_PATCH_RATE_LIMIT_LEADS
+        value: 10/minute
+      - key: SPECTRE_PATCH_MAX_OUTPUT_BYTES_SOFT
+        value: "32212254719"
       - key: SPECTRE_PATCH_CORS_ALLOW_ORIGINS
         value: https://aperiodic-monotile-site.onrender.com
       - key: SPECTRE_PATCH_LOG_LEVEL
@@ -38,13 +46,31 @@ services:
       - key: UVICORN_WORKERS
         value: "1"
       # Set this in the Render Dashboard after deploy:
-      # {"free_xxx":"tier_free","pro_yyy":"tier_pro"}
+      # {"free_xxx":"tier_free","day_xxx":"tier_day_pass","solo_xxx":"tier_solo","teams_xxx":"tier_teams"}
       - key: SPECTRE_PATCH_API_KEY_TIERS_JSON
+        sync: false
+      # Private lead export token for GET /v1/admin/leads.
+      - key: SPECTRE_PATCH_ADMIN_TOKEN
         sync: false
       # Optional: set these when Stripe products are ready.
       - key: SPECTRE_PATCH_PUBLIC_SITE_URL
         value: https://aperiodic-monotile-site.onrender.com
       - key: SPECTRE_PATCH_STRIPE_SECRET_KEY
+        sync: false
+      # Optional Stripe (set after creating Products → Prices):
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY / _YEARLY
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY / _YEARLY
+      # Legacy Solo monthly fallback: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
+        sync: false
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY
+        sync: false
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_YEARLY
+        sync: false
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY
+        sync: false
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY
         sync: false
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
         sync: false

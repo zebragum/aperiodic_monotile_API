@@ -59,11 +59,9 @@ a {
 .brand-mark {
   width: 2rem;
   height: 2rem;
-  border-radius: 0.55rem;
-  background:
-    linear-gradient(135deg, transparent 38%, rgba(9, 11, 19, 0.65) 39% 45%, transparent 46%),
-    linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 0 30px rgba(255, 106, 74, 0.45);
+  flex-shrink: 0;
+  display: block;
+  filter: drop-shadow(0 0 18px rgba(255, 106, 74, 0.42));
 }
 
 .nav {
@@ -129,11 +127,7 @@ a {
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  align-items: center;
-  gap: clamp(2rem, 6vw, 5rem);
-  min-height: 760px;
+  min-height: auto;
 }
 
 .docs-hero {
@@ -194,6 +188,84 @@ h3 {
   flex-wrap: wrap;
   gap: 0.8rem;
   margin: 1.8rem 0;
+}
+
+.domain-catalog-intro {
+  max-width: 720px;
+  margin-bottom: 2rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.domain-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.domain-block {
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.028));
+  box-shadow: var(--shadow);
+}
+
+.domain-block h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.15rem;
+}
+
+.domain-block p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.domain-block ul {
+  margin: 0 0 0.85rem;
+  padding-left: 1.35rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.domain-block li {
+  margin: 0.35rem 0;
+}
+
+.domain-see {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.domain-see a {
+  color: var(--accent-2);
+}
+
+.citation {
+  margin-left: 0.12rem;
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.citation a,
+.references-list a {
+  color: var(--accent-2);
+}
+
+.references-list {
+  max-width: 920px;
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.references-list li {
+  margin: 0.65rem 0;
 }
 
 .proof-grid {
@@ -380,9 +452,6 @@ textarea {
   max-height: min(72vh, 720px);
   width: auto;
   height: auto;
-  transform: scale(var(--tile-scale, 1));
-  transform-origin: center center;
-  transition: transform 180ms ease;
   pointer-events: none;
   user-select: none;
 }
@@ -396,7 +465,7 @@ textarea {
 .cards,
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
@@ -443,6 +512,69 @@ textarea {
   font-weight: 900;
 }
 
+.price-quote {
+  color: var(--accent-2);
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.price-unit {
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.price-note {
+  margin-top: -0.35rem;
+  margin-bottom: 0.85rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.pricing-value-lede {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+ul.pricing-value-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.3rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.pricing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.pricing-actions .button.secondary {
+  text-align: center;
+}
+
+.pricing-actions .button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pricing-ip-note {
+  max-width: 52rem;
+  margin: 1.85rem auto 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.62;
+}
+
+.pricing-ip-note strong {
+  color: color-mix(in srgb, var(--text) 86%, transparent);
+}
+
+
 .featured {
   border-color: rgba(255, 106, 74, 0.5);
   background: linear-gradient(180deg, rgba(255, 106, 74, 0.18), rgba(255, 255, 255, 0.04));
@@ -458,11 +590,17 @@ textarea {
 
 .footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 1rem;
   padding: 2rem clamp(1rem, 4vw, 4rem);
   border-top: 1px solid var(--line);
   color: var(--muted);
+}
+
+.footer p {
+  margin: 0;
+  line-height: 1.7;
 }
 
 @media (max-width: 900px) {
@@ -474,6 +612,7 @@ textarea {
   .demo-shell,
   .docs-section,
   .cards,
+  .domain-catalog,
   .pricing-grid {
     grid-template-columns: 1fr;
   }

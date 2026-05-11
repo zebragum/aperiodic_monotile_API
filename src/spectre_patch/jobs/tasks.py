@@ -9,10 +9,10 @@ from pathlib import Path
 
 from spectre_patch import PATCH_ENGINE_SEMVER
 from spectre_patch.atlas import AtlasIndex, enumerate_emitted_or_atlas
-from spectre_patch.config_limits import LimitsSettings, tier_limits_resolver
+from spectre_patch.config_limits import FREE_TIER_RASTER_FORMATS, LimitsSettings, tier_limits_resolver
 from spectre_patch.export import stl_export
 from spectre_patch.export.sidecars import tiles_to_csv_rows, tiles_to_json_doc
-from spectre_patch.export.svg_export import SvgRenderOpts, svg_document
+from spectre_patch.export.svg_export import SvgRenderOpts, svg_document, write_svg_or_svgz
 from spectre_patch.jobs.repo import artifact_dir, fetch_job, mark_done, mark_failed
 from spectre_patch.masking import (
     MaskCircle,
@@ -28,8 +28,12 @@ from spectre_patch.masking import (
 def coerce_mask(ms: dict):
     mt = ms["type"].lower().strip()
     if mt == "rectangle":
-        r = ms["bounds"]
-        return MaskRect(float(r["xmin"]), float(r["ymin"]), float(r["xmax"]), float(r["ymax"]))
+        if "bounds" in ms and ms["bounds"] is not None:
+            r = ms["bounds"]
+            return MaskRect(float(r["xmin"]), float(r["ymin"]), float(r["xmax"]), float(r["ymax"]))
+        cx, cy = float(ms["center"][0]), float(ms["center"][1])
+        half_w, half_h = float(ms["width"]) / 2.0, float(ms["height"]) / 2.0
+        return MaskRect(cx - half_w, cy - half_h, cx + half_w, cy + half_h)
     if mt == "square":
         cx, cy = float(ms["center"][0]), float(ms["center"][1])
         return MaskSquare((cx, cy), float(ms["half_side"]))
@@ -105,13 +109,22 @@ def run_patch_job(
         art = artifact_dir(storage_root, job_id)
         fmts = {str(f).lower() for f in req.get("formats", ["svg"])}
 
+        if tier == "tier_free" and not fmts <= FREE_TIER_RASTER_FORMATS:
+            bad = sorted(fmts - FREE_TIER_RASTER_FORMATS)
+            raise ValueError(
+                f"tier_free allows only raster previews {sorted(FREE_TIER_RASTER_FORMATS)}; "
+                f"disallowed={bad}"
+            )
+
         if "svg" in fmts and nt > limits.svg_max_tiles_hard:
             if bool(req.get("force_svg_large")):
                 raise ValueError("Refusing unsafe SVG — lower coverage or disable force_svg_large")
             fmts.discard("svg")
             fmts.update({"stl", "instance_json"})
 
-        if "svg" in fmts:
+        raster_basis_fmts = {"svg", "svgz", "png", "jpg", "jpeg"}
+        svg_text_for_rasters: str | None = None
+        if fmts.intersection(raster_basis_fmts):
             meta = {"patch_engine": PATCH_ENGINE_SEMVER}
             svg_opts = SvgRenderOpts(
                 fill=req.get("svg_fill") or "#cdd6ea",
@@ -123,7 +136,7 @@ def run_patch_job(
                 margin=float(_value_or_default(req, "svg_margin", 1.0)),
                 compact=bool(req.get("svg_compact", False)),
             )
-            svg_text = svg_document(
+            svg_text_for_rasters = svg_document(
                 emitted,
                 patch_meta=meta,
                 scale=float(req["scale"]),
@@ -132,9 +145,17 @@ def run_patch_job(
                 ty=float(req.get("ty", 0.0)),
                 opts=svg_opts,
             )
-            if len(svg_text) > limits.svg_max_chars:
+            if len(svg_text_for_rasters) > limits.svg_max_chars:
                 raise ValueError("SVG plaintext exceeds svg_max_chars — reduce coverage")
-            (art / "patch.svg").write_text(svg_text, encoding="utf-8")
+
+        if svg_text_for_rasters is None and ("svg" in fmts or "svgz" in fmts):
+            raise RuntimeError("internal error: svg export missing plaintext buffer")
+
+        if "svg" in fmts and svg_text_for_rasters is not None:
+            (art / "patch.svg").write_text(svg_text_for_rasters, encoding="utf-8")
+
+        if "svgz" in fmts and svg_text_for_rasters is not None:
+            write_svg_or_svgz(art / "patch.svgz", svg_text_for_rasters)
 
         if "csv" in fmts:
             (art / "tiles.csv").write_bytes(
@@ -208,15 +229,47 @@ def run_patch_job(
             )
 
         if "png" in fmts:
-            from spectre_patch.export.png_export import render_svg_to_png_file  # noqa: PLC0415
+            from spectre_patch.export.png_export import (  # noqa: PLC0415
+                render_svg_string_to_png_file,
+            )
 
+            assert svg_text_for_rasters is not None  # guarded by raster_basis_fmts
             w = int(req.get("png_width_px", 4096))
             h = int(req.get("png_height_px", 4096))
+            if w > limits.png_max_dimension_px or h > limits.png_max_dimension_px:
+                raise ValueError("PNG width/height exceeds png_max_dimension_px")
             if w * h > limits.png_max_pixels:
                 raise ValueError("PNG pixel budget exceeded")
-            if not (art / "patch.svg").exists():
-                raise RuntimeError("PNG requested but SVG raster source missing — keep svg format")
-            render_svg_to_png_file(str(art / "patch.svg"), str(art / "patch.png"), width_px=w, height_px=h)
+            render_svg_string_to_png_file(
+                svg_text_for_rasters,
+                art / "patch.png",
+                width_px=w,
+                height_px=h,
+            )
+
+        if fmts.intersection({"jpg", "jpeg"}):
+            from spectre_patch.export.png_export import (  # noqa: PLC0415
+                render_svg_string_to_jpeg_file,
+            )
+
+            assert svg_text_for_rasters is not None
+            jw = req.get("jpg_width_px") or req.get("png_width_px") or 4096
+            jh = req.get("jpg_height_px") or req.get("png_height_px") or 4096
+            w = int(jw)
+            h = int(jh)
+            if w > limits.png_max_dimension_px or h > limits.png_max_dimension_px:
+                raise ValueError("JPEG width/height exceeds png_max_dimension_px")
+            if w * h > limits.png_max_pixels:
+                raise ValueError("JPEG pixel budget exceeds png_max_pixels")
+            q_raw = req.get("jpg_quality")
+            quality = int(q_raw) if q_raw is not None else 92
+            render_svg_string_to_jpeg_file(
+                svg_text_for_rasters,
+                art / "patch.jpg",
+                width_px=w,
+                height_px=h,
+                quality=quality,
+            )
 
         names = sorted(p.name for p in art.glob("*") if p.is_file())
         mark_done(

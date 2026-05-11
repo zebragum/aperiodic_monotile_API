@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
-    <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark"></span><span>Aperiodic Monotile API</span></a><nav class="nav"><a href="../index.html#demo">Demo</a><a href="../docs.html">Docs</a><a href="../index.html#pricing">Pricing</a></nav></header>
+    <header class="site-header"><a class="brand" href="../index.html"><img class="brand-mark" src="../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" /><span>Aperiodic Monotile API</span></a><nav class="nav"><a href="../index.html#demo">Demo</a><a href="../docs.html">Docs</a><a href="../index.html#pricing">Pricing</a></nav></header>
     <main>
       <section class="section docs-hero">
         <p class="eyebrow">Blender workflow</p>
@@ -18,15 +18,31 @@
       </section>
       <section class="section">
         <div class="cards">
-          <article class="card"><h3>Why it matters</h3><p>Aperiodic monotile layouts create non-repeating structure without random noise. That is ideal for surfaces, screens, floors, facades, sculptures, and generative environments.</p></article>
-          <article class="card"><h3>Current demo</h3><p>The repository includes a starter Blender add-on that requests an SVG patch from the live API and imports it when Blender's SVG importer is available.</p></article>
-          <article class="card"><h3>Paid plugin path</h3><p>The commercial plugin should add API-key storage, glTF/JSON instancing, material controls, progress UI, and larger paid-tier limits.</p></article>
+          <article class="card">
+            <h3>Surfaces without obvious repetition</h3>
+            <p>Aperiodic monotile layouts create ordered variation for panels, floors, facades, sculpture, and procedural environments.</p>
+          </article>
+          <article class="card">
+            <h3>Instance-friendly data</h3>
+            <p>Use JSON or CSV transforms to duplicate one tile mesh across a scene instead of importing thousands of unrelated objects.</p>
+          </article>
+          <article class="card">
+            <h3>Materials by tile ID</h3>
+            <p>Stable IDs let you drive colors, bevels, labels, animation rules, or material assignments from your own Blender script.</p>
+          </article>
         </div>
       </section>
       <section class="section docs-section">
-        <div><p class="eyebrow">API example</p><h2>Request a triangle or circle and import the geometry.</h2><p>Blender users can start with SVG curves, then move to instanced mesh workflows as the plugin matures.</p></div>
+        <div>
+          <p class="eyebrow">API example</p>
+          <h2>Request a circle and import the geometry.</h2>
+          <p>Start with SVG curves for visual tests, then switch to JSON/CSV transforms or glTF for heavier instanced scenes.</p>
+        </div>
         <pre class="code-card"><code>{"mask":{"type":"circle","center":[0,0],"radius":50},"formats":["svg","json"],"retention":"clip"}</code></pre>
       </section>
     </main>
+    <footer class="footer">
+      <p><a href="../index.html">Home</a> · <a href="../docs.html">Docs</a> · <a href="../terms.html">Terms</a> · <a href="../privacy.html">Privacy</a> · <a href="../refund.html">Refunds</a> · <a href="../contact.html">Contact</a> · <a href="../attribution.html">Attribution</a></p>
+    </footer>
   </body>
 </html>

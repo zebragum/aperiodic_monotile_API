@@ -9,24 +9,102 @@
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
-    <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark"></span><span>Aperiodic Monotile API</span></a><nav class="nav"><a href="../index.html#demo">Demo</a><a href="../docs.html">Docs</a><a href="../index.html#pricing">Pricing</a></nav></header>
+    <header class="site-header"><a class="brand" href="../index.html"><img class="brand-mark" src="../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" /><span>Aperiodic Monotile API</span></a><nav class="nav"><a href="../index.html#demo">Demo</a><a href="../docs.html">Docs</a><a href="../index.html#pricing">Pricing</a></nav></header>
     <main>
       <section class="section docs-hero">
         <p class="eyebrow">Fabrication</p>
-        <h1>Raw Spectre tiling geometry for making real things.</h1>
-        <p class="hero-text">Clip Spectre tiling patches onto laser-ready panels, CNC beds, molds, engraving paths, decorative screens, inlays, and packaging—all from the same parameterized API.</p>
+        <h1>Aperiodic panels, parts, and surfaces without hand-drawing every tile.</h1>
+        <p class="hero-text">
+          Generate Spectre / Tile(1,1) geometry for laser cutting, CNC routing, engraving, inlays, molds,
+          product surfaces, and 3D-printed studies. Choose the shape of the workpiece, choose tile scale,
+          export SVG or STL, and bring the result into the fabrication tool you already use.
+        </p>
       </section>
+
       <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">What you get</p>
+          <h2>Repeat-free structure in fabrication-ready formats.</h2>
+          <p>
+            The API gives you deterministic geometry, not a screenshot. That means the same request can drive
+            a design preview, a laser file, a mesh, and a bill of materials keyed by tile ID.
+          </p>
+        </div>
         <div class="cards">
-          <article class="card"><h3>SVG-first output</h3><p>Compact SVG output keeps vector workflows friendly for Illustrator, Inkscape, LightBurn, laser software, and downstream geometry cleanup.</p></article>
-          <article class="card"><h3>Controlled masks</h3><p>Request exact circles, rectangles, squares, triangles, rounded rectangles, or hexagons with centroid, intersection, or clip retention.</p></article>
-          <article class="card"><h3>Stable IDs</h3><p>Every retained tile receives a deterministic ID, making it easier to map colors, materials, cuts, labels, or assembly metadata.</p></article>
+          <article class="card">
+            <h3>Vector paths for real machines</h3>
+            <p>
+              Use SVG for Illustrator, Inkscape, LightBurn, laser software, vinyl cutters, plotters, CNC
+              prep, and engraving workflows. Use STL or glTF when the same pattern needs depth.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Panels that end where you asked</h3>
+            <p>
+              Fill a rectangle, circle, triangle, rounded rectangle, hexagon, or custom region. For finished
+              panels, clip edge tiles to the boundary. For loose tiles or assembly kits, keep only whole tiles.
+            </p>
+          </article>
+          <article class="card">
+            <h3>IDs for materials and assembly</h3>
+            <p>
+              Stable tile IDs make it easier to assign colors, engraving passes, materials, labels, tabs, or
+              assembly metadata without losing track of the original pattern.
+            </p>
+          </article>
         </div>
       </section>
+
       <section class="section docs-section">
-        <div><p class="eyebrow">Production detail</p><h2>Clip to the mask when empty space is unacceptable.</h2><p>The API keeps all polygonal pieces from clipping operations so fabrication previews do not drop multipart edge geometry.</p></div>
-        <pre class="code-card"><code>{"mask":{"type":"rectangle","center":[0,0],"width":90,"height":40},"retention":"clip","formats":["svg","csv"]}</code></pre>
+        <div>
+          <p class="eyebrow">Boundary choice</p>
+          <h2>Use clipped edges for a clean panel. Use whole tiles for loose pieces.</h2>
+          <p>
+            <strong>Clip</strong> trims tiles at the requested outline, which is best for screens, panels,
+            engraving fills, and inlays where the outside edge must be exact. <strong>Centroid</strong> keeps
+            complete tiles whose centers fall inside the region, which is better when every piece must remain
+            a full monotile.
+          </p>
+        </div>
+        <pre class="code-card"><code>{
+  "mask": {"type": "rectangle", "center": [0, 0], "width": 90, "height": 40},
+  "retention": "clip",
+  "formats": ["svg", "csv"]
+}</code></pre>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Shop notes</p>
+          <h2>Prototype once before you scale up.</h2>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Kerf and tool radius</h3>
+            <p>
+              Treat generated paths as source geometry. Offset, dogbone, simplify, or join paths as needed
+              for your cutter, bit size, material, and tolerance.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Minimum feature size</h3>
+            <p>
+              Pick a tile scale that your material can actually hold. Tiny tiles may render beautifully but
+              fail as thin bridges, sharp corners, or fragile edge fragments.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Cut maps and labels</h3>
+            <p>
+              Use the CSV/JSON sidecar when you need a map from tile ID to position, color, material, or
+              assembly step.
+            </p>
+          </article>
+        </div>
       </section>
     </main>
+    <footer class="footer">
+      <p><a href="../index.html">Home</a> · <a href="../docs.html">Docs</a> · <a href="../terms.html">Terms</a> · <a href="../privacy.html">Privacy</a> · <a href="../refund.html">Refunds</a> · <a href="../contact.html">Contact</a> · <a href="../attribution.html">Attribution</a></p>
+    </footer>
   </body>
 </html>

@@ -51,7 +51,7 @@ from slowapi.util import get_remote_address
 from spectre_patch import PATCH_ENGINE_SEMVER
 from spectre_patch.api.schemas import PatchRequest
 from spectre_patch.atlas import AtlasIndex
-from spectre_patch.config_limits import LimitsSettings
+from spectre_patch.config_limits import FREE_TIER_RASTER_FORMATS, LimitsSettings
 from spectre_patch.jobs import repo as job_repo
 from spectre_patch.jobs.tasks import run_patch_job
 from spectre_patch.api.signed_urls import build_signed_relative_path
@@ -64,7 +64,7 @@ logger = logging.getLogger("spectre_patch.api")
 class ServiceSettings(BaseSettings):
     """Service wiring for disk + SQLite + signatures + auth + CORS."""
 
-    model_config = SettingsConfigDict(env_prefix="SPECTRE_PATCH_", env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="SPECTRE_PATCH_", env_file=(".env", "../.env"), extra="ignore")
 
     api_secret: str = "please-change-this-secret-key"
     storage_dir: Path = Path("data/jobs")
@@ -76,7 +76,7 @@ class ServiceSettings(BaseSettings):
     valid_api_keys: str = ""  # comma-separated; if non-empty, key must be in this set
     api_key_tiers_json: str = ""
     """JSON object mapping API key -> tier, e.g.
-    {"free_xxx":"tier_free","pro_yyy":"tier_pro"}. Production deployments
+    {"free_xxx":"tier_free","solo_yyy":"tier_solo"}. Production deployments
     should use this instead of trusting client-supplied tier headers.
     """
     admin_token: str = ""
@@ -97,6 +97,9 @@ class ServiceSettings(BaseSettings):
 
     # Rate limit (slowapi)
     rate_limit_post_patch: str = "30/minute"
+    rate_limit_billing_checkout: str = "10/minute"
+    rate_limit_billing_claim: str = "20/minute"
+    rate_limit_leads: str = "10/minute"
 
     # Logging
     log_level: str = "INFO"
@@ -104,7 +107,13 @@ class ServiceSettings(BaseSettings):
     # Billing / self-serve signup. Leave unset to disable billing endpoints.
     public_site_url: str = "https://aperiodic-monotile-site.onrender.com"
     stripe_secret_key: str = ""
+    stripe_price_id_day_pass: str = ""
+    # Legacy Solo monthly Stripe Price id — used when the explicit Solo monthly id below is unset.
     stripe_price_id_studio: str = ""
+    stripe_price_id_solo_monthly: str = ""
+    stripe_price_id_solo_yearly: str = ""
+    stripe_price_id_teams_monthly: str = ""
+    stripe_price_id_teams_yearly: str = ""
     stripe_webhook_secret: str = ""
 
 
@@ -126,13 +135,13 @@ def _api_key_tier_map(cfg: ServiceSettings | None = None) -> dict[str, str]:
     """Parse the server-side API-key tier map.
 
     ``valid_api_keys`` remains as a backwards-compatible allow-list, mapping
-    every listed key to ``tier_pro``. ``api_key_tiers_json`` is the production
-    path because it lets us issue distinct free/pro keys without trusting
+    every listed key to ``tier_solo``. ``api_key_tiers_json`` is the production
+    path because it lets us issue distinct free/paid keys without trusting
     `X-API-Tier`.
     """
 
     cfg = cfg or svc_settings()
-    out = {k: "tier_pro" for k in _split_csv(cfg.valid_api_keys)}
+    out = {k: "tier_solo" for k in _split_csv(cfg.valid_api_keys)}
     if cfg.api_key_tiers_json.strip():
         try:
             parsed = json.loads(cfg.api_key_tiers_json)
@@ -210,7 +219,65 @@ def _api_key_dependency(request: Request, api_key: str | None = Header(default=N
 
 
 def _billing_configured(cfg: ServiceSettings) -> bool:
-    return bool(cfg.stripe_secret_key and cfg.stripe_price_id_studio)
+    if not cfg.stripe_secret_key:
+        return False
+    return bool(
+        cfg.stripe_price_id_solo_monthly
+        or cfg.stripe_price_id_day_pass
+        or cfg.stripe_price_id_solo_yearly
+        or cfg.stripe_price_id_teams_monthly
+        or cfg.stripe_price_id_teams_yearly
+        or cfg.stripe_price_id_studio
+    )
+
+
+_CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
+    ("day_pass", "tier_day_pass", "stripe_price_id_day_pass", "payment", 24 * 3600.0),
+    ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
+    ("solo_yearly", "tier_solo", "stripe_price_id_solo_yearly", "subscription", None),
+    ("teams_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
+    ("teams_yearly", "tier_teams", "stripe_price_id_teams_yearly", "subscription", None),
+)
+
+
+def _checkout_price_and_tier(
+    cfg: ServiceSettings,
+    plan_raw: object,
+) -> tuple[str, str, str, str, float | None]:
+    """Resolve (stripe_price_id, api_tier_slug, canonical_plan_slug, checkout_mode, ttl)."""
+
+    plan = str(plan_raw or "").strip().lower().replace("-", "_")
+    if plan in ("solo", "solo_month"):
+        plan = "solo_monthly"
+    elif plan in ("day", "daypass", "day_pass_daily"):
+        plan = "day_pass"
+    elif plan == "solo_year":
+        plan = "solo_yearly"
+    elif plan == "teams_month":
+        plan = "teams_monthly"
+    elif plan == "teams_year":
+        plan = "teams_yearly"
+
+    if not plan:
+        plan = "solo_monthly"
+
+    for slug, tier, attr, mode, ttl_seconds in _CHECKOUT_PLAN_TO_FIELD:
+        if slug == plan:
+            price_id = str(getattr(cfg, attr, "") or "").strip()
+            if not price_id and slug == "solo_monthly" and cfg.stripe_price_id_studio.strip():
+                price_id = cfg.stripe_price_id_studio.strip()
+            if price_id:
+                return price_id, tier, slug, mode, ttl_seconds
+            raise HTTPException(
+                status_code=503,
+                detail=f"Stripe price for {slug.replace('_', ' ')} is not configured.",
+            )
+
+    detail = ", ".join(s[0] for s in _CHECKOUT_PLAN_TO_FIELD)
+    raise HTTPException(
+        status_code=422,
+        detail=f'Invalid billing plan "{plan}". Use one of: {detail}',
+    )
 
 
 def _verify_stripe_signature(payload: bytes, sig_header: str, secret: str) -> bool:
@@ -252,6 +319,23 @@ async def _stripe_get(cfg: ServiceSettings, path: str) -> dict:
     if resp.status_code >= 400:
         raise HTTPException(status_code=502, detail={"stripe_error": resp.text})
     return resp.json()
+
+
+def _checkout_key_expires_at(session: dict) -> float | None:
+    metadata = session.get("metadata") or {}
+    ttl_raw = metadata.get("key_ttl_seconds")
+    if not ttl_raw:
+        return None
+    try:
+        ttl_seconds = float(ttl_raw)
+    except (TypeError, ValueError):
+        return None
+    created = session.get("created")
+    try:
+        start = float(created)
+    except (TypeError, ValueError):
+        start = time.time()
+    return start + max(60.0, ttl_seconds)
 
 
 def create_app() -> FastAPI:
@@ -442,16 +526,8 @@ def create_app() -> FastAPI:
                     {"id": "einstein_hat_tile", "status": "planned", "label": "Einstein Hat monotile (same API hooks)"},
                     {"id": "turtle_tile", "status": "planned", "label": "Companion turtle monotile family"},
                 ],
-                "outline_styles": [
-                    {"id": "flat", "status": "supported", "label": "Canonical flat polygon boundaries"},
-                    {"id": "curvy", "status": "planned", "label": "Curvy eased boundary modulation"},
-                    {"id": "spiky", "status": "planned", "label": "Spiky / puzzle-piece boundary modulation"},
-                ],
-                "outline_styles_note": (
-                    "Exports today use planar Spectre substitution; ornamental outline modulation for SVG meshes is roadmap work. "
-                    "STL meshes remain solid volumetric slabs without strokes unless/until outline geometry ships."
-                ),
             },
+            "free_tier_formats": sorted(FREE_TIER_RASTER_FORMATS),
             "supported_masks": [
                 "square",
                 "rectangle",
@@ -468,6 +544,8 @@ def create_app() -> FastAPI:
                 "glb",
                 "instance_json",
                 "png",
+                "jpg",
+                "jpeg",
             ],
             "supported_retention": ["centroid", "intersection", "clip"],
             "limits": lim.model_dump(),
@@ -490,6 +568,7 @@ def create_app() -> FastAPI:
 
     # ------------------------------------------------------ billing ----
     @app.post("/v1/leads", tags=["billing"])
+    @limiter.limit(cfg.rate_limit_leads)
     async def create_lead(request: Request) -> dict:
         body = await _json_object_body(request)
         email = str(body.get("email") or "").strip().lower()
@@ -549,33 +628,63 @@ def create_app() -> FastAPI:
     async def billing_status() -> dict:
         return {
             "stripe_configured": _billing_configured(cfg),
+            "checkout_available": _billing_configured(cfg),
             "studio_checkout_available": _billing_configured(cfg),
+            "plans": {
+                "day_pass": bool(cfg.stripe_price_id_day_pass),
+                "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
+                "solo_yearly": bool(cfg.stripe_price_id_solo_yearly),
+                "teams_monthly": bool(cfg.stripe_price_id_teams_monthly),
+                "teams_yearly": bool(cfg.stripe_price_id_teams_yearly),
+            },
             "public_site_url": cfg.public_site_url,
         }
 
     @app.post("/v1/billing/checkout", tags=["billing"])
+    @limiter.limit(cfg.rate_limit_billing_checkout)
     async def create_checkout(request: Request) -> dict:
+        """Start Stripe Checkout.
+
+        Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
+        ``day_pass``, ``solo_monthly``, ``solo_yearly``, ``teams_monthly``, ``teams_yearly``.
+        Omitted ``plan`` defaults to ``solo_monthly`` (falls back to
+        ``stripe_price_id_studio`` when ``stripe_price_id_solo_monthly`` is unset).
+        """
+
         if not _billing_configured(cfg):
             raise HTTPException(status_code=503, detail="Billing is not configured yet")
         body = await _json_object_body(request)
         email = str(body.get("email") or "").strip() or None
+        stripe_price_id, tier, plan_slug, checkout_mode, ttl_seconds = _checkout_price_and_tier(
+            cfg,
+            body.get("plan"),
+        )
         success_url = f"{cfg.public_site_url.rstrip('/')}/docs.html?checkout=success&session_id={{CHECKOUT_SESSION_ID}}#access"
         cancel_url = f"{cfg.public_site_url.rstrip('/')}/#pricing"
         data = {
-            "mode": "subscription",
-            "line_items[0][price]": cfg.stripe_price_id_studio,
+            "mode": checkout_mode,
+            "line_items[0][price]": stripe_price_id,
             "line_items[0][quantity]": "1",
             "success_url": success_url,
             "cancel_url": cancel_url,
-            "metadata[tier]": "tier_pro",
+            "metadata[tier]": tier,
+            "metadata[checkout_plan]": plan_slug[:80],
             "allow_promotion_codes": "true",
         }
+        if ttl_seconds is not None:
+            data["metadata[key_ttl_seconds]"] = str(int(ttl_seconds))
         if email:
             data["customer_email"] = email
         session = await _stripe_post(cfg, "checkout/sessions", data)
-        return {"checkout_url": session["url"], "session_id": session["id"]}
+        return {
+            "checkout_url": session["url"],
+            "session_id": session["id"],
+            "tier": tier,
+            "plan": plan_slug,
+        }
 
     @app.post("/v1/billing/claim-key", tags=["billing"])
+    @limiter.limit(cfg.rate_limit_billing_claim)
     async def claim_checkout_key(request: Request) -> dict:
         if not _billing_configured(cfg):
             raise HTTPException(status_code=503, detail="Billing is not configured yet")
@@ -599,7 +708,7 @@ def create_app() -> FastAPI:
         session = await _stripe_get(cfg, f"checkout/sessions/{session_id}")
         if session.get("payment_status") != "paid":
             raise HTTPException(status_code=402, detail="Checkout session is not paid")
-        tier = str(session.get("metadata", {}).get("tier") or "tier_pro")
+        tier = str(session.get("metadata", {}).get("tier") or "tier_solo")
         api_key = job_repo.create_api_key(
             app.state.db,
             tier=tier,
@@ -608,6 +717,7 @@ def create_app() -> FastAPI:
             stripe_customer_id=session.get("customer"),
             stripe_subscription_id=session.get("subscription"),
             stripe_checkout_session_id=session_id,
+            expires_at=_checkout_key_expires_at(session),
         )
         return {"status": "created", "api_key": api_key, "tier": tier}
 
@@ -624,7 +734,7 @@ def create_app() -> FastAPI:
             session = event.get("data", {}).get("object", {})
             session_id = str(session.get("id") or "")
             if session_id and job_repo.find_api_key_by_checkout_session(app.state.db, session_id) is None:
-                tier = str(session.get("metadata", {}).get("tier") or "tier_pro")
+                tier = str(session.get("metadata", {}).get("tier") or "tier_solo")
                 job_repo.create_api_key(
                     app.state.db,
                     tier=tier,
@@ -633,6 +743,7 @@ def create_app() -> FastAPI:
                     stripe_customer_id=session.get("customer"),
                     stripe_subscription_id=session.get("subscription"),
                     stripe_checkout_session_id=session_id,
+                    expires_at=_checkout_key_expires_at(session),
                     reveal_once=True,
                 )
         return {"received": True}
@@ -649,6 +760,17 @@ def create_app() -> FastAPI:
     ) -> dict:
         conn: sqlite3.Connection = app.state.db
         tier = getattr(request.state, "monotile_tier", "tier_free")
+        if tier == "tier_free":
+            disallowed = sorted(set(body.formats) - FREE_TIER_RASTER_FORMATS)
+            if disallowed:
+                raise HTTPException(
+                    status_code=422,
+                    detail=(
+                        "free tier accepts only raster preview formats "
+                        f"({', '.join(sorted(FREE_TIER_RASTER_FORMATS))}); "
+                        f"disallowed: {', '.join(disallowed)}"
+                    ),
+                )
         blob = _dump_request(body)
         job_id, created = job_repo.enqueue_job(
             conn, tier, blob, idempotency_key=idempotency_key
@@ -735,6 +857,8 @@ def create_app() -> FastAPI:
             ".svgz": "image/svg+xml",
             ".stl": "model/stl",
             ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
             ".csv": "text/csv",
             ".json": "application/json",
             ".glb": "model/gltf-binary",

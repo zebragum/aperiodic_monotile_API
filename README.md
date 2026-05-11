@@ -118,9 +118,11 @@ defaults to `90`, which points one vertex upward in canonical coordinates.
 ## Auth, Tiers, and Downloads
 
 Production deployments set `SPECTRE_PATCH_REQUIRE_API_KEY=true`. Clients pass
-their key as `X-API-Key`; the server maps that key to `tier_free` or `tier_pro`
-with `SPECTRE_PATCH_API_KEY_TIERS_JSON`. Client-supplied tier headers are
-ignored when API keys are configured.
+their key as `X-API-Key`; the server maps that key to `tier_free`,
+`tier_day_pass`, `tier_solo`, or `tier_teams` with
+`SPECTRE_PATCH_API_KEY_TIERS_JSON`. Client-supplied tier headers are ignored
+when API keys are configured. Free keys are for small JPG/PNG preview patches;
+paid Stripe checkout creates Day Pass, Solo, and Teams keys.
 
 `POST /v1/patch` returns a `job_id`. Poll `GET /v1/jobs/{job_id}` until
 `status` is `completed`, then call `GET /v1/jobs/{job_id}/urls` to receive

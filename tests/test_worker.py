@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 
 from spectre_patch.config_limits import LimitsSettings
+from spectre_patch.jobs.gc import prune_jobs
 from spectre_patch.jobs import repo as job_repo
 from spectre_patch.jobs.tasks import run_patch_job
 from spectre_patch.jobs.worker import _SHUTDOWN, run_loop
@@ -27,7 +28,7 @@ def _enqueue_csv_job(conn, *, half_side: float = 8.0, depth: int = 2) -> str:
         "retention": "centroid",
         "mask": {"type": "square", "center": [0.0, 0.0], "half_side": half_side},
     }
-    job_id, created = job_repo.enqueue_job(conn, "tier_pro", body)
+    job_id, created = job_repo.enqueue_job(conn, "tier_solo", body)
     assert created
     return job_id
 
@@ -111,7 +112,7 @@ def test_svg_job_accepts_null_optional_render_fields():
             "svg_stroke": "#1b1b1b",
             "svg_stroke_width": None,
         }
-        job_id, created = job_repo.enqueue_job(conn, "tier_free", body)
+        job_id, created = job_repo.enqueue_job(conn, "tier_solo", body)
         assert created
 
         run_patch_job(
@@ -143,7 +144,7 @@ def test_requeue_stale_running():
             "formats": ["csv"],
             "retention": "centroid",
         }
-        job_id, _ = job_repo.enqueue_job(conn, "tier_pro", body)
+        job_id, _ = job_repo.enqueue_job(conn, "tier_solo", body)
         ancient = time.time() - 99999
         conn.execute(
             "UPDATE patch_jobs SET status='running', claimed_at=?, claimed_by='dead-worker' WHERE id=?",
@@ -156,4 +157,52 @@ def test_requeue_stale_running():
         row = job_repo.fetch_job(conn, job_id)
         assert row["status"] == "queued"
         assert row["claimed_at"] is None
+        conn.close()
+
+
+def test_prune_jobs_removes_old_terminal_rows_and_artifacts_only():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        db_path = tmp_path / "jobs.db"
+        store = tmp_path / "jobs"
+        store.mkdir(parents=True, exist_ok=True)
+        conn = job_repo.connect(db_path)
+
+        old_done, _ = job_repo.enqueue_job(
+            conn,
+            "tier_solo",
+            {"mask": {"type": "circle", "center": [0, 0], "radius": 1}, "formats": ["csv"]},
+        )
+        active, _ = job_repo.enqueue_job(
+            conn,
+            "tier_solo",
+            {"mask": {"type": "circle", "center": [0, 0], "radius": 2}, "formats": ["csv"]},
+        )
+        ancient = time.time() - (3 * 24 * 3600)
+        conn.execute(
+            "UPDATE patch_jobs SET status='completed', finished_at=? WHERE id=?",
+            (ancient, old_done),
+        )
+        conn.commit()
+        old_artifact_dir = store / old_done
+        active_artifact_dir = store / active
+        old_artifact_dir.mkdir(parents=True, exist_ok=True)
+        (old_artifact_dir / "patch.svg").write_text("<svg/>", encoding="utf-8")
+        active_artifact_dir.mkdir(parents=True, exist_ok=True)
+        conn.close()
+
+        result = prune_jobs(
+            db_path=db_path,
+            storage_dir=store,
+            older_than_hours=24,
+            limit=100,
+            dry_run=False,
+        )
+
+        conn = job_repo.connect(db_path)
+        assert result == {"matched": 1, "artifact_dirs": 1, "rows": 1}
+        assert job_repo.fetch_job(conn, old_done) is None
+        assert job_repo.fetch_job(conn, active) is not None
+        assert not old_artifact_dir.exists()
+        assert active_artifact_dir.exists()
         conn.close()

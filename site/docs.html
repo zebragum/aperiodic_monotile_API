@@ -15,7 +15,14 @@
   <body>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Aperiodic Monotile API home">
-        <span class="brand-mark"></span>
+        <img
+          class="brand-mark"
+          src="assets/brand-mark.svg"
+          alt=""
+          width="32"
+          height="32"
+          decoding="async"
+        />
         <span>Aperiodic Monotile API</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
@@ -74,7 +81,7 @@
           </article>
           <article class="card">
             <h3>Rectangle</h3>
-            <pre><code>{"type":"rectangle","bounds":{"xmin":-45,"ymin":-20,"xmax":45,"ymax":20}}</code></pre>
+            <pre><code>{"type":"rectangle","center":[0,0],"width":90,"height":40}</code></pre>
           </article>
           <article class="card">
             <h3>Triangle</h3>
@@ -95,6 +102,31 @@
         </div>
       </section>
 
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Retention modes</p>
+          <h2>Choose how the patch meets the boundary.</h2>
+          <p>
+            Use <code>clip</code> for finished panels and image fills, <code>centroid</code> for whole-tile kits,
+            and <code>intersection</code> when you need whole source tiles that touch the requested region.
+          </p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>clip</h3>
+            <p>Trims edge tiles to the mask so the exported outline lands exactly where you asked.</p>
+          </article>
+          <article class="card">
+            <h3>centroid</h3>
+            <p>Keeps complete tiles whose centers are inside the mask. Useful when pieces must remain full tiles.</p>
+          </article>
+          <article class="card">
+            <h3>intersection</h3>
+            <p>Keeps complete tiles that overlap the mask at all. Useful for analysis or post-processing.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section docs-section">
         <div>
           <p class="eyebrow">Job lifecycle</p>
@@ -110,25 +142,41 @@ GET /v1/jobs/{job_id}/urls?ttl_seconds=900
 GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       </section>
 
+      <section id="outputs" class="section docs-section">
+        <div>
+          <p class="eyebrow">Outputs &amp; ownership</p>
+          <h2>You own your pipeline; tiling facts stay facts.</h2>
+          <p>
+            Plain geometry snapshots &mdash; uncolored coordinates, repeatable substitution outputs, CSV rows of affine transforms &mdash;
+            are closer to encyclopedic mathematics than expressive authorship on their own, much like plotting a Cartesian grid or hex lattice.
+          </p>
+          <p>
+            <strong>Company stance:</strong> we do not assert ownership or exclusive licensed rights simply because you exported a patch via the API.
+            Your protectable creativity begins wherever you add substantive design choices: art direction, materials, fabrication, shading, composites,
+            narrative, branding, UI, tools, games, textiles, apparel, signage, motion, typography, palettes &mdash; integration work that goes beyond raw coordinates.
+          </p>
+        </div>
+      </section>
+
       <section id="access" class="section cta">
         <p class="eyebrow">Access model</p>
-        <h2>Free previews, paid production downloads.</h2>
+        <h2>Day Pass · Solo · Teams · Free previews.</h2>
         <p>
-          The public website can stay inexpensive by showing preloaded examples.
-          API keys should unlock custom geometry, larger masks, commercial usage,
-          batch generation, longer artifact retention, and design-tool plugins.
+          Free keys stay constrained to small preview patches and JPG/PNG raster previews. Paid checkout grants
+          <strong>Day Pass</strong>, <strong>Solo</strong>, or <strong>Teams</strong> API tiers
+          (see <code>GET /v1/capabilities</code>).
         </p>
         <div id="checkoutClaim" class="demo-stats"></div>
         <div class="hero-actions">
           <a class="button" href="https://aperiodic-monotile-api.onrender.com/v1/capabilities">View live capabilities</a>
-          <a class="button secondary" href="index.html#pricing">See pricing direction</a>
+          <a class="button secondary" href="index.html#pricing">Pricing & checkout</a>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <p>Documentation starter for the Aperiodic Monotile API.</p>
-      <p><a href="index.html">Home</a></p>
+      <p>Documentation for the Aperiodic Monotile API.</p>
+      <p><a href="index.html">Home</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a></p>
     </footer>
     <script>
       const params = new URLSearchParams(window.location.search);
@@ -136,7 +184,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       const claimBox = document.querySelector("#checkoutClaim");
       async function claimKey() {
         if (!sessionId || !claimBox) return;
-        claimBox.textContent = "Payment complete. Claiming your Studio API key...";
+        claimBox.textContent = "Checkout complete — minting API key via claim endpoint...";
         try {
           const response = await fetch("https://aperiodic-monotile-api.onrender.com/v1/billing/claim-key", {
             method: "POST",
@@ -146,9 +194,17 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           const payload = await response.json();
           if (!response.ok) throw new Error(JSON.stringify(payload));
           if (payload.api_key) {
-            claimBox.innerHTML = `<strong>Your Studio API key</strong><code>${payload.api_key}</code><span>Save it now. It is shown once.</span>`;
+            const heading = document.createElement("strong");
+            heading.textContent = "Your paid API key";
+            const code = document.createElement("code");
+            code.textContent = payload.api_key;
+            const note = document.createElement("span");
+            note.textContent = `Tier ${payload.tier || "solo/teams"} — shown once.`;
+            claimBox.replaceChildren(heading, code, note);
+            history.replaceState(null, "", "docs.html#access");
           } else {
             claimBox.textContent = `This checkout was already claimed. Key prefix: ${payload.key_prefix || "unknown"}.`;
+            history.replaceState(null, "", "docs.html#access");
           }
         } catch (err) {
           claimBox.textContent = "Could not claim an API key yet. If Stripe was just connected, contact support with your checkout session ID.";

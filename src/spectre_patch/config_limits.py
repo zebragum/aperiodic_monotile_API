@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class LimitsSettings(BaseSettings):
     """Env-overridable limits and pricing SKU hooks."""
 
-    model_config = SettingsConfigDict(env_prefix="SPECTRE_PATCH_", env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="SPECTRE_PATCH_", env_file=(".env", "../.env"), extra="ignore")
 
     max_supertile_iterations: int = 26
     max_tiles_per_job: int = 500_000
@@ -29,13 +29,29 @@ class LimitsSettings(BaseSettings):
     redis_url: str | None = None
 
 
+
+# Raster-only formats exposed on the unpaid SKU — enforced in the API worker.
+FREE_TIER_RASTER_FORMATS: frozenset[str] = frozenset({"png", "jpg", "jpeg"})
+
+
 DEFAULT_TIER_RULES: dict[str, dict[str, int | float | bool]] = {
     "tier_free": {
         "max_tiles_per_job": 2500,
         "max_wall_time_sec": 120,
         "stl_instancing_required": False,
     },
-    "tier_pro": {
+    # Paid Stripe SKUs — same production limits initially; differentiate later if needed.
+    "tier_day_pass": {
+        "max_tiles_per_job": 500_000,
+        "max_wall_time_sec": 3600.0,
+        "stl_instancing_required": False,
+    },
+    "tier_solo": {
+        "max_tiles_per_job": 500_000,
+        "max_wall_time_sec": 3600.0,
+        "stl_instancing_required": False,
+    },
+    "tier_teams": {
         "max_tiles_per_job": 500_000,
         "max_wall_time_sec": 3600.0,
         "stl_instancing_required": False,

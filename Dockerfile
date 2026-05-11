@@ -75,22 +75,57 @@ COPY --chown=spectre:spectre <<'EOF' /app/entrypoint.sh
 #!/bin/sh
 set -eu
 
+bootstrap_atlas() {
+  if [ "${SPECTRE_PATCH_BOOTSTRAP_ATLAS:-false}" = "true" ]; then
+    python /app/scripts/bootstrap_atlas.py
+  fi
+}
+
+run_api() {
+  UVICORN_LOG_LEVEL="$(printf '%s' "${SPECTRE_PATCH_LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
+  exec uvicorn spectre_patch.api.main:app \
+    --host 0.0.0.0 \
+    --port "${SPECTRE_PATCH_API_PORT:-8000}" \
+    --workers "${UVICORN_WORKERS:-1}" \
+    --proxy-headers \
+    --forwarded-allow-ips '*' \
+    --log-level "$UVICORN_LOG_LEVEL"
+}
+
 case "${1:-api}" in
   api)
-    if [ "${SPECTRE_PATCH_BOOTSTRAP_ATLAS:-false}" = "true" ]; then
-      python /app/scripts/bootstrap_atlas.py
-    fi
+    bootstrap_atlas
+    run_api
+    ;;
+  worker)
+    exec spectre-patch-worker
+    ;;
+  api-worker)
+    bootstrap_atlas
+    spectre-patch-worker &
+    worker_pid="$!"
     UVICORN_LOG_LEVEL="$(printf '%s' "${SPECTRE_PATCH_LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
-    exec uvicorn spectre_patch.api.main:app \
+    uvicorn spectre_patch.api.main:app \
       --host 0.0.0.0 \
       --port "${SPECTRE_PATCH_API_PORT:-8000}" \
       --workers "${UVICORN_WORKERS:-1}" \
       --proxy-headers \
       --forwarded-allow-ips '*' \
-      --log-level "$UVICORN_LOG_LEVEL"
-    ;;
-  worker)
-    exec spectre-patch-worker
+      --log-level "$UVICORN_LOG_LEVEL" &
+    api_pid="$!"
+
+    terminate() {
+      kill "$api_pid" "$worker_pid" 2>/dev/null || true
+      wait "$api_pid" "$worker_pid" 2>/dev/null || true
+    }
+    trap 'terminate; exit 0' INT TERM
+
+    while kill -0 "$api_pid" 2>/dev/null && kill -0 "$worker_pid" 2>/dev/null; do
+      sleep 2
+    done
+
+    terminate
+    exit 1
     ;;
   *)
     exec "$@"

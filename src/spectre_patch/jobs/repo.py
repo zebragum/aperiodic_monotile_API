@@ -7,7 +7,6 @@ import secrets
 import hashlib
 import sqlite3
 import time
-from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
 
@@ -41,6 +40,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
   stripe_checkout_session_id TEXT UNIQUE,
+  expires_at REAL,
   one_time_plaintext TEXT
 );
 CREATE INDEX IF NOT EXISTS ix_api_keys_status
@@ -94,11 +94,14 @@ def _migrate(conn: sqlite3.Connection) -> None:
           stripe_customer_id TEXT,
           stripe_subscription_id TEXT,
           stripe_checkout_session_id TEXT UNIQUE,
+          expires_at REAL,
           one_time_plaintext TEXT
         )
         """
     )
     api_cols = {row["name"] for row in conn.execute("PRAGMA table_info(api_keys)")}
+    if api_cols and "expires_at" not in api_cols:
+        conn.execute("ALTER TABLE api_keys ADD COLUMN expires_at REAL")
     if api_cols and "one_time_plaintext" not in api_cols:
         conn.execute("ALTER TABLE api_keys ADD COLUMN one_time_plaintext TEXT")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_api_keys_status ON api_keys(status, tier)")
@@ -283,8 +286,14 @@ def generate_api_key(prefix: str = "mono_live") -> str:
 
 def lookup_api_key(conn: sqlite3.Connection, api_key: str) -> sqlite3.Row | None:
     cur = conn.execute(
-        "SELECT * FROM api_keys WHERE key_hash=? AND status='active' LIMIT 1",
-        (hash_api_key(api_key),),
+        """
+        SELECT * FROM api_keys
+         WHERE key_hash=?
+           AND status='active'
+           AND (expires_at IS NULL OR expires_at > ?)
+         LIMIT 1
+        """,
+        (hash_api_key(api_key), time.time()),
     )
     return cur.fetchone()
 
@@ -298,6 +307,7 @@ def create_api_key(
     stripe_customer_id: str | None = None,
     stripe_subscription_id: str | None = None,
     stripe_checkout_session_id: str | None = None,
+    expires_at: float | None = None,
     reveal_once: bool = False,
 ) -> str:
     api_key = generate_api_key()
@@ -306,9 +316,9 @@ def create_api_key(
         INSERT INTO api_keys(
             key_hash, key_prefix, tier, status, created, label, customer_email,
             stripe_customer_id, stripe_subscription_id, stripe_checkout_session_id,
-            one_time_plaintext
+            expires_at, one_time_plaintext
         )
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
         """,
         (
             hash_api_key(api_key),
@@ -321,6 +331,7 @@ def create_api_key(
             stripe_customer_id,
             stripe_subscription_id,
             stripe_checkout_session_id,
+            expires_at,
             api_key if reveal_once else None,
         ),
     )
@@ -380,3 +391,16 @@ def create_or_update_lead(
     )
     conn.commit()
     return lead_id, True
+
+
+def list_leads(conn: sqlite3.Connection, *, limit: int = 500) -> list[sqlite3.Row]:
+    cur = conn.execute(
+        """
+        SELECT id, created, email, name, company, use_case, source, status
+          FROM leads
+         ORDER BY created DESC
+         LIMIT ?
+        """,
+        (int(limit),),
+    )
+    return list(cur.fetchall())

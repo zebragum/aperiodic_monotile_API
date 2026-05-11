@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aperiodic monotile use cases | Aperiodic Monotile API</title>
+    <meta
+      name="description"
+      content="Explore what custom aperiodic monotile patches can do in graphics, design, fabrication, acoustics, optics, materials, robotics, signal processing, education, and research."
+    />
+    <link
+      rel="canonical"
+      href="https://aperiodic-monotile-site.onrender.com/use-cases/applications.html"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../index.html"
+        ><img class="brand-mark" src="../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" /><span>Aperiodic Monotile API</span></a
+      >
+      <nav class="nav">
+        <a href="../index.html#demo">Demo</a>
+        <a href="../index.html#use-cases">Use cases</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../index.html#pricing">Pricing</a>
+      </nav>
+    </header>
+    <main>
+      <section class="section docs-hero">
+        <p class="eyebrow">Use cases</p>
+        <h1>What can you do with aperiodic monotile geometry?</h1>
+        <p class="hero-text">
+          Generate custom, fully tiled regions that are ordered without repeating. That is useful anywhere
+          regular grids create artifacts, random noise creates chaos, or handcrafted geometry takes too long.
+          Start with a mask, a tile scale, and an export format; then bring the result into a renderer, CAD
+          tool, slicer, simulation, classroom, or research workflow.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="../index.html#demo">Try the visual demo</a>
+          <a class="button secondary" href="../docs.html">Read the API docs</a>
+        </div>
+        <p class="domain-catalog-intro">
+          The Spectre / Tile(1,1) family is newly discovered geometry, so many of the strongest applications
+          will come from experimentation. Treat this page as a field guide: some ideas are immediately
+          practical, some are research directions, and all benefit from an API that makes non-repeating
+          geometry easy to request, reproduce, and export.<sup class="citation"><a href="#ref-1">[1]</a></sup
+          ><sup class="citation"><a href="#ref-3">[3]</a></sup>
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Immediate value</p>
+          <h2>Start where patterns already matter.</h2>
+          <p>
+            These are the places where aperiodic patches can be useful on day one: visual output, fabricated
+            surfaces, educational demos, and tools that need deterministic but non-repeating geometry.
+          </p>
+        </div>
+        <div class="domain-catalog">
+          <article class="domain-block">
+            <h3>Computer graphics</h3>
+            <p>
+              Replace obvious grid structure with deterministic non-repeating geometry for scenes, masks,
+              meshes, samplers, and materials. Aperiodic layouts are especially interesting when repetition
+              causes aliasing, moir&eacute;, texture tiling, or visible procedural seams.
+            </p>
+            <ul>
+              <li>Procedural worlds and environment scatter</li>
+              <li>Texture mapping, decals, hatching, stippling, and anti-moir&eacute; patterns</li>
+              <li>Meshes, subdivision experiments, ray/path tracing layouts, and sampling studies</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-4">[4]</a>, <a href="#ref-9">[9]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Design, art, and architecture</h3>
+            <p>
+              Make surfaces that feel intentional without becoming wallpaper. Designers can fill any region
+              with geometry that stays coherent across scale, works as a vector asset, and can become a real
+              fabricated object.
+            </p>
+            <ul>
+              <li>Generative sculpture, ornamental tilings, impossible forms, and visual illusions</li>
+              <li>Facades, screens, ventilation geometry, textiles, inlays, and packaging</li>
+              <li>Lightweight shells, tensile structures, and spatial studies for built environments</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-1">[1]</a>, <a href="#ref-3">[3]</a>, <a href="#ref-11">[11]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Fabrication and 3D printing</h3>
+            <p>
+              Export the same region as SVG, STL, glTF, CSV, or JSON. That means one design can become a
+              laser-cut panel, a printed texture, an instanced mesh, or a dataset of tile transforms.
+            </p>
+            <ul>
+              <li>Toolpath and infill experiments</li>
+              <li>Support-free printing studies, topology optimization, and surface finishing</li>
+              <li>Architectural panels, molds, product surfaces, screens, and repeat-free decoration</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-1">[1]</a>, <a href="#ref-6">[6]</a>, <a href="#ref-10">[10]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Education and intuition tools</h3>
+            <p>
+              Aperiodic monotiles are a rare chance to teach a fresh mathematical discovery through objects
+              people can manipulate. Use generated patches for explainers, workshops, classroom demos, and
+              physical models.
+            </p>
+            <ul>
+              <li>Interactive geometry engines</li>
+              <li>VR exploration</li>
+              <li>Posters, exhibits, puzzles, and physical models of abstract spaces</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-1">[1]</a>, <a href="#ref-3">[3]</a>, <a href="#ref-4">[4]</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Research frontiers</p>
+          <h2>Use it as a new structured input.</h2>
+          <p>
+            Aperiodic monotile patches are not just decoration. They are reproducible geometric datasets:
+            every tile has position, rotation, scale, neighbors, IDs, and exportable polygons. That makes
+            them useful as a testbed for physical simulation, algorithms, and speculative research.
+          </p>
+        </div>
+        <div class="domain-catalog">
+          <article class="domain-block">
+            <h3>Signal processing and imaging</h3>
+            <p>
+              Regular sampling can create artifacts; random sampling can be hard to control. Aperiodic
+              layouts offer another family of deterministic patterns to test against reconstruction,
+              denoising, compression, and imaging pipelines.
+            </p>
+            <ul>
+              <li>Sampling theory, compression, denoising, and reconstruction</li>
+              <li>Radar, sonar, MRI, CT, and sensor-array geometry experiments</li>
+              <li>Comparisons with grids, jittered samples, blue-noise patterns, and quasi-periodic layouts</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-4">[4]</a>, <a href="#ref-2">[2]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Waves, vibration, acoustics, optics, and photonics</h3>
+            <p>
+              When waves meet structure, geometry matters. Non-repeating tiled surfaces can become candidate
+              layouts for scattering, focusing, diffusion, diffraction, beam shaping, and waveguide studies.
+            </p>
+            <ul>
+              <li>Acoustic panels, speaker geometry, concert halls, ultrasound focusing, and acoustic lenses</li>
+              <li>Lens design, diffraction control, waveguides, holography, beam shaping, and photonic layouts</li>
+              <li>Simulation-ready polygons for comparing periodic, random, and aperiodic boundaries</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-2">[2]</a>, <a href="#ref-1">[1]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Materials, energy, and fluids</h3>
+            <p>
+              Engineers often tune performance by changing geometry: pores, channels, lattices, surfaces,
+              electrodes, exchangers, and support structures. Aperiodic arrays give researchers a new way
+              to produce controlled non-periodic candidates at many scales.
+            </p>
+            <ul>
+              <li>Metamaterials, auxetic lattices, acoustic cloaking, photonic crystals, and programmable matter</li>
+              <li>Battery electrodes, fuel cells, solar concentrators, thermal exchangers, and porous media</li>
+              <li>Drag reduction, turbulence control, microfluidics, blood-flow modeling, and surface textures</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-2">[2]</a>, <a href="#ref-5">[5]</a>, <a href="#ref-8">[8]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Robotics, mobility, and mapping</h3>
+            <p>
+              Robots and vehicles interact with surfaces, fields, and maps. A deterministic aperiodic layout
+              can become a repeatable test surface, navigation substrate, grasping texture, or spatial index
+              for experiments.
+            </p>
+            <ul>
+              <li>Motion planning, terrain navigation, SLAM, geodesics, spherical grids, and drone path planning</li>
+              <li>Grasping surfaces, soft robotics, deployable structures, tire tread, road surfaces, and rail geometry</li>
+              <li>Aerodynamic surfaces, heat shields, turbine blades, deployable antennas, and folding structures</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-10">[10]</a>, <a href="#ref-8">[8]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Biology, medicine, and molecular design</h3>
+            <p>
+              Natural systems are full of packing, branching, growth, folding, and surface constraints.
+              Aperiodic monotile patches are not biological models by default, but they can serve as clean
+              geometric scaffolds for asking better questions.
+            </p>
+            <ul>
+              <li>Morphogenesis, shell growth, protein folding, cellular packing, and neural geometry</li>
+              <li>Implants, prosthetics, vascular stents, tissue scaffolds, and surgical planning</li>
+              <li>Crystal structures, catalysts, zeolites, molecular cages, and drug-binding geometry studies</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-2">[2]</a>, <a href="#ref-5">[5]</a></p>
+          </article>
+          <article class="domain-block">
+            <h3>Algorithms, machine learning, and cryptographic experiments</h3>
+            <p>
+              Because every patch can be regenerated with stable IDs and transforms, the geometry can become
+              a benchmark input: structured, non-repeating, and harder to memorize than a regular grid.
+              Cryptographic uses should be treated as research only unless formally reviewed.
+            </p>
+            <ul>
+              <li>Spatial indexing, nearest-neighbor search, graph embeddings, and geometric hashing</li>
+              <li>Geometric deep learning, manifolds, latent spaces, equivariant models, and physical-system priors</li>
+              <li>Lattice-inspired experiments, geometric trapdoors, high-dimensional hardness ideas, and quantum-code layouts</li>
+            </ul>
+            <p class="domain-see">Sources: <a href="#ref-7">[7]</a>, <a href="#ref-9">[9]</a>, <a href="#ref-11">[11]</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">References</p>
+          <h2>Selected references.</h2>
+        </div>
+        <ol class="references-list">
+          <li id="ref-1">
+            David Smith, Joseph Samuel Myers, Craig S. Kaplan, and Chaim Goodman-Strauss,
+            <a href="https://arxiv.org/abs/2305.17743" rel="noopener noreferrer">A chiral aperiodic monotile</a>.
+          </li>
+          <li id="ref-2">
+            Yuto Moritake, Masato Takiguchi, Takuma Aihara, and Masaya Notomi,
+            <a href="https://arxiv.org/abs/2506.07561" rel="noopener noreferrer"
+              >Chiral Diffraction from Aperiodic Monotile Lattice</a
+            >.
+          </li>
+          <li id="ref-3">
+            Craig S. Kaplan,
+            <a href="https://arxiv.org/abs/2509.12216" rel="noopener noreferrer">The Path to Aperiodic Monotiles</a>.
+          </li>
+          <li id="ref-4">
+            <a href="https://arxiv.org/abs/2603.30006" rel="noopener noreferrer"
+              >Enabling fundamental understanding of Nature with novel binning methods for 2D histograms</a
+            >.
+          </li>
+          <li id="ref-5">
+            Shigeki Akiyama and Yuto Araki,
+            <a href="https://arxiv.org/abs/2506.19362" rel="noopener noreferrer"
+              >Sturmian lattices and aperiodic tile sets</a
+            >.
+          </li>
+          <li id="ref-6">
+            <a href="https://arxiv.org/abs/2502.15608" rel="noopener noreferrer"
+              >Homochiral inflation for the aperiodic monotile Tile(1,1)</a
+            >.
+          </li>
+          <li id="ref-7">
+            <a href="https://arxiv.org/abs/2307.08184" rel="noopener noreferrer"
+              >Converting non-periodic tilings with Tile(1,1) into tilings with a chiral aperiodic monotile</a
+            >.
+          </li>
+          <li id="ref-8">
+            <a href="https://arxiv.org/abs/2504.11710" rel="noopener noreferrer"
+              >Tilings from Tops of Overlapping Iterated Function Systems</a
+            >.
+          </li>
+          <li id="ref-9">
+            <a href="https://arxiv.org/abs/2603.00911" rel="noopener noreferrer"
+              >On the Exact Algorithmic Extraction of Finite Tesselations Through Prime Extraction of Minimal
+              Rectangular Generators</a
+            >.
+          </li>
+          <li id="ref-10">
+            <a href="https://arxiv.org/abs/2603.13856" rel="noopener noreferrer"
+              >OrigamiBench: An Interactive Environment to Synthesize Flat-Foldable Origamis</a
+            >.
+          </li>
+          <li id="ref-11">
+            <a href="https://arxiv.org/abs/2409.15880" rel="noopener noreferrer"
+              >Aperiodic monotiles: from geometry to groups</a
+            >.
+          </li>
+        </ol>
+      </section>
+
+      <section class="section docs-section">
+        <div>
+          <p class="eyebrow">Build with it</p>
+          <h2>The point is not a pretty sample image. The point is geometry on demand.</h2>
+          <p>
+            Ask for a circle, a rectangle, a hexagon, or a custom region. Set tile scale and export format.
+            Keep stable tile IDs when you need repeatability. Use SVG for design tools, STL for fabrication,
+            glTF for instanced 3D, JPG for previews, and CSV/JSON when your own software needs the transforms.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="../index.html#demo">Try a patch</a>
+            <a class="button secondary" href="../docs.html#access">Get API access</a>
+          </div>
+        </div>
+        <pre class="code-card"><code>{
+  "mask": {"type": "rectangle", "center": [0, 0], "width": 40, "height": 90},
+  "scale": 1.0,
+  "formats": ["svg", "stl", "json"],
+  "retention": "clip"
+}</code></pre>
+      </section>
+    </main>
+    <footer class="footer">
+      <p><a href="../index.html">Home</a> · <a href="../docs.html">Docs</a> · <a href="../terms.html">Terms</a> · <a href="../privacy.html">Privacy</a> · <a href="../refund.html">Refunds</a> · <a href="../contact.html">Contact</a> · <a href="../attribution.html">Attribution</a></p>
+    </footer>
+  </body>
+</html>

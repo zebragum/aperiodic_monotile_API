@@ -35,7 +35,7 @@ def main() -> int:
         "retention": "centroid",
         "mask": {"type": "circle", "center": [0.0, 0.0], "radius": 8.0},
     }
-    job_id, _ = job_repo.enqueue_job(conn, "tier_pro", body)
+    job_id, _ = job_repo.enqueue_job(conn, "tier_solo", body)
     conn.close()
     print(f"queued job: {job_id}")
 

@@ -21,11 +21,16 @@ class MaskRectangleBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     type: Literal["rectangle"] = "rectangle"
-    bounds: dict  # {xmin, ymin, xmax, ymax}
+    bounds: dict | None = None  # {xmin, ymin, xmax, ymax}
+    center: list[float] | None = Field(default=None, min_length=2, max_length=2)
+    width: Annotated[float, Field(gt=0, le=1.0e7)] | None = None
+    height: Annotated[float, Field(gt=0, le=1.0e7)] | None = None
 
     @field_validator("bounds")
     @classmethod
-    def _check_bounds(cls, v: dict) -> dict:
+    def _check_bounds(cls, v: dict | None) -> dict | None:
+        if v is None:
+            return v
         for k in ("xmin", "ymin", "xmax", "ymax"):
             if k not in v:
                 raise ValueError(f"rectangle.bounds missing key: {k}")
@@ -34,6 +39,16 @@ class MaskRectangleBody(BaseModel):
         if v["xmin"] >= v["xmax"] or v["ymin"] >= v["ymax"]:
             raise ValueError("rectangle.bounds must satisfy xmin<xmax, ymin<ymax")
         return v
+
+    @model_validator(mode="after")
+    def _check_rectangle_shape(self) -> "MaskRectangleBody":
+        has_bounds = self.bounds is not None
+        has_center_size = self.center is not None and self.width is not None and self.height is not None
+        if has_bounds == has_center_size:
+            raise ValueError(
+                "rectangle requires exactly one of bounds or center+width+height"
+            )
+        return self
 
 
 class MaskSquareBody(BaseModel):
@@ -74,8 +89,7 @@ class MaskRoundedRectBody(BaseModel):
     corner_radius: Annotated[float, Field(ge=0, le=1.0e7)] = 0.0
 
 
-_SUPPORTED_FORMATS = {"svg", "svgz", "csv", "json", "stl", "glb", "instance_json", "png"}
-
+_SUPPORTED_FORMATS = {"svg", "svgz", "csv", "json", "stl", "glb", "instance_json", "png", "jpg", "jpeg"}
 
 # ------------------------------------------------------- request ----
 class PatchRequest(BaseModel):
@@ -105,6 +119,9 @@ class PatchRequest(BaseModel):
     stl_extrusion_mm: Annotated[float, Field(gt=0.0, le=1.0e4)] = 1.0
     png_width_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
     png_height_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
+    jpg_width_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
+    jpg_height_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
+    jpg_quality: Annotated[int, Field(ge=40, le=100)] | None = None
 
     svg_fill: str | None = Field(default=None, max_length=32)
     svg_stroke: str | None = Field(default=None, max_length=32)
@@ -172,4 +189,8 @@ class PatchRequest(BaseModel):
             raise ValueError("png_width_px requires png_height_px")
         if self.png_height_px is not None and self.png_width_px is None:
             raise ValueError("png_height_px requires png_width_px")
+        if self.jpg_width_px is not None and self.jpg_height_px is None:
+            raise ValueError("jpg_width_px requires jpg_height_px")
+        if self.jpg_height_px is not None and self.jpg_width_px is None:
+            raise ValueError("jpg_height_px requires jpg_width_px")
         return self

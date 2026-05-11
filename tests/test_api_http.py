@@ -2,31 +2,70 @@
 
 from __future__ import annotations
 
+import io
 import os
 import tempfile
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 
-def _build_app(tmp: Path, *, atlas_dir: Path | None = None, admin_token: str | None = None):
+def _cairo_raster_deps_functional() -> bool:
+    """True when cairosvg can rasterize at least once (needs libcairo/GTK stack)."""
+
+    try:
+        import cairosvg  # noqa: PLC0415
+        from PIL import Image  # noqa: PLC0415
+        png_buf = io.BytesIO()
+        cairosvg.svg2png(
+            bytestring=b'<svg xmlns="http://www.w3.org/2000/svg"/>',
+            write_to=png_buf,
+            output_width=2,
+            output_height=2,
+        )
+        png_buf.seek(0)
+        with Image.open(png_buf) as im:
+            im.load()
+        return True
+    except Exception:
+        return False
+
+
+def _build_app(
+    tmp: Path,
+    *,
+    atlas_dir: Path | None = None,
+    admin_token: str | None = None,
+    extra_env: dict[str, str] | None = None,
+):
     os.environ["SPECTRE_PATCH_STORAGE_DIR"] = str(tmp / "jobs")
     os.environ["SPECTRE_PATCH_DB_PATH"] = str(tmp / "monotile.db")
     os.environ["SPECTRE_PATCH_API_SECRET"] = "test-secret"
     for k in (
         "SPECTRE_PATCH_STRIPE_SECRET_KEY",
         "SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_YEARLY",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY",
         "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
     ):
-        os.environ.pop(k, None)
+        os.environ[k] = ""
     if admin_token is None:
         os.environ.pop("SPECTRE_PATCH_ADMIN_TOKEN", None)
     else:
         os.environ["SPECTRE_PATCH_ADMIN_TOKEN"] = admin_token
+    for key, value in (extra_env or {}).items():
+        os.environ[key] = value
     # Tests run jobs inside the request lifecycle; production deployments use
     # the dedicated worker process and would leave this off.
     os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = "true"
     os.environ["SPECTRE_PATCH_RATE_LIMIT_POST_PATCH"] = "10000/minute"
+    os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CHECKOUT"] = "10000/minute"
+    os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CLAIM"] = "10000/minute"
+    os.environ["SPECTRE_PATCH_RATE_LIMIT_LEADS"] = "10000/minute"
     if atlas_dir is None:
         atlas_dir = tmp / "atlas_empty"
         atlas_dir.mkdir(parents=True, exist_ok=True)
@@ -54,6 +93,8 @@ def test_capabilities_ok():
             assert body["atlas"]["max_canonical_full_side"] == 0.0
             assert "operational" in body
             assert "roadmap" in body
+            assert "free_tier_formats" in body
+            assert set(body["free_tier_formats"]) == {"jpeg", "jpg", "png"}
             assert any(f.get("status") == "planned" for f in body["roadmap"]["tile_families"])
 
 
@@ -124,7 +165,7 @@ def test_configured_cors_origin_is_returned():
 
 def test_api_key_required_when_configured():
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
-    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","pro-secret":"tier_pro"}'
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","solo-secret":"tier_solo"}'
     try:
         with tempfile.TemporaryDirectory() as tmp:
             with TestClient(_build_app(Path(tmp))) as client:
@@ -146,7 +187,7 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
     """A free key must not become paid just because the client sends X-API-Tier."""
 
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
-    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","pro-secret":"tier_pro"}'
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","solo-secret":"tier_solo"}'
     try:
         with tempfile.TemporaryDirectory() as tmp:
             with TestClient(_build_app(Path(tmp))) as client:
@@ -156,13 +197,15 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
                     "rotation_deg": 0.0,
                     "coverage_half_extent": 1.5,
                     "substitution_iterations": 2,
-                    "formats": ["csv"],
+                    "formats": ["jpg"],
+                    "jpg_width_px": 256,
+                    "jpg_height_px": 256,
                     "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
                 }
                 r = client.post(
                     "/v1/patch",
                     json=body,
-                    headers={"X-API-Key": "free-secret", "X-API-Tier": "tier_pro"},
+                    headers={"X-API-Key": "free-secret", "X-API-Tier": "tier_solo"},
                 )
                 assert r.status_code == 200
                 assert r.json()["tier"] == "tier_free"
@@ -170,13 +213,58 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
                 r = client.post(
                     "/v1/patch",
                     json={**body, "seed": "paid"},
-                    headers={"X-API-Key": "pro-secret"},
+                    headers={"X-API-Key": "solo-secret"},
                 )
                 assert r.status_code == 200
-                assert r.json()["tier"] == "tier_pro"
+                assert r.json()["tier"] == "tier_solo"
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
         os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_free_tier_patch_rejects_vector_formats():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            body = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "coverage_half_extent": 1.5,
+                "substitution_iterations": 2,
+                "formats": ["svg"],
+                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+            }
+            r = client.post("/v1/patch", json=body)
+            assert r.status_code == 422
+
+
+@pytest.mark.skipif(
+    not _cairo_raster_deps_functional(),
+    reason="cairo / cairosvg raster stack unavailable (install GTK+cairo or use Docker/Linux CI)",
+)
+def test_free_tier_patch_jpeg_smoke():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            body = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "coverage_half_extent": 1.5,
+                "substitution_iterations": 2,
+                "formats": ["jpg"],
+                "jpg_width_px": 240,
+                "jpg_height_px": 240,
+                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+            }
+            r = client.post("/v1/patch", json=body)
+            assert r.status_code == 200
+            job_id = r.json()["job_id"]
+            row = {}
+            for _ in range(50):
+                row = client.get(f"/v1/jobs/{job_id}").json()
+                if row["status"] in ("completed", "failed"):
+                    break
+            assert row["status"] == "completed"
+            urls = client.get(f"/v1/jobs/{job_id}/urls").json()
+            assert "patch.jpg" in urls["urls"]
 
 
 def test_database_api_key_authenticates_paid_tier():
@@ -188,7 +276,7 @@ def test_database_api_key_authenticates_paid_tier():
             with TestClient(app) as client:
                 from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
 
-                api_key = job_repo.create_api_key(app.state.db, tier="tier_pro", label="test")
+                api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="test")
                 r = client.get("/v1/capabilities", headers={"X-API-Key": api_key})
                 assert r.status_code == 200
 
@@ -202,7 +290,7 @@ def test_database_api_key_authenticates_paid_tier():
                 }
                 r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
                 assert r.status_code == 200
-                assert r.json()["tier"] == "tier_pro"
+                assert r.json()["tier"] == "tier_solo"
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
 
@@ -216,6 +304,69 @@ def test_billing_endpoints_report_disabled_without_stripe_config():
 
             r = client.post("/v1/billing/checkout", json={"email": "buyer@example.com"})
             assert r.status_code == 503
+
+
+def test_billing_checkout_day_pass_uses_payment_mode(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(
+            Path(tmp),
+            extra_env={
+                "SPECTRE_PATCH_STRIPE_SECRET_KEY": "sk_test_123",
+                "SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS": "price_day",
+            },
+        )
+        from spectre_patch.api import main as api_main  # noqa: PLC0415
+
+        async def fake_stripe_post(cfg, path, data):
+            assert path == "checkout/sessions"
+            assert data["mode"] == "payment"
+            assert data["line_items[0][price]"] == "price_day"
+            assert data["metadata[tier]"] == "tier_day_pass"
+            assert data["metadata[checkout_plan]"] == "day_pass"
+            assert data["metadata[key_ttl_seconds]"] == str(24 * 3600)
+            return {"url": "https://checkout.example/day", "id": "cs_test_day"}
+
+        monkeypatch.setattr(api_main, "_stripe_post", fake_stripe_post)
+        with TestClient(app) as client:
+            r = client.get("/v1/billing/status")
+            assert r.status_code == 200
+            assert r.json()["plans"]["day_pass"] is True
+
+            r = client.post(
+                "/v1/billing/checkout",
+                json={"email": "buyer@example.com", "plan": "day_pass"},
+            )
+            assert r.status_code == 200
+            assert r.json()["tier"] == "tier_day_pass"
+            assert r.json()["plan"] == "day_pass"
+            assert r.json()["checkout_url"] == "https://checkout.example/day"
+
+
+def test_database_api_key_expiry_blocks_authentication():
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(Path(tmp))
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            api_key = job_repo.create_api_key(
+                app.state.db,
+                tier="tier_day_pass",
+                label="expired-pass",
+                expires_at=0.0,
+            )
+            r = client.get("/v1/capabilities", headers={"X-API-Key": api_key})
+            assert r.status_code == 200
+
+            body = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "coverage_half_extent": 1.5,
+                "substitution_iterations": 2,
+                "formats": ["svg"],
+                "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
+            }
+            r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
+            assert r.status_code == 422
 
 
 def test_lead_capture_creates_and_updates_lead():
@@ -311,7 +462,11 @@ def test_capabilities_with_built_atlas():
 
 def test_idempotency_dedupes_jobs():
     with tempfile.TemporaryDirectory() as tmp:
-        with TestClient(_build_app(Path(tmp))) as client:
+        app = _build_app(Path(tmp))
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="idem")
             body = {
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
@@ -321,7 +476,7 @@ def test_idempotency_dedupes_jobs():
                 "formats": ["csv"],
                 "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
             }
-            h = {"Idempotency-Key": "abc-123", "X-API-Tier": "tier_pro"}
+            h = {"Idempotency-Key": "abc-123", "X-API-Key": api_key}
             r1 = client.post("/v1/patch", json=body, headers=h)
             r2 = client.post("/v1/patch", json=body, headers=h)
             assert r1.status_code == 200 and r2.status_code == 200
@@ -331,7 +486,11 @@ def test_idempotency_dedupes_jobs():
 
 def test_signed_url_bundle_after_completion():
     with tempfile.TemporaryDirectory() as tmp:
-        with TestClient(_build_app(Path(tmp))) as client:
+        app = _build_app(Path(tmp))
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="signed")
             body = {
                 "tile_family": "spectre_tile_1_1",
                 "scale": 1.0,
@@ -341,7 +500,7 @@ def test_signed_url_bundle_after_completion():
                 "formats": ["csv", "json"],
                 "mask": {"type": "square", "center": [0, 0], "half_side": 8.0},
             }
-            r = client.post("/v1/patch", json=body, headers={"X-API-Tier": "tier_pro"})
+            r = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
             assert r.status_code == 200
             job_id = r.json()["job_id"]
 
@@ -375,6 +534,12 @@ def test_shape_svg_smoke_requests_complete():
             },
         },
         {
+            "name": "9x4-rectangle-center-size",
+            "scale": 1.0,
+            "svg_pixel_target": 900,
+            "mask": {"type": "rectangle", "center": [0.0, 0.0], "width": 90.0, "height": 40.0},
+        },
+        {
             "name": "50u-triangle",
             "scale": 1.0,
             "svg_pixel_target": 500,
@@ -382,7 +547,11 @@ def test_shape_svg_smoke_requests_complete():
         },
     ]
     with tempfile.TemporaryDirectory() as tmp:
-        with TestClient(_build_app(Path(tmp))) as client:
+        app = _build_app(Path(tmp))
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="svg-shapes")
             for case in cases:
                 body = {
                     "tile_family": "spectre_tile_1_1",
@@ -402,7 +571,10 @@ def test_shape_svg_smoke_requests_complete():
                 r = client.post(
                     "/v1/patch",
                     json=body,
-                    headers={"Idempotency-Key": f"shape-smoke-{case['name']}"},
+                    headers={
+                        "Idempotency-Key": f"shape-smoke-{case['name']}",
+                        "X-API-Key": api_key,
+                    },
                 )
                 assert r.status_code == 200, r.text
                 job_id = r.json()["job_id"]

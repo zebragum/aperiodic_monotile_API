@@ -6,7 +6,7 @@
     <title>Aperiodic Monotile API | Spectre Geometry for Designers and Developers</title>
     <meta
       name="description"
-      content="Pattern-free aperiodic monotile geometry on demand: customizable arrays, gap-free polygon fills, and multi-format export (SVG, CSV, JSON, STL, glTF). Design, simulation, fabrication, and creative pipelines."
+      content="API for custom aperiodic monotile arrays. Export SVG, STL, JPG, glTF, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
     />
     <meta
       name="keywords"
@@ -21,7 +21,7 @@
     <meta property="og:title" content="Aperiodic Monotile API" />
     <meta
       property="og:description"
-      content="Customizable aperiodic monotile arrays with gap-free polygon fills. Export SVG, CSV, JSON, STL, and glTF for design, tooling, fabrication, and research."
+      content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, STL, JPG, glTF, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
     />
     <meta property="og:image" content="assets/examples/circle-100u.svg" />
     <meta property="og:url" content="https://aperiodic-monotile-site.onrender.com/" />
@@ -34,10 +34,12 @@
         "name": "Aperiodic Monotile API",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web API",
-        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, CSV, JSON, STL, glTF.",
+        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, STL, JPG, glTF, CSV, JSON.",
         "offers": [
-          {"@type": "Offer", "name": "Free API tier", "price": "0", "priceCurrency": "USD"},
-          {"@type": "Offer", "name": "Paid API tier", "priceSpecification": {"@type": "PriceSpecification", "priceCurrency": "USD"}}
+          {"@type": "Offer", "name": "Free preview tier", "price": "0", "priceCurrency": "USD"},
+          {"@type": "Offer", "name": "Day Pass", "price": "5", "priceCurrency": "USD"},
+          {"@type": "Offer", "name": "Solo", "price": "12", "priceCurrency": "USD"},
+          {"@type": "Offer", "name": "Teams", "price": "99", "priceCurrency": "USD"}
         ]
       }
     </script>
@@ -45,7 +47,14 @@
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Aperiodic Monotile API home">
-        <span class="brand-mark"></span>
+        <img
+          class="brand-mark"
+          src="assets/brand-mark.svg"
+          alt=""
+          width="32"
+          height="32"
+          decoding="async"
+        />
         <span>Aperiodic Monotile API</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
@@ -54,46 +63,38 @@
         <a href="docs.html">Docs</a>
         <a href="#pricing">Pricing</a>
       </nav>
-      <a class="button small" href="#waitlist">Get API Access</a>
+      <a class="button small" href="docs.html#access">Get API Access</a>
     </header>
 
     <main id="top">
       <section class="hero section">
         <div class="hero-copy">
-          <p class="eyebrow">Pattern-free geometry on-demand for wide-ranging design usage</p>
-          <h1>Aperiodic monotile patches for pipelines that ship real geometry.</h1>
+          <p class="eyebrow">Pattern-free geometry, on demand.</p>
+          <h1>Aperiodic monotile patches in many shapes, sizes, and formats.</h1>
           <p class="hero-text">
-            A production API centered on customizable aperiodic monotile arrays. Superior geometry for
-            improved aliasing, wave propagation, novel design, and exploring the frontiers of the useful
-            properties of this newly-discovered shape. Generate polygons full of gap-free tiles by simply
-            specifying a few parameters: polygon shape (e.g., a 4∶3 rectangle), tile size, and more. Ready
-            for integration with your favorite tools.
+            Finally! An API for custom aperiodic monotile arrays. Export SVG, STL, JPG, glTF, CSV, and JSON.
+            Fully-tiled patches, without navigating deep iterations. Built for rendering and aliasing-aware
+            layouts, design, 3D modeling and 3D printing, wave propagation, experimental keyed and cryptographic
+            workflows, and research into what this newly discovered shape can do. Choose your region—for example,
+            a 4∶9 rectangle—set tile scale and a handful of parameters; then drop the result into Blender, CAD,
+            Adobe, or your own stack.
           </p>
           <div class="hero-actions">
             <a class="button" href="#demo">Try the visual demo</a>
             <a class="button secondary" href="docs.html">Read the API docs</a>
-          </div>
-          <dl class="proof-grid proof-grid--single" aria-label="Product highlights">
-            <div><dt>Output formats</dt><dd>SVG, CSV, JSON, STL, glTF</dd></div>
-          </dl>
-        </div>
-        <div class="hero-card" aria-label="Aperiodic monotile preview">
-          <img src="assets/examples/circle-100u.svg" alt="A circular Spectre monotile patch" />
-          <div class="hero-card-label">
-            <span>100-unit circle</span>
-            <strong>1,036 tiles</strong>
+            <a class="button secondary" href="use-cases/applications.html">Use cases</a>
           </div>
         </div>
       </section>
 
       <section id="demo" class="section demo-section">
         <div class="section-heading">
-          <p class="eyebrow">Interactive view-only demo</p>
-          <h2>Explore real API outputs without spending compute.</h2>
+          <p class="eyebrow">Interactive demo</p>
+          <h2>Explore real API outputs</h2>
           <p>
-            This demo uses pre-generated examples, so it is cheap enough to show
-            publicly. The production API can generate fresh custom geometry for
-            authenticated users.
+            This demo visualizes some example outputs. The production API can generate
+            fully-customizable geometry for authenticated users. We define &ldquo;units&rdquo; as the
+            length of the longest side of the tile.
           </p>
         </div>
 
@@ -108,15 +109,7 @@
               </select>
             </label>
             <label>
-              Edge styling (preview)
-              <select id="outlineStyleSelect" aria-description="Preview-only stroke and filter styling in the browser. Exported meshes use the precise planar geometry from the API.">
-                <option value="flat">Flat polygons</option>
-                <option value="curvy">Soft / eased outline (DisplacementMap)</option>
-                <option value="spiky">Tight junctions (“spiky joins”)</option>
-              </select>
-            </label>
-            <label>
-              Stroke width (SVG only — canonical units; 0 = filled-only like solid STL meshes)
+              Line width (canonical units · 0 = filled-only silhouette)
               <input
                 id="strokeRange"
                 type="range"
@@ -125,21 +118,12 @@
                 value="50"
               />
             </label>
-            <label class="muted-label">
-              Preview magnification (pixels only · does not change mask or tessellation density)
-              <input
-                id="previewMagnifyRange"
-                type="range"
-                min="75"
-                max="140"
-                value="100"
-              />
-            </label>
             <div class="demo-stats" id="demoStats"></div>
             <p class="demo-note">
-              View-only previews are not a security boundary. Each bundled example fixes its mask geometry and tessellation snapshot; in production you regenerate with parameter changes (aspect ratio, mask size, tessellation depth, scale, retention, formats).
-              Edge styling controls here only dress the SVG preview; STL meshes stay volumetric slabs with solid facets.
-              Paid tiers unlock downloadable artifacts and higher limits for production runs.
+              Each bundled Spectre snapshot fixes its mask and tessellation. In production you
+              regenerate with your own masks, tessellation depth, scale, retention, and raster or
+              vector formats. Paid plans unlock scalable vectors, larger masks, bulk jobs, full
+              download bundles, commercial support, and integration tooling.
             </p>
           </aside>
           <div class="preview-frame">
@@ -153,12 +137,19 @@
       <section id="use-cases" class="section">
         <div class="section-heading">
           <p class="eyebrow">Practical uses</p>
-          <h2>Aperiodic patterns that leave the paper and enter production.</h2>
+          <h2>Aperiodic tilings have unique properties useful for a variety of applications</h2>
+          <p>
+            <a href="use-cases/applications.html">Survey application domains</a> — from computer graphics and signal processing to metamaterials, cryptography, and education — with selected research references.
+          </p>
         </div>
         <div class="cards">
           <article class="card">
             <h3>Blender and 3D workflows</h3>
-            <p>Instance tiles in Blender, Houdini, or Three.js for architectural panels, animation, sculpture, and procedural scenes.</p>
+            <p>
+              Instance tiles in Blender, Houdini, or Three.js for architectural panels,
+              animation, sculpture, and procedural scenes. Non-repeating structure helps avoid
+              obvious tiling, moire, and grid artifacts while staying deterministic.
+            </p>
             <a href="use-cases/blender.html">Blender workflow guide</a>
           </article>
           <article class="card">
@@ -173,11 +164,27 @@
           </article>
           <article class="card">
             <h3>Scientific communication</h3>
-            <p>Turn the Spectre monotile story into visual teaching material, posters, exhibits, and interactive explainers.</p>
+            <p>
+              Turn a recent mathematical discovery into visuals people can understand: classroom handouts,
+              museum panels, research figures, grant graphics, physical models, and interactive demos that
+              show order without repetition.
+            </p>
           </article>
           <article class="card">
             <h3>Textiles and surface design</h3>
-            <p>Build aperiodic motifs for wallpaper, fashion, packaging, embossing, engraving, and repeat-free decorative systems.</p>
+            <p>
+              Build aperiodic motifs for wallpaper, fashion, packaging,
+              embossing, engraving, and repeat-free decorative systems.
+            </p>
+          </article>
+          <article class="card">
+            <h3>AI research</h3>
+            <p>
+              In contrast to common polygons, which have been studied for thousands of years,
+              aperiodic monotiles are largely absent from AI training data. As pattern-learning
+              machines, this pattern-defying geometry represents a huge challenge to navigate and
+              a useful device for researchers.
+            </p>
           </article>
           <article class="card">
             <h3>Developer pipelines</h3>
@@ -191,92 +198,122 @@
           <p class="eyebrow">API documentation</p>
           <h2>One request creates a clipped geometry patch.</h2>
           <p>
-            Send a JSON mask, choose a retention policy, and request the formats
-            your pipeline needs. Jobs return signed URLs for completed artifacts.
+            POST JSON with your mask and retention mode, plus the exporter formats your pipeline needs.
+            When a job completes, artifact downloads arrive as signed, time-limited URLs.
           </p>
         </div>
         <pre class="code-card"><code>{
   "scale": 1,
   "mask": {"type": "triangle", "center": [0, 0], "side_length": 50},
   "retention": "clip",
-  "formats": ["svg", "json"],
-  "svg_pixel_target": 500,
-  "svg_margin": 0,
-  "svg_compact": true
+  "formats": ["jpg"],
+  "jpg_width_px": 900,
+  "jpg_height_px": 780,
+  "jpg_quality": 90
 }</code></pre>
       </section>
 
       <section id="pricing" class="section pricing">
         <div class="section-heading">
-          <p class="eyebrow">Monetization model</p>
-          <h2>Free previews, paid production geometry.</h2>
+          <p class="eyebrow">Pricing</p>
+          <h2>Production geometry with free previews</h2>
           <p>
-            The public site can show preloaded examples. Paid API keys unlock
-            larger jobs, batch generation, downloads, commercial support, and
-            integration tooling.
+            Raster previews stay free so anyone can sanity-check meshes. Paid plans unlock full vector exporters,
+            higher limits, and the operational layer you build on, with no copyrights on tiling math.
           </p>
+          <p class="pricing-value-lede">
+            Raw tilings are about as proprietary as plain hex tiling until you materially transform outputs or
+            weave them into a larger creative work. That means we do not own your outputs.
+          </p>
+          <ul class="pricing-value-list">
+            <li>Fidelity across SVG, meshes, CSV/JSON, and deterministic seeds</li>
+            <li>Tooling ecosystem, integrations, Blender/workflow plugins, UX &amp; performance</li>
+            <li>Reliability of generation, masking, retries, artifact delivery</li>
+            <li>Documentation and human support pathways</li>
+          </ul>
+          <form class="lead-form checkout-form" id="checkoutForm">
+            <label>
+              Email for checkout receipt and API-key delivery
+              <input id="checkoutEmail" type="email" autocomplete="email" placeholder="you@example.com" required />
+            </label>
+            <p class="checkout-status" id="checkoutStatus" aria-live="polite"></p>
+          </form>
         </div>
         <div class="pricing-grid">
           <article class="price-card">
             <h3>Free</h3>
             <p class="price">$0</p>
+            <p class="price-note">Small preview patches · JPG/PNG raster previews only</p>
             <ul>
-              <li>Small preview patches</li>
-              <li>Basic SVG output</li>
-              <li>Public examples and docs</li>
+              <li>Small preview patches for demos and experimentation</li>
+              <li>Raster image previews only: JPG or PNG</li>
+              <li>Public docs &amp; examples</li>
             </ul>
-          </article>
-          <article class="price-card featured">
-            <h3>Studio</h3>
-            <p class="price">Paid</p>
-            <ul>
-              <li>Larger masks and higher tile limits</li>
-              <li>SVG, CSV, JSON, STL, and glTF</li>
-              <li>Blender and design-tool workflows</li>
-            </ul>
-            <button class="button full" id="studioCheckout" type="button">Start Studio checkout</button>
           </article>
           <article class="price-card">
-            <h3>Enterprise / Research</h3>
-            <p class="price">Custom</p>
+            <h3>Day pass</h3>
+            <p class="price">$5<span class="price-unit">/day</span></p>
+            <p class="price-note">24-hour access to the same production exporters included in Solo</p>
             <ul>
-              <li>Batch generation</li>
-              <li>Private support and SLA</li>
-              <li>Custom atlas and export needs</li>
+              <li>Everything in Solo for one day</li>
+              <li>Good for testing a project before subscribing</li>
+              <li>Useful for one-off files, client proofs, and fabrication runs</li>
             </ul>
+            <div class="pricing-actions">
+              <button class="button" type="button" data-checkout-plan="day_pass">Buy day pass</button>
+            </div>
+          </article>
+          <article class="price-card featured">
+            <h3>Solo</h3>
+            <p class="price">$12<span class="price-unit">/mo</span></p>
+            <p class="price-note">or $120/year when billed annually (save $24/year)</p>
+            <ul>
+              <li>Production exporters: SVG, CSV, JSON, STL, glTF</li>
+              <li>Generations up to 8K tiles wide</li>
+              <li>Ideal for independent freelancers and designers</li>
+            </ul>
+            <div class="pricing-actions">
+              <button class="button" type="button" data-checkout-plan="solo_monthly">Subscribe monthly</button>
+              <button class="button secondary" type="button" data-checkout-plan="solo_yearly">
+                Subscribe yearly
+              </button>
+            </div>
+          </article>
+          <article class="price-card">
+            <h3>Teams</h3>
+            <p class="price">$99<span class="price-unit">/mo</span></p>
+            <p class="price-note">or $999/year when billed annually (save $189/year)</p>
+            <ul>
+              <li>Everything in Solo, priced for studios &amp; shared billing</li>
+              <li>Room to grow quotas, onboarding, collaborative workflows</li>
+              <li>Priority path for tooling &amp; integration requests</li>
+            </ul>
+            <div class="pricing-actions">
+              <button class="button" type="button" data-checkout-plan="teams_monthly">
+                Subscribe monthly
+              </button>
+              <button class="button secondary" type="button" data-checkout-plan="teams_yearly">
+                Subscribe yearly
+              </button>
+            </div>
           </article>
         </div>
-      </section>
-
-      <section id="waitlist" class="section cta">
-        <p class="eyebrow">Launch-ready foundation</p>
-        <h2>Bring aperiodic monotiles into your toolchain.</h2>
-        <p>
-          Start with the API, then add the Blender plugin, Adobe workflows, and
-          domain landing pages as the commercial front door.
+        <p class="pricing-ip-note">
+          <strong>Outputs &amp; rights.</strong> We retain no copyrights in your geometries: API responses are deterministic
+          facts about planar substitution, not creative expression on their own (think uncolored grids). Your
+          project becomes protectable once you add design choices, palettes, composites, narration, tooling, brand, or integration work.
+          The guide in <a href="docs.html#outputs">docs&nbsp;› outputs</a> explains the positioning.
         </p>
-        <div class="hero-actions">
-          <button class="button" id="ctaCheckout" type="button">Start Studio checkout</button>
-          <a class="button secondary" href="docs.html#access">Request access</a>
-        </div>
-        <form class="lead-form" id="leadForm">
-          <label>
-            Email
-            <input name="email" type="email" placeholder="you@studio.com" required />
-          </label>
-          <label>
-            What do you want to make?
-            <textarea name="use_case" rows="3" placeholder="Blender plugin, laser-cut panels, SVG patterns, CAD workflow..."></textarea>
-          </label>
-          <button class="button secondary" type="submit">Join launch list</button>
-        </form>
-        <p class="checkout-status" id="checkoutStatus" role="status"></p>
       </section>
     </main>
 
     <footer class="footer">
-      <p>Built for Spectre / Tile(1,1) geometry workflows.</p>
-      <p><a href="robots.txt">robots.txt</a> · <a href="sitemap.xml">sitemap.xml</a></p>
+      <p>
+        <a href="docs.html#outputs">Ownership &amp; outputs</a> · <a href="terms.html">Terms</a> ·
+        <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> ·
+        <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a> ·
+        <a href="sitemap.xml">Sitemap</a>
+      </p>
     </footer>
 
     <script src="app.js"></script>

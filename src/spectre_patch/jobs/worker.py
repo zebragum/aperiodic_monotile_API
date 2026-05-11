@@ -8,9 +8,9 @@ Why a separate process? FastAPI's in-process ``BackgroundTasks`` runs jobs
 inside the API event loop. If the API restarts (or autoscales / crashes /
 SIGTERMs during a long render) the job is silently lost — and queueing more
 work behind a CPU-bound rasteriser blocks the HTTP response loop. Running the
-worker as its own service decouples those failure domains: API restarts don't
-kill jobs, worker restarts don't drop HTTP traffic, and you can horizontally
-scale either side independently.
+worker as its own process decouples those failure domains: API restarts don't
+kill jobs, worker restarts don't drop HTTP traffic, and platforms with shared
+storage can scale either side independently.
 
 Run::
 
