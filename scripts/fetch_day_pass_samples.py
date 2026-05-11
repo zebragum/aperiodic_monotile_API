@@ -103,7 +103,6 @@ def main() -> int:
                 "scale": 1.0,
                 "tx": 0.25,
                 "ty": -0.1,
-                "rotation_deg": 15.0,
                 "svg_deterministic_palette": True,
                 "mask": {"type": "rectangle", "width": 28.0, "height": 18.0},
             },
@@ -219,10 +218,9 @@ def main() -> int:
         final = _wait_job(base, api_key, job_id)
         if final.get("status") != "completed":
             raise RuntimeError(f"{tag}: job failed: {final}")
-        # Server clamps URL TTL; fixed request keeps links short-lived but usable for this run.
         urls_payload = _json(
             "GET",
-            f"{base}/v1/jobs/{job_id}/urls?ttl_seconds=3600",
+            f"{base}/v1/jobs/{job_id}/urls",
             api_key=api_key,
         )
         url_map = urls_payload.get("urls") or {}

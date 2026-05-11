@@ -41,9 +41,9 @@ def _iter_polygons(geom: BaseGeometry) -> list[Polygon]:
     return []
 
 
-def _prism_tris_from_xy(xy: np.ndarray, thickness: float) -> list[np.ndarray]:
+def _prism_tris_from_xy(xy: np.ndarray, thickness: float, *, z_base: float = 0.0) -> list[np.ndarray]:
     verts = xy[:, :2].astype(np.float64, copy=False)
-    z0, zt = 0.0, float(thickness)
+    z0, zt = float(z_base), float(z_base) + float(thickness)
     tris_idx = _triangulate_cap(verts)
     faces: list[np.ndarray] = []
 
@@ -169,6 +169,108 @@ def _world_xy_for_clip_geom(tile: EmittedTile, *, scale: float, rotation_deg: fl
     return rings
 
 
+def _world_xy_rings(tile: EmittedTile, *, scale: float, rotation_deg: float, tx: float, ty: float) -> list[np.ndarray]:
+    if tile.clip_geom is not None:
+        return _world_xy_for_clip_geom(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty)
+
+    W = compose_world_affine(
+        canonical_gen6=np.asarray(tile.affine_canonical_gen6, dtype=np.float64),
+        scale=scale,
+        rotation_deg=rotation_deg,
+        tx=tx,
+        ty=ty,
+    )
+    xy = PROTOTILE_RING[:, :2].astype(np.float64, copy=False)
+    ones = np.ones((len(xy), 1), dtype=np.float64)
+    hom = np.column_stack([xy, ones])
+    mapped = hom @ W.T
+    return [mapped[:, :2]]
+
+
+def _segment_prism_tris(
+    p0: np.ndarray,
+    p1: np.ndarray,
+    *,
+    width: float,
+    thickness: float,
+    z_base: float = 0.0,
+) -> list[np.ndarray]:
+    vec = p1 - p0
+    length = float(np.linalg.norm(vec))
+    if length <= 1e-9:
+        return []
+    unit = vec / length
+    normal = np.array([-unit[1], unit[0]], dtype=np.float64)
+    half = max(float(width), 1e-9) * 0.5
+    quad = np.array(
+        [
+            p0 + normal * half,
+            p1 + normal * half,
+            p1 - normal * half,
+            p0 - normal * half,
+        ],
+        dtype=np.float64,
+    )
+    return _prism_tris_from_xy(quad, thickness, z_base=z_base)
+
+
+def stroke_prism_tris_for_tiles(
+    tiles: list[EmittedTile],
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+    stroke_width: float | None = None,
+    z_base: float = 0.0,
+) -> list[np.ndarray]:
+    """Extruded boundary strokes for a patch, using the same clipped outlines as SVG."""
+
+    width = float(stroke_width) if stroke_width is not None else max(0.035 * float(scale), 0.02)
+    tris: list[np.ndarray] = []
+    for tile in tiles:
+        for ring in _world_xy_rings(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty):
+            if len(ring) < 2:
+                continue
+            for i in range(len(ring)):
+                p0 = ring[i]
+                p1 = ring[(i + 1) % len(ring)]
+                tris.extend(
+                    _segment_prism_tris(
+                        p0,
+                        p1,
+                        width=width,
+                        thickness=thickness_mm,
+                        z_base=z_base,
+                    )
+                )
+    return tris
+
+
+def stroke_stl_facets_for_tiles(
+    tiles: list[EmittedTile],
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    thickness_mm: float,
+    stroke_width: float | None = None,
+) -> list[bytes]:
+    return _facets_from_tris(
+        stroke_prism_tris_for_tiles(
+            tiles,
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
+            thickness_mm=thickness_mm,
+            stroke_width=stroke_width,
+        )
+    )
+
+
 def tile_prism_tris(
     tile: EmittedTile,
     *,
@@ -182,7 +284,7 @@ def tile_prism_tris(
 
     if tile.clip_geom is not None:
         tris: list[np.ndarray] = []
-        thickness = float(thickness_mm) * float(tile.scale_world)
+        thickness = float(thickness_mm) * float(tile.scale_world) * float(scale)
         for xy in _world_xy_for_clip_geom(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty):
             tris.extend(_prism_tris_from_xy(xy, thickness))
         return tris

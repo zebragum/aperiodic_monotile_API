@@ -1,9 +1,8 @@
-"""glTF 2.0 GLB exporter with EXT_mesh_gpu_instancing.
+"""glTF 2.0 GLB exporter.
 
-Produces a single binary GLB containing one extruded prototile mesh (Tile(1,1) prism)
-and one node carrying per-instance TRANSLATION/ROTATION/SCALE attributes, so receivers
-that support `EXT_mesh_gpu_instancing` (Three.js, Babylon, glTF-Transform) render the
-whole patch as GPU instances.
+Produces a single binary GLB containing explicit patch geometry. We avoid relying on
+``EXT_mesh_gpu_instancing`` for the launch export because many general-purpose viewers
+display only the prototype mesh when they do not implement that extension.
 
 Soft-fails with a clear ImportError when `pygltflib` is absent.
 """
@@ -18,7 +17,7 @@ from typing import Any
 import numpy as np
 
 from spectre_patch.core.spectre_t11 import PROTOTILE_RING
-from spectre_patch.export.stl_export import _triangulate_cap
+from spectre_patch.export.stl_export import stroke_prism_tris_for_tiles, tile_prism_tris, _triangulate_cap
 from spectre_patch.geometry_affine import compose_world_affine
 from spectre_patch.patch_engine import EmittedTile
 
@@ -87,6 +86,25 @@ def _pack_buffer(views: list[bytes]) -> tuple[bytes, list[tuple[int, int]]]:
     return bytes(out), offsets
 
 
+def _tris_to_position_index_arrays(tris: list[np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
+    if not tris:
+        return np.zeros((0, 3), dtype=np.float32), np.zeros((0,), dtype=np.uint32)
+    positions = np.asarray(tris, dtype=np.float32).reshape((-1, 3))
+    indices = np.arange(len(positions), dtype=np.uint32)
+    return positions, indices
+
+
+def _material(pygltflib, *, color: list[float], name: str):
+    return pygltflib.Material(
+        name=name,
+        pbrMetallicRoughness=pygltflib.PbrMetallicRoughness(
+            baseColorFactor=color,
+            metallicFactor=0.0,
+            roughnessFactor=0.75,
+        ),
+    )
+
+
 def write_glb_instanced(
     path: Path | str,
     tiles: list[EmittedTile],
@@ -98,7 +116,7 @@ def write_glb_instanced(
     thickness_mm: float,
     patch_meta: dict[str, Any] | None = None,
 ) -> None:
-    """Write `<path>` as a single GLB with EXT_mesh_gpu_instancing instances of one prism."""
+    """Write `<path>` as a normal GLB containing the full clipped tiled patch."""
 
     try:
         import pygltflib  # type: ignore[import-not-found]  # noqa: PLC0415
@@ -107,37 +125,46 @@ def write_glb_instanced(
             "glTF export disabled — install `pip install spectre-patch-api[gltf]` (pygltflib)."
         ) from e
 
-    pos, idx = _prism_mesh_arrays(thickness_mm)
-
-    n = len(tiles)
-    translations = np.zeros((n, 3), dtype=np.float32)
-    rotations = np.zeros((n, 4), dtype=np.float32)
-    scales = np.zeros((n, 3), dtype=np.float32)
-    for i, t in enumerate(tiles):
-        gen6 = np.asarray(t.affine_canonical_gen6, dtype=np.float64)
-        W = compose_world_affine(
-            canonical_gen6=gen6,
-            scale=scale,
-            rotation_deg=rotation_deg,
-            tx=tx,
-            ty=ty,
+    fill_tris: list[np.ndarray] = []
+    for tile in tiles:
+        fill_tris.extend(
+            tile_prism_tris(
+                tile,
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
+                thickness_mm=thickness_mm,
+            )
         )
-        T, R, S = _decompose_world_to_trs(W)
-        translations[i] = T
-        rotations[i] = R
-        scales[i] = S
+    stroke_tris = stroke_prism_tris_for_tiles(
+        tiles,
+        scale=scale,
+        rotation_deg=rotation_deg,
+        tx=tx,
+        ty=ty,
+        thickness_mm=max(float(thickness_mm) * 0.08, 0.04),
+        z_base=float(thickness_mm) * float(scale) * 1.02,
+    )
 
-    pos_bytes = pos.tobytes()
-    idx_bytes = idx.tobytes()
-    t_bytes = translations.tobytes()
-    r_bytes = rotations.tobytes()
-    s_bytes = scales.tobytes()
+    fill_pos, fill_idx = _tris_to_position_index_arrays(fill_tris)
+    stroke_pos, stroke_idx = _tris_to_position_index_arrays(stroke_tris)
 
-    blob, offs = _pack_buffer([pos_bytes, idx_bytes, t_bytes, r_bytes, s_bytes])
-    (pos_off, pos_len), (idx_off, idx_len), (t_off, t_len), (r_off, r_len), (s_off, s_len) = offs
+    views = [
+        fill_pos.tobytes(),
+        fill_idx.tobytes(),
+        stroke_pos.tobytes(),
+        stroke_idx.tobytes(),
+    ]
+    blob, offs = _pack_buffer(views)
+    (fill_pos_off, fill_pos_len), (fill_idx_off, fill_idx_len), (stroke_pos_off, stroke_pos_len), (
+        stroke_idx_off,
+        stroke_idx_len,
+    ) = offs
 
-    pos_min = pos.min(axis=0).astype(np.float32).tolist()
-    pos_max = pos.max(axis=0).astype(np.float32).tolist()
+    all_pos = np.vstack([arr for arr in (fill_pos, stroke_pos) if len(arr)])
+    pos_min = all_pos.min(axis=0).astype(np.float32).tolist()
+    pos_max = all_pos.max(axis=0).astype(np.float32).tolist()
 
     gltf = pygltflib.GLTF2()
     gltf.scene = 0
@@ -145,61 +172,74 @@ def write_glb_instanced(
 
     gltf.buffers = [pygltflib.Buffer(byteLength=len(blob))]
 
-    bv_pos = pygltflib.BufferView(
-        buffer=0, byteOffset=pos_off, byteLength=pos_len, target=pygltflib.ARRAY_BUFFER
+    bv_fill_pos = pygltflib.BufferView(
+        buffer=0, byteOffset=fill_pos_off, byteLength=fill_pos_len, target=pygltflib.ARRAY_BUFFER
     )
-    bv_idx = pygltflib.BufferView(
-        buffer=0, byteOffset=idx_off, byteLength=idx_len, target=pygltflib.ELEMENT_ARRAY_BUFFER
+    bv_fill_idx = pygltflib.BufferView(
+        buffer=0, byteOffset=fill_idx_off, byteLength=fill_idx_len, target=pygltflib.ELEMENT_ARRAY_BUFFER
     )
-    bv_tr = pygltflib.BufferView(buffer=0, byteOffset=t_off, byteLength=t_len)
-    bv_rt = pygltflib.BufferView(buffer=0, byteOffset=r_off, byteLength=r_len)
-    bv_sc = pygltflib.BufferView(buffer=0, byteOffset=s_off, byteLength=s_len)
-    gltf.bufferViews = [bv_pos, bv_idx, bv_tr, bv_rt, bv_sc]
+    bv_stroke_pos = pygltflib.BufferView(
+        buffer=0, byteOffset=stroke_pos_off, byteLength=stroke_pos_len, target=pygltflib.ARRAY_BUFFER
+    )
+    bv_stroke_idx = pygltflib.BufferView(
+        buffer=0, byteOffset=stroke_idx_off, byteLength=stroke_idx_len, target=pygltflib.ELEMENT_ARRAY_BUFFER
+    )
+    gltf.bufferViews = [bv_fill_pos, bv_fill_idx, bv_stroke_pos, bv_stroke_idx]
 
-    acc_pos = pygltflib.Accessor(
+    acc_fill_pos = pygltflib.Accessor(
         bufferView=0,
         componentType=pygltflib.FLOAT,
-        count=len(pos),
+        count=len(fill_pos),
         type=pygltflib.VEC3,
         min=pos_min,
         max=pos_max,
     )
-    acc_idx = pygltflib.Accessor(
+    acc_fill_idx = pygltflib.Accessor(
         bufferView=1,
         componentType=pygltflib.UNSIGNED_INT,
-        count=len(idx),
+        count=len(fill_idx),
         type=pygltflib.SCALAR,
     )
-    acc_tr = pygltflib.Accessor(
-        bufferView=2, componentType=pygltflib.FLOAT, count=n, type=pygltflib.VEC3
+    acc_stroke_pos = pygltflib.Accessor(
+        bufferView=2,
+        componentType=pygltflib.FLOAT,
+        count=len(stroke_pos),
+        type=pygltflib.VEC3,
+        min=pos_min,
+        max=pos_max,
     )
-    acc_rt = pygltflib.Accessor(
-        bufferView=3, componentType=pygltflib.FLOAT, count=n, type=pygltflib.VEC4
+    acc_stroke_idx = pygltflib.Accessor(
+        bufferView=3,
+        componentType=pygltflib.UNSIGNED_INT,
+        count=len(stroke_idx),
+        type=pygltflib.SCALAR,
     )
-    acc_sc = pygltflib.Accessor(
-        bufferView=4, componentType=pygltflib.FLOAT, count=n, type=pygltflib.VEC3
-    )
-    gltf.accessors = [acc_pos, acc_idx, acc_tr, acc_rt, acc_sc]
+    gltf.accessors = [acc_fill_pos, acc_fill_idx, acc_stroke_pos, acc_stroke_idx]
 
-    primitive = pygltflib.Primitive(
+    fill_primitive = pygltflib.Primitive(
         attributes=pygltflib.Attributes(POSITION=0),
         indices=1,
         mode=pygltflib.TRIANGLES,
+        material=0,
     )
-    gltf.meshes = [pygltflib.Mesh(primitives=[primitive], name="spectre_tile_1_1_proto")]
+    stroke_primitive = pygltflib.Primitive(
+        attributes=pygltflib.Attributes(POSITION=2),
+        indices=3,
+        mode=pygltflib.TRIANGLES,
+        material=1,
+    )
+    gltf.meshes = [pygltflib.Mesh(primitives=[fill_primitive, stroke_primitive], name="spectre_patch_mesh")]
+    gltf.materials = [
+        _material(pygltflib, color=[0.72, 0.78, 0.90, 1.0], name="tile_fill"),
+        _material(pygltflib, color=[0.02, 0.03, 0.08, 1.0], name="tile_strokes"),
+    ]
 
-    node = pygltflib.Node(mesh=0, name="spectre_patch_instanced")
-    node.extensions = {
-        "EXT_mesh_gpu_instancing": {
-            "attributes": {"TRANSLATION": 2, "ROTATION": 3, "SCALE": 4},
-        }
-    }
+    node = pygltflib.Node(mesh=0, name="spectre_patch")
     gltf.nodes = [node]
-    gltf.extensionsUsed = ["EXT_mesh_gpu_instancing"]
-    gltf.extensionsRequired = ["EXT_mesh_gpu_instancing"]
 
     if patch_meta:
-        gltf.asset = pygltflib.Asset(version="2.0", generator="spectre_patch_api", extras=patch_meta)
+        meta = {**patch_meta, "glb_export": "explicit_clipped_patch_mesh_with_strokes", "tile_count": len(tiles)}
+        gltf.asset = pygltflib.Asset(version="2.0", generator="spectre_patch_api", extras=meta)
     else:
         gltf.asset = pygltflib.Asset(version="2.0", generator="spectre_patch_api")
 

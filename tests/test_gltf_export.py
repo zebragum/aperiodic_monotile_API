@@ -1,4 +1,4 @@
-"""glTF GLB instancing smoke test (skipped when pygltflib missing)."""
+"""glTF GLB explicit patch mesh smoke test (skipped when pygltflib missing)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from spectre_patch.masking import MaskSquare, RetentionMode  # noqa: E402
 from spectre_patch.patch_engine import enumerate_emitted  # noqa: E402
 
 
-def test_glb_instancing_writes_valid_header():
+def test_glb_explicit_patch_mesh_writes_valid_header():
     tiles = enumerate_emitted(
         limits=LimitsSettings(),
         tile_family="spectre_tile_1_1",
@@ -48,7 +48,7 @@ def test_glb_instancing_writes_valid_header():
         assert version == 2
 
         gltf = pygltflib.GLTF2().load(str(path))
-        assert "EXT_mesh_gpu_instancing" in (gltf.extensionsUsed or [])
-        assert gltf.nodes[0].extensions is not None
-        instancing = gltf.nodes[0].extensions["EXT_mesh_gpu_instancing"]
-        assert "TRANSLATION" in instancing["attributes"]
+        assert "EXT_mesh_gpu_instancing" not in (gltf.extensionsUsed or [])
+        assert len(gltf.meshes) == 1
+        assert len(gltf.meshes[0].primitives) == 2
+        assert gltf.nodes[0].mesh == 0

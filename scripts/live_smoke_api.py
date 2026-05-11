@@ -95,7 +95,7 @@ def main() -> int:
     if final.get("status") != "completed":
         raise RuntimeError(f"job did not complete: {final}")
 
-    urls = _json("GET", f"{base}/v1/jobs/{job_id}/urls?ttl_seconds=300", api_key=api_key)
+    urls = _json("GET", f"{base}/v1/jobs/{job_id}/urls", api_key=api_key)
     for filename in ("patch.png", "patch.jpg"):
         rel_url = urls["urls"].get(filename)
         if not rel_url:

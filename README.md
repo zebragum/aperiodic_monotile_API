@@ -20,7 +20,7 @@ Open `http://127.0.0.1:8000/docs` for OpenAPI.
 - `GET /v1/capabilities` — formats, masks, retention modes, current limits
 - `POST /v1/patch` — enqueues a patch job (idempotent via `Idempotency-Key`)
 - `GET /v1/jobs/{job_id}` — status / error / result manifest
-- `GET /v1/jobs/{job_id}/urls?ttl_seconds=...` — bundle of signed download URLs
+- `GET /v1/jobs/{job_id}/urls` — bundle of signed download URLs with server-fixed expiry
 - `GET /v1/downloads/{job_id}/{filename}?exp={unix}&sig={hmac-sha256}` — signed download
 - `POST /v1/leads` — public launch-list capture for the static site
 - `GET /v1/admin/leads?fmt=json|csv` — private lead export, guarded by `X-Admin-Token`
@@ -34,7 +34,7 @@ Open `http://127.0.0.1:8000/docs` for OpenAPI.
 | `json` | Pipeline metadata + per-tile transforms | Mirrors CSV with extra context |
 | `stl` | Printing or boolean ops | Whole-panel mesh output |
 | `stl_zip` / `obj_zip` | Independent tile objects | One movable/exportable file per tile in a ZIP archive |
-| `glb` | Three.js / Babylon / glTF-Transform | Single prototile + `EXT_mesh_gpu_instancing` |
+| `glb` | Blender / general GLB viewers / Three.js | Explicit clipped patch mesh with visible tile strokes |
 | `instance_json` | Custom instancers (USD, Houdini, custom shaders) | 4×4 row lists per instance |
 | `png` | Raster previews (requires `[png]` extra) | Bounded by `png_max_pixels` |
 | `jpg` / `jpeg` | Raster previews (requires `[png]` extra) | Uses JPEG quality options |

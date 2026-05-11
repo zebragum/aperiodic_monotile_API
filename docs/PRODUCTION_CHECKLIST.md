@@ -175,8 +175,8 @@ The job table grows unboundedly; artifacts grow even faster.
 - [ ] On Render, run the same command from a cron job or manual shell until a
       managed cron service is configured. The command uses
       `SPECTRE_PATCH_DB_PATH` and `SPECTRE_PATCH_STORAGE_DIR` by default.
-- [ ] Per-tier retention overrides if your billing SKU promises longer
-      artifact lifetimes — set `download_ttl_seconds` accordingly per request.
+- [ ] Artifact URL lifetime stays server-fixed; do not expose client-selected
+      retention or download TTL controls.
 
 ## 8. Rate limiting / abuse
 

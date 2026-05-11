@@ -87,11 +87,8 @@ class ServiceSettings(BaseSettings):
     """Dev / single-host convenience: run jobs via BackgroundTasks. Production
     deployments should leave this False and run ``spectre-patch-worker``."""
 
-    # Signed URL clamps. Max TTL must stay <= the GC retention window or
-    # callers will receive 404s when they redeem a URL after artifacts are
-    # cleaned. We surface this through SPECTRE_PATCH_DOWNLOAD_TTL_SECONDS_MAX
-    # so operators can lengthen it temporarily without a code change, e.g.
-    # while debugging a customer issue.
+    # Signed URL lifetime is server-fixed. Keep it <= the GC retention window or
+    # callers may receive 404s when they redeem URLs after artifacts are cleaned.
     download_ttl_seconds: int = 900
     download_ttl_seconds_max: int = 3600
 
@@ -1124,7 +1121,6 @@ def create_app() -> FastAPI:
     @app.get("/v1/jobs/{job_id}/urls", tags=["jobs"])
     async def signed_url_bundle(
         job_id: str,
-        ttl_seconds: int = 900,
         _: str | None = Depends(_api_key_dependency),
     ) -> dict:
         conn = app.state.db
@@ -1133,10 +1129,7 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=404, detail="job not found")
         if row["status"] != "completed":
             return {"job_id": job_id, "status": row["status"], "urls": {}}
-        # Cap requested ttl_seconds to the configured max so we never hand out
-        # a URL that outlives the GC retention window. Floor is 60 seconds so
-        # very small client values still resolve to something usable.
-        ttl = max(60, min(int(ttl_seconds), int(cfg.download_ttl_seconds_max)))
+        ttl = max(60, min(int(cfg.download_ttl_seconds), int(cfg.download_ttl_seconds_max)))
         artdir = Path(cfg.storage_dir) / job_id
         if not artdir.is_dir():
             raise HTTPException(status_code=404, detail="artifacts missing")

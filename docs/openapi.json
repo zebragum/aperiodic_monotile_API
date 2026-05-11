@@ -603,16 +603,6 @@
             }
           },
           {
-            "in": "query",
-            "name": "ttl_seconds",
-            "required": false,
-            "schema": {
-              "default": 900,
-              "title": "Ttl Seconds",
-              "type": "integer"
-            }
-          },
-          {
             "in": "header",
             "name": "X-API-Key",
             "required": false,

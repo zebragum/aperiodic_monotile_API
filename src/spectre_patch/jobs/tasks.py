@@ -222,7 +222,9 @@ def run_patch_job(
                 stl_export.write_prototype_stl(str(art / "spectre_proto.stl"), thickness)
                 (art / "spectre_instances.json").write_bytes(manifest_inst)
             else:
-                facets = stl_export.combined_stl_facets(
+                # Combined STL is visual/fabrication linework: STL has no native stroke
+                # styling, so we turn tile outlines into thin extruded rails.
+                facets = stl_export.stroke_stl_facets_for_tiles(
                     emitted,
                     scale=scale,
                     rotation_deg=rotation_deg,
