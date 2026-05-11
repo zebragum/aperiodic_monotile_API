@@ -281,33 +281,102 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get("session_id");
       const claimBox = document.querySelector("#checkoutClaim");
-      async function claimKey() {
-        if (!sessionId || !claimBox) return;
-        claimBox.textContent = "Checkout complete — minting API key via claim endpoint...";
+      const SESSION_STORE_KEY = "monotile.lastCheckoutSession.v1";
+
+      // Persist any session_id we see so a customer who loses the page (or
+      // reloads to an old URL) can still recover their key. The browser is
+      // the only thing that knows their session — losing it means support
+      // can't help them without Stripe Dashboard access.
+      function rememberSessionId(id) {
+        if (!id) return;
+        try { localStorage.setItem(SESSION_STORE_KEY, id); } catch (_) { /* ignore */ }
+      }
+      function lastKnownSessionId() {
+        try { return localStorage.getItem(SESSION_STORE_KEY) || ""; } catch (_) { return ""; }
+      }
+      function clearSessionId() {
+        try { localStorage.removeItem(SESSION_STORE_KEY); } catch (_) { /* ignore */ }
+      }
+      if (sessionId) rememberSessionId(sessionId);
+
+      function renderClaimPanel(state, payload) {
+        if (!claimBox) return;
+        claimBox.replaceChildren();
+        if (state === "loading") {
+          const p = document.createElement("p");
+          p.textContent = "Checkout complete — minting your API key...";
+          claimBox.appendChild(p);
+          return;
+        }
+        if (state === "success") {
+          const heading = document.createElement("strong");
+          heading.textContent = "Your paid API key";
+          const code = document.createElement("code");
+          code.textContent = payload.api_key;
+          const note = document.createElement("p");
+          note.textContent = `Tier ${payload.tier || "—"}. Shown once. Save it in your password manager before leaving this page.`;
+          claimBox.append(heading, code, note);
+          history.replaceState(null, "", "docs.html#access");
+          clearSessionId();
+          return;
+        }
+        if (state === "already_claimed") {
+          const heading = document.createElement("strong");
+          heading.textContent = "This checkout was already claimed.";
+          const note = document.createElement("p");
+          const keyPrefix = payload.key_prefix ? `Key prefix: ${payload.key_prefix}.` : "";
+          note.textContent = `${keyPrefix} If you can't find the full key, contact support — we can verify by checkout session.`;
+          claimBox.append(heading, note);
+          history.replaceState(null, "", "docs.html#access");
+          clearSessionId();
+          return;
+        }
+        if (state === "error") {
+          const heading = document.createElement("strong");
+          heading.textContent = "Could not mint your API key yet.";
+          const reason = document.createElement("p");
+          const rid = payload && payload.request_id ? ` (request_id ${payload.request_id})` : "";
+          const detail = payload && payload.message ? payload.message : "Transient error — Stripe was likely between redirects.";
+          reason.textContent = `Reason: ${detail}${rid}`;
+          const retry = document.createElement("button");
+          retry.type = "button";
+          retry.className = "button";
+          retry.textContent = "Retry";
+          retry.addEventListener("click", () => claimKey(true));
+          const note = document.createElement("p");
+          note.textContent = "Wait a few seconds and try again. If it keeps failing, use the Report a bug button below — your checkout session is saved here in this browser.";
+          claimBox.append(heading, reason, retry, note);
+          return;
+        }
+      }
+
+      async function claimKey(force) {
+        const id = sessionId || lastKnownSessionId();
+        if (!id || !claimBox) return;
+        renderClaimPanel("loading");
         try {
           const response = await fetch("https://aperiodic-monotile-api.onrender.com/v1/billing/claim-key", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({session_id: sessionId})
+            body: JSON.stringify({session_id: id})
           });
-          const payload = await response.json();
-          if (!response.ok) throw new Error(JSON.stringify(payload));
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            const err = (payload && payload.error) || {};
+            renderClaimPanel("error", {
+              message: err.message || `HTTP ${response.status}`,
+              request_id: err.request_id || ""
+            });
+            return;
+          }
           if (payload.api_key) {
-            const heading = document.createElement("strong");
-            heading.textContent = "Your paid API key";
-            const code = document.createElement("code");
-            code.textContent = payload.api_key;
-            const note = document.createElement("span");
-            note.textContent = `Tier ${payload.tier || "solo/teams"} — shown once.`;
-            claimBox.replaceChildren(heading, code, note);
-            history.replaceState(null, "", "docs.html#access");
+            renderClaimPanel("success", payload);
           } else {
-            claimBox.textContent = `This checkout was already claimed. Key prefix: ${payload.key_prefix || "unknown"}.`;
-            history.replaceState(null, "", "docs.html#access");
+            renderClaimPanel("already_claimed", payload);
           }
         } catch (err) {
-          claimBox.textContent = "Could not claim an API key yet. If Stripe was just connected, contact support with your checkout session ID.";
           console.error(err);
+          renderClaimPanel("error", { message: "Network error reaching the API." });
         }
       }
       claimKey();

@@ -87,8 +87,13 @@ class ServiceSettings(BaseSettings):
     """Dev / single-host convenience: run jobs via BackgroundTasks. Production
     deployments should leave this False and run ``spectre-patch-worker``."""
 
-    # Signed URL TTL clamps
+    # Signed URL clamps. Max TTL must stay <= the GC retention window or
+    # callers will receive 404s when they redeem a URL after artifacts are
+    # cleaned. We surface this through SPECTRE_PATCH_DOWNLOAD_TTL_SECONDS_MAX
+    # so operators can lengthen it temporarily without a code change, e.g.
+    # while debugging a customer issue.
     download_ttl_seconds: int = 900
+    download_ttl_seconds_max: int = 3600
 
     # CORS
     cors_allow_origins: str = ""  # comma-separated, "*" allows all
@@ -718,7 +723,11 @@ def create_app() -> FastAPI:
             "operational": {
                 "run_jobs_in_process": cfg.run_jobs_in_process,
                 "rate_limit_post_patch": cfg.rate_limit_post_patch,
-                "download_ttl_seconds_max": 7 * 24 * 3600,
+                "download_ttl_seconds_max": int(cfg.download_ttl_seconds_max),
+                "artifact_retention_note": (
+                    "Generated artifacts are kept for roughly one hour after the job completes. "
+                    "Download or copy them to your own storage if you need them longer."
+                ),
             },
         }
 
@@ -1124,7 +1133,10 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=404, detail="job not found")
         if row["status"] != "completed":
             return {"job_id": job_id, "status": row["status"], "urls": {}}
-        ttl = max(60, min(int(ttl_seconds), 7 * 24 * 3600))
+        # Cap requested ttl_seconds to the configured max so we never hand out
+        # a URL that outlives the GC retention window. Floor is 60 seconds so
+        # very small client values still resolve to something usable.
+        ttl = max(60, min(int(ttl_seconds), int(cfg.download_ttl_seconds_max)))
         artdir = Path(cfg.storage_dir) / job_id
         if not artdir.is_dir():
             raise HTTPException(status_code=404, detail="artifacts missing")

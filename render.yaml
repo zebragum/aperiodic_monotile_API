@@ -48,12 +48,20 @@ services:
       # In-container periodic GC. The cron runs alongside API + worker because
       # Render disks attach to a single service, so a standalone cron service
       # cannot see this disk. Set to 0 to disable.
+      # We default to 1-hour retention with a 15-minute sweep — short enough
+      # that the disk never accumulates real load, long enough that a customer
+      # can re-fetch artifacts after a minor pipeline hiccup.
       - key: SPECTRE_PATCH_GC_INTERVAL_SEC
-        value: "21600"
+        value: "900"
       - key: SPECTRE_PATCH_GC_OLDER_THAN_HOURS
-        value: "24"
+        value: "1"
       - key: SPECTRE_PATCH_GC_FIRST_DELAY_SEC
-        value: "600"
+        value: "300"
+      # Signed download URL TTL must stay <= GC retention or we hand out URLs
+      # that 404 after the next sweep. Operators can lengthen this temporarily
+      # when debugging a customer issue.
+      - key: SPECTRE_PATCH_DOWNLOAD_TTL_SECONDS_MAX
+        value: "3600"
       # Support contact surfaced in error envelopes and bug reports. Override
       # to point at a Linear/Sentry/email intake if you wire one up.
       - key: SPECTRE_PATCH_SUPPORT_BUG_REPORT_URL
