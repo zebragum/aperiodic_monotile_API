@@ -124,7 +124,9 @@ def _rounded_rectangle(center: tuple[float, float], w: float, h: float, r: float
 
 
 def mask_polygon(mask: Mask) -> BaseGeometry:
-    if isinstance(mask, MaskRect):
+    if isinstance(mask, BaseGeometry):
+        g = mask
+    elif isinstance(mask, MaskRect):
         g = shp_box(mask.xmin, mask.ymin, mask.xmax, mask.ymax)
     elif isinstance(mask, MaskSquare):
         cx, cy = mask.center

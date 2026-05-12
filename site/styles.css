@@ -80,6 +80,13 @@ a {
   color: var(--text);
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -456,6 +463,74 @@ textarea {
   user-select: none;
 }
 
+.model-preview {
+  width: min(94%, 820px);
+  display: grid;
+  gap: 1.4rem;
+  place-items: center;
+  color: var(--muted);
+  text-align: center;
+  perspective: 1100px;
+}
+
+.spectre-3d-stage {
+  --rx: 62deg;
+  --rz: -22deg;
+  width: min(76vw, 620px);
+  height: min(54vw, 390px);
+  display: grid;
+  place-items: center;
+  cursor: grab;
+  touch-action: none;
+  transform-style: preserve-3d;
+}
+
+.spectre-3d-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.spectre-3d-slab {
+  position: relative;
+  width: 86%;
+  aspect-ratio: 1.35;
+  display: grid;
+  place-items: center;
+  transform: rotateX(var(--rx)) rotateZ(var(--rz));
+  transform-style: preserve-3d;
+  transition: transform 160ms ease-out;
+}
+
+.spectre-3d-stage.is-dragging .spectre-3d-slab {
+  transition: none;
+}
+
+.spectre-3d-slab svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  max-height: 22rem;
+  pointer-events: none;
+  user-select: none;
+}
+
+.spectre-3d-depth-layer {
+  opacity: 0.22;
+  filter: brightness(0.62) saturate(0.55);
+  transform:
+    translate3d(calc(var(--layer) * -0.18rem), calc(var(--layer) * 0.18rem), calc(var(--layer) * -0.085rem));
+}
+
+.spectre-3d-top {
+  position: relative;
+  z-index: 2;
+  transform: translateZ(0.12rem);
+  filter: drop-shadow(0 1.1rem 1.8rem rgba(0, 0, 0, 0.45));
+}
+
+.model-preview p {
+  max-width: 38rem;
+  margin: 0;
+}
+
 .demo-loading,
 .demo-error {
   margin: 0;
@@ -606,6 +681,15 @@ ul.pricing-value-list {
 @media (max-width: 900px) {
   .nav {
     display: none;
+  }
+
+  .site-header {
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .hero,

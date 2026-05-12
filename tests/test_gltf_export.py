@@ -49,6 +49,18 @@ def test_glb_explicit_patch_mesh_writes_valid_header():
 
         gltf = pygltflib.GLTF2().load(str(path))
         assert "EXT_mesh_gpu_instancing" not in (gltf.extensionsUsed or [])
-        assert len(gltf.meshes) == 1
-        assert len(gltf.meshes[0].primitives) == 2
-        assert gltf.nodes[0].mesh == 0
+        assert len(gltf.nodes) == len(tiles)
+        assert len(gltf.meshes) == len(tiles)
+        assert gltf.scenes[0].nodes == list(range(len(tiles)))
+        assert all(len(mesh.primitives) == 2 for mesh in gltf.meshes)
+        assert gltf.nodes[0].extras["tile_id"] == tiles[0].tile_id
+        assert max(abs(float(node.translation[1])) for node in gltf.nodes) == 0.0
+
+        positions = gltf.get_data_from_buffer_uri(gltf.buffers[0].uri)
+        first_accessor = gltf.accessors[gltf.meshes[0].primitives[0].attributes.POSITION]
+        first_view = gltf.bufferViews[first_accessor.bufferView]
+        raw = positions[first_view.byteOffset : first_view.byteOffset + first_view.byteLength]
+        xyz = struct.unpack("<" + "f" * (len(raw) // 4), raw)
+        ys = xyz[1::3]
+        zs = xyz[2::3]
+        assert max(ys) - min(ys) < max(zs) - min(zs)

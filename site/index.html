@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic Monotile API | Spectre Geometry for Designers and Developers</title>
+    <title>Aperiodic Monotile API | Aperiodic Geometry for Designers and Developers</title>
     <meta
       name="description"
-      content="API for custom aperiodic monotile arrays. Export SVG, STL, JPG, glTF, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
+      content="API for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
     />
     <meta
       name="keywords"
@@ -21,7 +21,7 @@
     <meta property="og:title" content="Aperiodic Monotile API" />
     <meta
       property="og:description"
-      content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, STL, JPG, glTF, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
+      content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, PNG, JPG, STL, GLB, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
     />
     <meta property="og:image" content="assets/examples/circle-100u.svg" />
     <meta property="og:url" content="https://aperiodic-monotile-site.onrender.com/" />
@@ -34,7 +34,7 @@
         "name": "Aperiodic Monotile API",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web API",
-        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, STL, JPG, glTF, CSV, JSON.",
+        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, PNG, JPG, STL, GLB, CSV, JSON.",
         "offers": [
           {"@type": "Offer", "name": "Free preview tier", "price": "0", "priceCurrency": "USD"},
           {"@type": "Offer", "name": "Day Pass", "price": "5", "priceCurrency": "USD"},
@@ -59,11 +59,16 @@
       </a>
       <nav class="nav" aria-label="Primary navigation">
         <a href="#demo">Demo</a>
+        <a href="docs.html#outputs">Formats</a>
         <a href="#use-cases">Use Cases</a>
         <a href="docs.html">Docs</a>
         <a href="#pricing">Pricing</a>
+        <a href="contact.html">Contact</a>
       </nav>
-      <a class="button small" href="docs.html#access">Get API Access</a>
+      <div class="header-actions">
+        <a class="button secondary small" href="#pricing">Pricing</a>
+        <a class="button small" href="docs.html#access">Get API Access</a>
+      </div>
     </header>
 
     <main id="top">
@@ -72,11 +77,11 @@
           <p class="eyebrow">Pattern-free geometry, on demand.</p>
           <h1>Aperiodic monotile patches in many shapes, sizes, and formats.</h1>
           <p class="hero-text">
-            Finally! An API for custom aperiodic monotile arrays. Export SVG, STL, JPG, glTF, CSV, and JSON.
+            Finally! An API for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, and JSON.
             Fully-tiled patches, without navigating deep iterations. Built for rendering and aliasing-aware
             layouts, design, 3D modeling and 3D printing, wave propagation, experimental keyed and cryptographic
-            workflows, and research into what this newly discovered shape can do. Choose your region—for example,
-            a 4∶9 rectangle—set tile scale and a handful of parameters; then drop the result into Blender, CAD,
+            workflows, and research into what this newly discovered shape can do. Choose your region, for example,
+            a 4∶9 rectangle, set tile scale and a handful of parameters; then drop the result into Blender, CAD,
             Adobe, or your own stack.
           </p>
           <div class="hero-actions">
@@ -103,28 +108,14 @@
             <label>
               Example preset (extent + approximate tile count)
               <select id="presetSelect" aria-description="Bundled previews; regenerate any mask/size via patch jobs.">
-                <option value="circle-100u">Circle · ~100-unit diameter · ~1,036 tiles</option>
-                <option value="rect-9x4">Rectangle · 90×40 units · ~500 tiles</option>
-                <option value="tri-50u">Triangle · ~50-unit edge · ~166 tiles</option>
+                <option value="circle-100u">Circle · 100 units · ~1,036 tiles · SVG</option>
+                <option value="rect-9x4">Rectangle · 90×40 units · ~500 tiles · PNG</option>
+                <option value="tri-50u">Triangle · 50-unit edge · ~166 tiles · JPG</option>
+                <option value="stl-panel">Fabrication panel · 90×40 units · ~500 tiles · STL</option>
+                <option value="glb-game">Game-ready tile field · 50-unit edge · ~166 tiles · GLB</option>
               </select>
             </label>
-            <label>
-              Line width (canonical units · 0 = filled-only silhouette)
-              <input
-                id="strokeRange"
-                type="range"
-                min="0"
-                max="120"
-                value="50"
-              />
-            </label>
             <div class="demo-stats" id="demoStats"></div>
-            <p class="demo-note">
-              Each bundled Spectre snapshot fixes its mask and tessellation. In production you
-              regenerate with your own masks, tessellation depth, scale, retention, and raster or
-              vector formats. Paid plans unlock scalable vectors, larger masks, bulk jobs, full
-              download bundles, commercial support, and integration tooling.
-            </p>
           </aside>
           <div class="preview-frame">
             <div class="demo-svg-scale-wrap">
@@ -139,7 +130,8 @@
           <p class="eyebrow">Practical uses</p>
           <h2>Aperiodic tilings have unique properties useful for a variety of applications</h2>
           <p>
-            <a href="use-cases/applications.html">Survey application domains</a> — from computer graphics and signal processing to metamaterials, cryptography, and education — with selected research references.
+            From computer graphics and signal processing to metamaterials, cryptography, and education.
+            <a href="use-cases/applications.html">See More</a>.
           </p>
         </div>
         <div class="cards">
@@ -198,7 +190,7 @@
           <p class="eyebrow">API documentation</p>
           <h2>One request creates a clipped geometry patch.</h2>
           <p>
-            POST JSON with your mask and retention mode, plus the exporter formats your pipeline needs.
+            POST JSON with your mask, tile scale, and exporter formats.
             When a job completes, artifact downloads arrive as signed, time-limited URLs.
           </p>
         </div>
@@ -267,7 +259,7 @@
             <p class="price">$12<span class="price-unit">/mo</span></p>
             <p class="price-note">or $120/year when billed annually (save $24/year)</p>
             <ul>
-              <li>Production exporters: SVG, CSV, JSON, STL, glTF</li>
+              <li>Production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
               <li>Generations up to 8K tiles wide</li>
               <li>Ideal for independent freelancers and designers</li>
             </ul>
@@ -283,7 +275,7 @@
             <p class="price">$99<span class="price-unit">/mo</span></p>
             <p class="price-note">or $999/year when billed annually (save $189/year)</p>
             <ul>
-              <li>Everything in Solo, priced for studios &amp; shared billing</li>
+              <li>Everything in Solo for up to 8 users on one team license</li>
               <li>Room to grow quotas, onboarding, collaborative workflows</li>
               <li>Priority path for tooling &amp; integration requests</li>
             </ul>

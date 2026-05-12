@@ -1,45 +1,62 @@
 const demoPresets = [
   {
     id: "circle-100u",
+    kind: "svg",
     src: "assets/examples/circle-100u.svg",
-    alt: "A circular Spectre / Tile(1,1) monotile patch",
-    headline: "Circle mask",
-    extent: "~100-unit diameter · circle clip",
-    approxTiles: "~1,036 tiles",
-    rasterNote: "~1000px SVG canvas",
-    formatsHint: "Pre-cached SVG; regenerate any extent via API",
+    alt: "A circular aperiodic monotile patch",
+    shape: "Circle",
+    unit: "100-unit diameter",
+    tiles: "~1,036 tiles",
+    format: "SVG",
   },
   {
     id: "rect-9x4",
+    kind: "svg",
     src: "assets/examples/rectangle-9x4.svg",
-    alt: "A rectangular Spectre monotile patch",
-    headline: "9∶4 rectangle",
-    extent: "90 × 40 canonical units · axis-aligned rectangle",
-    approxTiles: "~500 tiles",
-    rasterNote: "900×400 SVG canvas",
-    formatsHint: "Pre-cached SVG; regenerate via API",
+    alt: "A rectangular aperiodic monotile patch",
+    shape: "Rectangle",
+    unit: "90 x 40 units",
+    tiles: "~500 tiles",
+    format: "PNG",
   },
   {
     id: "tri-50u",
+    kind: "svg",
     src: "assets/examples/triangle-50u.svg",
-    alt: "An equilateral triangular Spectre monotile patch",
-    headline: "Equilateral triangle",
-    extent: "50-unit edges · centroid-centered mask",
-    approxTiles: "~166 tiles",
-    rasterNote: "500×433 SVG canvas",
-    formatsHint: "Pre-cached SVG; regenerate via API",
+    alt: "An equilateral triangular aperiodic monotile patch",
+    shape: "Triangle",
+    unit: "50-unit edge",
+    tiles: "~166 tiles",
+    format: "JPG",
+  },
+  {
+    id: "stl-panel",
+    kind: "model",
+    src: "assets/examples/rectangle-9x4.svg",
+    alt: "A flat STL-style aperiodic tiling panel with raised linework",
+    shape: "Fabrication panel",
+    unit: "90 x 40 units",
+    tiles: "~500 tiles",
+    format: "STL",
+  },
+  {
+    id: "glb-game",
+    kind: "model",
+    src: "assets/examples/triangle-50u.svg",
+    alt: "A GLB-style field of independently selectable monotile objects",
+    shape: "Game-ready tile field",
+    unit: "50-unit edge",
+    tiles: "~166 tiles",
+    format: "GLB",
   },
 ];
 
 const presetSelect = document.querySelector("#presetSelect");
-const strokeRange = document.querySelector("#strokeRange");
 const demoSvgHost = document.querySelector("#demoSvgHost");
 const demoStats = document.querySelector("#demoStats");
 const checkoutEmail = document.querySelector("#checkoutEmail");
 const checkoutStatus = document.querySelector("#checkoutStatus");
 
-/** Example SVGs ship with strokes at stroke-width 0.25 in canonical units. */
-const DEMO_BASE_STROKE = 0.25;
 const svgTextCache = new Map();
 const apiBase = "https://aperiodic-monotile-api.onrender.com";
 
@@ -51,33 +68,21 @@ function currentPreset() {
 
 function renderStats(example) {
   if (!demoStats) return;
+  const rows = [
+    ["Shape", example.shape],
+    ["Unit", example.unit],
+    ["Tiles", example.tiles],
+    ["Format", example.format],
+  ];
   demoStats.replaceChildren(
-    Object.assign(document.createElement("strong"), { textContent: example.headline }),
-    Object.assign(document.createElement("span"), { textContent: example.extent }),
-    Object.assign(document.createElement("span"), { textContent: example.approxTiles }),
-    Object.assign(document.createElement("span"), { textContent: example.rasterNote }),
-    Object.assign(document.createElement("span"), { textContent: example.formatsHint }),
+    ...rows.map(([label, value]) => {
+      const row = document.createElement("span");
+      const key = document.createElement("strong");
+      key.textContent = `${label}: `;
+      row.append(key, document.createTextNode(value));
+      return row;
+    }),
   );
-}
-
-function computeCanonicalStrokeWidth() {
-  const v = Number(strokeRange?.value ?? 50);
-  return (v / 50) * DEMO_BASE_STROKE;
-}
-
-function applyDemoStroke(svg, canonicalWidth) {
-  if (!svg) return;
-  const w = Number(canonicalWidth);
-  const groups = svg.querySelectorAll("g[stroke]");
-  groups.forEach((g) => {
-    const stroke = g.getAttribute("stroke");
-    if (!stroke || stroke.toLowerCase() === "none") return;
-    if (!Number.isFinite(w) || w <= 0) {
-      g.setAttribute("stroke-width", "0");
-    } else {
-      g.setAttribute("stroke-width", String(w));
-    }
-  });
 }
 
 async function fetchSvgMarkup(url) {
@@ -121,40 +126,117 @@ function safeSvgFromMarkup(markup) {
   return document.importNode(svg, true);
 }
 
+function attachDragRotation(stage) {
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+  let rotX = 62;
+  let rotZ = -22;
+
+  const apply = () => {
+    stage.style.setProperty("--rx", `${rotX}deg`);
+    stage.style.setProperty("--rz", `${rotZ}deg`);
+  };
+  apply();
+
+  stage.addEventListener("pointerdown", (event) => {
+    dragging = true;
+    startX = event.clientX;
+    startY = event.clientY;
+    stage.setPointerCapture(event.pointerId);
+    stage.classList.add("is-dragging");
+  });
+  stage.addEventListener("pointermove", (event) => {
+    if (!dragging) return;
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    startX = event.clientX;
+    startY = event.clientY;
+    rotZ += dx * 0.28;
+    rotX = Math.max(28, Math.min(78, rotX - dy * 0.18));
+    apply();
+  });
+  const stop = (event) => {
+    dragging = false;
+    stage.classList.remove("is-dragging");
+    if (stage.hasPointerCapture(event.pointerId)) {
+      stage.releasePointerCapture(event.pointerId);
+    }
+  };
+  stage.addEventListener("pointerup", stop);
+  stage.addEventListener("pointercancel", stop);
+}
+
+function modelPreview(example, svg) {
+  const scene = document.createElement("div");
+  scene.className = `model-preview model-preview--${example.format.toLowerCase()}`;
+  scene.setAttribute("role", "img");
+  scene.setAttribute("aria-label", example.alt);
+
+  const stage = document.createElement("div");
+  stage.className = "spectre-3d-stage";
+  stage.tabIndex = 0;
+  stage.title = "Drag to rotate this aperiodic monotile preview";
+  attachDragRotation(stage);
+
+  const slab = document.createElement("div");
+  slab.className = "spectre-3d-slab";
+  svg.removeAttribute("width");
+  svg.removeAttribute("height");
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.setAttribute("aria-hidden", "true");
+
+  const depthLayers = 4;
+  for (let i = depthLayers; i >= 1; i -= 1) {
+    const layer = svg.cloneNode(true);
+    layer.classList.add("spectre-3d-depth-layer");
+    layer.style.setProperty("--layer", String(i));
+    slab.append(layer);
+  }
+  svg.classList.add("spectre-3d-top");
+  slab.append(svg);
+  stage.append(slab);
+
+  const caption = document.createElement("p");
+  caption.textContent =
+    example.format === "GLB"
+      ? "Drag to rotate. Production GLB exports one named 3D object per tile, one unit deep by default."
+      : "Drag to rotate. Production STL exports matching one-unit-deep extruded linework by default.";
+  scene.append(stage, caption);
+  return scene;
+}
+
+async function loadPresetSvg(preset) {
+  const markup = await fetchSvgMarkup(preset.src);
+  const svg = safeSvgFromMarkup(markup);
+  svg.removeAttribute("width");
+  svg.removeAttribute("height");
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.setAttribute("aria-label", preset.alt);
+  return svg;
+}
+
 async function updateDemo() {
   const preset = currentPreset();
   renderStats(preset);
   if (!demoSvgHost) return;
+
   demoSvgHost.replaceChildren(statusNode("demo-loading", "Loading preview..."));
   try {
-    const markup = await fetchSvgMarkup(preset.src);
-    const svg = safeSvgFromMarkup(markup);
-    svg.removeAttribute("width");
-    svg.removeAttribute("height");
-    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-    svg.setAttribute("aria-label", preset.alt);
-
-    applyDemoStroke(svg, computeCanonicalStrokeWidth());
-    demoSvgHost.replaceChildren(svg);
+    const svg = await loadPresetSvg(preset);
+    demoSvgHost.replaceChildren(preset.kind === "model" ? modelPreview(preset, svg) : svg);
   } catch (err) {
-    demoSvgHost.replaceChildren(statusNode("demo-error", "Could not load this example SVG."));
+    demoSvgHost.replaceChildren(statusNode("demo-error", "Could not load this example."));
     console.error(err);
   }
 }
 
-function updateDisplay() {
-  const svg = demoSvgHost?.querySelector("svg");
-  applyDemoStroke(svg, computeCanonicalStrokeWidth());
-}
-
 if (
   presetSelect &&
-  strokeRange &&
   demoSvgHost &&
   demoStats
 ) {
   presetSelect.addEventListener("change", () => void updateDemo());
-  strokeRange.addEventListener("input", updateDisplay);
 
   void updateDemo();
 }

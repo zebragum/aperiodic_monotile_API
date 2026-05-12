@@ -34,7 +34,7 @@ Open `http://127.0.0.1:8000/docs` for OpenAPI.
 | `json` | Pipeline metadata + per-tile transforms | Mirrors CSV with extra context |
 | `stl` | Printing or boolean ops | Whole-panel mesh output |
 | `stl_zip` / `obj_zip` | Independent tile objects | One movable/exportable file per tile in a ZIP archive |
-| `glb` | Blender / general GLB viewers / Three.js | Explicit clipped patch mesh with visible tile strokes |
+| `glb` | Blender / game engines / Three.js | Tiled patch with one named, movable 3D node per tile plus visible strokes |
 | `instance_json` | Custom instancers (USD, Houdini, custom shaders) | 4×4 row lists per instance |
 | `png` | Raster previews (requires `[png]` extra) | Bounded by `png_max_pixels` |
 | `jpg` / `jpeg` | Raster previews (requires `[png]` extra) | Uses JPEG quality options |

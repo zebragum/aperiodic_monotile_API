@@ -16,13 +16,18 @@ from pathlib import Path
 from threading import Lock
 from typing import Any
 
+import numpy as np
+from shapely.affinity import translate as shp_translate
+
 from spectre_patch.atlas.engine import enumerate_emitted_from_core
 from spectre_patch.atlas.loader import LoadedCore, load_core
 from spectre_patch.atlas.schema import AtlasIndex, AtlasIndexEntry
 from spectre_patch.atlas.selector import MaskExtent, select_core
 from spectre_patch.config_limits import LimitsSettings
+from spectre_patch.geometry_affine import compose_world_affine, decompose_uniform_similarity
 from spectre_patch.masking import RetentionMode, mask_polygon
-from spectre_patch.patch_engine import EmittedTile, enumerate_emitted
+from spectre_patch.patch_engine import EmittedTile, affine6_tuple, enumerate_emitted
+from spectre_patch.patch_inscribe import auto_inscribed_square_for_target_units
 
 
 @dataclass(slots=True)
@@ -69,6 +74,125 @@ def get_default_core_cache() -> _CoreCache:
     return _default_cache
 
 
+def _shift_affine6(gen6: np.ndarray, dx: float, dy: float) -> np.ndarray:
+    out = gen6.copy()
+    out[2] = float(gen6[2] + dx)
+    out[5] = float(gen6[5] + dy)
+    return out
+
+
+def _shift_emitted_to_user_frame(
+    emitted: list[EmittedTile],
+    *,
+    shift_dx: float,
+    shift_dy: float,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+) -> list[EmittedTile]:
+    if shift_dx == 0.0 and shift_dy == 0.0:
+        return emitted
+
+    out: list[EmittedTile] = []
+    for tile in emitted:
+        gen6_user = _shift_affine6(np.asarray(tile.affine_canonical_gen6, dtype=np.float64), -shift_dx, -shift_dy)
+        W = compose_world_affine(
+            canonical_gen6=gen6_user,
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
+        )
+        mtx, mty, th, sc = decompose_uniform_similarity(W)
+        clip_geom = (
+            shp_translate(tile.clip_geom, xoff=-shift_dx, yoff=-shift_dy)
+            if tile.clip_geom is not None
+            else None
+        )
+        out.append(
+            EmittedTile(
+                tile_id=tile.tile_id,
+                tile_label=tile.tile_label,
+                dfs_path_indices=tile.dfs_path_indices,
+                centroid_canonical_xy=(
+                    float(tile.centroid_canonical_xy[0]) - shift_dx,
+                    float(tile.centroid_canonical_xy[1]) - shift_dy,
+                ),
+                affine_canonical_gen6=affine6_tuple(gen6_user),
+                tx=float(mtx),
+                ty=float(mty),
+                rotation_deg=float(np.rad2deg(th)),
+                scale_world=float(sc),
+                clip_geom=clip_geom,
+            )
+        )
+    return out
+
+
+def _enumerate_substitution_aligned(
+    *,
+    tile_family: str,
+    patch_version: str,
+    seed: str | None,
+    half_extent_cover: float,
+    scale: float,
+    tx: float,
+    ty: float,
+    rotation_deg: float,
+    mask: Any,
+    retention: RetentionMode,
+    limits: LimitsSettings,
+    substitution_iterations: int | None,
+) -> tuple[list[EmittedTile], int | None]:
+    """Fallback crop from the dense inscribed square, mirroring atlas alignment."""
+
+    mp = mask_polygon(mask)
+    extent = MaskExtent.from_bbox(mp.bounds)
+    selected_iterations = substitution_iterations
+    shift_dx = 0.0
+    shift_dy = 0.0
+    crop_mask = mask
+
+    if substitution_iterations is None:
+        inscribed = auto_inscribed_square_for_target_units(
+            extent.half_side * 2.0,
+            iterations_ceiling=limits.max_supertile_iterations,
+        )
+        selected_iterations = inscribed.iterations
+        shift_dx = float(inscribed.center[0] - extent.center[0])
+        shift_dy = float(inscribed.center[1] - extent.center[1])
+        crop_mask = shp_translate(mp, xoff=shift_dx, yoff=shift_dy)
+        half_extent_cover = max(float(half_extent_cover), float(inscribed.half_side))
+
+    emitted = enumerate_emitted(
+        tile_family=tile_family,
+        patch_version=patch_version,
+        seed=seed,
+        half_extent_cover=half_extent_cover,
+        scale=scale,
+        tx=tx,
+        ty=ty,
+        rotation_deg=rotation_deg,
+        mask=crop_mask,
+        retention=retention,
+        limits=limits,
+        substitution_iterations=selected_iterations,
+    )
+    return (
+        _shift_emitted_to_user_frame(
+            emitted,
+            shift_dx=shift_dx,
+            shift_dy=shift_dy,
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
+        ),
+        selected_iterations,
+    )
+
+
 def enumerate_emitted_or_atlas(
     *,
     tile_family: str,
@@ -95,7 +219,7 @@ def enumerate_emitted_or_atlas(
     """
 
     if force_substitution or atlas_index is None or not atlas_index.entries:
-        emitted = enumerate_emitted(
+        emitted, selected_iterations = _enumerate_substitution_aligned(
             tile_family=tile_family,
             patch_version=patch_version,
             seed=seed,
@@ -111,10 +235,10 @@ def enumerate_emitted_or_atlas(
         )
         return emitted, AtlasResolution(
             used_atlas=False,
-            selected_iterations=None,
+            selected_iterations=selected_iterations,
             selected_file=None,
             fallback_reason=(
-                "force_substitution" if force_substitution else "atlas_empty"
+                "force_substitution_aligned_to_inscribed_core" if force_substitution else "atlas_empty_aligned_to_inscribed_core"
             ),
             tile_count_pre_mask=None,
         )
@@ -125,7 +249,7 @@ def enumerate_emitted_or_atlas(
     try:
         entry = select_core(atlas_index, tile_family=tile_family, extent=extent)
     except LookupError as e:
-        emitted = enumerate_emitted(
+        emitted, selected_iterations = _enumerate_substitution_aligned(
             tile_family=tile_family,
             patch_version=patch_version,
             seed=seed,
@@ -141,9 +265,9 @@ def enumerate_emitted_or_atlas(
         )
         return emitted, AtlasResolution(
             used_atlas=False,
-            selected_iterations=None,
+            selected_iterations=selected_iterations,
             selected_file=None,
-            fallback_reason=f"no_atlas_core_large_enough: {e}",
+            fallback_reason=f"no_atlas_core_large_enough_aligned_to_inscribed_core: {e}",
             tile_count_pre_mask=None,
         )
 
