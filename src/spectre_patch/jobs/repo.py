@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS patch_jobs (
   result_json TEXT,
   error TEXT,
   idempotency_key TEXT,
+  api_key_hash TEXT,
+  size_class TEXT NOT NULL DEFAULT 'standard',
+  estimated_seconds REAL NOT NULL DEFAULT 20.0,
   claimed_at REAL,
   claimed_by TEXT,
   finished_at REAL
@@ -29,6 +32,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_patch_jobs_idem
   WHERE idempotency_key IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ix_patch_jobs_status_created
   ON patch_jobs(status, created);
+CREATE INDEX IF NOT EXISTS ix_patch_jobs_active_key
+  ON patch_jobs(api_key_hash, status, created);
+CREATE INDEX IF NOT EXISTS ix_patch_jobs_lane
+  ON patch_jobs(status, size_class, created);
 CREATE TABLE IF NOT EXISTS api_keys (
   key_hash TEXT PRIMARY KEY,
   key_prefix TEXT NOT NULL,
@@ -83,6 +90,12 @@ def _migrate(conn: sqlite3.Connection) -> None:
     cols = {row["name"] for row in conn.execute("PRAGMA table_info(patch_jobs)")}
     if cols and "idempotency_key" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN idempotency_key TEXT")
+    if cols and "api_key_hash" not in cols:
+        conn.execute("ALTER TABLE patch_jobs ADD COLUMN api_key_hash TEXT")
+    if cols and "size_class" not in cols:
+        conn.execute("ALTER TABLE patch_jobs ADD COLUMN size_class TEXT NOT NULL DEFAULT 'standard'")
+    if cols and "estimated_seconds" not in cols:
+        conn.execute("ALTER TABLE patch_jobs ADD COLUMN estimated_seconds REAL NOT NULL DEFAULT 20.0")
     if cols and "claimed_at" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN claimed_at REAL")
     if cols and "claimed_by" not in cols:
@@ -97,6 +110,14 @@ def _migrate(conn: sqlite3.Connection) -> None:
     conn.execute(
         "CREATE INDEX IF NOT EXISTS ix_patch_jobs_status_created"
         " ON patch_jobs(status, created)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS ix_patch_jobs_active_key"
+        " ON patch_jobs(api_key_hash, status, created)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS ix_patch_jobs_lane"
+        " ON patch_jobs(status, size_class, created)"
     )
     conn.execute(
         """
@@ -188,6 +209,9 @@ def enqueue_job(
     body: dict,
     *,
     idempotency_key: str | None = None,
+    api_key_hash_value: str | None = None,
+    size_class: str = "standard",
+    estimated_seconds: float = 20.0,
 ) -> tuple[str, bool]:
     """Insert or return existing row id when idempotency key collides; returns (job_id, created)."""
 
@@ -198,8 +222,9 @@ def enqueue_job(
 
     job_id = str(uuid4())
     conn.execute(
-        "INSERT INTO patch_jobs(id, created, status, tier, request_json, idempotency_key)"
-        " VALUES(?,?,?,?,?,?)",
+        "INSERT INTO patch_jobs("
+        "id, created, status, tier, request_json, idempotency_key, api_key_hash, size_class, estimated_seconds"
+        ") VALUES(?,?,?,?,?,?,?,?,?)",
         (
             job_id,
             time.time(),
@@ -207,6 +232,9 @@ def enqueue_job(
             tier,
             json.dumps(body, sort_keys=True),
             idempotency_key,
+            api_key_hash_value,
+            size_class,
+            float(estimated_seconds),
         ),
     )
     conn.commit()
@@ -254,7 +282,14 @@ def claim_next_queued(
          WHERE id = (
              SELECT id FROM patch_jobs
               WHERE status='queued'
-              ORDER BY created ASC
+              ORDER BY
+                CASE size_class
+                  WHEN 'small' THEN 0
+                  WHEN 'standard' THEN 1
+                  WHEN 'heavy' THEN 2
+                  ELSE 1
+                END,
+                created ASC
               LIMIT 1
          )
         """,
@@ -304,6 +339,113 @@ def queue_depth(conn: sqlite3.Connection) -> dict[str, int]:
     for r in rows:
         out[str(r["status"])] = int(r["n"])
     return out
+
+
+def queue_depth_by_lane(conn: sqlite3.Connection) -> dict[str, dict[str, int]]:
+    """Return queue/running counts grouped by launch-spike job lane."""
+
+    rows = conn.execute(
+        """
+        SELECT COALESCE(size_class, 'standard') AS size_class, status, COUNT(*) AS n
+          FROM patch_jobs
+         WHERE status IN ('queued', 'running')
+         GROUP BY COALESCE(size_class, 'standard'), status
+        """
+    ).fetchall()
+    out: dict[str, dict[str, int]] = {
+        "small": {"queued": 0, "running": 0},
+        "standard": {"queued": 0, "running": 0},
+        "heavy": {"queued": 0, "running": 0},
+    }
+    for r in rows:
+        lane = str(r["size_class"] or "standard")
+        if lane not in out:
+            out[lane] = {"queued": 0, "running": 0}
+        out[lane][str(r["status"])] = int(r["n"])
+    return out
+
+
+def active_job_count(
+    conn: sqlite3.Connection,
+    *,
+    api_key_hash_value: str | None = None,
+    size_class: str | None = None,
+) -> int:
+    """Count queued/running jobs, optionally scoped by API key hash and lane."""
+
+    clauses = ["status IN ('queued', 'running')"]
+    params: list[object] = []
+    if api_key_hash_value is not None:
+        clauses.append("api_key_hash=?")
+        params.append(api_key_hash_value)
+    if size_class is not None:
+        clauses.append("COALESCE(size_class, 'standard')=?")
+        params.append(size_class)
+    row = conn.execute(
+        f"SELECT COUNT(*) AS n FROM patch_jobs WHERE {' AND '.join(clauses)}",
+        params,
+    ).fetchone()
+    return int(row["n"] if row is not None else 0)
+
+
+def queue_position(conn: sqlite3.Connection, job_id: str) -> dict[str, float | int | str] | None:
+    """Estimate a queued job's lane-aware position and wait time.
+
+    Small jobs intentionally jump ahead of standard/heavy jobs. This mirrors the
+    worker's claim order, so the returned position is more useful than a simple
+    oldest-first count during launch spikes.
+    """
+
+    row = fetch_job(conn, job_id)
+    if row is None:
+        return None
+    status = str(row["status"])
+    size_class = str(row["size_class"] or "standard")
+    if status == "completed":
+        return {"status": status, "size_class": size_class, "position": 0, "estimated_wait_seconds": 0.0}
+    if status == "failed":
+        return {"status": status, "size_class": size_class, "position": 0, "estimated_wait_seconds": 0.0}
+    if status == "running":
+        return {"status": status, "size_class": size_class, "position": 0, "estimated_wait_seconds": 0.0}
+
+    lane_rank = {"small": 0, "standard": 1, "heavy": 2}.get(size_class, 1)
+    queued_ahead = conn.execute(
+        """
+        SELECT COUNT(*) AS n, COALESCE(SUM(estimated_seconds), 0) AS seconds
+          FROM patch_jobs
+         WHERE status='queued'
+           AND (
+             CASE size_class
+               WHEN 'small' THEN 0
+               WHEN 'standard' THEN 1
+               WHEN 'heavy' THEN 2
+               ELSE 1
+             END < ?
+             OR (
+               CASE size_class
+                 WHEN 'small' THEN 0
+                 WHEN 'standard' THEN 1
+                 WHEN 'heavy' THEN 2
+                 ELSE 1
+               END = ?
+               AND created < ?
+             )
+           )
+        """,
+        (lane_rank, lane_rank, float(row["created"])),
+    ).fetchone()
+    running = conn.execute(
+        "SELECT COALESCE(SUM(estimated_seconds), 0) AS seconds FROM patch_jobs WHERE status='running'"
+    ).fetchone()
+    ahead_count = int(queued_ahead["n"] if queued_ahead is not None else 0)
+    ahead_seconds = float(queued_ahead["seconds"] if queued_ahead is not None else 0.0)
+    running_seconds = float(running["seconds"] if running is not None else 0.0)
+    return {
+        "status": status,
+        "size_class": size_class,
+        "position": ahead_count + 1,
+        "estimated_wait_seconds": max(0.0, ahead_seconds + running_seconds),
+    }
 
 
 def artifact_dir(storage_root: Path | str, job_id: str) -> Path:

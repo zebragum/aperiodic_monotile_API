@@ -190,6 +190,12 @@ Operationally, the API:
    sets `force_substitution=true`. The job's `result_meta.atlas` records which
    path was taken (and which core, if any) for observability.
 
+Launch-spike behavior is documented in `docs/SCALING_RUNBOOK.md`. Jobs are
+classified into `small`, `standard`, and `heavy` queue lanes; status responses
+include queue position / estimated wait metadata, `/metrics` exposes per-lane
+depth, and deployment operators can raise `SPECTRE_PATCH_WORKER_COUNT` or tune
+queue backpressure limits without changing client code.
+
 See `docs/INTEGRATION_BLENDER_AND_ADOBE.md`.
 
 ## Licence

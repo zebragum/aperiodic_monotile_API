@@ -104,6 +104,17 @@ class ServiceSettings(BaseSettings):
     rate_limit_billing_claim: str = "20/minute"
     rate_limit_leads: str = "10/minute"
 
+    # Queue protection. These are deliberately soft launch defaults: they let a
+    # traffic spike queue up, but stop one key or one huge 3D burst from making
+    # the service feel broken for everyone else.
+    queue_max_active_jobs: int = 2000
+    queue_max_active_jobs_per_key: int = 100
+    queue_max_heavy_jobs: int = 300
+    queue_max_heavy_jobs_per_key: int = 10
+    queue_small_estimated_seconds: float = 5.0
+    queue_standard_estimated_seconds: float = 20.0
+    queue_heavy_estimated_seconds: float = 90.0
+
     # Logging
     log_level: str = "INFO"
 
@@ -236,6 +247,96 @@ def _dump_request(body: PatchRequest) -> dict:
     return body.model_dump(exclude_none=False)
 
 
+def _mask_area_hint(mask: dict) -> float:
+    """Cheap upper-bound-ish area hint used only for queue lane estimates."""
+
+    try:
+        mt = str(mask.get("type", "")).strip().lower()
+        if mt == "square":
+            side = float(mask.get("half_side", 0.0)) * 2.0
+            return max(0.0, side * side)
+        if mt in ("rectangle", "rounded_rect", "rounded-rect"):
+            return max(0.0, float(mask.get("width", 0.0)) * float(mask.get("height", 0.0)))
+        if mt == "circle":
+            r = float(mask.get("radius", 0.0))
+            return 3.141592653589793 * r * r
+        if mt in ("regular_hexagon", "hexagon"):
+            r = float(mask.get("circumradius", 0.0))
+            return (3.0 * 3.0**0.5 / 2.0) * r * r
+        if mt == "triangle":
+            side = float(mask.get("side_length", 0.0))
+            return (3.0**0.5 / 4.0) * side * side
+    except (TypeError, ValueError):
+        return 0.0
+    return 0.0
+
+
+def _queue_profile(body: PatchRequest, cfg: ServiceSettings) -> tuple[str, float]:
+    formats = set(body.formats)
+    area = _mask_area_hint(body.mask)
+    three_d = bool(formats & {"glb", "stl", "stl_zip", "obj_zip"})
+    independent_3d = bool(formats & {"glb", "stl_zip", "obj_zip"})
+    raster_only = formats <= {"png", "jpg", "jpeg"}
+    if independent_3d or (three_d and area >= 2500.0) or area >= 25_000.0:
+        return "heavy", float(cfg.queue_heavy_estimated_seconds)
+    if raster_only and area <= 2500.0:
+        return "small", float(cfg.queue_small_estimated_seconds)
+    return "standard", float(cfg.queue_standard_estimated_seconds)
+
+
+def _raise_if_queue_overloaded(
+    conn: sqlite3.Connection,
+    *,
+    api_key_hash_value: str | None,
+    size_class: str,
+    cfg: ServiceSettings,
+) -> None:
+    total_active = job_repo.active_job_count(conn)
+    if total_active >= int(cfg.queue_max_active_jobs):
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Generation queue is temporarily full. Please retry shortly; "
+                "existing jobs are still being processed."
+            ),
+        )
+    if size_class == "heavy":
+        heavy_active = job_repo.active_job_count(conn, size_class="heavy")
+        if heavy_active >= int(cfg.queue_max_heavy_jobs):
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Large 3D job queue is temporarily full. Smaller raster/vector jobs may still work; "
+                    "retry this heavy job shortly."
+                ),
+            )
+    if api_key_hash_value is None:
+        return
+    key_active = job_repo.active_job_count(conn, api_key_hash_value=api_key_hash_value)
+    if key_active >= int(cfg.queue_max_active_jobs_per_key):
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                "This API key already has many queued or running jobs. Wait for some jobs to finish "
+                "before submitting more."
+            ),
+        )
+    if size_class == "heavy":
+        key_heavy = job_repo.active_job_count(
+            conn,
+            api_key_hash_value=api_key_hash_value,
+            size_class="heavy",
+        )
+        if key_heavy >= int(cfg.queue_max_heavy_jobs_per_key):
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    "This API key already has several large 3D jobs queued or running. "
+                    "Wait for them to finish before submitting another heavy job."
+                ),
+            )
+
+
 async def _json_object_body(request: Request) -> dict:
     try:
         body = await request.json()
@@ -279,6 +380,7 @@ def _api_key_dependency(request: Request, api_key: str | None = Header(default=N
             tier = _tier_for_api_key(request, api_key, cfg)
             if tier:
                 setattr(request.state, "monotile_tier", tier)
+                setattr(request.state, "monotile_api_key_hash", job_repo.hash_api_key(api_key))
         return api_key
     if not api_key:
         raise HTTPException(status_code=401, detail="Missing X-API-Key")
@@ -286,6 +388,7 @@ def _api_key_dependency(request: Request, api_key: str | None = Header(default=N
     if tier is None:
         raise HTTPException(status_code=403, detail="Invalid X-API-Key")
     setattr(request.state, "monotile_tier", tier)
+    setattr(request.state, "monotile_api_key_hash", job_repo.hash_api_key(api_key))
     return api_key
 
 
@@ -627,9 +730,11 @@ def create_app() -> FastAPI:
     @app.get("/metrics", tags=["ops"], include_in_schema=False)
     async def metrics() -> JSONResponse:
         depth = job_repo.queue_depth(app.state.db)
+        lanes = job_repo.queue_depth_by_lane(app.state.db)
         return JSONResponse(
             {
                 "queue": depth,
+                "queue_lanes": lanes,
                 "atlas_cores": len(app.state.atlas.entries),
                 "boot_age_sec": time.time() - getattr(app.state, "boot_time", time.time()),
             }
@@ -700,7 +805,7 @@ def create_app() -> FastAPI:
                 "jpeg",
             ],
             "output_notes": {
-                "glb": "Instanced 3D scene: one prototile mesh plus per-tile transforms.",
+                "glb": "3D tiled scene with one named, movable node per retained tile.",
                 "stl": "Whole-panel mesh output.",
                 "stl_zip": "Independent STL files, one per tile.",
                 "obj_zip": "Independent OBJ files, one per tile.",
@@ -720,6 +825,10 @@ def create_app() -> FastAPI:
             "operational": {
                 "run_jobs_in_process": cfg.run_jobs_in_process,
                 "rate_limit_post_patch": cfg.rate_limit_post_patch,
+                "queue_max_active_jobs": int(cfg.queue_max_active_jobs),
+                "queue_max_active_jobs_per_key": int(cfg.queue_max_active_jobs_per_key),
+                "queue_max_heavy_jobs": int(cfg.queue_max_heavy_jobs),
+                "queue_max_heavy_jobs_per_key": int(cfg.queue_max_heavy_jobs_per_key),
                 "download_ttl_seconds_max": int(cfg.download_ttl_seconds_max),
                 "artifact_retention_note": (
                     "Generated artifacts are kept for roughly one hour after the job completes. "
@@ -1086,8 +1195,22 @@ def create_app() -> FastAPI:
                     ),
                 )
         blob = _dump_request(body)
+        size_class, estimated_seconds = _queue_profile(body, cfg)
+        api_key_hash_value = getattr(request.state, "monotile_api_key_hash", None)
+        _raise_if_queue_overloaded(
+            conn,
+            api_key_hash_value=api_key_hash_value,
+            size_class=size_class,
+            cfg=cfg,
+        )
         job_id, created = job_repo.enqueue_job(
-            conn, tier, blob, idempotency_key=idempotency_key
+            conn,
+            tier,
+            blob,
+            idempotency_key=idempotency_key,
+            api_key_hash_value=api_key_hash_value,
+            size_class=size_class,
+            estimated_seconds=estimated_seconds,
         )
         if created and cfg.run_jobs_in_process:
             # Dev convenience only — see module docstring.
@@ -1104,8 +1227,13 @@ def create_app() -> FastAPI:
             "job_id": job_id,
             "status": "queued" if created else "deduplicated",
             "tier": tier,
+            "size_class": size_class,
+            "estimated_seconds": estimated_seconds,
             "request_id": request.state.request_id,
         }
+        queue = job_repo.queue_position(conn, job_id)
+        if queue is not None:
+            out["queue"] = queue
         if idempotency_key:
             out["idempotency_key"] = idempotency_key
         return out
@@ -1116,7 +1244,11 @@ def create_app() -> FastAPI:
         row = job_repo.fetch_job(conn, job_id)
         if row is None:
             raise HTTPException(status_code=404, detail="job not found")
-        return dict(row)
+        out = dict(row)
+        queue = job_repo.queue_position(conn, job_id)
+        if queue is not None:
+            out["queue"] = queue
+        return out
 
     @app.get("/v1/jobs/{job_id}/urls", tags=["jobs"])
     async def signed_url_bundle(
@@ -1128,7 +1260,12 @@ def create_app() -> FastAPI:
         if row is None:
             raise HTTPException(status_code=404, detail="job not found")
         if row["status"] != "completed":
-            return {"job_id": job_id, "status": row["status"], "urls": {}}
+            return {
+                "job_id": job_id,
+                "status": row["status"],
+                "queue": job_repo.queue_position(conn, job_id),
+                "urls": {},
+            }
         ttl = max(60, min(int(cfg.download_ttl_seconds), int(cfg.download_ttl_seconds_max)))
         artdir = Path(cfg.storage_dir) / job_id
         if not artdir.is_dir():

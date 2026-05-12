@@ -102,19 +102,26 @@ case "${1:-api}" in
     ;;
   api-worker)
     bootstrap_atlas
-    echo "[entrypoint] launching worker supervisor at $(date -u +%FT%TZ)"
+    WORKER_COUNT="${SPECTRE_PATCH_WORKER_COUNT:-1}"
+    echo "[entrypoint] launching ${WORKER_COUNT} worker supervisor(s) at $(date -u +%FT%TZ)"
     # Worker auto-respawn: a single bad job should not take the API offline.
-    # Render restarts the container if the API exits, but the worker is just a
-    # child process; we want it to come back without losing in-flight HTTP.
-    (
-      while true; do
-        echo "[worker-supervisor] starting spectre-patch-worker at $(date -u +%FT%TZ)"
-        spectre-patch-worker 2>&1 || rc=$?
-        echo "[worker-supervisor] spectre-patch-worker exited rc=${rc:-0}; respawning in 5s" 1>&2
-        sleep 5
-      done
-    ) &
-    worker_pid="$!"
+    # Render restarts the container if the API exits, but workers are child
+    # processes; keep them alive and let operators raise WORKER_COUNT for spikes.
+    worker_pids=""
+    i=1
+    while [ "$i" -le "$WORKER_COUNT" ] 2>/dev/null; do
+      (
+        while true; do
+          rc=0
+          echo "[worker-supervisor-$i] starting spectre-patch-worker at $(date -u +%FT%TZ)"
+          SPECTRE_PATCH_WORKER_ID="${SPECTRE_PATCH_WORKER_ID:-worker}-$i" spectre-patch-worker 2>&1 || rc=$?
+          echo "[worker-supervisor-$i] spectre-patch-worker exited rc=${rc}; respawning in 5s" 1>&2
+          sleep 5
+        done
+      ) &
+      worker_pids="${worker_pids} $!"
+      i=$((i + 1))
+    done
     UVICORN_LOG_LEVEL="$(printf '%s' "${SPECTRE_PATCH_LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
     uvicorn spectre_patch.api.main:app \
       --host 0.0.0.0 \
@@ -145,8 +152,8 @@ case "${1:-api}" in
     fi
 
     terminate() {
-      kill "$api_pid" "$worker_pid" ${gc_pid:-} 2>/dev/null || true
-      wait "$api_pid" "$worker_pid" ${gc_pid:-} 2>/dev/null || true
+      kill "$api_pid" $worker_pids ${gc_pid:-} 2>/dev/null || true
+      wait "$api_pid" $worker_pids ${gc_pid:-} 2>/dev/null || true
     }
     trap 'terminate; exit 0' INT TERM
 

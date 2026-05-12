@@ -54,6 +54,13 @@ def _build_app(
         "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
     ):
         os.environ[k] = ""
+    for k in (
+        "SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS",
+        "SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS_PER_KEY",
+        "SPECTRE_PATCH_QUEUE_MAX_HEAVY_JOBS",
+        "SPECTRE_PATCH_QUEUE_MAX_HEAVY_JOBS_PER_KEY",
+    ):
+        os.environ.pop(k, None)
     if admin_token is None:
         os.environ.pop("SPECTRE_PATCH_ADMIN_TOKEN", None)
     else:
@@ -62,7 +69,10 @@ def _build_app(
         os.environ[key] = value
     # Tests run jobs inside the request lifecycle; production deployments use
     # the dedicated worker process and would leave this off.
-    os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = "true"
+    os.environ["SPECTRE_PATCH_RUN_JOBS_IN_PROCESS"] = (extra_env or {}).get(
+        "SPECTRE_PATCH_RUN_JOBS_IN_PROCESS",
+        "true",
+    )
     os.environ["SPECTRE_PATCH_RATE_LIMIT_POST_PATCH"] = "10000/minute"
     os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CHECKOUT"] = "10000/minute"
     os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CLAIM"] = "10000/minute"
@@ -120,6 +130,7 @@ def test_metrics_returns_queue_depth():
             assert r.status_code == 200
             body = r.json()
             assert "queue" in body
+            assert "queue_lanes" in body
             for key in ("queued", "running", "completed", "failed"):
                 assert key in body["queue"]
 
@@ -217,6 +228,80 @@ def test_api_key_tier_map_overrides_client_claimed_tier():
                 )
                 assert r.status_code == 200
                 assert r.json()["tier"] == "tier_solo"
+    finally:
+        os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
+        os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_queued_job_returns_lane_and_wait_metadata():
+    os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"solo-secret":"tier_solo"}'
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(
+                _build_app(
+                    Path(tmp),
+                    extra_env={"SPECTRE_PATCH_RUN_JOBS_IN_PROCESS": "false"},
+                )
+            ) as client:
+                r = client.post(
+                    "/v1/patch",
+                    headers={"X-API-Key": "solo-secret"},
+                    json={
+                        "formats": ["glb"],
+                        "mask": {"type": "circle", "radius": 20.0},
+                    },
+                )
+                assert r.status_code == 200
+                payload = r.json()
+                assert payload["status"] == "queued"
+                assert payload["size_class"] == "heavy"
+                assert payload["queue"]["position"] == 1
+
+                status = client.get(
+                    f"/v1/jobs/{payload['job_id']}",
+                    headers={"X-API-Key": "solo-secret"},
+                )
+                assert status.status_code == 200
+                assert status.json()["queue"]["size_class"] == "heavy"
+
+                metrics = client.get("/metrics")
+                assert metrics.json()["queue_lanes"]["heavy"]["queued"] == 1
+    finally:
+        os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
+        os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_queue_backpressure_limits_one_api_key():
+    os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
+    os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"solo-secret":"tier_solo"}'
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(
+                _build_app(
+                    Path(tmp),
+                    extra_env={
+                        "SPECTRE_PATCH_RUN_JOBS_IN_PROCESS": "false",
+                        "SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS_PER_KEY": "1",
+                    },
+                )
+            ) as client:
+                body = {
+                    "formats": ["png"],
+                    "png_width_px": 128,
+                    "png_height_px": 128,
+                    "mask": {"type": "square", "half_side": 4.0},
+                }
+                first = client.post("/v1/patch", headers={"X-API-Key": "solo-secret"}, json=body)
+                assert first.status_code == 200
+
+                second = client.post(
+                    "/v1/patch",
+                    headers={"X-API-Key": "solo-secret"},
+                    json={**body, "seed": "second"},
+                )
+                assert second.status_code == 429
+                assert "queued or running jobs" in second.json()["error"]["message"]
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
         os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)

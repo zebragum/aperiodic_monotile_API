@@ -407,6 +407,18 @@ textarea {
   margin-top: 1.4rem;
 }
 
+.pricing .section-heading {
+  margin-bottom: 1rem;
+}
+
+.checkout-form {
+  margin-top: 0.9rem;
+}
+
+.checkout-form label {
+  margin-bottom: 0.25rem;
+}
+
 .demo-stats {
   display: grid;
   gap: 0.5rem;
