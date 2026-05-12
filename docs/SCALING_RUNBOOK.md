@@ -21,8 +21,8 @@ headroom exists. On Render this can be changed as an environment variable.
 
 Good starting points:
 
-- `1`: conservative default for the current single-service Render setup.
-- `2`: first spike setting after confirming memory headroom or upgrading the plan.
+- `1`: conservative default for the smallest single-service Render setup.
+- `2`: launch default after upgrading the service instance.
 - `4`: short-term spike setting if jobs are mostly raster/SVG/CSV/JSON.
 
 Do not blindly raise workers for large 3D traffic. More workers can make memory

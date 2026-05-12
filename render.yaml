@@ -4,7 +4,7 @@ services:
     name: aperiodic-monotile-api
     repo: https://github.com/zebragum/aperiodic_monotile_API.git
     branch: main
-    plan: standard
+    plan: pro
     region: oregon
     dockerCommand: /usr/bin/tini -- /app/entrypoint.sh api-worker
     healthCheckPath: /healthz
@@ -46,7 +46,7 @@ services:
       - key: UVICORN_WORKERS
         value: "1"
       - key: SPECTRE_PATCH_WORKER_COUNT
-        value: "1"
+        value: "2"
       - key: SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS
         value: "2000"
       - key: SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS_PER_KEY
