@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import os
+import sqlite3
 import tempfile
 import zipfile
 from pathlib import Path
@@ -133,6 +134,43 @@ def test_metrics_returns_queue_depth():
             assert "queue_lanes" in body
             for key in ("queued", "running", "completed", "failed"):
                 assert key in body["queue"]
+
+
+def test_existing_sqlite_job_table_migrates_queue_columns():
+    from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "monotile.db"
+        raw = sqlite3.connect(db_path)
+        raw.execute(
+            """
+            CREATE TABLE patch_jobs (
+              id TEXT PRIMARY KEY,
+              created REAL NOT NULL,
+              status TEXT NOT NULL,
+              tier TEXT DEFAULT 'tier_free',
+              request_json TEXT NOT NULL,
+              result_json TEXT,
+              error TEXT,
+              idempotency_key TEXT,
+              claimed_at REAL,
+              claimed_by TEXT,
+              finished_at REAL
+            )
+            """
+        )
+        raw.commit()
+        raw.close()
+
+        conn = job_repo.connect(db_path)
+        try:
+            cols = {row["name"] for row in conn.execute("PRAGMA table_info(patch_jobs)")}
+            assert {"api_key_hash", "size_class", "estimated_seconds"} <= cols
+            indexes = {row["name"] for row in conn.execute("PRAGMA index_list(patch_jobs)")}
+            assert "ix_patch_jobs_active_key" in indexes
+            assert "ix_patch_jobs_lane" in indexes
+        finally:
+            conn.close()
 
 
 def test_request_id_is_returned():

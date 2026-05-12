@@ -32,10 +32,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_patch_jobs_idem
   WHERE idempotency_key IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ix_patch_jobs_status_created
   ON patch_jobs(status, created);
-CREATE INDEX IF NOT EXISTS ix_patch_jobs_active_key
-  ON patch_jobs(api_key_hash, status, created);
-CREATE INDEX IF NOT EXISTS ix_patch_jobs_lane
-  ON patch_jobs(status, size_class, created);
 CREATE TABLE IF NOT EXISTS api_keys (
   key_hash TEXT PRIMARY KEY,
   key_prefix TEXT NOT NULL,
