@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Agent Guide | Aperiodic Monotile API</title>
+    <meta
+      name="description"
+      content="Copy the markdown guide that tells AI agents how to use the Aperiodic Monotile API."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://aperiodic-monotile-site.onrender.com/agents.html" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Aperiodic Monotile API home">
+        <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Aperiodic Monotile API</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html#demo">Demo</a>
+        <a href="docs.html">Docs</a>
+        <a href="agents.html">AI Guide</a>
+        <a href="index.html#pricing">Pricing</a>
+      </nav>
+      <a class="button small" href="agent-guide.md">Open Markdown</a>
+    </header>
+
+    <main>
+      <section class="section docs-hero">
+        <p class="eyebrow">For AI agents</p>
+        <h1>Copy the complete API brief into your agent.</h1>
+        <p class="hero-text">
+          This page mirrors a plain markdown file for coding agents, browser agents, and automation tools.
+          Humans can copy it with one button; agents can fetch <code>/agent-guide.md</code> directly.
+        </p>
+        <div class="hero-actions">
+          <button class="button" type="button" id="copyAgentGuide">Copy markdown guide</button>
+          <a class="button secondary" href="agent-guide.md">Open raw markdown</a>
+          <a class="button secondary" href="docs.html#capabilities">Human capabilities</a>
+        </div>
+        <p class="checkout-status" id="copyStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Markdown source</p>
+          <h2>Agent integration instructions.</h2>
+        </div>
+        <pre class="code-card markdown-preview"><code id="agentGuideText">Loading agent guide...</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p><a href="docs.html">Docs</a> · <a href="agent-guide.md">Raw markdown</a> · <a href="sitemap.xml">Sitemap</a></p>
+    </footer>
+
+    <script>
+      const guideText = document.querySelector("#agentGuideText");
+      const copyButton = document.querySelector("#copyAgentGuide");
+      const copyStatus = document.querySelector("#copyStatus");
+      let markdown = "";
+
+      async function loadGuide() {
+        try {
+          const response = await fetch("agent-guide.md", { cache: "no-cache" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          markdown = await response.text();
+          guideText.textContent = markdown;
+        } catch (err) {
+          guideText.textContent = "Could not load agent-guide.md.";
+          copyStatus.textContent = "Could not load the markdown guide.";
+          console.error(err);
+        }
+      }
+
+      copyButton.addEventListener("click", async () => {
+        if (!markdown) return;
+        try {
+          await navigator.clipboard.writeText(markdown);
+          copyStatus.textContent = "Copied. Paste this into your AI agent or automation prompt.";
+        } catch (err) {
+          copyStatus.textContent = "Clipboard blocked. Open the raw markdown and copy it manually.";
+          console.error(err);
+        }
+      });
+
+      void loadGuide();
+    </script>
+  </body>
+</html>

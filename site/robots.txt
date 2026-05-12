@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /agent-guide.md
+Allow: /agents.html
+
+# AI agents: start with the markdown integration brief.
+# https://aperiodic-monotile-site.onrender.com/agent-guide.md
 
 Sitemap: https://aperiodic-monotile-site.onrender.com/sitemap.xml

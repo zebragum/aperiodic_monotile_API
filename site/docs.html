@@ -29,6 +29,7 @@
         <a href="index.html#demo">Demo</a>
         <a href="index.html#use-cases">Use Cases</a>
         <a href="docs.html">Docs</a>
+        <a href="agents.html">AI Guide</a>
         <a href="index.html#pricing">Pricing</a>
       </nav>
       <a class="button small" href="#access">Get API Access</a>
@@ -198,6 +199,39 @@
         </div>
       </section>
 
+      <section id="capabilities" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Capabilities</p>
+          <h2>What paid access unlocks today.</h2>
+          <p>
+            The live API also exposes this as JSON at <code>GET /v1/capabilities</code>, but humans should not have
+            to read raw JSON just to understand what their key can do.
+          </p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Free previews</h3>
+            <p>Small preview patches with raster outputs only: JPG, JPEG, or PNG.</p>
+          </article>
+          <article class="card">
+            <h3>Day Pass</h3>
+            <p>24-hour paid access to the same production exporters as Solo: SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json.</p>
+          </article>
+          <article class="card">
+            <h3>Solo and Teams</h3>
+            <p>Production jobs up to 500,000 retained tiles. Teams covers up to 8 users on one team license.</p>
+          </article>
+          <article class="card">
+            <h3>Queue and downloads</h3>
+            <p>Jobs return queue status, position, and estimated wait. Completed artifacts use fixed server-side signed download URLs.</p>
+          </article>
+        </div>
+        <p class="domain-see">
+          Machines and integrations can still call
+          <a href="https://aperiodic-monotile-api.onrender.com/v1/capabilities">the live capabilities JSON</a>.
+        </p>
+      </section>
+
       <section class="section docs-section">
         <div>
           <p class="eyebrow">Job lifecycle</p>
@@ -239,7 +273,8 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         </p>
         <div id="checkoutClaim" class="demo-stats"></div>
         <div class="hero-actions">
-          <a class="button" href="https://aperiodic-monotile-api.onrender.com/v1/capabilities">View live capabilities</a>
+          <a class="button" href="#capabilities">View capabilities</a>
+          <a class="button secondary" href="agents.html">AI agent guide</a>
           <a class="button secondary" href="index.html#pricing">Pricing & checkout</a>
         </div>
       </section>
@@ -310,12 +345,23 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         }
         if (state === "success") {
           const heading = document.createElement("strong");
-          heading.textContent = "Your paid API key";
+          const friendlyTier = {
+            tier_day_pass: "Day Pass",
+            tier_solo: "Solo",
+            tier_teams: "Teams",
+            tier_free: "Free Preview"
+          }[payload.tier] || "paid access";
+          heading.textContent = `Thank you! You now have a ${friendlyTier}.`;
           const code = document.createElement("code");
           code.textContent = payload.api_key;
           const note = document.createElement("p");
-          note.textContent = `Tier ${payload.tier || "—"}. Shown once. Save it in your password manager before leaving this page.`;
-          claimBox.append(heading, code, note);
+          note.textContent = "Your API key is shown once. Save it in your password manager before leaving this page.";
+          const next = document.createElement("p");
+          next.textContent =
+            friendlyTier === "Day Pass"
+              ? "For the next 24 hours, use this key to generate production SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json outputs."
+              : "Use this key in the X-API-Key header when you call the API.";
+          claimBox.append(heading, code, note, next);
           history.replaceState(null, "", "docs.html#access");
           clearSessionId();
           return;

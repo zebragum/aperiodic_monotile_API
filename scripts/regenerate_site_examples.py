@@ -36,6 +36,11 @@ CASES = [
         {"type": "triangle", "side_length": 50.0},
         500,
     ),
+    (
+        "square-50u.svg",
+        {"type": "square", "half_side": 25.0},
+        500,
+    ),
 ]
 
 

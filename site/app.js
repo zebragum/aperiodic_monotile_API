@@ -42,18 +42,17 @@ const demoPresets = [
   {
     id: "glb-game",
     kind: "model",
-    src: "assets/examples/triangle-50u.svg",
-    alt: "A GLB-style field of independently selectable monotile objects",
-    shape: "Game-ready tile field",
-    unit: "50-unit edge",
-    tiles: "~166 tiles",
+    src: "assets/examples/square-50u.svg",
+    alt: "A square GLB-style field of independently selectable monotile objects",
+    shape: "Game-ready square tile field",
+    unit: "50 x 50 units",
+    tiles: "~352 tiles",
     format: "GLB",
   },
 ];
 
 const presetSelect = document.querySelector("#presetSelect");
 const demoSvgHost = document.querySelector("#demoSvgHost");
-const demoStats = document.querySelector("#demoStats");
 const checkoutEmail = document.querySelector("#checkoutEmail");
 const checkoutStatus = document.querySelector("#checkoutStatus");
 
@@ -64,25 +63,6 @@ function currentPreset() {
   const id = presetSelect?.value ?? demoPresets[0].id;
   const found = demoPresets.find((p) => p.id === id);
   return found ?? demoPresets[0];
-}
-
-function renderStats(example) {
-  if (!demoStats) return;
-  const rows = [
-    ["Shape", example.shape],
-    ["Unit", example.unit],
-    ["Tiles", example.tiles],
-    ["Format", example.format],
-  ];
-  demoStats.replaceChildren(
-    ...rows.map(([label, value]) => {
-      const row = document.createElement("span");
-      const key = document.createElement("strong");
-      key.textContent = `${label}: `;
-      row.append(key, document.createTextNode(value));
-      return row;
-    }),
-  );
 }
 
 async function fetchSvgMarkup(url) {
@@ -218,7 +198,6 @@ async function loadPresetSvg(preset) {
 
 async function updateDemo() {
   const preset = currentPreset();
-  renderStats(preset);
   if (!demoSvgHost) return;
 
   demoSvgHost.replaceChildren(statusNode("demo-loading", "Loading preview..."));
@@ -233,8 +212,7 @@ async function updateDemo() {
 
 if (
   presetSelect &&
-  demoSvgHost &&
-  demoStats
+  demoSvgHost
 ) {
   presetSelect.addEventListener("change", () => void updateDemo());
 
