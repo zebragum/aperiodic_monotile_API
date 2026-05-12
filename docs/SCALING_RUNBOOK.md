@@ -12,7 +12,8 @@ doing expensive geometry work in the HTTP request path.
   large GLB/STL_ZIP/OBJ_ZIP requests do not block all raster previews.
 - `/v1/jobs/{job_id}` includes queue metadata with lane, position, and estimated
   wait seconds.
-- `/metrics` includes total queue depth and per-lane queued/running counts.
+- `/metrics` includes total queue depth and per-lane queued/running counts for
+  admin-token callers.
 
 ## First lever: worker count
 
@@ -58,7 +59,7 @@ with it so workers do not depend on one attached disk.
 
 If the queue spikes:
 
-1. Check `/metrics` for total depth and `queue_lanes`.
+1. Check `/metrics` with `X-Admin-Token` for total depth and `queue_lanes`.
 2. If `small` jobs are delayed, increase `SPECTRE_PATCH_WORKER_COUNT` if CPU and
    memory allow.
 3. If `heavy` jobs dominate, lower heavy per-key limits first.

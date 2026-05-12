@@ -728,7 +728,7 @@ def create_app() -> FastAPI:
         return JSONResponse(body, status_code=200 if ok else 503)
 
     @app.get("/metrics", tags=["ops"], include_in_schema=False)
-    async def metrics() -> JSONResponse:
+    async def metrics(_: None = Depends(_admin_token_dependency)) -> JSONResponse:
         depth = job_repo.queue_depth(app.state.db)
         lanes = job_repo.queue_depth_by_lane(app.state.db)
         return JSONResponse(

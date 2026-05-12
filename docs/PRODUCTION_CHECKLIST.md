@@ -30,7 +30,7 @@ Generate two secrets and inject as env vars (NOT into the image):
 - [ ] `SPECTRE_PATCH_REQUIRE_API_KEY=true` (default in `docker-compose.yml`).
 - [ ] `SPECTRE_PATCH_ADMIN_TOKEN` — separate private token for admin-only lead
       export. Do not reuse customer API keys for this.
-- [ ] Provision `support@aperiodic-monotile.com` or update all public policy
+- [ ] Provision `zach@shopcloudburst.com` or update all public policy
       pages to the real launch support inbox before enabling checkout.
 - [ ] Copy the live Stripe values from local `.env` into Render secret env vars:
       `SPECTRE_PATCH_STRIPE_SECRET_KEY`, all five
@@ -156,8 +156,9 @@ elapsed, tier. Pipe to your collector (Loki, CloudWatch, Datadog Logs).
       - `worker` log "stale running" warnings (low rate is OK; spike means
         worker keeps crashing mid-job)
       - `mark_failed` rate (track per-tier)
-- [ ] `/metrics` returns queue depth + atlas core count + uptime. Scrape with
-      a sidecar that converts to Prometheus, or read it from a healthcheck cron.
+- [ ] `/metrics` returns queue depth + atlas core count + uptime for callers
+      with `X-Admin-Token`. Scrape with a sidecar that converts to Prometheus,
+      or read it from a healthcheck cron.
 - [ ] Track download-URL signature mismatches (403s on `/v1/downloads/*`) —
       consistent failures are a sign of clock skew or secret rotation that
       didn't propagate.

@@ -126,8 +126,11 @@ def test_healthz_and_readyz():
 
 def test_metrics_returns_queue_depth():
     with tempfile.TemporaryDirectory() as tmp:
-        with TestClient(_build_app(Path(tmp))) as client:
+        with TestClient(_build_app(Path(tmp), admin_token="admin-secret")) as client:
             r = client.get("/metrics")
+            assert r.status_code == 401
+
+            r = client.get("/metrics", headers={"X-Admin-Token": "admin-secret"})
             assert r.status_code == 200
             body = r.json()
             assert "queue" in body
@@ -279,6 +282,7 @@ def test_queued_job_returns_lane_and_wait_metadata():
             with TestClient(
                 _build_app(
                     Path(tmp),
+                    admin_token="admin-secret",
                     extra_env={"SPECTRE_PATCH_RUN_JOBS_IN_PROCESS": "false"},
                 )
             ) as client:
@@ -303,7 +307,7 @@ def test_queued_job_returns_lane_and_wait_metadata():
                 assert status.status_code == 200
                 assert status.json()["queue"]["size_class"] == "heavy"
 
-                metrics = client.get("/metrics")
+                metrics = client.get("/metrics", headers={"X-Admin-Token": "admin-secret"})
                 assert metrics.json()["queue_lanes"]["heavy"]["queued"] == 1
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)

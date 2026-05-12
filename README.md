@@ -192,9 +192,10 @@ Operationally, the API:
 
 Launch-spike behavior is documented in `docs/SCALING_RUNBOOK.md`. Jobs are
 classified into `small`, `standard`, and `heavy` queue lanes; status responses
-include queue position / estimated wait metadata, `/metrics` exposes per-lane
-depth, and deployment operators can raise `SPECTRE_PATCH_WORKER_COUNT` or tune
-queue backpressure limits without changing client code.
+include queue position / estimated wait metadata, admin-only `/metrics` exposes
+per-lane depth, and deployment operators can raise
+`SPECTRE_PATCH_WORKER_COUNT` or tune queue backpressure limits without changing
+client code.
 
 See `docs/INTEGRATION_BLENDER_AND_ADOBE.md`.
 

@@ -542,14 +542,14 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
             const body = await response.json().catch(() => ({}));
             if (!response.ok) {
               const friendly = (body && body.error && body.error.message) || `HTTP ${response.status}`;
-              bugStatus.textContent = `Could not send report (${friendly}). Try email: support@aperiodic-monotile.com.`;
+              bugStatus.textContent = `Could not send report (${friendly}). Try email: zach@shopcloudburst.com.`;
               return;
             }
             bugStatus.textContent = `Thanks — bug_id ${body.bug_id} received.`;
             clearDraft();
             setTimeout(closeBugDialog, 1500);
           } catch (err) {
-            bugStatus.textContent = "Network error. Please try again or email support@aperiodic-monotile.com.";
+            bugStatus.textContent = "Network error. Please try again or email zach@shopcloudburst.com.";
             console.error(err);
           }
         });
