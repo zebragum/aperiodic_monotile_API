@@ -86,22 +86,43 @@ CREATE INDEX IF NOT EXISTS ix_bug_reports_request
 """
 
 
+def _add_column_if_missing(conn: sqlite3.Connection, table: str, column: str, ddl: str) -> None:
+    """Add a SQLite column once, tolerating startup races between API/workers."""
+
+    cols = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})")}
+    if column in cols:
+        return
+    try:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {ddl}")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" not in str(e).lower():
+            raise
+
+
 def _migrate(conn: sqlite3.Connection) -> None:
     cols = {row["name"] for row in conn.execute("PRAGMA table_info(patch_jobs)")}
     if cols and "idempotency_key" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN idempotency_key TEXT")
-    if cols and "api_key_hash" not in cols:
-        conn.execute("ALTER TABLE patch_jobs ADD COLUMN api_key_hash TEXT")
-    if cols and "size_class" not in cols:
-        conn.execute("ALTER TABLE patch_jobs ADD COLUMN size_class TEXT NOT NULL DEFAULT 'standard'")
-    if cols and "estimated_seconds" not in cols:
-        conn.execute("ALTER TABLE patch_jobs ADD COLUMN estimated_seconds REAL NOT NULL DEFAULT 20.0")
     if cols and "claimed_at" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN claimed_at REAL")
     if cols and "claimed_by" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN claimed_by TEXT")
     if cols and "finished_at" not in cols:
         conn.execute("ALTER TABLE patch_jobs ADD COLUMN finished_at REAL")
+    if cols:
+        _add_column_if_missing(conn, "patch_jobs", "api_key_hash", "api_key_hash TEXT")
+        _add_column_if_missing(
+            conn,
+            "patch_jobs",
+            "size_class",
+            "size_class TEXT NOT NULL DEFAULT 'standard'",
+        )
+        _add_column_if_missing(
+            conn,
+            "patch_jobs",
+            "estimated_seconds",
+            "estimated_seconds REAL NOT NULL DEFAULT 20.0",
+        )
     conn.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS ix_patch_jobs_idem"
         " ON patch_jobs(tier, idempotency_key)"
