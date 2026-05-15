@@ -89,15 +89,16 @@ services:
       - key: SPECTRE_PATCH_STRIPE_SECRET_KEY
         sync: false
       # Optional Stripe (set after creating Products → Prices):
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY / _YEARLY
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY / _YEARLY
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY ($5/month)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME ($25 one-person lifetime)
       # Legacy Solo monthly fallback: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
         sync: false
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY
         sync: false
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_YEARLY
+        sync: false
+      - key: SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME
         sync: false
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY
         sync: false

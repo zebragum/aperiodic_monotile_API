@@ -50,6 +50,7 @@ def _build_app(
         "SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS",
         "SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY",
         "SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_YEARLY",
+        "SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME",
         "SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY",
         "SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY",
         "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
@@ -78,6 +79,7 @@ def _build_app(
     os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CHECKOUT"] = "10000/minute"
     os.environ["SPECTRE_PATCH_RATE_LIMIT_BILLING_CLAIM"] = "10000/minute"
     os.environ["SPECTRE_PATCH_RATE_LIMIT_LEADS"] = "10000/minute"
+    os.environ["SPECTRE_PATCH_RATE_LIMIT_ANALYTICS_EVENTS"] = "10000/minute"
     if atlas_dir is None:
         atlas_dir = tmp / "atlas_empty"
         atlas_dir.mkdir(parents=True, exist_ok=True)
@@ -491,13 +493,13 @@ def test_billing_endpoints_report_disabled_without_stripe_config():
             assert r.status_code == 503
 
 
-def test_billing_checkout_day_pass_uses_payment_mode(monkeypatch):
+def test_billing_checkout_lifetime_uses_payment_mode(monkeypatch):
     with tempfile.TemporaryDirectory() as tmp:
         app = _build_app(
             Path(tmp),
             extra_env={
                 "SPECTRE_PATCH_STRIPE_SECRET_KEY": "sk_test_123",
-                "SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS": "price_day",
+                "SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME": "price_lifetime",
             },
         )
         from spectre_patch.api import main as api_main  # noqa: PLC0415
@@ -505,26 +507,26 @@ def test_billing_checkout_day_pass_uses_payment_mode(monkeypatch):
         async def fake_stripe_post(cfg, path, data):
             assert path == "checkout/sessions"
             assert data["mode"] == "payment"
-            assert data["line_items[0][price]"] == "price_day"
-            assert data["metadata[tier]"] == "tier_day_pass"
-            assert data["metadata[checkout_plan]"] == "day_pass"
-            assert data["metadata[key_ttl_seconds]"] == str(24 * 3600)
-            return {"url": "https://checkout.example/day", "id": "cs_test_day"}
+            assert data["line_items[0][price]"] == "price_lifetime"
+            assert data["metadata[tier]"] == "tier_solo"
+            assert data["metadata[checkout_plan]"] == "lifetime"
+            assert "metadata[key_ttl_seconds]" not in data
+            return {"url": "https://checkout.example/lifetime", "id": "cs_test_life"}
 
         monkeypatch.setattr(api_main, "_stripe_post", fake_stripe_post)
         with TestClient(app) as client:
             r = client.get("/v1/billing/status")
             assert r.status_code == 200
-            assert r.json()["plans"]["day_pass"] is True
+            assert r.json()["plans"]["lifetime"] is True
 
             r = client.post(
                 "/v1/billing/checkout",
-                json={"email": "buyer@example.com", "plan": "day_pass"},
+                json={"email": "buyer@example.com", "plan": "lifetime"},
             )
             assert r.status_code == 200
-            assert r.json()["tier"] == "tier_day_pass"
-            assert r.json()["plan"] == "day_pass"
-            assert r.json()["checkout_url"] == "https://checkout.example/day"
+            assert r.json()["tier"] == "tier_solo"
+            assert r.json()["plan"] == "lifetime"
+            assert r.json()["checkout_url"] == "https://checkout.example/lifetime"
 
 
 def test_database_api_key_expiry_blocks_authentication():
@@ -617,6 +619,63 @@ def test_admin_leads_requires_token_and_exports_json_csv():
             assert r.status_code == 200
             assert "buyer@example.com" in r.text
             assert r.headers["content-type"].startswith("text/csv")
+
+
+def test_launch_analytics_tracks_site_and_api_events():
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(Path(tmp), admin_token="admin-secret")
+        with TestClient(app) as client:
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            sample = client.post(
+                "/v1/analytics/events",
+                json={
+                    "event_name": "sample_download",
+                    "source": "website",
+                    "visitor_id": "visitor-1",
+                    "session_id": "session-1",
+                    "sample_file": "assets/samples/sample-patch.svg",
+                    "page_url": "https://example.test/",
+                },
+            )
+            assert sample.status_code == 200
+
+            bad = client.post("/v1/analytics/events", json={"event_name": "made_up"})
+            assert bad.status_code == 422
+
+            api_key = job_repo.create_api_key(app.state.db, tier="tier_solo", label="analytics")
+            body = {
+                "tile_family": "spectre_tile_1_1",
+                "scale": 1.0,
+                "substitution_iterations": 2,
+                "formats": ["csv", "json"],
+                "mask": {"type": "square", "half_side": 8.0},
+            }
+            created = client.post("/v1/patch", json=body, headers={"X-API-Key": api_key})
+            assert created.status_code == 200, created.text
+            job_id = created.json()["job_id"]
+            job = {}
+            for _ in range(40):
+                job = client.get(f"/v1/jobs/{job_id}", headers={"X-API-Key": api_key}).json()
+                if job["status"] in ("completed", "failed"):
+                    break
+            assert job["status"] == "completed", job
+
+            admin_headers = {"X-Admin-Token": "admin-secret"}
+            denied = client.get("/v1/admin/analytics")
+            assert denied.status_code == 401
+
+            analytics = client.get("/v1/admin/analytics?days=7", headers=admin_headers)
+            assert analytics.status_code == 200
+            payload = analytics.json()
+            assert payload["funnel"]["sample_download"] == 1
+            assert payload["funnel"]["requested_format"] == 2
+            assert payload["funnel"]["first_successful_job"] == 1
+            formats = {row["label"]: row["count"] for row in payload["requested_formats"]}
+            assert formats["csv"] == 1
+            assert formats["json"] == 1
+            samples = {row["label"]: row["count"] for row in payload["sample_downloads"]}
+            assert samples["assets/samples/sample-patch.svg"] == 1
 
 
 def test_capabilities_with_built_atlas():

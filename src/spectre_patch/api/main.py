@@ -103,6 +103,7 @@ class ServiceSettings(BaseSettings):
     rate_limit_billing_checkout: str = "10/minute"
     rate_limit_billing_claim: str = "20/minute"
     rate_limit_leads: str = "10/minute"
+    rate_limit_analytics_events: str = "120/minute"
 
     # Queue protection. These are deliberately soft launch defaults: they let a
     # traffic spike queue up, but stop one key or one huge 3D burst from making
@@ -130,6 +131,7 @@ class ServiceSettings(BaseSettings):
     stripe_price_id_studio: str = ""
     stripe_price_id_solo_monthly: str = ""
     stripe_price_id_solo_yearly: str = ""
+    stripe_price_id_lifetime: str = ""
     stripe_price_id_teams_monthly: str = ""
     stripe_price_id_teams_yearly: str = ""
     stripe_webhook_secret: str = ""
@@ -347,6 +349,18 @@ async def _json_object_body(request: Request) -> dict:
     return body
 
 
+def _clean_tracking_string(value: object, max_len: int) -> str | None:
+    out = str(value or "").strip()
+    return out[:max_len] if out else None
+
+
+def _client_ip_hash(request: Request, cfg: ServiceSettings) -> str | None:
+    client_host = (request.client.host if request.client else "") or ""
+    if not client_host:
+        return None
+    return hashlib.sha256((client_host + cfg.api_secret).encode("utf-8")).hexdigest()[:16]
+
+
 def _tier_for_api_key(request: Request, api_key: str, cfg: ServiceSettings) -> str | None:
     tier_map = _api_key_tier_map(cfg)
     if api_key in tier_map:
@@ -397,20 +411,14 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
         return False
     return bool(
         cfg.stripe_price_id_solo_monthly
-        or cfg.stripe_price_id_day_pass
-        or cfg.stripe_price_id_solo_yearly
-        or cfg.stripe_price_id_teams_monthly
-        or cfg.stripe_price_id_teams_yearly
+        or cfg.stripe_price_id_lifetime
         or cfg.stripe_price_id_studio
     )
 
 
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
-    ("day_pass", "tier_day_pass", "stripe_price_id_day_pass", "payment", 24 * 3600.0),
-    ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
-    ("solo_yearly", "tier_solo", "stripe_price_id_solo_yearly", "subscription", None),
-    ("teams_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
-    ("teams_yearly", "tier_teams", "stripe_price_id_teams_yearly", "subscription", None),
+    ("monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
+    ("lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
 )
 
 
@@ -435,24 +443,18 @@ def _checkout_price_and_tier(
     """Resolve (stripe_price_id, api_tier_slug, canonical_plan_slug, checkout_mode, ttl)."""
 
     plan = str(plan_raw or "").strip().lower().replace("-", "_")
-    if plan in ("solo", "solo_month"):
-        plan = "solo_monthly"
-    elif plan in ("day", "daypass", "day_pass_daily"):
-        plan = "day_pass"
-    elif plan == "solo_year":
-        plan = "solo_yearly"
-    elif plan == "teams_month":
-        plan = "teams_monthly"
-    elif plan == "teams_year":
-        plan = "teams_yearly"
+    if plan in ("solo", "solo_month", "solo_monthly", "month", "monthly"):
+        plan = "monthly"
+    elif plan in ("lifetime", "life", "one_time", "onetime", "solo_lifetime"):
+        plan = "lifetime"
 
     if not plan:
-        plan = "solo_monthly"
+        plan = "monthly"
 
     for slug, tier, attr, mode, ttl_seconds in _CHECKOUT_PLAN_TO_FIELD:
         if slug == plan:
             price_id = str(getattr(cfg, attr, "") or "").strip()
-            if not price_id and slug == "solo_monthly" and cfg.stripe_price_id_studio.strip():
+            if not price_id and slug == "monthly" and cfg.stripe_price_id_studio.strip():
                 price_id = cfg.stripe_price_id_studio.strip()
             if price_id:
                 return price_id, tier, slug, mode, ttl_seconds
@@ -908,6 +910,39 @@ def create_app() -> FastAPI:
             "support": _support_url_for(cfg, rid),
         }
 
+    @app.post("/v1/analytics/events", tags=["billing"])
+    @limiter.limit(cfg.rate_limit_analytics_events)
+    async def create_analytics_event(request: Request) -> dict:
+        """Capture first-party website launch events.
+
+        This endpoint is intentionally narrow and unauthenticated: the public
+        website can report low-risk interactions such as sample downloads, while
+        checkout starts, key claims, requested formats, and first successful jobs
+        are recorded server-side where possible.
+        """
+
+        body = await _json_object_body(request)
+        event_name = _clean_tracking_string(body.get("event_name"), 80)
+        if event_name not in {"sample_download"}:
+            raise HTTPException(status_code=422, detail="unsupported analytics event")
+        metadata = body.get("metadata")
+        if not isinstance(metadata, dict):
+            metadata = {}
+        event_id = job_repo.record_launch_event(
+            app.state.db,
+            event_name,
+            source=_clean_tracking_string(body.get("source"), 80) or "website",
+            visitor_id=_clean_tracking_string(body.get("visitor_id"), 120),
+            session_id=_clean_tracking_string(body.get("session_id"), 120),
+            sample_file=_clean_tracking_string(body.get("sample_file"), 240),
+            page_url=_clean_tracking_string(body.get("page_url"), 500),
+            referrer=_clean_tracking_string(body.get("referrer"), 500),
+            user_agent=_clean_tracking_string(body.get("user_agent"), 500),
+            client_ip_hash=_client_ip_hash(request, cfg),
+            metadata=metadata,
+        )
+        return {"event_id": event_id, "status": "recorded"}
+
     @app.get(
         "/v1/admin/bug-reports",
         tags=["billing"],
@@ -961,6 +996,13 @@ def create_app() -> FastAPI:
             )
         return {"bug_reports": payload, "count": len(payload)}
 
+    @app.get("/v1/admin/analytics", tags=["billing"], include_in_schema=False)
+    async def admin_analytics(
+        _: None = Depends(_admin_token_dependency),
+        days: int = Query(default=30, ge=1, le=365),
+    ) -> dict:
+        return job_repo.analytics_summary(app.state.db, days=days)
+
     @app.get("/v1/admin/leads", tags=["billing"], include_in_schema=False, response_model=None)
     async def admin_leads(
         _: None = Depends(_admin_token_dependency),
@@ -1003,11 +1045,8 @@ def create_app() -> FastAPI:
             "checkout_available": _billing_configured(cfg),
             "studio_checkout_available": _billing_configured(cfg),
             "plans": {
-                "day_pass": bool(cfg.stripe_price_id_day_pass),
-                "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
-                "solo_yearly": bool(cfg.stripe_price_id_solo_yearly),
-                "teams_monthly": bool(cfg.stripe_price_id_teams_monthly),
-                "teams_yearly": bool(cfg.stripe_price_id_teams_yearly),
+                "monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
+                "lifetime": bool(cfg.stripe_price_id_lifetime),
             },
             "public_site_url": cfg.public_site_url,
         }
@@ -1018,9 +1057,7 @@ def create_app() -> FastAPI:
         """Start Stripe Checkout.
 
         Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
-        ``day_pass``, ``solo_monthly``, ``solo_yearly``, ``teams_monthly``, ``teams_yearly``.
-        Omitted ``plan`` defaults to ``solo_monthly`` (falls back to
-        ``stripe_price_id_studio`` when ``stripe_price_id_solo_monthly`` is unset).
+        ``monthly`` or ``lifetime``. Omitted ``plan`` defaults to ``monthly``.
         """
 
         if not _billing_configured(cfg):
@@ -1048,6 +1085,18 @@ def create_app() -> FastAPI:
         if email:
             data["customer_email"] = email
         session = await _stripe_post(cfg, "checkout/sessions", data)
+        job_repo.record_launch_event(
+            app.state.db,
+            "checkout_start",
+            source="billing",
+            tier=tier,
+            plan=plan_slug,
+            metadata={
+                "checkout_mode": checkout_mode,
+                "session_id": session.get("id"),
+                "has_email": bool(email),
+            },
+        )
         return {
             "checkout_url": session["url"],
             "session_id": session["id"],
@@ -1075,6 +1124,14 @@ def create_app() -> FastAPI:
                     "tier": existing["tier"],
                 }
             job_repo.clear_one_time_plaintext(app.state.db, existing["key_hash"])
+            job_repo.record_launch_event(
+                app.state.db,
+                "key_claim",
+                source="billing",
+                api_key_hash_value=existing["key_hash"],
+                tier=existing["tier"],
+                metadata={"session_id": session_id, "claim_path": "existing"},
+            )
             return {"status": "created", "api_key": api_key, "tier": existing["tier"]}
 
         session = await _stripe_get(cfg, f"checkout/sessions/{session_id}")
@@ -1112,6 +1169,15 @@ def create_app() -> FastAPI:
             stripe_subscription_id=session.get("subscription"),
             stripe_checkout_session_id=session_id,
             expires_at=expires_at,
+        )
+        job_repo.record_launch_event(
+            app.state.db,
+            "key_claim",
+            source="billing",
+            api_key_hash_value=job_repo.hash_api_key(api_key),
+            tier=tier,
+            plan=plan_slug or None,
+            metadata={"session_id": session_id, "claim_path": "created"},
         )
         return {"status": "created", "api_key": api_key, "tier": tier}
 

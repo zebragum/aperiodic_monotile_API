@@ -31,7 +31,7 @@ X-API-Key: YOUR_API_KEY
 
 Free keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
 
-Paid Day Pass, Solo, and Teams keys can request production exporters.
+Paid Monthly and Lifetime keys are one-person licenses that can request production exporters.
 
 ## Endpoint Summary
 
@@ -50,7 +50,7 @@ Returns:
 {
   "job_id": "uuid",
   "status": "queued",
-  "tier": "tier_day_pass",
+  "tier": "tier_solo",
   "size_class": "small|standard|heavy",
   "estimated_seconds": 20,
   "queue": {

@@ -7,6 +7,7 @@ import secrets
 import hashlib
 import sqlite3
 import time
+from contextlib import suppress
 from pathlib import Path
 from uuid import uuid4
 
@@ -79,6 +80,31 @@ CREATE INDEX IF NOT EXISTS ix_bug_reports_created
   ON bug_reports(created);
 CREATE INDEX IF NOT EXISTS ix_bug_reports_request
   ON bug_reports(request_id);
+CREATE TABLE IF NOT EXISTS launch_events (
+  id TEXT PRIMARY KEY,
+  created REAL NOT NULL,
+  event_name TEXT NOT NULL,
+  source TEXT,
+  visitor_id TEXT,
+  session_id TEXT,
+  api_key_hash TEXT,
+  tier TEXT,
+  plan TEXT,
+  format TEXT,
+  sample_file TEXT,
+  job_id TEXT,
+  page_url TEXT,
+  referrer TEXT,
+  user_agent TEXT,
+  client_ip_hash TEXT,
+  metadata_json TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_launch_events_created
+  ON launch_events(created);
+CREATE INDEX IF NOT EXISTS ix_launch_events_name_created
+  ON launch_events(event_name, created);
+CREATE INDEX IF NOT EXISTS ix_launch_events_format_created
+  ON launch_events(format, created);
 """
 
 
@@ -195,6 +221,38 @@ def _migrate(conn: sqlite3.Connection) -> None:
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_bug_reports_created ON bug_reports(created)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_bug_reports_request ON bug_reports(request_id)")
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS launch_events (
+          id TEXT PRIMARY KEY,
+          created REAL NOT NULL,
+          event_name TEXT NOT NULL,
+          source TEXT,
+          visitor_id TEXT,
+          session_id TEXT,
+          api_key_hash TEXT,
+          tier TEXT,
+          plan TEXT,
+          format TEXT,
+          sample_file TEXT,
+          job_id TEXT,
+          page_url TEXT,
+          referrer TEXT,
+          user_agent TEXT,
+          client_ip_hash TEXT,
+          metadata_json TEXT
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_launch_events_created ON launch_events(created)")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS ix_launch_events_name_created"
+        " ON launch_events(event_name, created)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS ix_launch_events_format_created"
+        " ON launch_events(format, created)"
+    )
     conn.commit()
 
 
@@ -255,14 +313,61 @@ def enqueue_job(
         ),
     )
     conn.commit()
+    for fmt in sorted({str(f).strip().lower() for f in body.get("formats", []) if str(f).strip()}):
+        record_launch_event(
+            conn,
+            "requested_format",
+            source="api",
+            api_key_hash_value=api_key_hash_value,
+            tier=tier,
+            fmt=fmt,
+            job_id=job_id,
+            metadata={"size_class": size_class},
+            commit=False,
+        )
+    conn.commit()
     return job_id, True
 
 
 def mark_done(conn: sqlite3.Connection, job_id: str, result: dict) -> None:
+    row = fetch_job(conn, job_id)
     conn.execute(
         "UPDATE patch_jobs SET status=?, result_json=?, finished_at=? WHERE id=?",
         ("completed", json.dumps(result, sort_keys=True), time.time(), job_id),
     )
+    if row is not None:
+        api_key_hash_value = row["api_key_hash"]
+        completed_count = None
+        if api_key_hash_value:
+            completed = conn.execute(
+                """
+                SELECT COUNT(*) AS n
+                  FROM patch_jobs
+                 WHERE api_key_hash=?
+                   AND status='completed'
+                   AND id<>?
+                """,
+                (api_key_hash_value, job_id),
+            ).fetchone()
+            completed_count = int(completed["n"] if completed is not None else 0)
+        if completed_count == 0:
+            formats: list[str] = []
+            with suppress(json.JSONDecodeError, TypeError, AttributeError):
+                request_body = json.loads(row["request_json"] or "{}")
+                formats = [str(f).lower() for f in request_body.get("formats", [])]
+            record_launch_event(
+                conn,
+                "first_successful_job",
+                source="api",
+                api_key_hash_value=api_key_hash_value,
+                tier=row["tier"],
+                job_id=job_id,
+                metadata={
+                    "formats": sorted(set(formats)),
+                    "size_class": row["size_class"],
+                },
+                commit=False,
+            )
     conn.commit()
 
 
@@ -658,3 +763,193 @@ def list_bug_reports(conn: sqlite3.Connection, *, limit: int = 500) -> list[sqli
         (int(limit),),
     )
     return list(cur.fetchall())
+
+
+def record_launch_event(
+    conn: sqlite3.Connection,
+    event_name: str,
+    *,
+    source: str | None = None,
+    visitor_id: str | None = None,
+    session_id: str | None = None,
+    api_key_hash_value: str | None = None,
+    tier: str | None = None,
+    plan: str | None = None,
+    fmt: str | None = None,
+    sample_file: str | None = None,
+    job_id: str | None = None,
+    page_url: str | None = None,
+    referrer: str | None = None,
+    user_agent: str | None = None,
+    client_ip_hash: str | None = None,
+    metadata: dict | None = None,
+    commit: bool = True,
+) -> str:
+    """Persist a low-cardinality launch analytics event.
+
+    Keep this intentionally boring and first-party: no third-party pixels, no
+    full IP storage, and no raw API keys. The dashboard aggregates this table.
+    """
+
+    event_id = str(uuid4())
+    conn.execute(
+        """
+        INSERT INTO launch_events(
+            id, created, event_name, source, visitor_id, session_id, api_key_hash,
+            tier, plan, format, sample_file, job_id, page_url, referrer,
+            user_agent, client_ip_hash, metadata_json
+        )
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (
+            event_id,
+            time.time(),
+            event_name[:80],
+            source[:80] if source else None,
+            visitor_id[:120] if visitor_id else None,
+            session_id[:120] if session_id else None,
+            api_key_hash_value,
+            tier[:80] if tier else None,
+            plan[:80] if plan else None,
+            fmt[:40] if fmt else None,
+            sample_file[:240] if sample_file else None,
+            job_id[:120] if job_id else None,
+            page_url[:500] if page_url else None,
+            referrer[:500] if referrer else None,
+            user_agent[:500] if user_agent else None,
+            client_ip_hash,
+            json.dumps(metadata or {}, sort_keys=True),
+        ),
+    )
+    if commit:
+        conn.commit()
+    return event_id
+
+
+def _event_counts(
+    conn: sqlite3.Connection,
+    *,
+    since: float,
+    group_col: str,
+    event_name: str | None = None,
+    limit: int = 20,
+) -> list[dict[str, object]]:
+    allowed = {"event_name", "format", "sample_file", "plan", "tier", "source"}
+    if group_col not in allowed:
+        raise ValueError(f"unsupported analytics group column {group_col!r}")
+    params: list[object] = [since]
+    where = "created >= ?"
+    if event_name:
+        where += " AND event_name = ?"
+        params.append(event_name)
+    rows = conn.execute(
+        f"""
+        SELECT COALESCE({group_col}, '(none)') AS label, COUNT(*) AS count
+          FROM launch_events
+         WHERE {where}
+         GROUP BY COALESCE({group_col}, '(none)')
+         ORDER BY count DESC, label ASC
+         LIMIT ?
+        """,
+        (*params, int(limit)),
+    ).fetchall()
+    return [{"label": row["label"], "count": int(row["count"])} for row in rows]
+
+
+def analytics_summary(conn: sqlite3.Connection, *, days: int = 30) -> dict:
+    """Return the launch dashboard rollup for the admin API."""
+
+    safe_days = max(1, min(int(days), 365))
+    now = time.time()
+    since = now - safe_days * 86400
+    total_row = conn.execute(
+        "SELECT COUNT(*) AS n FROM launch_events WHERE created >= ?",
+        (since,),
+    ).fetchone()
+    unique_row = conn.execute(
+        """
+        SELECT COUNT(DISTINCT visitor_id) AS visitors,
+               COUNT(DISTINCT session_id) AS sessions
+          FROM launch_events
+         WHERE created >= ?
+        """,
+        (since,),
+    ).fetchone()
+    daily_rows = conn.execute(
+        """
+        SELECT date(created, 'unixepoch') AS day, event_name, COUNT(*) AS count
+          FROM launch_events
+         WHERE created >= ?
+         GROUP BY date(created, 'unixepoch'), event_name
+         ORDER BY day ASC, event_name ASC
+        """,
+        (since,),
+    ).fetchall()
+    daily: dict[str, dict[str, int | str]] = {}
+    for row in daily_rows:
+        day = str(row["day"])
+        bucket = daily.setdefault(day, {"date": day})
+        bucket[str(row["event_name"])] = int(row["count"])
+
+    recent_rows = conn.execute(
+        """
+        SELECT created, event_name, source, tier, plan, format, sample_file,
+               job_id, page_url, referrer
+          FROM launch_events
+         WHERE created >= ?
+         ORDER BY created DESC
+         LIMIT 50
+        """,
+        (since,),
+    ).fetchall()
+    recent_events = [
+        {
+            "created": row["created"],
+            "event_name": row["event_name"],
+            "source": row["source"],
+            "tier": row["tier"],
+            "plan": row["plan"],
+            "format": row["format"],
+            "sample_file": row["sample_file"],
+            "job_id": row["job_id"],
+            "page_url": row["page_url"],
+            "referrer": row["referrer"],
+        }
+        for row in recent_rows
+    ]
+
+    return {
+        "period_days": safe_days,
+        "generated_at": now,
+        "totals": {
+            "events": int(total_row["n"] if total_row is not None else 0),
+            "visitors": int(unique_row["visitors"] if unique_row is not None else 0),
+            "sessions": int(unique_row["sessions"] if unique_row is not None else 0),
+        },
+        "funnel": {
+            item["label"]: item["count"]
+            for item in _event_counts(conn, since=since, group_col="event_name", limit=50)
+        },
+        "daily": list(daily.values()),
+        "requested_formats": _event_counts(
+            conn,
+            since=since,
+            group_col="format",
+            event_name="requested_format",
+        ),
+        "sample_downloads": _event_counts(
+            conn,
+            since=since,
+            group_col="sample_file",
+            event_name="sample_download",
+        ),
+        "checkout_plans": _event_counts(
+            conn,
+            since=since,
+            group_col="plan",
+            event_name="checkout_start",
+        ),
+        "tiers": _event_counts(conn, since=since, group_col="tier", limit=20),
+        "sources": _event_counts(conn, since=since, group_col="source", limit=20),
+        "recent_events": recent_events,
+    }

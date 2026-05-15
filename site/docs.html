@@ -203,7 +203,7 @@
         <div class="section-heading">
           <p class="eyebrow">Capabilities</p>
           <h2>What paid access unlocks today.</h2>
-          <p>Use this section to quickly compare free previews, Day Pass, Solo, and Teams access.</p>
+          <p>Use this section to quickly compare free previews, monthly access, and lifetime access.</p>
         </div>
         <div class="cards">
           <article class="card">
@@ -211,12 +211,12 @@
             <p>Small preview patches with raster outputs only: JPG, JPEG, or PNG.</p>
           </article>
           <article class="card">
-            <h3>Day Pass</h3>
-            <p>24-hour paid access to the same production exporters as Solo: SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json.</p>
+            <h3>Monthly</h3>
+            <p>$5/month one-person access to production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json.</p>
           </article>
           <article class="card">
-            <h3>Solo and Teams</h3>
-            <p>Production jobs up to 500,000 retained tiles. Teams covers up to 8 users on one team license.</p>
+            <h3>Lifetime</h3>
+            <p>$25 one-person lifetime access to the same production exporters and production jobs up to 500,000 retained tiles.</p>
           </article>
           <article class="card">
             <h3>Queue and downloads</h3>
@@ -262,11 +262,10 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
 
       <section id="access" class="section cta">
         <p class="eyebrow">Access model</p>
-        <h2>Day Pass · Solo · Teams · Free previews.</h2>
+        <h2>Monthly · Lifetime · Free previews.</h2>
         <p>
           Free keys stay constrained to small preview patches and JPG/PNG raster previews. Paid checkout grants
-          <strong>Day Pass</strong>, <strong>Solo</strong>, or <strong>Teams</strong> API tiers.
-          Teams includes one team license for up to 8 users.
+          a one-person <strong>Monthly</strong> or <strong>Lifetime</strong> key for production exporters.
         </p>
         <div id="checkoutClaim" class="demo-stats"></div>
         <div class="hero-actions">
@@ -343,9 +342,9 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         if (state === "success") {
           const heading = document.createElement("strong");
           const friendlyTier = {
-            tier_day_pass: "Day Pass",
-            tier_solo: "Solo",
-            tier_teams: "Teams",
+            tier_day_pass: "paid access",
+            tier_solo: "paid access",
+            tier_teams: "paid access",
             tier_free: "Free Preview"
           }[payload.tier] || "paid access";
           heading.textContent = `Thank you! You now have a ${friendlyTier}.`;
@@ -355,9 +354,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           note.textContent = "Your API key is shown once. Save it in your password manager before leaving this page.";
           const next = document.createElement("p");
           next.textContent =
-            friendlyTier === "Day Pass"
-              ? "For the next 24 hours, use this key to generate production SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json outputs."
-              : "Use this key in the X-API-Key header when you call the API.";
+            "Use this key to generate production SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json outputs.";
           claimBox.append(heading, code, note, next);
           history.replaceState(null, "", "docs.html#access");
           clearSessionId();

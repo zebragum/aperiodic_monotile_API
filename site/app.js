@@ -421,7 +421,7 @@ async function initGenerator() {
     button.addEventListener("click", () => {
       const format = button.getAttribute("data-upgrade-format")?.toUpperCase() || "production";
       if (generatorStatus) {
-        generatorStatus.textContent = `${format} exports are paid production geometry. Start with a Day Pass or Solo plan below.`;
+        generatorStatus.textContent = `${format} exports are paid production geometry. Start with Monthly or Lifetime access below.`;
       }
       trackLaunchEvent("requested_format", {
         format: format.toLowerCase(),
@@ -617,7 +617,7 @@ for (const link of document.querySelectorAll(".sample-downloads a[download]")) {
 
 /**
  * Stripe Checkout — pass plan slug understood by POST /v1/billing/checkout
- * (day_pass, solo_monthly, solo_yearly, teams_monthly, teams_yearly).
+ * (monthly, lifetime).
  */
 function emailLooksValid(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
