@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic Monotile API | Aperiodic Geometry for Designers and Developers</title>
+    <title>Aperiodic Monotile Generator | Aperiodic Geometry for Designers and Developers</title>
     <meta
       name="description"
-      content="API for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
+      content="Generator for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
     />
     <meta
       name="keywords"
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="styles.css" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Aperiodic Monotile API" />
+    <meta property="og:title" content="Aperiodic Monotile Generator" />
     <meta
       property="og:description"
       content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, PNG, JPG, STL, GLB, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
@@ -31,7 +31,7 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Aperiodic Monotile API",
+        "name": "Aperiodic Monotile Generator",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web API",
         "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, PNG, JPG, STL, GLB, CSV, JSON.",
@@ -46,7 +46,7 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Aperiodic Monotile API home">
+      <a class="brand" href="#top" aria-label="Aperiodic Monotile Generator home">
         <img
           class="brand-mark"
           src="assets/brand-mark.svg"
@@ -55,84 +55,116 @@
           height="32"
           decoding="async"
         />
-        <span>Aperiodic Monotile API</span>
+        <span>Aperiodic Monotile Generator</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="#demo">Demo</a>
-        <a href="docs.html#outputs">Formats</a>
-        <a href="#use-cases">Use Cases</a>
         <a href="docs.html">Docs</a>
         <a href="agents.html">AI Guide</a>
-        <a href="#pricing">Pricing</a>
-        <a href="contact.html">Contact</a>
       </nav>
       <div class="header-actions">
         <a class="button secondary small" href="#pricing">Pricing</a>
-        <a class="button small" href="docs.html#access">Get API Access</a>
+        <a class="button small" href="docs.html#access">Get Access</a>
       </div>
     </header>
 
     <main id="top">
-      <section class="hero section">
-        <div class="hero-copy">
-          <p class="eyebrow">Pattern-free geometry, on demand.</p>
-          <h1>Aperiodic monotile patches in many shapes, sizes, and formats.</h1>
-          <p class="hero-text">
-            Finally! An API for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, and JSON.
-            Fully-tiled patches, without navigating deep iterations. Built for rendering and aliasing-aware
-            layouts, design, 3D modeling and 3D printing, wave propagation, experimental keyed and cryptographic
-            workflows, and research into what this newly discovered shape can do. Choose your region, for example,
-            a 4∶9 rectangle, set tile scale and a handful of parameters; then drop the result into Blender, CAD,
-            Adobe, or your own stack.
-          </p>
-          <div class="hero-actions">
-            <a class="button" href="#demo">Try the visual demo</a>
-            <a class="button secondary" href="docs.html">Read the API docs</a>
-            <a class="button secondary" href="use-cases/applications.html">Use cases</a>
+      <section id="demo" class="section generator-hero">
+        <div class="generator-intro">
+          <figure class="generator-video-card">
+            <video controls preload="none" playsinline poster="assets/generator-video-poster.jpg" aria-label="Aperiodic monotile generator video">
+              <source src="assets/generator-video.mp4" type="video/mp4" />
+            </video>
+          </figure>
+          <div class="generator-copy">
+            <p class="eyebrow">Free non-repeating 2D/3D generator</p>
+            <h1>Generate without patterns.</h1>
+            <p class="hero-text">
+              Build free JPG or PNG previews. Upgrade for SVG, GLB, STL, CSV, and JSON exports.
+            </p>
+            <p class="hero-text hero-context">
+              Aperiodic tilings have unique properties useful for a variety of applications. From computer
+              graphics and signal processing to metamaterials, cryptography, and education.
+              <a href="use-cases/applications.html">See More</a>.
+            </p>
+          </div>
+        </div>
+
+        <div class="generator-app" aria-label="Free aperiodic monotile generator">
+          <aside class="generator-controls">
+            <div class="generator-control-header">
+              <p class="eyebrow">Generate a tiling</p>
+            </div>
+            <div class="generator-control-row">
+              <label>
+                Boundary
+                <select id="generatorShape" autocomplete="off">
+                  <option value="rectangle" selected>Rectangle</option>
+                  <option value="circle">Circle</option>
+                  <option value="triangle">Triangle</option>
+                  <option value="hexagon">Hexagon</option>
+                  <option value="rounded_rect">Rounded rectangle</option>
+                </select>
+              </label>
+              <label>
+                Tile scale
+                <input id="generatorScale" type="range" min="0.55" max="1.65" value="0.9" step="0.05" />
+                <span class="range-readout"><span id="generatorScaleValue">0.90</span>x tile size</span>
+              </label>
+            </div>
+            <div class="palette-editor" aria-label="Nine color palette">
+              <div class="palette-editor-heading">
+                <span>9-color palette</span>
+                <button class="button-link" type="button" id="randomizePalette">Randomize</button>
+              </div>
+              <div id="paletteGrid" class="palette-grid"></div>
+            </div>
+            <div class="generator-actions">
+              <button class="button" type="button" id="downloadPng">Download PNG free</button>
+              <button class="button secondary" type="button" id="downloadJpg">Download JPG free</button>
+            </div>
+            <div class="paid-format-upsell" aria-label="Paid production export formats">
+              <div class="paid-format-buttons">
+                <button class="button secondary small" type="button" data-upgrade-format="svg">SVG</button>
+                <button class="button secondary small" type="button" data-upgrade-format="glb">GLB</button>
+                <button class="button secondary small" type="button" data-upgrade-format="stl">STL</button>
+              </div>
+            </div>
+          </aside>
+          <div class="generator-preview-panel">
+            <div class="generator-preview-toolbar">
+              <span id="generatorSummary">Rectangle · 0.90x · PNG/JPG free</span>
+              <span class="preview-badge">Live preview</span>
+            </div>
+            <canvas id="generatorCanvas" width="1400" height="900" aria-label="Generated aperiodic monotile preview"></canvas>
           </div>
         </div>
       </section>
 
-      <section id="demo" class="section demo-section">
+      <section id="samples" class="section samples-section">
         <div class="section-heading">
-          <p class="eyebrow">Interactive demo</p>
-          <h2>Explore real API outputs</h2>
+          <p class="eyebrow">Sample outputs</p>
+          <h2>Download real files before you integrate.</h2>
           <p>
-            This demo visualizes some example outputs. The production API can generate
-            fully-customizable geometry for authenticated users. We define &ldquo;units&rdquo; as the
-            length of the longest side of the tile.
+            Open a sample in Blender, CAD, Illustrator, a 3D viewer, or your own parser. These are ordinary
+            API artifacts with clipped boundaries and tile data.
           </p>
         </div>
-
-        <div class="demo-shell">
-          <aside class="controls" aria-label="Demo controls">
-            <label>
-              Example preset (extent + approximate tile count)
-              <select id="presetSelect" aria-description="Bundled previews; regenerate any mask/size via patch jobs.">
-                <option value="circle-100u">Circle · 100 units · ~1,036 tiles · SVG</option>
-                <option value="rect-9x4">Rectangle · 90×40 units · ~500 tiles · PNG</option>
-                <option value="tri-50u">Triangle · 50-unit edge · ~166 tiles · JPG</option>
-                <option value="stl-panel">Fabrication panel · 90×40 units · ~500 tiles · STL</option>
-                <option value="glb-game">Square tile field · 50×50 units · ~352 tiles · GLB</option>
-              </select>
-            </label>
-          </aside>
-          <div class="preview-frame">
-            <div class="demo-svg-scale-wrap">
-              <div id="demoSvgHost" class="demo-svg-host" aria-live="polite"></div>
-            </div>
-          </div>
+        <div class="sample-downloads" aria-label="Sample output downloads">
+          <a href="assets/samples/sample-tiles.glb" download>GLB scene</a>
+          <a href="assets/samples/sample-linework.stl" download>STL linework</a>
+          <a href="assets/samples/sample-independent-stl.zip" download>STL ZIP tiles</a>
+          <a href="assets/samples/sample-patch.svg" download>SVG patch</a>
+          <a href="assets/samples/sample-preview.png" download>PNG preview</a>
+          <a href="assets/samples/sample-preview.jpg" download>JPG preview</a>
+          <a href="assets/samples/sample-tiles.csv" download>CSV tile data</a>
+          <a href="assets/samples/sample-tiles.json" download>JSON tile data</a>
         </div>
       </section>
 
       <section id="use-cases" class="section">
         <div class="section-heading">
           <p class="eyebrow">Practical uses</p>
-          <h2>Aperiodic tilings have unique properties useful for a variety of applications</h2>
-          <p>
-            From computer graphics and signal processing to metamaterials, cryptography, and education.
-            <a href="use-cases/applications.html">See More</a>.
-          </p>
+          <h2>When you want to avoid patterns, use this generator for non-repeating geometry, good for...</h2>
         </div>
         <div class="cards">
           <article class="card">
@@ -145,14 +177,14 @@
             <a href="use-cases/blender.html">Blender workflow guide</a>
           </article>
           <article class="card">
-            <h3>Laser cutting and fabrication</h3>
-            <p>Export SVG or STL geometry for decorative screens, inlays, wall art, product surfaces, molds, and CNC experiments.</p>
-            <a href="use-cases/fabrication.html">Fabrication guide</a>
-          </article>
-          <article class="card">
             <h3>Generative art and design</h3>
             <p>Create non-repeating compositions with stable IDs, deterministic seeds, clipping masks, and compact vector output.</p>
             <a href="use-cases/generative-art.html">Generative art guide</a>
+          </article>
+          <article class="card">
+            <h3>Materials and surface studies</h3>
+            <p>Export SVG, STL, or GLB geometry for product surfaces, relief panels, printed textures, molds, and physical studies.</p>
+            <a href="use-cases/fabrication.html">Surface workflow guide</a>
           </article>
           <article class="card">
             <h3>Scientific communication</h3>
@@ -194,14 +226,24 @@
             When a job completes, artifact downloads arrive as signed, time-limited URLs.
           </p>
         </div>
-        <pre class="code-card"><code>{
+        <div class="code-stack">
+          <pre class="code-card"><code>{
+  "formats": ["svg", "glb"],
+  "mask": {"type": "rectangle", "width": 90, "height": 40},
+  "scale": 1
+}</code></pre>
+          <pre class="code-card code-card-secondary"><code>curl -X POST https://aperiodic-monotile-api.onrender.com/v1/patch \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -d '{
   "scale": 1,
   "mask": {"type": "triangle", "side_length": 50},
   "formats": ["jpg"],
   "jpg_width_px": 900,
   "jpg_height_px": 780,
   "jpg_quality": 90
-}</code></pre>
+}'</code></pre>
+        </div>
       </section>
 
       <section id="pricing" class="section pricing">
@@ -212,13 +254,6 @@
             Raster previews stay free so anyone can sanity-check meshes. Paid plans unlock full vector exporters,
             higher limits, and the operational layer you build on, with no copyrights on tiling math.
           </p>
-          <form class="lead-form checkout-form" id="checkoutForm">
-            <label>
-              Email for checkout receipt and API-key delivery
-              <input id="checkoutEmail" type="email" autocomplete="email" placeholder="you@example.com" required />
-            </label>
-            <p class="checkout-status" id="checkoutStatus" aria-live="polite"></p>
-          </form>
         </div>
         <div class="pricing-grid">
           <article class="price-card">
@@ -236,9 +271,9 @@
             <p class="price">$5<span class="price-unit">/day</span></p>
             <p class="price-note">24-hour access to the same production exporters included in Solo</p>
             <ul>
-              <li>Everything in Solo for one day</li>
-              <li>Good for testing a project before subscribing</li>
-              <li>Useful for one-off files, client proofs, and fabrication runs</li>
+              <li>Export: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
+              <li>Production jobs up to 500,000 retained tiles</li>
+              <li>Ideal for independent freelancers and designers</li>
             </ul>
             <div class="pricing-actions">
               <button class="button" type="button" data-checkout-plan="day_pass">Buy day pass</button>
@@ -279,6 +314,7 @@
             </div>
           </article>
         </div>
+        <p class="checkout-status" id="checkoutStatus" aria-live="polite"></p>
         <p class="pricing-ip-note">
           <strong>Outputs &amp; rights.</strong> We retain no copyrights in your geometries: API responses are deterministic
           facts about planar substitution, not creative expression on their own (think uncolored grids). Your
