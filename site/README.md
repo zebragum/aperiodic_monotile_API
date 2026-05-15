@@ -41,5 +41,5 @@ or any static host. Once the domain is known, update:
 
 Initial Render target:
 
-- Site: `https://aperiodic-monotile-site.onrender.com`
-- API: `https://aperiodic-monotile-api.onrender.com`
+- Site: `https://aperiodicgenerator.com`
+- API: `https://api.aperiodicgenerator.com`

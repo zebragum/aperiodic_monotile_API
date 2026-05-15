@@ -56,7 +56,8 @@ const demoSvgHost = document.querySelector("#demoSvgHost");
 const checkoutStatus = document.querySelector("#checkoutStatus");
 
 const svgTextCache = new Map();
-const apiBase = "https://aperiodic-monotile-api.onrender.com";
+const apiBase = "https://api.aperiodicgenerator.com";
+const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
 const analyticsVisitorKey = "monotile.analytics.visitor.v1";
 const analyticsSessionKey = "monotile.analytics.session.v1";
 const generatorTileDataUrl = "assets/samples/sample-tiles.json";
@@ -142,11 +143,11 @@ function trackLaunchEvent(eventName, payload = {}) {
     ...payload,
   };
   const json = JSON.stringify(body);
-  if (navigator.sendBeacon) {
+  if (navigator.sendBeacon && apiBase.includes("aperiodicgenerator.com")) {
     const blob = new Blob([json], { type: "application/json" });
     if (navigator.sendBeacon(`${apiBase}/v1/analytics/events`, blob)) return;
   }
-  fetch(`${apiBase}/v1/analytics/events`, {
+  apiFetch("/v1/analytics/events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: json,
@@ -154,6 +155,14 @@ function trackLaunchEvent(eventName, payload = {}) {
   }).catch(() => {
     // Analytics must never block downloads or checkout.
   });
+}
+
+async function apiFetch(path, options = {}) {
+  try {
+    return await fetch(`${apiBase}${path}`, options);
+  } catch (err) {
+    return fetch(`${apiFallbackBase}${path}`, options);
+  }
 }
 
 function clonePalette(palette) {
@@ -698,7 +707,7 @@ async function startBillingCheckout(planSlug, button) {
   if (inlineStatus) inlineStatus.textContent = "Starting secure checkout...";
   if (submit) submit.disabled = true;
   try {
-    const response = await fetch(`${apiBase}/v1/billing/checkout`, {
+    const response = await apiFetch("/v1/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

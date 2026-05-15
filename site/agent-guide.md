@@ -2,11 +2,11 @@
 
 This file is the canonical machine-readable integration brief for the Aperiodic Monotile API.
 
-Base API URL: `https://aperiodic-monotile-api.onrender.com`
+Base API URL: `https://api.aperiodicgenerator.com`
 
-Public docs: `https://aperiodic-monotile-site.onrender.com/docs.html`
+Public docs: `https://aperiodicgenerator.com/docs.html`
 
-Human support: `https://aperiodic-monotile-site.onrender.com/contact.html`
+Human support: `https://aperiodicgenerator.com/contact.html`
 
 ## What This API Does
 

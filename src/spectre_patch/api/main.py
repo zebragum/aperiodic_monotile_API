@@ -120,7 +120,7 @@ class ServiceSettings(BaseSettings):
     log_level: str = "INFO"
 
     # Billing / self-serve signup. Leave unset to disable billing endpoints.
-    public_site_url: str = "https://aperiodic-monotile-site.onrender.com"
+    public_site_url: str = "https://aperiodicgenerator.com"
     support_bug_report_url: str = ""
     """Public-facing URL the API points users to when something goes wrong.
     Falls back to ``{public_site_url}/contact.html`` (with a ``rid`` query

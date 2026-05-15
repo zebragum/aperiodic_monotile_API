@@ -9,7 +9,7 @@
       content="Documentation for generating Spectre monotile geometry with the Aperiodic Monotile API, including masks, SVG options, signed downloads, and free/paid API access."
     />
     <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://aperiodic-monotile-site.onrender.com/docs.html" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/docs.html" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -56,7 +56,7 @@
             automatically.
           </p>
         </div>
-        <pre class="code-card"><code>curl -X POST https://aperiodic-monotile-api.onrender.com/v1/patch \
+        <pre class="code-card"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Idempotency-Key: demo-001" \
@@ -225,7 +225,7 @@
         </div>
         <p class="domain-see">
           Developers can also call
-          <a href="https://aperiodic-monotile-api.onrender.com/v1/capabilities"><code>GET /v1/capabilities</code></a>.
+          <a href="https://api.aperiodicgenerator.com/v1/capabilities"><code>GET /v1/capabilities</code></a>.
         </p>
       </section>
 
@@ -395,7 +395,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         if (!id || !claimBox) return;
         renderClaimPanel("loading");
         try {
-          const response = await fetch("https://aperiodic-monotile-api.onrender.com/v1/billing/claim-key", {
+          const response = await apiFetch("/v1/billing/claim-key", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({session_id: id})
@@ -421,9 +421,18 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       }
       claimKey();
 
-      const API_BASE = "https://aperiodic-monotile-api.onrender.com";
+      const API_BASE = "https://api.aperiodicgenerator.com";
+      const API_FALLBACK_BASE = "https://aperiodic-monotile-api.onrender.com";
       const BUG_STORE_KEY = "monotile.bugReport.draft.v1";
       const RID_STORE_KEY = "monotile.lastRequestId.v1";
+
+      async function apiFetch(path, options = {}) {
+        try {
+          return await fetch(`${API_BASE}${path}`, options);
+        } catch (err) {
+          return fetch(`${API_FALLBACK_BASE}${path}`, options);
+        }
+      }
 
       function rememberRequestId(rid) {
         if (!rid) return;
@@ -528,7 +537,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           }
           bugStatus.textContent = "Sending report...";
           try {
-            const response = await fetch(`${API_BASE}/v1/bug-reports`, {
+            const response = await apiFetch("/v1/bug-reports", {
               method: "POST",
               headers: {"Content-Type": "application/json"},
               body: JSON.stringify(payload)

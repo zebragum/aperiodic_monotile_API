@@ -40,7 +40,7 @@ services:
       - key: SPECTRE_PATCH_MAX_OUTPUT_BYTES_SOFT
         value: "32212254719"
       - key: SPECTRE_PATCH_CORS_ALLOW_ORIGINS
-        value: https://aperiodic-monotile-site.onrender.com
+        value: https://aperiodicgenerator.com,https://www.aperiodicgenerator.com,https://aperiodic-monotile-site.onrender.com
       - key: SPECTRE_PATCH_LOG_LEVEL
         value: info
       - key: UVICORN_WORKERS
@@ -75,7 +75,7 @@ services:
       # Support contact surfaced in error envelopes and bug reports. Override
       # to point at a Linear/Sentry/email intake if you wire one up.
       - key: SPECTRE_PATCH_SUPPORT_BUG_REPORT_URL
-        value: https://aperiodic-monotile-site.onrender.com/contact.html
+        value: https://aperiodicgenerator.com/contact.html
       # Set this in the Render Dashboard after deploy:
       # {"free_xxx":"tier_free","day_xxx":"tier_day_pass","solo_xxx":"tier_solo","teams_xxx":"tier_teams"}
       - key: SPECTRE_PATCH_API_KEY_TIERS_JSON
@@ -85,7 +85,7 @@ services:
         sync: false
       # Optional: set these when Stripe products are ready.
       - key: SPECTRE_PATCH_PUBLIC_SITE_URL
-        value: https://aperiodic-monotile-site.onrender.com
+        value: https://aperiodicgenerator.com
       - key: SPECTRE_PATCH_STRIPE_SECRET_KEY
         sync: false
       # Optional Stripe (set after creating Products → Prices):
