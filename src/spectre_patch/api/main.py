@@ -412,13 +412,17 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
     return bool(
         cfg.stripe_price_id_solo_monthly
         or cfg.stripe_price_id_lifetime
+        or cfg.stripe_price_id_teams_monthly
+        or cfg.stripe_price_id_teams_yearly
         or cfg.stripe_price_id_studio
     )
 
 
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
-    ("monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
-    ("lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
+    ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
+    ("solo_lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
+    ("commercial_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
+    ("commercial_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
 )
 
 
@@ -444,17 +448,21 @@ def _checkout_price_and_tier(
 
     plan = str(plan_raw or "").strip().lower().replace("-", "_")
     if plan in ("solo", "solo_month", "solo_monthly", "month", "monthly"):
-        plan = "monthly"
+        plan = "solo_monthly"
     elif plan in ("lifetime", "life", "one_time", "onetime", "solo_lifetime"):
-        plan = "lifetime"
+        plan = "solo_lifetime"
+    elif plan in ("commercial", "commercial_month", "commercial_monthly"):
+        plan = "commercial_monthly"
+    elif plan in ("commercial_lifetime", "commercial_life"):
+        plan = "commercial_lifetime"
 
     if not plan:
-        plan = "monthly"
+        plan = "solo_monthly"
 
     for slug, tier, attr, mode, ttl_seconds in _CHECKOUT_PLAN_TO_FIELD:
         if slug == plan:
             price_id = str(getattr(cfg, attr, "") or "").strip()
-            if not price_id and slug == "monthly" and cfg.stripe_price_id_studio.strip():
+            if not price_id and slug == "solo_monthly" and cfg.stripe_price_id_studio.strip():
                 price_id = cfg.stripe_price_id_studio.strip()
             if price_id:
                 return price_id, tier, slug, mode, ttl_seconds
@@ -1045,8 +1053,10 @@ def create_app() -> FastAPI:
             "checkout_available": _billing_configured(cfg),
             "studio_checkout_available": _billing_configured(cfg),
             "plans": {
-                "monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
-                "lifetime": bool(cfg.stripe_price_id_lifetime),
+                "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
+                "solo_lifetime": bool(cfg.stripe_price_id_lifetime),
+                "commercial_monthly": bool(cfg.stripe_price_id_teams_monthly),
+                "commercial_lifetime": bool(cfg.stripe_price_id_teams_yearly),
             },
             "public_site_url": cfg.public_site_url,
         }
@@ -1057,7 +1067,8 @@ def create_app() -> FastAPI:
         """Start Stripe Checkout.
 
         Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
-        ``monthly`` or ``lifetime``. Omitted ``plan`` defaults to ``monthly``.
+        ``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or
+        ``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.
         """
 
         if not _billing_configured(cfg):

@@ -493,7 +493,7 @@ def test_billing_endpoints_report_disabled_without_stripe_config():
             assert r.status_code == 503
 
 
-def test_billing_checkout_lifetime_uses_payment_mode(monkeypatch):
+def test_billing_checkout_solo_lifetime_uses_payment_mode(monkeypatch):
     with tempfile.TemporaryDirectory() as tmp:
         app = _build_app(
             Path(tmp),
@@ -509,7 +509,7 @@ def test_billing_checkout_lifetime_uses_payment_mode(monkeypatch):
             assert data["mode"] == "payment"
             assert data["line_items[0][price]"] == "price_lifetime"
             assert data["metadata[tier]"] == "tier_solo"
-            assert data["metadata[checkout_plan]"] == "lifetime"
+            assert data["metadata[checkout_plan]"] == "solo_lifetime"
             assert "metadata[key_ttl_seconds]" not in data
             return {"url": "https://checkout.example/lifetime", "id": "cs_test_life"}
 
@@ -517,16 +517,51 @@ def test_billing_checkout_lifetime_uses_payment_mode(monkeypatch):
         with TestClient(app) as client:
             r = client.get("/v1/billing/status")
             assert r.status_code == 200
-            assert r.json()["plans"]["lifetime"] is True
+            assert r.json()["plans"]["solo_lifetime"] is True
 
             r = client.post(
                 "/v1/billing/checkout",
-                json={"email": "buyer@example.com", "plan": "lifetime"},
+                json={"email": "buyer@example.com", "plan": "solo_lifetime"},
             )
             assert r.status_code == 200
             assert r.json()["tier"] == "tier_solo"
-            assert r.json()["plan"] == "lifetime"
+            assert r.json()["plan"] == "solo_lifetime"
             assert r.json()["checkout_url"] == "https://checkout.example/lifetime"
+
+
+def test_billing_checkout_commercial_lifetime_uses_teams_tier(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(
+            Path(tmp),
+            extra_env={
+                "SPECTRE_PATCH_STRIPE_SECRET_KEY": "sk_test_123",
+                "SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY": "price_commercial_life",
+            },
+        )
+        from spectre_patch.api import main as api_main  # noqa: PLC0415
+
+        async def fake_stripe_post(cfg, path, data):
+            assert path == "checkout/sessions"
+            assert data["mode"] == "payment"
+            assert data["line_items[0][price]"] == "price_commercial_life"
+            assert data["metadata[tier]"] == "tier_teams"
+            assert data["metadata[checkout_plan]"] == "commercial_lifetime"
+            return {"url": "https://checkout.example/commercial-life", "id": "cs_test_comm"}
+
+        monkeypatch.setattr(api_main, "_stripe_post", fake_stripe_post)
+        with TestClient(app) as client:
+            r = client.get("/v1/billing/status")
+            assert r.status_code == 200
+            assert r.json()["plans"]["commercial_lifetime"] is True
+
+            r = client.post(
+                "/v1/billing/checkout",
+                json={"email": "buyer@example.com", "plan": "commercial_lifetime"},
+            )
+            assert r.status_code == 200
+            assert r.json()["tier"] == "tier_teams"
+            assert r.json()["plan"] == "commercial_lifetime"
+            assert r.json()["checkout_url"] == "https://checkout.example/commercial-life"
 
 
 def test_database_api_key_expiry_blocks_authentication():

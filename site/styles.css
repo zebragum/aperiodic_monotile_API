@@ -749,6 +749,14 @@ ul.pricing-value-list {
   background: linear-gradient(135deg, rgba(255, 106, 74, 0.16), rgba(255, 209, 102, 0.08));
 }
 
+#access.cta {
+  padding: clamp(2.25rem, 5vw, 4.25rem);
+}
+
+#access .hero-actions {
+  padding-top: 1rem;
+}
+
 .footer {
   display: flex;
   flex-wrap: wrap;

@@ -31,7 +31,7 @@ X-API-Key: YOUR_API_KEY
 
 Free keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
 
-Paid Monthly and Lifetime keys are one-person licenses that can request production exporters.
+Paid Solo and Commercial keys can request production exporters.
 
 ## Endpoint Summary
 
