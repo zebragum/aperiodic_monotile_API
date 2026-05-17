@@ -7,6 +7,7 @@ import re
 import struct
 import zipfile
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import triangle as tr_lib
@@ -14,6 +15,7 @@ from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
 from shapely.geometry.base import BaseGeometry
 
 from spectre_patch.core.spectre_t11 import PROTOTILE_RING
+from spectre_patch.export.tile_styling import TileVisualStyle, export_ring_for_style
 from spectre_patch.geometry_affine import compose_world_affine, similarity_client
 from spectre_patch.patch_engine import EmittedTile
 
@@ -86,11 +88,23 @@ def _facet_record(norm: tuple[float, float, float], tri_xyz: np.ndarray) -> byte
     return bytes(buf)
 
 
-def prototype_prism_tris(thickness_mm: float) -> list[np.ndarray]:
+def prototype_prism_tris(
+    thickness_mm: float,
+    export_ring: np.ndarray | None = None,
+) -> list[np.ndarray]:
     """Triangles (XYZ) for an extruded Tile(1,1) prism with thickness along local +Z."""
 
-    xy = PROTOTILE_RING[:, :2].astype(np.float64, copy=False)
+    ring = PROTOTILE_RING if export_ring is None else export_ring
+    xy = ring[:, :2].astype(np.float64, copy=False)
     return _prism_tris_from_xy(xy, thickness_mm)
+
+
+def _resolve_export_ring(visual_style: TileVisualStyle | None) -> np.ndarray:
+    if visual_style is None:
+        return PROTOTILE_RING
+    if visual_style.side_style == "flat" and abs(visual_style.tile_edge_ratio - 1.0) < 1e-9:
+        return PROTOTILE_RING
+    return export_ring_for_style(visual_style)
 
 
 def _planar_xy_scale(W: np.ndarray) -> float:
@@ -131,8 +145,10 @@ def combined_stl_facets(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
 ) -> list[bytes]:
-    proto = prototype_prism_tris(thickness_mm)
+    export_ring = _resolve_export_ring(visual_style)
+    proto = prototype_prism_tris(thickness_mm, export_ring)
     facets: list[bytes] = []
     for tile in tiles:
         gen6 = np.asarray(tile.affine_canonical_gen6, dtype=np.float64)
@@ -154,11 +170,20 @@ def _facets_from_tris(tris: list[np.ndarray]) -> list[bytes]:
     return [_facet_record(_triangle_normal(tri[0], tri[1], tri[2]), tri) for tri in tris]
 
 
-def _world_xy_for_clip_geom(tile: EmittedTile, *, scale: float, rotation_deg: float, tx: float, ty: float) -> list[np.ndarray]:
-    assert tile.clip_geom is not None
+def _world_xy_for_clip_geom(
+    tile: EmittedTile,
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    clip_geom: BaseGeometry | None = None,
+) -> list[np.ndarray]:
+    geom = clip_geom if clip_geom is not None else tile.clip_geom
+    assert geom is not None
     client_world = similarity_client(scale, rotation_deg, tx, ty)
     rings: list[np.ndarray] = []
-    for poly in _iter_polygons(tile.clip_geom):
+    for poly in _iter_polygons(geom):
         coords = np.asarray(poly.exterior.coords[:-1], dtype=np.float64)
         if len(coords) < 3:
             continue
@@ -169,9 +194,43 @@ def _world_xy_for_clip_geom(tile: EmittedTile, *, scale: float, rotation_deg: fl
     return rings
 
 
-def _world_xy_rings(tile: EmittedTile, *, scale: float, rotation_deg: float, tx: float, ty: float) -> list[np.ndarray]:
+def _world_xy_rings(
+    tile: EmittedTile,
+    *,
+    scale: float,
+    rotation_deg: float,
+    tx: float,
+    ty: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
+) -> list[np.ndarray]:
+    export_ring = _resolve_export_ring(visual_style)
+    use_styled = visual_style is not None and (
+        visual_style.side_style != "flat" or abs(visual_style.tile_edge_ratio - 1.0) > 1e-9
+    )
     if tile.clip_geom is not None:
+        if use_styled and mask_geom is not None:
+            from spectre_patch.export.svg_export import _styled_clip_geom_world
+
+            client_world = similarity_client(scale, rotation_deg, tx, ty)
+            styled = _styled_clip_geom_world(
+                tile,
+                export_ring=export_ring,
+                mask_geom=mask_geom,
+                client_world=client_world,
+            )
+            if styled is not None:
+                return _world_xy_for_clip_geom(
+                    tile,
+                    scale=scale,
+                    rotation_deg=rotation_deg,
+                    tx=tx,
+                    ty=ty,
+                    clip_geom=styled,
+                )
         return _world_xy_for_clip_geom(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty)
+
+    ring = export_ring
 
     W = compose_world_affine(
         canonical_gen6=np.asarray(tile.affine_canonical_gen6, dtype=np.float64),
@@ -180,7 +239,7 @@ def _world_xy_rings(tile: EmittedTile, *, scale: float, rotation_deg: float, tx:
         tx=tx,
         ty=ty,
     )
-    xy = PROTOTILE_RING[:, :2].astype(np.float64, copy=False)
+    xy = ring[:, :2].astype(np.float64, copy=False)
     ones = np.ones((len(xy), 1), dtype=np.float64)
     hom = np.column_stack([xy, ones])
     mapped = hom @ W.T
@@ -224,13 +283,23 @@ def stroke_prism_tris_for_tiles(
     thickness_mm: float,
     stroke_width: float | None = None,
     z_base: float = 0.0,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> list[np.ndarray]:
     """Extruded boundary strokes for a patch, using the same clipped outlines as SVG."""
 
     width = float(stroke_width) if stroke_width is not None else max(0.035 * float(scale), 0.02)
     tris: list[np.ndarray] = []
     for tile in tiles:
-        for ring in _world_xy_rings(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty):
+        for ring in _world_xy_rings(
+            tile,
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
+            visual_style=visual_style,
+            mask_geom=mask_geom,
+        ):
             if len(ring) < 2:
                 continue
             for i in range(len(ring)):
@@ -257,6 +326,8 @@ def stroke_stl_facets_for_tiles(
     ty: float,
     thickness_mm: float,
     stroke_width: float | None = None,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> list[bytes]:
     return _facets_from_tris(
         stroke_prism_tris_for_tiles(
@@ -267,6 +338,8 @@ def stroke_stl_facets_for_tiles(
             ty=ty,
             thickness_mm=thickness_mm,
             stroke_width=stroke_width,
+            visual_style=visual_style,
+            mask_geom=mask_geom,
         )
     )
 
@@ -279,13 +352,23 @@ def tile_prism_tris(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> list[np.ndarray]:
     """Triangles for one independent tile object, honoring clipped edge geometry."""
 
     if tile.clip_geom is not None:
         tris: list[np.ndarray] = []
         thickness = float(thickness_mm) * float(tile.scale_world) * float(scale)
-        for xy in _world_xy_for_clip_geom(tile, scale=scale, rotation_deg=rotation_deg, tx=tx, ty=ty):
+        for xy in _world_xy_rings(
+            tile,
+            scale=scale,
+            rotation_deg=rotation_deg,
+            tx=tx,
+            ty=ty,
+            visual_style=visual_style,
+            mask_geom=mask_geom,
+        ):
             tris.extend(_prism_tris_from_xy(xy, thickness))
         return tris
 
@@ -297,7 +380,10 @@ def tile_prism_tris(
         tx=tx,
         ty=ty,
     )
-    return [_transform_triangle_xyz(tri, W) for tri in prototype_prism_tris(thickness_mm)]
+    export_ring = _resolve_export_ring(visual_style)
+    return [
+        _transform_triangle_xyz(tri, W) for tri in prototype_prism_tris(thickness_mm, export_ring)
+    ]
 
 
 def tile_stl_bytes(
@@ -308,6 +394,8 @@ def tile_stl_bytes(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> bytes:
     tris = tile_prism_tris(
         tile,
@@ -316,6 +404,8 @@ def tile_stl_bytes(
         tx=tx,
         ty=ty,
         thickness_mm=thickness_mm,
+        visual_style=visual_style,
+        mask_geom=mask_geom,
     )
     return binary_stl_bytes(_facets_from_tris(tris), header_note=tile.tile_id.encode("utf-8"))
 
@@ -328,6 +418,8 @@ def tile_obj_bytes(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> bytes:
     tris = tile_prism_tris(
         tile,
@@ -336,6 +428,8 @@ def tile_obj_bytes(
         tx=tx,
         ty=ty,
         thickness_mm=thickness_mm,
+        visual_style=visual_style,
+        mask_geom=mask_geom,
     )
     lines = [
         "# Generated by spectre_patch_api",
@@ -384,6 +478,8 @@ def write_independent_tiles_zip(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
 ) -> None:
     fmt = format_name.lower()
     if fmt not in {"stl", "obj"}:
@@ -401,6 +497,8 @@ def write_independent_tiles_zip(
                     tx=tx,
                     ty=ty,
                     thickness_mm=thickness_mm,
+                    visual_style=visual_style,
+                    mask_geom=mask_geom,
                 )
             else:
                 payload = tile_obj_bytes(
@@ -410,6 +508,8 @@ def write_independent_tiles_zip(
                     tx=tx,
                     ty=ty,
                     thickness_mm=thickness_mm,
+                    visual_style=visual_style,
+                    mask_geom=mask_geom,
                 )
             zf.writestr(filename, payload)
 

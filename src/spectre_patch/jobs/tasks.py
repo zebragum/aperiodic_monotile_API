@@ -101,6 +101,14 @@ def run_patch_job(
 
     try:
         mask = coerce_mask(req["mask"])
+        mask_geom = mask_polygon(mask)
+        visual_style = None
+        try:
+            from spectre_patch.export.tile_styling import TileVisualStyle
+
+            visual_style = TileVisualStyle.from_request(req)
+        except ValueError as e:
+            raise ValueError(str(e)) from e
         retention = RetentionMode(req.get("retention", "clip"))
         coverage_half_extent = _coverage_half_extent_for(
             mask, req.get("coverage_half_extent") or req.get("half_extent")
@@ -161,6 +169,9 @@ def run_patch_job(
                 pixel_target=int(_value_or_default(req, "svg_pixel_target", 1200)),
                 margin=float(_value_or_default(req, "svg_margin", 1.0)),
                 compact=bool(req.get("svg_compact", False)),
+                visual_style=visual_style,
+                palette_by_label=req.get("palette_by_label"),
+                mask_geom=mask_geom,
             )
             svg_text_for_rasters = svg_document(
                 emitted,
@@ -231,6 +242,8 @@ def run_patch_job(
                     tx=tx,
                     ty=ty,
                     thickness_mm=thickness,
+                    visual_style=visual_style,
+                    mask_geom=mask_geom,
                 )
                 stl_export.write_binary_stl(str(art / "patch.stl"), facets)
 
@@ -244,6 +257,8 @@ def run_patch_job(
                 tx=tx,
                 ty=ty,
                 thickness_mm=thickness,
+                visual_style=visual_style,
+                mask_geom=mask_geom,
             )
 
         if "obj_zip" in fmts:
@@ -256,6 +271,8 @@ def run_patch_job(
                 tx=tx,
                 ty=ty,
                 thickness_mm=thickness,
+                visual_style=visual_style,
+                mask_geom=mask_geom,
             )
 
         if "instance_json" in fmts and not (art / "spectre_instances.json").exists():
@@ -272,6 +289,8 @@ def run_patch_job(
                 tx=tx,
                 ty=ty,
                 thickness_mm=thickness,
+                visual_style=visual_style,
+                mask_geom=mask_geom,
                 patch_meta={
                     "patch_engine": PATCH_ENGINE_SEMVER,
                     "tile_family": tile_family,

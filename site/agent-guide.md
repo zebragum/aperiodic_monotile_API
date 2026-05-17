@@ -102,7 +102,37 @@ GET /v1/capabilities
 X-API-Key: YOUR_API_KEY
 ```
 
-Use this to inspect live supported formats, masks, atlas limits, queue limits, and tier limits.
+Use this to inspect live supported formats, masks, atlas limits, queue limits, tier limits, and `visual_styling` (side styles, `tile_edge_ratio`, `palette_by_label`).
+
+## Visual styling (export geometry)
+
+Substitution placement stays canonical **Tile(1,1)**. These fields only change how each tile is drawn or meshed for export:
+
+| Field | Default | Notes |
+| --- | --- | --- |
+| `side_style` | `"flat"` | `flat`, `curvy`, `wavy`, `jagged`, `blocky` (`curved` → `curvy`) |
+| `side_style_amplitude` | `0.12` | `0`–`0.75`; bulge on alternating edges |
+| `tile_edge_ratio` | `1.0` | `0.25`–`4.0`; anisotropic stretch of export outline (not true Tile(a,b) substitution) |
+| `side_style_wavy_segments` | `10` | `4`–`64`; subdivisions per edge when `side_style` is `wavy` |
+| `palette_by_label` | — | Per-label `fill`, `stroke`, `opacity`, `stroke_width`; use `"*"` as wildcard |
+
+Example (curvy SVG with stretched edges):
+
+```json
+{
+  "mask": {"type": "square", "half_side": 25},
+  "formats": ["svg"],
+  "side_style": "curvy",
+  "side_style_amplitude": 0.18,
+  "tile_edge_ratio": 1.25,
+  "palette_by_label": {
+    "Gamma": {"fill": "#d94738", "stroke": "#1b1b1b"},
+    "*": {"opacity": 0.95}
+  }
+}
+```
+
+Applies to `svg`, rasterized previews, `stl` / `stl_zip` / `obj_zip`, and `glb`.
 
 ## Masks
 

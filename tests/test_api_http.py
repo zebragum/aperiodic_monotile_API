@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import sqlite3
 import tempfile
@@ -110,6 +111,9 @@ def test_capabilities_ok():
             assert "free_tier_formats" in body
             assert set(body["free_tier_formats"]) == {"jpeg", "jpg", "png"}
             assert any(f.get("status") == "planned" for f in body["roadmap"]["tile_families"])
+            vs = body["visual_styling"]
+            assert "curvy" in vs["side_styles"]
+            assert vs["palette_by_label"]["supported"] is True
 
 
 def test_healthz_and_readyz():
@@ -363,6 +367,33 @@ def test_free_tier_patch_rejects_vector_formats():
             }
             r = client.post("/v1/patch", json=body)
             assert r.status_code == 422
+
+
+def test_png_width_without_height_defaults_to_square():
+    """A lone png_width_px (or height) is mirrored so raster export is square."""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            r = client.post(
+                "/v1/patch",
+                json={
+                    "tile_family": "spectre_tile_1_1",
+                    "scale": 1.0,
+                    "substitution_iterations": 2,
+                    "formats": ["png"],
+                    "png_width_px": 512,
+                    "mask": {"type": "circle", "radius": 16},
+                },
+            )
+            assert r.status_code == 200, r.text
+            job_id = r.json()["job_id"]
+            from spectre_patch.jobs import repo as job_repo  # noqa: PLC0415
+
+            row = job_repo.fetch_job(client.app.state.db, job_id)
+            assert row is not None
+            stored = json.loads(row["request_json"])
+            assert stored["png_width_px"] == 512
+            assert stored["png_height_px"] == 512
 
 
 def test_public_patch_request_rejects_internal_geometry_knobs():

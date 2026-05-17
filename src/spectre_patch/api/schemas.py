@@ -112,7 +112,46 @@ class PatchRequest(BaseModel):
     svg_compact: bool = False
     force_svg_large: bool = False
 
+    side_style: Literal["flat", "curvy", "wavy", "jagged", "blocky"] = "flat"
+    side_style_amplitude: Annotated[float, Field(ge=0.0, le=0.75)] = 0.12
+    tile_edge_ratio: Annotated[float, Field(ge=0.25, le=4.0)] = 1.0
+    side_style_wavy_segments: Annotated[int, Field(ge=4, le=64)] = 10
+    palette_by_label: dict[str, dict[str, str | float | bool]] | None = None
+
     mask: dict
+
+    @field_validator("side_style", mode="before")
+    @classmethod
+    def _normalize_side_style(cls, v: object) -> str:
+        if v is None or (isinstance(v, str) and not v.strip()):
+            return "flat"
+        from spectre_patch.export.tile_styling import normalize_side_style
+
+        return normalize_side_style(str(v))
+
+    @field_validator("palette_by_label")
+    @classmethod
+    def _validate_palette_by_label(
+        cls, v: dict[str, dict[str, str | float | bool]] | None
+    ) -> dict[str, dict[str, str | float | bool]] | None:
+        if v is None:
+            return v
+        if not v:
+            raise ValueError("palette_by_label must not be empty when provided")
+        allowed = {"fill", "stroke", "opacity", "transparent"}
+        for label, spec in v.items():
+            if not isinstance(spec, dict):
+                raise ValueError(f"palette_by_label[{label!r}] must be an object")
+            bad = set(spec.keys()) - allowed
+            if bad:
+                raise ValueError(
+                    f"palette_by_label[{label!r}] unknown keys {sorted(bad)}; allowed={sorted(allowed)}"
+                )
+            if "opacity" in spec:
+                op = float(spec["opacity"])
+                if op < 0.0 or op > 1.0:
+                    raise ValueError(f"palette_by_label[{label!r}].opacity must be within [0, 1]")
+        return v
 
     @field_validator("formats")
     @classmethod
@@ -164,12 +203,16 @@ class PatchRequest(BaseModel):
                 "[rectangle, square, circle, regular_hexagon, triangle, rounded_rect]"
             )
 
+        # One-sided raster dimensions → square output (copy the provided edge).
+        updates: dict[str, int] = {}
         if self.png_width_px is not None and self.png_height_px is None:
-            raise ValueError("png_width_px requires png_height_px")
-        if self.png_height_px is not None and self.png_width_px is None:
-            raise ValueError("png_height_px requires png_width_px")
+            updates["png_height_px"] = int(self.png_width_px)
+        elif self.png_height_px is not None and self.png_width_px is None:
+            updates["png_width_px"] = int(self.png_height_px)
         if self.jpg_width_px is not None and self.jpg_height_px is None:
-            raise ValueError("jpg_width_px requires jpg_height_px")
-        if self.jpg_height_px is not None and self.jpg_width_px is None:
-            raise ValueError("jpg_height_px requires jpg_width_px")
+            updates["jpg_height_px"] = int(self.jpg_width_px)
+        elif self.jpg_height_px is not None and self.jpg_width_px is None:
+            updates["jpg_width_px"] = int(self.jpg_height_px)
+        if updates:
+            return self.model_copy(update=updates)
         return self

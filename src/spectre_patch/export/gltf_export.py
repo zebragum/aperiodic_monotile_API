@@ -16,7 +16,12 @@ from typing import Any
 
 import numpy as np
 
-from spectre_patch.export.stl_export import safe_object_name, stroke_prism_tris_for_tiles, tile_prism_tris
+from spectre_patch.export.stl_export import (
+    safe_object_name,
+    stroke_prism_tris_for_tiles,
+    tile_prism_tris,
+)
+from spectre_patch.export.tile_styling import TileVisualStyle
 from spectre_patch.geometry_affine import similarity_client
 from spectre_patch.patch_engine import EmittedTile
 
@@ -74,6 +79,8 @@ def write_glb_instanced(
     tx: float,
     ty: float,
     thickness_mm: float,
+    visual_style: TileVisualStyle | None = None,
+    mask_geom: Any = None,
     patch_meta: dict[str, Any] | None = None,
 ) -> None:
     """Write `<path>` as a GLB containing one movable node per tile."""
@@ -98,6 +105,8 @@ def write_glb_instanced(
             tx=tx,
             ty=ty,
             thickness_mm=thickness_mm,
+            visual_style=visual_style,
+            mask_geom=mask_geom,
         )
         stroke_z = float(thickness_mm) * float(tile.scale_world) * float(scale) * 1.02
         stroke_tris = stroke_prism_tris_for_tiles(
@@ -108,6 +117,8 @@ def write_glb_instanced(
             ty=ty,
             thickness_mm=max(float(thickness_mm) * 0.08, 0.04),
             z_base=stroke_z,
+            visual_style=visual_style,
+            mask_geom=mask_geom,
         )
         fill_pos, fill_idx = _tris_to_position_index_arrays(fill_tris)
         stroke_pos, stroke_idx = _tris_to_position_index_arrays(stroke_tris)

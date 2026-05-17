@@ -129,6 +129,54 @@ def test_svg_job_accepts_null_optional_render_fields():
         conn.close()
 
 
+def test_curvy_svg_job_writes_styled_prototype():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        db_path = tmp_path / "jobs.db"
+        store = tmp_path / "jobs"
+        store.mkdir(parents=True, exist_ok=True)
+        conn = job_repo.connect(db_path)
+        body = {
+            "tile_family": "spectre_tile_1_1",
+            "scale": 8.0,
+            "rotation_deg": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "coverage_half_extent": 4.5,
+            "substitution_iterations": 2,
+            "formats": ["svg"],
+            "retention": "clip",
+            "mask": {"type": "square", "center": [0.0, 0.0], "half_side": 6.25},
+            "side_style": "curvy",
+            "side_style_amplitude": 0.18,
+            "tile_edge_ratio": 1.25,
+        }
+        job_id, created = job_repo.enqueue_job(conn, "tier_solo", body)
+        assert created
+
+        run_patch_job(
+            conn,
+            job_id=job_id,
+            storage_root=store,
+            base_limits=LimitsSettings(),
+        )
+
+        row = job_repo.fetch_job(conn, job_id)
+        assert row is not None
+        assert row["status"] == "completed", row["error"]
+        svg_path = job_repo.artifact_dir(store, job_id) / "patch.svg"
+        assert svg_path.exists()
+        text = svg_path.read_text(encoding="utf-8")
+        conn.close()
+
+        assert 'id="proto"' in text
+        proto_start = text.index('id="proto"')
+        proto_end = text.index("</defs>", proto_start)
+        proto_block = text[proto_start:proto_end]
+        # Styled export ring has more segments than the flat 14-vertex prototile path.
+        assert proto_block.count(" L") > 14
+
+
 def test_requeue_stale_running():
     """If a running job has no claimed_at (or a stale one), worker re-queues it."""
 

@@ -182,6 +182,21 @@ def _support_url_for(cfg: ServiceSettings, request_id: str | None) -> str:
     return f"{base}{sep}rid={request_id}"
 
 
+def _validation_errors_for_response(exc: RequestValidationError) -> list[dict[str, object]]:
+    """Pydantic v2 may embed ``ValueError`` instances in ``ctx``; JSON-encode safely."""
+
+    out: list[dict[str, object]] = []
+    for err in exc.errors():
+        row = dict(err)
+        ctx = row.get("ctx")
+        if isinstance(ctx, dict):
+            row["ctx"] = {
+                key: str(val) if isinstance(val, BaseException) else val for key, val in ctx.items()
+            }
+        out.append(row)
+    return out
+
+
 def _error_envelope(
     *,
     cfg: ServiceSettings,
@@ -615,7 +630,7 @@ def create_app() -> FastAPI:
             _error_envelope(
                 cfg=cfg,
                 status_code=422,
-                message=exc.errors(),
+                message=_validation_errors_for_response(exc),
                 request_id=rid,
                 error_code="invalid_request",
             ),
@@ -821,6 +836,33 @@ def create_app() -> FastAPI:
                 "obj_zip": "Independent OBJ files, one per tile.",
             },
             "boundary_behavior": "clip",
+            "visual_styling": {
+                "side_styles": ["flat", "curvy", "wavy", "jagged", "blocky"],
+                "side_style_aliases": {"curved": "curvy", "curve": "curvy"},
+                "side_style_amplitude": {"min": 0.0, "max": 0.75, "default": 0.12},
+                "tile_edge_ratio": {
+                    "min": 0.25,
+                    "max": 4.0,
+                    "default": 1.0,
+                    "note": (
+                        "Anisotropic stretch of export geometry only; substitution placement "
+                        "remains canonical Tile(1,1). Not a true Tile(a,b) two-family substitution."
+                    ),
+                },
+                "side_style_wavy_segments": {"min": 4, "max": 64, "default": 10},
+                "palette_by_label": {
+                    "supported": True,
+                    "keys_per_label": ["fill", "stroke", "opacity", "stroke_width"],
+                    "wildcard_label": "*",
+                },
+                "request_fields": [
+                    "side_style",
+                    "side_style_amplitude",
+                    "tile_edge_ratio",
+                    "side_style_wavy_segments",
+                    "palette_by_label",
+                ],
+            },
             "limits": lim.model_dump(),
             "atlas": {
                 "available": bool(atlas_entries),

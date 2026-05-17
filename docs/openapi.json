@@ -79,6 +79,33 @@
             "title": "Mask",
             "type": "object"
           },
+          "palette_by_label": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Palette By Label"
+          },
           "patch_version": {
             "anyOf": [
               {
@@ -142,6 +169,32 @@
               }
             ],
             "title": "Seed"
+          },
+          "side_style": {
+            "default": "flat",
+            "enum": [
+              "flat",
+              "curvy",
+              "wavy",
+              "jagged",
+              "blocky"
+            ],
+            "title": "Side Style",
+            "type": "string"
+          },
+          "side_style_amplitude": {
+            "default": 0.12,
+            "maximum": 0.75,
+            "minimum": 0.0,
+            "title": "Side Style Amplitude",
+            "type": "number"
+          },
+          "side_style_wavy_segments": {
+            "default": 10,
+            "maximum": 64.0,
+            "minimum": 4.0,
+            "title": "Side Style Wavy Segments",
+            "type": "integer"
           },
           "stl_extrusion_mm": {
             "default": 1.0,
@@ -249,6 +302,13 @@
             ],
             "title": "Svg Stroke Width"
           },
+          "tile_edge_ratio": {
+            "default": 1.0,
+            "maximum": 4.0,
+            "minimum": 0.25,
+            "title": "Tile Edge Ratio",
+            "type": "number"
+          },
           "tile_family": {
             "const": "spectre_tile_1_1",
             "default": "spectre_tile_1_1",
@@ -325,9 +385,33 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/v1/analytics/events": {
+      "post": {
+        "description": "Capture first-party website launch events.\n\nThis endpoint is intentionally narrow and unauthenticated: the public\nwebsite can report low-risk interactions such as sample downloads, while\ncheckout starts, key claims, requested formats, and first successful jobs\nare recorded server-side where possible.",
+        "operationId": "create_analytics_event_v1_analytics_events_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Analytics Event V1 Analytics Events Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Analytics Event",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
     "/v1/billing/checkout": {
       "post": {
-        "description": "Start Stripe Checkout.\n\nBody JSON (optional unless defaulting): ``email``, ``plan`` \u2014 one of\n``day_pass``, ``solo_monthly``, ``solo_yearly``, ``teams_monthly``, ``teams_yearly``.\nOmitted ``plan`` defaults to ``solo_monthly`` (falls back to\n``stripe_price_id_studio`` when ``stripe_price_id_solo_monthly`` is unset).",
+        "description": "Start Stripe Checkout.\n\nBody JSON (optional unless defaulting): ``email``, ``plan`` \u2014 one of\n``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or\n``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.",
         "operationId": "create_checkout_v1_billing_checkout_post",
         "responses": {
           "200": {

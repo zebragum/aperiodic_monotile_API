@@ -115,6 +115,16 @@ def main() -> int:
     for key in SYNC_KEYS:
         print(f"synced {key}")
 
+    # Env changes are not picked up until the service restarts. Secret vars such as
+    # SPECTRE_PATCH_API_KEY_TIERS_JSON also do not appear in GET /env-vars, so we
+    # always trigger a deploy after updating launch secrets.
+    try:
+        render_request(api_key, "POST", f"/services/{service_id}/deploys", {"clearCache": "do_not_clear"})
+        print("triggered Render deploy (required for new API keys in SPECTRE_PATCH_API_KEY_TIERS_JSON)")
+    except Exception as e:
+        print(f"WARNING: env updated but deploy trigger failed: {e}", file=sys.stderr)
+        print("Manually restart the Render service or new API keys will 403.", file=sys.stderr)
+
     print("Render env sync complete. Values were not printed.")
     return 0
 
