@@ -369,6 +369,37 @@ def test_free_tier_patch_rejects_vector_formats():
             assert r.status_code == 422
 
 
+def test_text_plain_json_patch_body_is_accepted():
+    """Zyla and similar hubs often label JSON bodies as text/plain."""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            payload = {
+                "mask": {"type": "circle", "radius": 16},
+                "formats": ["png"],
+                "png_width_px": 512,
+                "png_height_px": 512,
+            }
+            r = client.post(
+                "/v1/patch",
+                content=json.dumps(payload),
+                headers={"Content-Type": "text/plain"},
+            )
+            assert r.status_code == 200, r.text
+
+
+def test_text_plain_invalid_json_returns_422_not_500():
+    with tempfile.TemporaryDirectory() as tmp:
+        with TestClient(_build_app(Path(tmp))) as client:
+            r = client.post(
+                "/v1/patch",
+                content=b"not-json",
+                headers={"Content-Type": "text/plain"},
+            )
+            assert r.status_code == 422, r.text
+            assert r.json()["error"]["code"] == "invalid_request"
+
+
 def test_png_width_without_height_defaults_to_square():
     """A lone png_width_px (or height) is mirrored so raster export is square."""
 

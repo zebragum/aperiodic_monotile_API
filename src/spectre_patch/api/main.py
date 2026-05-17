@@ -182,19 +182,28 @@ def _support_url_for(cfg: ServiceSettings, request_id: str | None) -> str:
     return f"{base}{sep}rid={request_id}"
 
 
-def _validation_errors_for_response(exc: RequestValidationError) -> list[dict[str, object]]:
-    """Pydantic v2 may embed ``ValueError`` instances in ``ctx``; JSON-encode safely."""
+def _json_safe_value(val: object) -> object:
+    """Coerce validation error payloads into JSON-serializable values."""
 
-    out: list[dict[str, object]] = []
-    for err in exc.errors():
-        row = dict(err)
-        ctx = row.get("ctx")
-        if isinstance(ctx, dict):
-            row["ctx"] = {
-                key: str(val) if isinstance(val, BaseException) else val for key, val in ctx.items()
-            }
-        out.append(row)
-    return out
+    if isinstance(val, BaseException):
+        return str(val)
+    if isinstance(val, bytes):
+        try:
+            text = val.decode("utf-8")
+        except UnicodeDecodeError:
+            return repr(val)[:500]
+        return text[:4000] if len(text) > 4000 else text
+    if isinstance(val, dict):
+        return {str(k): _json_safe_value(v) for k, v in val.items()}
+    if isinstance(val, (list, tuple)):
+        return [_json_safe_value(v) for v in val]
+    return val
+
+
+def _validation_errors_for_response(exc: RequestValidationError) -> list[dict[str, object]]:
+    """Pydantic v2 may embed bytes/exception objects; never let that become HTTP 500."""
+
+    return [_json_safe_value(dict(err)) for err in exc.errors()]  # type: ignore[misc]
 
 
 def _error_envelope(
@@ -671,6 +680,39 @@ def create_app() -> FastAPI:
             allow_headers=_split_csv(cfg.cors_allow_headers),
             expose_headers=["X-Request-ID"],
         )
+
+    @app.middleware("http")
+    async def marketplace_json_body_compat(request: Request, call_next):
+        """Marketplace proxies (e.g. Zyla) often POST JSON with ``Content-Type: text/plain``."""
+
+        if request.method == "POST" and request.url.path.rstrip("/") == "/v1/patch":
+            content_type = request.headers.get("content-type", "").split(";")[0].strip().lower()
+            if content_type in {"", "text/plain", "text/json"}:
+                body = await request.body()
+                if body.lstrip()[:1] in (b"{", b"["):
+                    headers = list(request.scope.get("headers", []))
+                    new_headers: list[tuple[bytes, bytes]] = []
+                    replaced = False
+                    for name, value in headers:
+                        if name.lower() == b"content-type":
+                            new_headers.append((b"content-type", b"application/json"))
+                            replaced = True
+                        else:
+                            new_headers.append((name, value))
+                    if not replaced:
+                        new_headers.append((b"content-type", b"application/json"))
+                    request.scope["headers"] = new_headers
+                    sent = False
+
+                    async def receive() -> dict:
+                        nonlocal sent
+                        if not sent:
+                            sent = True
+                            return {"type": "http.request", "body": body, "more_body": False}
+                        return {"type": "http.request", "body": b"", "more_body": False}
+
+                    request = Request(request.scope, receive)
+        return await call_next(request)
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):
