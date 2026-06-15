@@ -717,20 +717,36 @@ async function startBillingCheckout(planSlug, button) {
     });
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(text || `Checkout unavailable (${response.status})`);
+      let detail = text;
+      try {
+        const payload = JSON.parse(text);
+        detail =
+          payload.detail ||
+          payload.error?.message ||
+          payload.message ||
+          text;
+      } catch {
+        // keep raw text
+      }
+      throw new Error(
+        typeof detail === "string" && detail
+          ? detail
+          : `Checkout unavailable (${response.status})`,
+      );
     }
     const payload = await response.json();
+    if (!payload.checkout_url) {
+      throw new Error("Checkout did not return a payment URL. Please try again.");
+    }
     window.location.href = payload.checkout_url;
   } catch (err) {
     if (submit) submit.disabled = false;
-    if (inlineStatus) {
-      inlineStatus.textContent =
-        "Billing could not start. Please try again shortly.";
-    }
-    if (checkoutStatus) {
-      checkoutStatus.textContent =
-        "Billing could not start. Checkout may still be configuring. Please try again shortly.";
-    }
+    const message =
+      err instanceof TypeError && /fetch|network/i.test(String(err.message))
+        ? "Could not reach the billing API. Check your connection and try again."
+        : err?.message || "Billing could not start. Please try again shortly.";
+    if (inlineStatus) inlineStatus.textContent = message;
+    if (checkoutStatus) checkoutStatus.textContent = message;
     console.error(err);
   }
 }

@@ -44,7 +44,9 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Qu
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Self
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -135,6 +137,31 @@ class ServiceSettings(BaseSettings):
     stripe_price_id_teams_monthly: str = ""
     stripe_price_id_teams_yearly: str = ""
     stripe_webhook_secret: str = ""
+
+    @model_validator(mode="after")
+    def _default_cors_allow_origins(self) -> Self:
+        """Browsers on the public site POST to the API; without CORS checkout fails silently."""
+
+        if _split_csv(self.cors_allow_origins):
+            return self
+        site = (self.public_site_url or "").strip().rstrip("/")
+        if not site:
+            return self
+        origins = [site]
+        if site.startswith("https://"):
+            host = site[len("https://") :]
+            if host.startswith("www."):
+                origins.append(f"https://{host[4:]}")
+            else:
+                origins.append(f"https://www.{host}")
+        elif site.startswith("http://"):
+            host = site[len("http://") :]
+            if host.startswith("www."):
+                origins.append(f"http://{host[4:]}")
+            else:
+                origins.append(f"http://www.{host}")
+        self.cors_allow_origins = ",".join(dict.fromkeys(origins))
+        return self
 
 
 @lru_cache

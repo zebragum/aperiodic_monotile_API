@@ -222,6 +222,37 @@ def test_configured_cors_origin_is_returned():
         os.environ.pop("SPECTRE_PATCH_CORS_ALLOW_ORIGINS", None)
 
 
+def test_cors_defaults_from_public_site_url_when_unset():
+    os.environ.pop("SPECTRE_PATCH_CORS_ALLOW_ORIGINS", None)
+    os.environ["SPECTRE_PATCH_PUBLIC_SITE_URL"] = "https://aperiodicgenerator.com"
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(_build_app(Path(tmp))) as client:
+                r = client.options(
+                    "/v1/billing/checkout",
+                    headers={
+                        "Origin": "https://aperiodicgenerator.com",
+                        "Access-Control-Request-Method": "POST",
+                        "Access-Control-Request-Headers": "content-type",
+                    },
+                )
+                assert r.status_code == 204
+                assert r.headers["access-control-allow-origin"] == "https://aperiodicgenerator.com"
+
+                r = client.post(
+                    "/v1/billing/checkout",
+                    json={"email": "buyer@example.com", "plan": "solo_monthly"},
+                    headers={"Origin": "https://www.aperiodicgenerator.com"},
+                )
+                assert r.status_code in (200, 503)
+                assert (
+                    r.headers["access-control-allow-origin"]
+                    == "https://www.aperiodicgenerator.com"
+                )
+    finally:
+        os.environ.pop("SPECTRE_PATCH_PUBLIC_SITE_URL", None)
+
+
 def test_api_key_required_when_configured():
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
     os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","solo-secret":"tier_solo"}'
