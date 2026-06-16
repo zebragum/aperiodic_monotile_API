@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
 id = "aperiodic_monotile_generator"
-version = "0.1.1"
+version = "0.2.0"
 name = "Aperiodic Monotile Generator"
-tagline = "Generate Spectre aperiodic monotile GLB patches from the hosted API and import into Blender"
+tagline = "Generate Spectre aperiodic monotile patches as editable N-gon instances or GLB via the hosted API"
 maintainer = "Aperiodic Monotile Generator <support@aperiodicgenerator.com>"
 type = "add-on"
 

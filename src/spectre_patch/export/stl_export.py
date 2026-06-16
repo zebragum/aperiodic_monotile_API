@@ -576,17 +576,24 @@ def instancing_manifest_bytes(
     tx: float,
     ty: float,
 ) -> bytes:
+    prototile_ring_xy = [[float(x), float(y)] for x, y in PROTOTILE_RING]
     doc = {
         "patch_version": patch_version,
         "tile_family": tile_family,
         "seed": seed,
         "prototile_notes": (
-            "Use write_prototype_stl for a single prism of Tile(1,1); "
-            "apply each instances[*].affine4_row_lists via Blender mathutils.Matrix(rows)."
+            "Build one clean N-gon face from prototile_ring_xy (canonical Tile(1,1), "
+            "z=0, single n-gon — no triangulation), then instance it by applying each "
+            "instances[*].affine4_row_lists via Blender mathutils.Matrix(rows). "
+            "Alternatively use write_prototype_stl for a triangulated prism."
         ),
+        "prototile_ring_xy": prototile_ring_xy,
+        "prototile_vertex_count": len(prototile_ring_xy),
+        "prototile_winding": "ccw",
         "instances": [
             {
                 "id": t.tile_id,
+                "label": t.tile_label,
                 "affine4_row_lists": affine4_row_lists_for_matrix(
                     t,
                     scale=scale,

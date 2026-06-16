@@ -1,10 +1,10 @@
 bl_info = {
     "name": "Aperiodic Monotile Generator",
     "author": "Aperiodic Monotile Generator",
-    "version": (0, 1, 1),
+    "version": (0, 2, 0),
     "blender": (4, 2, 0),
     "location": "View3D > Sidebar > Monotile",
-    "description": "Generate aperiodic monotile GLB patches from the hosted API and import them into Blender.",
+    "description": "Generate aperiodic monotile patches from the hosted API as editable N-gon instances or GLB.",
     "category": "Import-Export",
 }
 import json
@@ -16,7 +16,7 @@ import uuid
 from pathlib import Path
 
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 from bpy.props import (
     BoolProperty,
     EnumProperty,
@@ -86,6 +86,24 @@ class MonotileGeneratorSettings(PropertyGroup):
         subtype="PASSWORD",
         description="Paid API key. Stored in this Blender file if saved.",
     )
+    geometry_mode: EnumProperty(
+        name="Geometry",
+        items=[
+            (
+                "instances",
+                "Editable N-gon instances",
+                "Build one clean Tile(1,1) N-gon and distribute native linked instances "
+                "(shared mesh data). No triangulation; edit one tile and all update",
+            ),
+            (
+                "glb",
+                "GLB mesh (triangulated)",
+                "Download and import a single triangulated GLB patch. Supports clipped "
+                "boundary tiles but is not as clean to edit",
+            ),
+        ],
+        default="instances",
+    )
     boundary: EnumProperty(
         name="Boundary",
         items=[
@@ -122,7 +140,7 @@ class MonotileGeneratorSettings(PropertyGroup):
     import_json: BoolProperty(
         name="Also request JSON",
         default=False,
-        description="Request JSON metadata along with GLB. The add-on imports GLB only in this version.",
+        description="Request JSON tile metadata alongside the geometry (GLB mode only).",
     )
     wait_timeout_seconds: IntProperty(
         name="Max Wait",
@@ -155,9 +173,12 @@ def _mask_from_settings(settings: MonotileGeneratorSettings) -> dict:
 
 
 def _request_body(settings: MonotileGeneratorSettings) -> dict:
-    formats = ["glb"]
-    if settings.import_json:
-        formats.append("json")
+    if settings.geometry_mode == "instances":
+        formats = ["instance_json"]
+    else:
+        formats = ["glb"]
+        if settings.import_json:
+            formats.append("json")
     return {
         "formats": formats,
         "mask": _mask_from_settings(settings),
@@ -188,10 +209,132 @@ class MONOTILE_OT_use_selected_bounds(Operator):
         return {"FINISHED"}
 
 
-class MONOTILE_OT_generate_import_glb(Operator):
-    bl_idname = "monotile.generate_import_glb"
-    bl_label = "Generate and Import GLB"
-    bl_description = "Submit a GLB job to the Aperiodic Monotile API, download it, and import it into Blender"
+def _run_patch_job(settings, api_base: str, api_key: str) -> dict:
+    """Submit a patch job, poll to completion, and return the signed-URL payload."""
+
+    body = _request_body(settings)
+    settings.last_status = "Submitting job..."
+    response = _json_request("POST", f"{api_base}/v1/patch", api_key=api_key, body=body)
+    job_id = response.get("job_id")
+    if not job_id:
+        raise RuntimeError(f"API did not return job_id: {response}")
+    settings.last_job_id = job_id
+
+    deadline = time.time() + settings.wait_timeout_seconds
+    status = response.get("status", "queued")
+    while time.time() < deadline:
+        settings.last_status = f"Job {job_id[:8]}: {status}"
+        if status in {"completed", "failed", "cancelled"}:
+            break
+        time.sleep(2.0)
+        status_payload = _json_request("GET", f"{api_base}/v1/jobs/{job_id}", api_key=api_key)
+        status = status_payload.get("status", status)
+
+    if status != "completed":
+        raise RuntimeError(f"Job did not complete. Final status: {status}")
+
+    url_payload = _json_request("GET", f"{api_base}/v1/jobs/{job_id}/urls", api_key=api_key)
+    urls = url_payload.get("urls") or {}
+    return {"job_id": job_id, "urls": urls}
+
+
+def _absolute_url(api_base: str, url: str) -> str:
+    return f"{api_base}{url}" if url.startswith("/") else url
+
+
+def _new_monotile_collection(context, job_id: str):
+    collection = bpy.data.collections.new(f"Monotile {job_id[:8]}")
+    context.scene.collection.children.link(collection)
+    return collection
+
+
+def _build_prototile_mesh(ring_xy, name: str):
+    """One clean, single-face N-gon at canonical Z=0 — no triangulation."""
+
+    verts = [(float(x), float(y), 0.0) for x, y in ring_xy]
+    face = [tuple(range(len(verts)))]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, [], face)
+    mesh.update()
+    mesh.validate()
+    return mesh
+
+
+def _import_instances(context, settings, api_base: str, job_id: str, urls: dict) -> int:
+    """Distribute native Blender instances of one clean N-gon from instance_json."""
+
+    manifest_url = urls.get("spectre_instances.json")
+    if not manifest_url:
+        raise RuntimeError(f"No instance manifest returned. Files: {', '.join(urls.keys())}")
+    manifest_url = _absolute_url(api_base, manifest_url)
+
+    settings.last_status = "Downloading instance manifest..."
+    with tempfile.TemporaryDirectory(prefix="monotile_inst_") as tmp:
+        manifest_path = Path(tmp) / "spectre_instances.json"
+        _download_file(manifest_url, manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    ring_xy = manifest.get("prototile_ring_xy")
+    instances = manifest.get("instances") or []
+    if not ring_xy:
+        raise RuntimeError(
+            "Manifest has no prototile_ring_xy. Update the add-on or API to a build "
+            "that includes the prototile polygon."
+        )
+    if not instances:
+        raise RuntimeError("Manifest contained no instances.")
+
+    shared_mesh = _build_prototile_mesh(ring_xy, f"Monotile Tile {job_id[:8]}")
+    collection = _new_monotile_collection(context, job_id)
+
+    depth = float(settings.extrusion_mm)
+    count = 0
+    for inst in instances:
+        rows = inst.get("affine4_row_lists")
+        if not rows or len(rows) != 4:
+            continue
+        obj = bpy.data.objects.new(str(inst.get("id", f"tile_{count}")), shared_mesh)
+        obj.matrix_world = Matrix([[float(v) for v in row] for row in rows])
+        if depth > 0.0:
+            solid = obj.modifiers.new(name="Depth", type="SOLIDIFY")
+            solid.thickness = depth
+            solid.offset = 0.0
+        obj["monotile_job_id"] = job_id
+        if inst.get("label"):
+            obj["monotile_label"] = inst["label"]
+        collection.objects.link(obj)
+        count += 1
+
+    return count
+
+
+def _import_glb(context, settings, api_base: str, job_id: str, urls: dict) -> int:
+    glb_url = urls.get("patch.glb") or urls.get("scene.glb")
+    if not glb_url:
+        raise RuntimeError(f"No GLB URL returned. Files: {', '.join(urls.keys())}")
+    glb_url = _absolute_url(api_base, glb_url)
+
+    with tempfile.TemporaryDirectory(prefix="monotile_blender_") as tmp:
+        glb_path = Path(tmp) / f"monotile_{job_id}.glb"
+        settings.last_status = "Downloading GLB..."
+        _download_file(glb_url, glb_path)
+
+        before = set(bpy.data.objects)
+        bpy.ops.import_scene.gltf(filepath=str(glb_path))
+        imported = [obj for obj in bpy.data.objects if obj not in before]
+        collection = _new_monotile_collection(context, job_id)
+        for obj in imported:
+            for owner in list(obj.users_collection):
+                owner.objects.unlink(obj)
+            collection.objects.link(obj)
+            obj["monotile_job_id"] = job_id
+    return len(imported)
+
+
+class MONOTILE_OT_generate_import(Operator):
+    bl_idname = "monotile.generate_import"
+    bl_label = "Generate and Import"
+    bl_description = "Submit a patch job to the Aperiodic Monotile API and import the result into Blender"
 
     def execute(self, context):
         settings = context.scene.monotile_generator
@@ -201,54 +344,21 @@ class MONOTILE_OT_generate_import_glb(Operator):
             return {"CANCELLED"}
 
         api_base = _clean_base_url(settings.api_base)
-        body = _request_body(settings)
 
         try:
-            settings.last_status = "Submitting job..."
-            response = _json_request("POST", f"{api_base}/v1/patch", api_key=api_key, body=body)
-            job_id = response.get("job_id")
-            if not job_id:
-                raise RuntimeError(f"API did not return job_id: {response}")
-            settings.last_job_id = job_id
+            result = _run_patch_job(settings, api_base, api_key)
+            job_id = result["job_id"]
+            urls = result["urls"]
 
-            deadline = time.time() + settings.wait_timeout_seconds
-            status = response.get("status", "queued")
-            while time.time() < deadline:
-                settings.last_status = f"Job {job_id[:8]}: {status}"
-                if status in {"completed", "failed", "cancelled"}:
-                    break
-                time.sleep(2.0)
-                status_payload = _json_request("GET", f"{api_base}/v1/jobs/{job_id}", api_key=api_key)
-                status = status_payload.get("status", status)
+            if settings.geometry_mode == "instances":
+                count = _import_instances(context, settings, api_base, job_id, urls)
+                settings.last_status = (
+                    f"Imported {count} editable N-gon instances from job {job_id[:8]}"
+                )
+            else:
+                count = _import_glb(context, settings, api_base, job_id, urls)
+                settings.last_status = f"Imported GLB ({count} objects) from job {job_id[:8]}"
 
-            if status != "completed":
-                raise RuntimeError(f"Job did not complete. Final status: {status}")
-
-            url_payload = _json_request("GET", f"{api_base}/v1/jobs/{job_id}/urls", api_key=api_key)
-            urls = url_payload.get("urls") or {}
-            glb_url = urls.get("patch.glb") or urls.get("scene.glb")
-            if not glb_url:
-                raise RuntimeError(f"No GLB URL returned. Files: {', '.join(urls.keys())}")
-            if glb_url.startswith("/"):
-                glb_url = f"{api_base}{glb_url}"
-
-            with tempfile.TemporaryDirectory(prefix="monotile_blender_") as tmp:
-                glb_path = Path(tmp) / f"monotile_{job_id}.glb"
-                settings.last_status = "Downloading GLB..."
-                _download_file(glb_url, glb_path)
-
-                before = set(bpy.data.objects)
-                bpy.ops.import_scene.gltf(filepath=str(glb_path))
-                imported = [obj for obj in bpy.data.objects if obj not in before]
-                collection = bpy.data.collections.new(f"Monotile {job_id[:8]}")
-                context.scene.collection.children.link(collection)
-                for obj in imported:
-                    for owner in list(obj.users_collection):
-                        owner.objects.unlink(obj)
-                    collection.objects.link(obj)
-                    obj["monotile_job_id"] = job_id
-
-            settings.last_status = f"Imported GLB from job {job_id[:8]}"
             self.report({"INFO"}, settings.last_status)
             return {"FINISHED"}
         except Exception as exc:
@@ -302,6 +412,14 @@ class MONOTILE_PT_panel(Panel):
         layout.prop(settings, "api_key")
 
         box = layout.box()
+        box.label(text="Output")
+        box.prop(settings, "geometry_mode", text="")
+        if settings.geometry_mode == "instances":
+            box.label(text="Clean N-gon, shared mesh — edit one, all update", icon="MOD_DATA_TRANSFER")
+            if settings.extrusion_mm > 0.0:
+                box.label(text="Depth adds a Solidify modifier (non-destructive)", icon="MOD_SOLIDIFY")
+
+        box = layout.box()
         box.label(text="Boundary")
         box.prop(settings, "boundary")
         if settings.boundary in {"rectangle", "rounded_rect"}:
@@ -324,10 +442,11 @@ class MONOTILE_PT_panel(Panel):
         box.label(text="Generation")
         box.prop(settings, "tile_scale")
         box.prop(settings, "extrusion_mm")
-        box.prop(settings, "import_json")
+        if settings.geometry_mode == "glb":
+            box.prop(settings, "import_json")
         box.prop(settings, "wait_timeout_seconds")
 
-        layout.operator("monotile.generate_import_glb", icon="IMPORT")
+        layout.operator("monotile.generate_import", icon="IMPORT")
         layout.operator("monotile.randomize_materials", icon="MATERIAL_DATA")
         layout.label(text=f"Status: {settings.last_status}")
         if settings.last_job_id:
@@ -337,7 +456,7 @@ class MONOTILE_PT_panel(Panel):
 classes = (
     MonotileGeneratorSettings,
     MONOTILE_OT_use_selected_bounds,
-    MONOTILE_OT_generate_import_glb,
+    MONOTILE_OT_generate_import,
     MONOTILE_OT_randomize_materials,
     MONOTILE_PT_panel,
 )
