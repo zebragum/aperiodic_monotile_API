@@ -254,7 +254,7 @@ Raster fields:
 
 3D field:
 
-- `stl_extrusion_mm`: extrusion/depth setting. Default is 1.
+- `stl_extrusion_mm`: extrusion/depth setting. Default is 1. Set **0** for flat tile caps only (no API extrusion — extrude in Blender/CAD yourself).
 
 ## Queue Behavior
 

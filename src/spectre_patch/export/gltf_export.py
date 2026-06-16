@@ -109,16 +109,21 @@ def write_glb_instanced(
             mask_geom=mask_geom,
         )
         stroke_z = float(thickness_mm) * float(tile.scale_world) * float(scale) * 1.02
-        stroke_tris = stroke_prism_tris_for_tiles(
-            [tile],
-            scale=scale,
-            rotation_deg=rotation_deg,
-            tx=tx,
-            ty=ty,
-            thickness_mm=max(float(thickness_mm) * 0.08, 0.04),
-            z_base=stroke_z,
-            visual_style=visual_style,
-            mask_geom=mask_geom,
+        flat_export = float(thickness_mm) <= 1e-9
+        stroke_tris = (
+            []
+            if flat_export
+            else stroke_prism_tris_for_tiles(
+                [tile],
+                scale=scale,
+                rotation_deg=rotation_deg,
+                tx=tx,
+                ty=ty,
+                thickness_mm=max(float(thickness_mm) * 0.08, 0.04),
+                z_base=stroke_z,
+                visual_style=visual_style,
+                mask_geom=mask_geom,
+            )
         )
         fill_pos, fill_idx = _tris_to_position_index_arrays(fill_tris)
         stroke_pos, stroke_idx = _tris_to_position_index_arrays(stroke_tris)

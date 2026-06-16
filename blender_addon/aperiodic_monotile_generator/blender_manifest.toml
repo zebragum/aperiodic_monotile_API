@@ -1,0 +1,22 @@
+schema_version = "1.0.0"
+
+id = "aperiodic_monotile_generator"
+version = "0.1.1"
+name = "Aperiodic Monotile Generator"
+tagline = "Generate Spectre aperiodic monotile GLB patches from the hosted API and import into Blender"
+maintainer = "Aperiodic Monotile Generator <support@aperiodicgenerator.com>"
+type = "add-on"
+
+website = "https://aperiodicgenerator.com/use-cases/blender.html"
+
+tags = ["Import-Export", "Mesh"]
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
+
+[permissions]
+network = "Submit patch jobs and download completed GLB files from the Aperiodic Monotile API"
+files = "Write downloaded GLB files to a temporary folder before import"

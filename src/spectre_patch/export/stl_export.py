@@ -43,7 +43,29 @@ def _iter_polygons(geom: BaseGeometry) -> list[Polygon]:
     return []
 
 
+_FLAT_EXTRUSION_EPS = 1e-9
+
+
+def _cap_tris_from_xy(xy: np.ndarray, z: float = 0.0) -> list[np.ndarray]:
+    """Single planar cap (no side walls) for flat export / custom extrusion in DCC tools."""
+
+    verts = xy[:, :2].astype(np.float64, copy=False)
+    zf = float(z)
+    tris_idx = _triangulate_cap(verts)
+    faces: list[np.ndarray] = []
+    for idx in tris_idx:
+        a = verts[int(idx[0])]
+        b = verts[int(idx[1])]
+        c = verts[int(idx[2])]
+        faces.append(
+            np.array([[a[0], a[1], zf], [b[0], b[1], zf], [c[0], c[1], zf]], dtype=np.float64)
+        )
+    return faces
+
+
 def _prism_tris_from_xy(xy: np.ndarray, thickness: float, *, z_base: float = 0.0) -> list[np.ndarray]:
+    if float(thickness) <= _FLAT_EXTRUSION_EPS:
+        return _cap_tris_from_xy(xy, z_base)
     verts = xy[:, :2].astype(np.float64, copy=False)
     z0, zt = float(z_base), float(z_base) + float(thickness)
     tris_idx = _triangulate_cap(verts)

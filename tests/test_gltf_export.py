@@ -64,3 +64,41 @@ def test_glb_explicit_patch_mesh_writes_valid_header():
         ys = xyz[1::3]
         zs = xyz[2::3]
         assert max(ys) - min(ys) < max(zs) - min(zs)
+
+
+def test_glb_flat_extrusion_writes_single_primitive_per_tile():
+    tiles = enumerate_emitted(
+        limits=LimitsSettings(),
+        tile_family="spectre_tile_1_1",
+        patch_version="glb-flat-test",
+        seed=None,
+        half_extent_cover=1.5,
+        scale=1.0,
+        tx=0.0,
+        ty=0.0,
+        rotation_deg=0.0,
+        mask=MaskSquare((0.0, 0.0), half_side=8.0),
+        retention=RetentionMode.centroid,
+        substitution_iterations=2,
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "patch.glb"
+        write_glb_instanced(
+            path,
+            tiles,
+            scale=1.0,
+            rotation_deg=0.0,
+            tx=0.0,
+            ty=0.0,
+            thickness_mm=0.0,
+        )
+        gltf = pygltflib.GLTF2().load(str(path))
+        assert all(len(mesh.primitives) == 1 for mesh in gltf.meshes)
+
+        positions = gltf.get_data_from_buffer_uri(gltf.buffers[0].uri)
+        first_accessor = gltf.accessors[gltf.meshes[0].primitives[0].attributes.POSITION]
+        first_view = gltf.bufferViews[first_accessor.bufferView]
+        raw = positions[first_view.byteOffset : first_view.byteOffset + first_view.byteLength]
+        xyz = struct.unpack("<" + "f" * (len(raw) // 4), raw)
+        ys = xyz[1::3]
+        assert max(ys) - min(ys) < 1e-5

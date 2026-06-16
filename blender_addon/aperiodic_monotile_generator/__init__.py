@@ -1,8 +1,8 @@
 bl_info = {
     "name": "Aperiodic Monotile Generator",
     "author": "Aperiodic Monotile Generator",
-    "version": (0, 1, 0),
-    "blender": (4, 0, 0),
+    "version": (0, 1, 1),
+    "blender": (4, 2, 0),
     "location": "View3D > Sidebar > Monotile",
     "description": "Generate aperiodic monotile GLB patches from the hosted API and import them into Blender.",
     "category": "Import-Export",
@@ -115,9 +115,9 @@ class MonotileGeneratorSettings(PropertyGroup):
     extrusion_mm: FloatProperty(
         name="Depth",
         default=1.0,
-        min=0.05,
+        min=0.0,
         soft_max=20.0,
-        description="GLB/STL extrusion depth",
+        description="GLB/STL extrusion depth in mm; 0 = flat tile caps only (extrude yourself in Blender)",
     )
     import_json: BoolProperty(
         name="Also request JSON",
