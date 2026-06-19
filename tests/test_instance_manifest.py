@@ -77,3 +77,26 @@ def test_manifest_instances_have_4x4_matrix_and_labels():
         assert rows[3] == [0.0, 0.0, 0.0, 1.0]
         assert "id" in inst
         assert "label" in inst
+
+
+def test_manifest_uses_styled_ring_when_visual_style_set():
+    from spectre_patch.export.tile_styling import TileVisualStyle, export_ring_for_style
+
+    tiles = _emit()
+    wavy = TileVisualStyle(side_style="wavy", side_style_amplitude=0.2, tile_edge_ratio=1.0)
+    expected = export_ring_for_style(wavy)
+    raw = stl_export.instancing_manifest_bytes(
+        tiles,
+        patch_version="inst-test",
+        tile_family="spectre_tile_1_1",
+        seed=None,
+        scale=1.0,
+        rotation_deg=0.0,
+        tx=0.0,
+        ty=0.0,
+        visual_style=wavy,
+    )
+    doc = json.loads(raw)
+    ring = np.array(doc["prototile_ring_xy"])
+    assert len(ring) > len(PROTOTILE_RING)
+    assert np.allclose(ring, expected)

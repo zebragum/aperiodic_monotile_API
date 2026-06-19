@@ -54,7 +54,7 @@ services:
       - key: SPECTRE_PATCH_QUEUE_MAX_HEAVY_JOBS
         value: "300"
       - key: SPECTRE_PATCH_QUEUE_MAX_HEAVY_JOBS_PER_KEY
-        value: "10"
+        value: "3"
       # In-container periodic GC. The cron runs alongside API + worker because
       # Render disks attach to a single service, so a standalone cron service
       # cannot see this disk. Set to 0 to disable.

@@ -37,6 +37,20 @@ from spectre_patch.core.spectre_t11 import PROTOTILE_RING, apply_affine_to_point
 from spectre_patch.geometry_affine import compose_world_affine, decompose_uniform_similarity
 from spectre_patch.ids import stable_tile_id
 from spectre_patch.masking import RetentionMode, mask_polygon, retains_tile_result
+
+
+def _resolve_mystic_label(label: str, path: tuple[int, ...]) -> str:
+    """Split the collapsed atlas "Gamma" back into its Mystic leaves.
+
+    The atlas stores only the 9 canonical label indices, so both halves of the
+    Mystic metatile share the index for "Gamma". Their immediate parent is the
+    Mystic, so the final DFS child index distinguishes them: 0 -> Gamma1,
+    1 -> Gamma2 (matching the live substitution engine, which emits them directly).
+    """
+
+    if label == "Gamma" and path:
+        return "Gamma1" if int(path[-1]) == 0 else "Gamma2"
+    return label
 from spectre_patch.patch_engine import EmittedTile, affine6_tuple
 
 
@@ -149,7 +163,7 @@ def enumerate_emitted_from_core(
         out.append(
             EmittedTile(
                 tile_id=tid,
-                tile_label=core.label_for(ridx_int),
+                tile_label=_resolve_mystic_label(core.label_for(ridx_int), path),
                 dfs_path_indices=path,
                 centroid_canonical_xy=cen_user,
                 affine_canonical_gen6=affine6_tuple(gen6_user),

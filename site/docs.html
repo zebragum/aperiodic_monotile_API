@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic Monotile API Documentation | Spectre Tile Geometry</title>
+    <title>Aperiodic Monotile API Documentation | Aperiodic Tiling Geometry</title>
     <meta
       name="description"
-      content="Documentation for generating Spectre monotile geometry with the Aperiodic Monotile API, including masks, SVG options, signed downloads, and free/paid API access."
+      content="Documentation for generating aperiodic monotile geometry with the Aperiodic Monotile API, including masks, SVG options, signed downloads, and free/paid API access."
     />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://aperiodicgenerator.com/docs.html" />
@@ -38,7 +38,7 @@
     <main>
       <section class="section docs-hero">
         <p class="eyebrow">Developer docs</p>
-        <h1>Generate Spectre monotile geometry from one JSON request.</h1>
+        <h1>Generate aperiodic monotile geometry from one JSON request.</h1>
         <p class="hero-text">
           The API accepts canonical geometry masks and returns job artifacts:
           compact SVG for design tools, CSV/JSON for instancing, and mesh formats
@@ -52,7 +52,7 @@
           <h2>POST /v1/patch</h2>
           <p>
             Create a deterministic patch job from a mask and output formats. The backend assumes an
-            infinite Spectre tiling, clips it to your requested shape, and chooses the atlas/core depth
+            infinite aperiodic monotile tiling, clips it to your requested shape, and chooses the atlas/core depth
             automatically.
           </p>
         </div>
@@ -125,7 +125,7 @@
           </article>
           <article class="card">
             <h3>Future polygons</h3>
-            <p>Arbitrary polygons and Spectre-shaped masks are feasible, but they should ship with validation and simple examples.</p>
+            <p>Arbitrary polygons and monotile-shaped masks are feasible, but they should ship with validation and simple examples.</p>
           </article>
         </div>
       </section>

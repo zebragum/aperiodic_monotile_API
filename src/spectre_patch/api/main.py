@@ -113,7 +113,7 @@ class ServiceSettings(BaseSettings):
     queue_max_active_jobs: int = 2000
     queue_max_active_jobs_per_key: int = 100
     queue_max_heavy_jobs: int = 300
-    queue_max_heavy_jobs_per_key: int = 10
+    queue_max_heavy_jobs_per_key: int = 3
     queue_small_estimated_seconds: float = 5.0
     queue_standard_estimated_seconds: float = 20.0
     queue_heavy_estimated_seconds: float = 90.0
@@ -906,9 +906,18 @@ def create_app() -> FastAPI:
             },
             "boundary_behavior": "clip",
             "visual_styling": {
-                "side_styles": ["flat", "curvy", "wavy", "jagged", "blocky"],
+                "side_styles": ["flat", "curvy", "wavy", "jagged", "blocky", "custom"],
                 "side_style_aliases": {"curved": "curvy", "curve": "curvy"},
                 "side_style_amplitude": {"min": 0.0, "max": 0.75, "default": 0.12},
+                "side_profile_normalized": {
+                    "description": (
+                        "Custom edge profile as [[x,y], ...] from (0,0) to (1,0). "
+                        "y is offset perpendicular to the edge as a fraction of edge length. "
+                        "Alternating edges use the mirrored profile (Spectre chirality)."
+                    ),
+                    "max_points": 64,
+                    "y_range": [-0.75, 0.75],
+                },
                 "tile_edge_ratio": {
                     "min": 0.25,
                     "max": 4.0,
@@ -929,6 +938,7 @@ def create_app() -> FastAPI:
                     "side_style_amplitude",
                     "tile_edge_ratio",
                     "side_style_wavy_segments",
+                    "side_profile_normalized",
                     "palette_by_label",
                 ],
             },

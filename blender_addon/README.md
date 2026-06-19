@@ -6,8 +6,8 @@ the completed GLB, and import it into the current scene.
 
 ## Install
 
-1. Zip the folder `aperiodic_monotile_generator`.
-2. In Blender, open `Edit > Preferences > Add-ons`.
+1. Zip the folder `aperiodic_monotile_generator` (must include `blender_manifest.toml` at the extension root), or use the prebuilt zip from `gumroad/dist/aperiodic_monotile_generator_blender.zip`.
+2. In Blender, open `Edit > Preferences > Add-ons` (or **Extensions** on Blender 4.2+).
 3. Click `Install...`.
 4. Select the zip file.
 5. Enable `Aperiodic Monotile Generator`.

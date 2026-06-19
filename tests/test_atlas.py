@@ -118,6 +118,44 @@ def test_atlas_dfs_paths_recover_same_ids_as_substitution(tmp_path: Path):
     assert len(ids_a) > 0
 
 
+def test_atlas_splits_mystic_gamma_like_substitution(tmp_path: Path):
+    """Atlas must emit Gamma1/Gamma2 (not collapsed "Gamma"), matching live."""
+
+    _, core = _build_n4(tmp_path)
+    mask = MaskSquare(
+        (core.inscribed_center[0], core.inscribed_center[1]),
+        half_side=core.inscribed_half_side,
+    )
+    common = dict(
+        tile_family="spectre_tile_1_1",
+        patch_version=PATCH_ENGINE_SEMVER,
+        seed="mystic-test",
+        scale=1.0,
+        tx=0.0,
+        ty=0.0,
+        rotation_deg=0.0,
+        mask=mask,
+        retention=RetentionMode.centroid,
+    )
+    emitted_atlas = enumerate_emitted_from_core(core, **common)
+    emitted_live = enumerate_emitted(
+        half_extent_cover=core.inscribed_half_side,
+        limits=LimitsSettings(),
+        substitution_iterations=4,
+        **common,
+    )
+
+    labels_atlas = {t.tile_label for t in emitted_atlas}
+    # The collapsed label must be gone; both Mystic halves must be present.
+    assert "Gamma" not in labels_atlas
+    assert {"Gamma1", "Gamma2"} <= labels_atlas
+
+    # Per-tile-id labels must agree exactly with the live substitution engine.
+    by_id_atlas = {t.tile_id: t.tile_label for t in emitted_atlas}
+    by_id_live = {t.tile_id: t.tile_label for t in emitted_live}
+    assert by_id_atlas == by_id_live
+
+
 def test_select_core_picks_smallest_sufficient(tmp_path: Path):
     """Build n=3 and n=4; mask covered by n=3 must select n=3, not n=4."""
 

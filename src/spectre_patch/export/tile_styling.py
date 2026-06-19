@@ -11,9 +11,9 @@ from shapely.validation import make_valid
 
 from spectre_patch.core.spectre_t11 import PROTOTILE_CENTROID, PROTOTILE_RING
 
-SideStyle = Literal["flat", "curvy", "wavy", "jagged", "blocky"]
+SideStyle = Literal["flat", "curvy", "wavy", "jagged", "blocky", "custom"]
 
-SIDE_STYLES: tuple[SideStyle, ...] = ("flat", "curvy", "wavy", "jagged", "blocky")
+SIDE_STYLES: tuple[SideStyle, ...] = ("flat", "curvy", "wavy", "jagged", "blocky", "custom")
 
 
 def normalize_side_style(value: str) -> SideStyle:
@@ -31,12 +31,20 @@ class TileVisualStyle:
     side_style_amplitude: float = 0.12
     tile_edge_ratio: float = 1.0
     wavy_segments_per_edge: int = 10
+    side_profile_normalized: tuple[tuple[float, float], ...] | None = None
 
     @classmethod
     def from_request(cls, req: dict) -> TileVisualStyle:
+        raw_profile = req.get("side_profile_normalized")
+        profile: tuple[tuple[float, float], ...] | None = None
+        if raw_profile is not None:
+            profile = normalize_side_profile(raw_profile)
+
         raw_style = req.get("side_style")
         style: SideStyle = "flat"
-        if raw_style is not None and str(raw_style).strip():
+        if profile is not None:
+            style = "custom"
+        elif raw_style is not None and str(raw_style).strip():
             style = normalize_side_style(str(raw_style))
         amp = float(req.get("side_style_amplitude", 0.12))
         if amp < 0.0 or amp > 0.75:
@@ -52,6 +60,7 @@ class TileVisualStyle:
             side_style_amplitude=amp,
             tile_edge_ratio=ratio,
             wavy_segments_per_edge=segs,
+            side_profile_normalized=profile,
         )
 
 
@@ -68,6 +77,116 @@ def build_base_ring(tile_edge_ratio: float = 1.0) -> np.ndarray:
     ring[:, 0] = c[0] + (ring[:, 0] - c[0]) * sx
     ring[:, 1] = c[1] + (ring[:, 1] - c[1]) * sy
     return ring
+
+
+_PROFILE_ENDPOINT_TOL = 1e-3
+_PROFILE_MAX_POINTS = 64
+
+
+def normalize_side_profile(raw: object) -> tuple[tuple[float, float], ...]:
+    """Validate a normalized edge profile from (0,0) to (1,0) in edge-local coordinates.
+
+    Matches the alternating-edge decoration model from the Spectre paper and
+    community tooling (e.g. aspartate/spectre): x runs along the edge, y is
+  perpendicular offset as a fraction of edge length.
+    """
+
+    if not isinstance(raw, (list, tuple)) or len(raw) < 2:
+        raise ValueError("side_profile_normalized must be a list of at least 2 [x, y] points")
+    if len(raw) > _PROFILE_MAX_POINTS:
+        raise ValueError(f"side_profile_normalized supports up to {_PROFILE_MAX_POINTS} points")
+
+    points: list[tuple[float, float]] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            raise ValueError(f"side_profile_normalized[{i}] must be [x, y]")
+        x, y = float(item[0]), float(item[1])
+        if not 0.0 <= x <= 1.0:
+            raise ValueError(f"side_profile_normalized[{i}].x must be within [0, 1]")
+        if abs(y) > 0.75:
+            raise ValueError(f"side_profile_normalized[{i}].y must be within [-0.75, 0.75]")
+        points.append((x, y))
+
+    if np.linalg.norm(np.array(points[0]) - np.array((0.0, 0.0))) > _PROFILE_ENDPOINT_TOL:
+        raise ValueError("side_profile_normalized must start near (0, 0)")
+    if np.linalg.norm(np.array(points[-1]) - np.array((1.0, 0.0))) > _PROFILE_ENDPOINT_TOL:
+        raise ValueError("side_profile_normalized must end near (1, 0)")
+
+  # Keep x monotonic so the profile traces the edge forward.
+    for i in range(1, len(points)):
+        if points[i][0] < points[i - 1][0]:
+            raise ValueError("side_profile_normalized x coordinates must be non-decreasing")
+
+    return tuple(points)
+
+
+def _rotate_point_about(point: np.ndarray, angle: float, origin: np.ndarray) -> np.ndarray:
+    c, s = float(np.cos(angle)), float(np.sin(angle))
+    px, py = float(point[0] - origin[0]), float(point[1] - origin[1])
+    return np.array(
+        [origin[0] + c * px - s * py, origin[1] + s * px + c * py],
+        dtype=np.float64,
+    )
+
+
+def inverse_side_profile(profile: np.ndarray) -> np.ndarray:
+    """Mirror profile for alternating edges (180° rotation about edge midpoint)."""
+
+    origin = np.array([0.5, 0.0], dtype=np.float64)
+    out = np.empty_like(profile)
+    for i, row in enumerate(reversed(profile)):
+        rotated = _rotate_point_about(row, np.pi, origin)
+        out[i] = rotated
+    return out
+
+
+def decorate_ring_with_profile(
+    ring: np.ndarray,
+    profile_normalized: np.ndarray | list | tuple,
+    *,
+    amplitude: float = 1.0,
+    alternate_edges: bool = True,
+) -> np.ndarray:
+    """Replace each polygon edge with a scaled, rotated copy of a normalized profile."""
+
+    profile = np.asarray(profile_normalized, dtype=np.float64)
+    if profile.shape[0] < 2:
+        return ring.astype(np.float64, copy=True)
+
+    amp = float(amplitude)
+    profile = profile.copy()
+    profile[:, 1] *= amp
+    inverse = inverse_side_profile(profile) if alternate_edges else profile
+
+    pts = ring.astype(np.float64, copy=False)
+    n = len(pts)
+    out: list[np.ndarray] = []
+    chirality = 1
+
+    for i in range(n):
+        p0 = pts[i]
+        p1 = pts[(i + 1) % n]
+        edge = p1 - p0
+        elen = float(np.linalg.norm(edge))
+        if elen < 1e-12:
+            continue
+        angle = float(np.arctan2(edge[1], edge[0]))
+        edge_profile = profile if chirality == 1 else inverse
+
+        for j, row in enumerate(edge_profile):
+            local = row * elen
+            rotated = _rotate_point_about(local, angle, np.zeros(2))
+            world = rotated + p0
+            if j == 0 and out:
+                continue
+            out.append(world)
+
+        if alternate_edges:
+            chirality *= -1
+
+    if not out:
+        return pts.copy()
+    return np.asarray(out, dtype=np.float64)
 
 
 def style_ring_vertices(
@@ -114,10 +233,14 @@ def style_ring_vertices(
                     out.append(v0)
                 out.append(v1)
         elif style == "wavy":
+            # Full-period sine is anti-symmetric about the edge midpoint, so its
+            # Spectre mirror equals itself — keep the same orientation on every
+            # edge (no per-edge sign flip, unlike the symmetric bump styles).
+            mag = amp * elen * 0.55
             for k in range(segs):
                 t = k / segs
                 base = (1 - t) * p0 + t * p1
-                wave = np.sin(t * np.pi * 2.0) * bulge * 0.55
+                wave = np.sin(t * np.pi * 2.0) * mag
                 out.append(base + normal * wave)
         elif style == "jagged":
             mid = (p0 + p1) * 0.5 + normal * bulge
@@ -140,6 +263,13 @@ def style_ring_vertices(
 
 def export_ring_for_style(style: TileVisualStyle) -> np.ndarray:
     base = build_base_ring(style.tile_edge_ratio)
+    if style.side_profile_normalized is not None:
+        return decorate_ring_with_profile(
+            base,
+            np.asarray(style.side_profile_normalized, dtype=np.float64),
+            amplitude=style.side_style_amplitude,
+            alternate_edges=True,
+        )
     return style_ring_vertices(
         base,
         style.side_style,

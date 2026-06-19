@@ -1,0 +1,78 @@
+================================================================================
+  APERIODIC MONOTILE GENERATOR — BLENDER KIT
+  Thank you for your purchase.
+================================================================================
+
+WHAT YOU BOUGHT
+---------------
+This kit is for Blender artists who want large aperiodic monotile surfaces that
+do NOT read like obvious CG tiling. You get:
+
+  1. aperiodic_monotile_generator_blender.zip  — install in Blender 4.2+ (includes blender_manifest.toml)
+  2. samples/                                   — example SVG, PNG, GLB, CSV, JSON
+  3. This guide
+
+You still need an API key from the hosted generator (see below). The add-on
+calls the live API to build geometry; it does not run offline.
+
+
+WHY THIS EXISTS (30 seconds)
+---------------------------
+Regular grids repeat. Your eye catches the unit tile in camera, motion, and
+lighting. Aperiodic monotile patches stay ordered but avoid that wallpaper
+beat — surfaces look more natural on floors, facades, and environments.
+
+
+STEP 1 — GET AN API KEY
+-----------------------
+Open:  https://aperiodicgenerator.com/docs.html#access
+
+  • Free tier: small PNG/JPG previews only (good for testing the add-on flow)
+  • Solo plan: production exports including GLB (required for serious Blender work)
+
+If you received a discount code in your Gumroad receipt email, apply it at checkout
+on the site.
+
+
+STEP 2 — INSTALL THE ADD-ON
+---------------------------
+1. In Blender: Edit → Preferences → Add-ons → Install…
+2. Select: aperiodic_monotile_generator_blender.zip
+3. Enable: "Aperiodic Monotile Generator"
+4. Press N in the 3D View → sidebar tab "Monotile"
+
+
+STEP 3 — FIRST SCENE
+--------------------
+1. Paste your API key in the Monotile panel
+2. Choose boundary (circle, rectangle, hexagon, etc.)
+3. Set tile scale and extrusion depth
+4. Click "Generate and Import GLB"
+5. Wait for the job to finish (Blender may pause while polling)
+
+Imported tiles land in a collection named Monotile <job_id>.
+
+
+TIPS
+----
+• Use "Use Selected Bounds" on a flat reference object to size a rectangle fill.
+• "Randomize Tile Materials" helps preview palette variation on mesh tiles.
+• API docs: https://aperiodicgenerator.com/docs.html
+• AI integration brief: https://aperiodicgenerator.com/agents.html
+
+
+SUPPORT
+-------
+Issues or bugs: https://aperiodicgenerator.com/contact.html
+Include your Gumroad email and what step failed.
+
+
+LICENSE (plain language)
+------------------------
+• You may use exported geometry in personal and commercial projects per your
+  API plan (Solo vs Commercial on the website).
+• Do not redistribute this ZIP or the add-on source as your own product.
+• The underlying Spectre / Tile(1,1) mathematics is not proprietary to us;
+  our product is the hosted generator, add-on, and exports.
+
+================================================================================

@@ -7,7 +7,9 @@ import numpy as np
 from spectre_patch.export.tile_styling import (
     TileVisualStyle,
     build_base_ring,
+    decorate_ring_with_profile,
     export_ring_for_style,
+    normalize_side_profile,
     normalize_side_style,
     ring_to_svg_path_d,
     style_ring_vertices,
@@ -41,6 +43,31 @@ def test_from_request_rejects_bad_amplitude():
         assert "amplitude" in str(e).lower()
     else:
         raise AssertionError("expected ValueError")
+
+
+def test_custom_profile_decorates_ring():
+    profile = [(0.0, 0.0), (0.25, 0.15), (0.5, -0.1), (0.75, 0.15), (1.0, 0.0)]
+    ring = decorate_ring_with_profile(PROTOTILE_RING, profile, amplitude=0.12)
+    assert len(ring) > len(PROTOTILE_RING)
+    original = {tuple(np.round(p, 6)) for p in PROTOTILE_RING}
+    moved = [p for p in ring if tuple(np.round(p, 6)) not in original]
+    assert moved, "expected profile to introduce off-edge bulge points"
+
+
+def test_normalize_side_profile_endpoints():
+    pts = normalize_side_profile([[0.0, 0.0], [0.5, 0.1], [1.0, 0.0]])
+    assert pts == ((0.0, 0.0), (0.5, 0.1), (1.0, 0.0))
+
+
+def test_export_ring_for_style_custom_profile():
+    profile = ((0.0, 0.0), (0.5, 0.2), (1.0, 0.0))
+    style = TileVisualStyle(
+        side_style="custom",
+        side_style_amplitude=0.1,
+        side_profile_normalized=profile,
+    )
+    ring = export_ring_for_style(style)
+    assert len(ring) > len(PROTOTILE_RING)
 
 
 def test_export_ring_path_differs_for_wavy():

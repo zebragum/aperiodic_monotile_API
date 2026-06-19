@@ -124,6 +124,8 @@ def prototype_prism_tris(
 def _resolve_export_ring(visual_style: TileVisualStyle | None) -> np.ndarray:
     if visual_style is None:
         return PROTOTILE_RING
+    if visual_style.side_profile_normalized is not None:
+        return export_ring_for_style(visual_style)
     if visual_style.side_style == "flat" and abs(visual_style.tile_edge_ratio - 1.0) < 1e-9:
         return PROTOTILE_RING
     return export_ring_for_style(visual_style)
@@ -228,7 +230,9 @@ def _world_xy_rings(
 ) -> list[np.ndarray]:
     export_ring = _resolve_export_ring(visual_style)
     use_styled = visual_style is not None and (
-        visual_style.side_style != "flat" or abs(visual_style.tile_edge_ratio - 1.0) > 1e-9
+        visual_style.side_profile_normalized is not None
+        or visual_style.side_style != "flat"
+        or abs(visual_style.tile_edge_ratio - 1.0) > 1e-9
     )
     if tile.clip_geom is not None:
         if use_styled and mask_geom is not None:
@@ -575,8 +579,10 @@ def instancing_manifest_bytes(
     rotation_deg: float,
     tx: float,
     ty: float,
+    visual_style: TileVisualStyle | None = None,
 ) -> bytes:
-    prototile_ring_xy = [[float(x), float(y)] for x, y in PROTOTILE_RING]
+    ring = export_ring_for_style(visual_style) if visual_style is not None else PROTOTILE_RING
+    prototile_ring_xy = [[float(x), float(y)] for x, y in ring]
     doc = {
         "patch_version": patch_version,
         "tile_family": tile_family,

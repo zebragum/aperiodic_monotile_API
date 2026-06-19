@@ -112,10 +112,11 @@ class PatchRequest(BaseModel):
     svg_compact: bool = False
     force_svg_large: bool = False
 
-    side_style: Literal["flat", "curvy", "wavy", "jagged", "blocky"] = "flat"
+    side_style: Literal["flat", "curvy", "wavy", "jagged", "blocky", "custom"] = "flat"
     side_style_amplitude: Annotated[float, Field(ge=0.0, le=0.75)] = 0.12
     tile_edge_ratio: Annotated[float, Field(ge=0.25, le=4.0)] = 1.0
     side_style_wavy_segments: Annotated[int, Field(ge=4, le=64)] = 10
+    side_profile_normalized: list[list[float]] | None = None
     palette_by_label: dict[str, dict[str, str | float | bool]] | None = None
 
     mask: dict

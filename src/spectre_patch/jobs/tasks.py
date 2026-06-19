@@ -226,6 +226,7 @@ def run_patch_job(
             rotation_deg=rotation_deg,
             tx=tx,
             ty=ty,
+            visual_style=visual_style,
         )
 
         if "stl" in fmts:

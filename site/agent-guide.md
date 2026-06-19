@@ -10,7 +10,7 @@ Human support: `https://aperiodicgenerator.com/contact.html`
 
 ## What This API Does
 
-The API generates clipped aperiodic monotile patches using Spectre / Tile(1,1) geometry. A user sends a JSON request describing a mask shape, output formats, and optional rendering/export parameters. The service queues a deterministic job, generates artifacts, and returns signed download URLs after completion.
+The API generates clipped aperiodic monotile patches. A user sends a JSON request describing a mask shape, output formats, and optional rendering/export parameters. The service queues a deterministic job, generates artifacts, and returns signed download URLs after completion.
 
 Use this API when the user wants:
 
