@@ -169,6 +169,54 @@ function clonePalette(palette) {
   return palette.map((slot) => ({ ...slot }));
 }
 
+function hslToHex(h, s, l) {
+  const sat = s / 100;
+  const light = l / 100;
+  const chroma = (1 - Math.abs(2 * light - 1)) * sat;
+  const secondary = chroma * (1 - Math.abs(((h / 60) % 2) - 1));
+  const match = light - chroma / 2;
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+  if (h < 60) [red, green, blue] = [chroma, secondary, 0];
+  else if (h < 120) [red, green, blue] = [secondary, chroma, 0];
+  else if (h < 180) [red, green, blue] = [0, chroma, secondary];
+  else if (h < 240) [red, green, blue] = [0, secondary, chroma];
+  else if (h < 300) [red, green, blue] = [secondary, 0, chroma];
+  else [red, green, blue] = [chroma, 0, secondary];
+  const toHex = (channel) => Math.round((channel + match) * 255).toString(16).padStart(2, "0");
+  return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
+}
+
+function randomGeneratorPalette(slotCount = 9) {
+  const colorCount = slotCount - 1;
+  const colors = [];
+  const style = Math.random();
+  if (style < 0.34) {
+    const startHue = Math.random() * 360;
+    const hueSpan = 48 + Math.random() * 132;
+    for (let i = 0; i < colorCount; i += 1) {
+      const t = colorCount <= 1 ? 0 : i / (colorCount - 1);
+      const hue = (startHue + hueSpan * t + (Math.random() - 0.5) * 18) % 360;
+      colors.push(hslToHex(hue, 58 + Math.random() * 32, 42 + Math.random() * 24));
+    }
+  } else if (style < 0.67) {
+    const anchorHue = Math.random() * 360;
+    for (let i = 0; i < colorCount; i += 1) {
+      const hue = (anchorHue + i * (29 + Math.random() * 47) + (Math.random() - 0.5) * 30) % 360;
+      colors.push(hslToHex(hue, 52 + Math.random() * 38, 36 + Math.random() * 30));
+    }
+  } else {
+    for (let i = 0; i < colorCount; i += 1) {
+      colors.push(hslToHex(Math.random() * 360, 50 + Math.random() * 42, 38 + Math.random() * 28));
+    }
+  }
+  return colors.map((color, index) => ({
+    color,
+    transparent: index === slotCount - 1,
+  }));
+}
+
 let generatorPalette = clonePalette(defaultGeneratorPalette);
 let generatorTiles = [];
 let generatorBounds = null;
@@ -416,11 +464,12 @@ async function initGenerator() {
   generatorShape?.addEventListener("change", renderGenerator);
   generatorScale?.addEventListener("input", renderGenerator);
   randomizePaletteButton?.addEventListener("click", () => {
-    const preset = palettePresets[Math.floor(Math.random() * palettePresets.length)];
-    generatorPalette = preset.map((color, index) => ({
-      color,
-      transparent: index === preset.length - 1,
-    }));
+    let next = randomGeneratorPalette();
+    const previous = generatorPalette.map((slot) => slot.color).join("|");
+    for (let attempt = 0; attempt < 4 && next.map((slot) => slot.color).join("|") === previous; attempt += 1) {
+      next = randomGeneratorPalette();
+    }
+    generatorPalette = next;
     renderPaletteControls();
     renderGenerator();
   });
