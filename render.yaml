@@ -95,7 +95,7 @@ services:
       # Optional Stripe (set after creating Products → Prices):
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY ($10/month)
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME ($79 Solo lifetime)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY ($100/month Pro)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY ($99/month Pro)
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY ($999 Pro lifetime)
       # Legacy Solo monthly fallback: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS

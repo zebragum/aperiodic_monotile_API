@@ -29,7 +29,7 @@ Open:  https://aperiodicgenerator.com/docs.html#access
 
   • Free tier: small PNG/JPG previews only (good for testing the add-on flow)
   • Solo plan ($10/mo or $79 lifetime): production exports including GLB, up to 40,000 tiles per job
-  • Pro plan ($100/mo or $999 lifetime): studio license, up to 400,000 tiles per job
+  • Pro plan ($99/mo or $999 lifetime): studio license, up to 400,000 tiles per job
 
 If you received a discount code in your Gumroad receipt email, apply it at checkout
 on the site.

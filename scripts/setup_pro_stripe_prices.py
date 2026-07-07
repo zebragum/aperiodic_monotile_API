@@ -1,7 +1,7 @@
 """Create Pro Stripe prices and update local .env + Render.
 
 Creates:
-  - Pro monthly: $100/mo (tier_teams subscription)
+  - Pro monthly: $99/mo (tier_teams subscription)
   - Pro lifetime: $999 one-time (tier_teams payment)
 
 Updates:
@@ -78,9 +78,9 @@ def main() -> int:
         {
             "product": PRO_PRODUCT_ID,
             "currency": "usd",
-            "unit_amount": "10000",
+            "unit_amount": "9900",
             "nickname": "Pro Monthly",
-            "lookup_key": "aperiodic_monotile_pro_monthly_100_usd",
+            "lookup_key": "aperiodic_monotile_pro_monthly_99_usd",
             "recurring[interval]": "month",
             "metadata[tier]": "tier_teams",
             "metadata[checkout_plan]": "pro_monthly",
