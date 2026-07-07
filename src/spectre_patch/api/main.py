@@ -1251,6 +1251,8 @@ def create_app() -> FastAPI:
             "plans": {
                 "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
                 "solo_lifetime": bool(cfg.stripe_price_id_lifetime),
+                "pro_monthly": bool(cfg.stripe_price_id_teams_monthly),
+                "pro_lifetime": bool(cfg.stripe_price_id_teams_yearly),
                 "commercial_monthly": bool(cfg.stripe_price_id_teams_monthly),
                 "commercial_lifetime": bool(cfg.stripe_price_id_teams_yearly),
             },
