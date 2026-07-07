@@ -249,13 +249,13 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           <p class="eyebrow">Outputs &amp; ownership</p>
           <h2>You own your pipeline; tiling facts stay facts.</h2>
           <p>
-            Plain geometry snapshots &mdash; uncolored coordinates, repeatable substitution outputs, CSV rows of affine transforms &mdash;
+            Plain geometry snapshots (uncolored coordinates, repeatable substitution outputs, CSV rows of affine transforms)
             are closer to encyclopedic mathematics than expressive authorship on their own, much like plotting a Cartesian grid or hex lattice.
           </p>
           <p>
             <strong>Company stance:</strong> we do not assert ownership or exclusive licensed rights simply because you exported a patch via the API.
             Your protectable creativity begins wherever you add substantive design choices: art direction, materials, shading, composites,
-            narrative, branding, UI, tools, games, textiles, apparel, signage, motion, typography, palettes &mdash; integration work that goes beyond raw coordinates.
+            narrative, branding, UI, tools, games, textiles, apparel, signage, motion, typography, palettes, and other integration work that goes beyond raw coordinates.
           </p>
         </div>
       </section>
@@ -314,19 +314,15 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       const claimBox = document.querySelector("#checkoutClaim");
       const SESSION_STORE_KEY = "monotile.lastCheckoutSession.v1";
 
-      // Persist any session_id we see so a customer who loses the page (or
-      // reloads to an old URL) can still recover their key. The browser is
-      // the only thing that knows their session — losing it means support
-      // can't help them without Stripe Dashboard access.
       function rememberSessionId(id) {
         if (!id) return;
-        try { localStorage.setItem(SESSION_STORE_KEY, id); } catch (_) { /* ignore */ }
+        try { localStorage.setItem(SESSION_STORE_KEY, id); } catch (_) {}
       }
       function lastKnownSessionId() {
         try { return localStorage.getItem(SESSION_STORE_KEY) || ""; } catch (_) { return ""; }
       }
       function clearSessionId() {
-        try { localStorage.removeItem(SESSION_STORE_KEY); } catch (_) { /* ignore */ }
+        try { localStorage.removeItem(SESSION_STORE_KEY); } catch (_) {}
       }
       if (sessionId) rememberSessionId(sessionId);
 
@@ -335,7 +331,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         claimBox.replaceChildren();
         if (state === "loading") {
           const p = document.createElement("p");
-          p.textContent = "Checkout complete — minting your API key...";
+          p.textContent = "Checkout complete. Minting your API key...";
           claimBox.appendChild(p);
           return;
         }
@@ -365,7 +361,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           heading.textContent = "This checkout was already claimed.";
           const note = document.createElement("p");
           const keyPrefix = payload.key_prefix ? `Key prefix: ${payload.key_prefix}.` : "";
-          note.textContent = `${keyPrefix} If you can't find the full key, contact support — we can verify by checkout session.`;
+          note.textContent = `${keyPrefix} If you can't find the full key, contact support. We can verify by checkout session.`;
           claimBox.append(heading, note);
           history.replaceState(null, "", "docs.html#access");
           clearSessionId();
@@ -376,7 +372,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           heading.textContent = "Could not mint your API key yet.";
           const reason = document.createElement("p");
           const rid = payload && payload.request_id ? ` (request_id ${payload.request_id})` : "";
-          const detail = payload && payload.message ? payload.message : "Transient error — Stripe was likely between redirects.";
+          const detail = payload && payload.message ? payload.message : "Transient error. Stripe was likely between redirects.";
           reason.textContent = `Reason: ${detail}${rid}`;
           const retry = document.createElement("button");
           retry.type = "button";
@@ -384,7 +380,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           retry.textContent = "Retry";
           retry.addEventListener("click", () => claimKey(true));
           const note = document.createElement("p");
-          note.textContent = "Wait a few seconds and try again. If it keeps failing, use the Report a bug button below — your checkout session is saved here in this browser.";
+          note.textContent = "Wait a few seconds and try again. If it keeps failing, use the Report a bug button below. Your checkout session is saved here in this browser.";
           claimBox.append(heading, reason, retry, note);
           return;
         }
@@ -436,12 +432,9 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
 
       function rememberRequestId(rid) {
         if (!rid) return;
-        try { sessionStorage.setItem(RID_STORE_KEY, rid); } catch (_) { /* private mode */ }
+        try { sessionStorage.setItem(RID_STORE_KEY, rid); } catch (_) {}
       }
 
-      // Wrap fetch so any X-Request-ID surfaced by the API gets stashed for the
-      // bug report form. This means the most recent failure already has the
-      // correct request_id prefilled, with zero copy/paste required.
       const originalFetch = window.fetch.bind(window);
       window.fetch = async function patchedFetch(input, init) {
         const response = await originalFetch(input, init);
@@ -476,11 +469,11 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
             details: data.get("details") || "",
             email: data.get("email") || ""
           }));
-        } catch (_) { /* ignore */ }
+        } catch (_) {}
       }
 
       function clearDraft() {
-        try { localStorage.removeItem(BUG_STORE_KEY); } catch (_) { /* ignore */ }
+        try { localStorage.removeItem(BUG_STORE_KEY); } catch (_) {}
       }
 
       function openBugDialog() {
@@ -492,11 +485,11 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           bugForm.querySelector("[name=email]").value = draft.email || "";
         }
         let rid = "";
-        try { rid = sessionStorage.getItem(RID_STORE_KEY) || ""; } catch (_) { /* ignore */ }
+        try { rid = sessionStorage.getItem(RID_STORE_KEY) || ""; } catch (_) {}
         bugForm.querySelector("[name=request_id]").value = rid;
         bugRidLine.textContent = rid
           ? `request_id ${rid} attached automatically.`
-          : "No request_id captured yet. That's OK — describe the steps to reproduce.";
+          : "No request_id captured yet. That's OK. Describe the steps to reproduce.";
         bugStatus.textContent = "";
         if (typeof bugDialog.showModal === "function") {
           bugDialog.showModal();
@@ -548,7 +541,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
               bugStatus.textContent = `Could not send report (${friendly}). Try email: zach@shopcloudburst.com.`;
               return;
             }
-            bugStatus.textContent = `Thanks — bug_id ${body.bug_id} received.`;
+            bugStatus.textContent = `Thanks. bug_id ${body.bug_id} received.`;
             clearDraft();
             setTimeout(closeBugDialog, 1500);
           } catch (err) {

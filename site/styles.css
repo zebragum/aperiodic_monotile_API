@@ -814,7 +814,6 @@ ul.pricing-value-list {
 }
 
 
-/* --- Bug report widget --- */
 .button-link {
   background: none;
   border: none;
@@ -872,7 +871,6 @@ ul.pricing-value-list {
 .dialog-help { color: var(--muted); font-size: 13px; margin: 0; }
 .dialog-status { color: var(--accent-2); font-size: 13px; margin: 0; min-height: 1em; }
 
-/* --- Compact API-site visual system --- */
 :root {
   --bg: #0b0d11;
   --panel: #12151c;
@@ -1228,7 +1226,6 @@ pre {
   }
 }
 
-/* Vertical launch video layout */
 .hero-with-video {
   grid-template-columns: minmax(0, 1fr) minmax(250px, min(34vw, 360px));
 }
@@ -1272,7 +1269,6 @@ pre {
   }
 }
 
-/* Launch proof and sample downloads */
 .hero-proof-list {
   display: grid;
   gap: 0.45rem;
@@ -1330,7 +1326,6 @@ pre {
   font-size: 0.8rem;
 }
 
-/* Free JPG/PNG generator */
 .generator-hero {
   width: min(1240px, calc(100% - clamp(3rem, 8vw, 9rem)));
   display: grid;

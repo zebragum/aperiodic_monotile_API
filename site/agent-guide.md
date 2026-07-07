@@ -114,7 +114,7 @@ Substitution placement stays canonical **Tile(1,1)**. These fields only change h
 | `side_style_amplitude` | `0.12` | `0`–`0.75`; bulge on alternating edges |
 | `tile_edge_ratio` | `1.0` | `0.25`–`4.0`; anisotropic stretch of export outline (not true Tile(a,b) substitution) |
 | `side_style_wavy_segments` | `10` | `4`–`64`; subdivisions per edge when `side_style` is `wavy` |
-| `palette_by_label` | — | Per-label `fill`, `stroke`, `opacity`, `stroke_width`; use `"*"` as wildcard |
+| `palette_by_label` | (none) | Per-label `fill`, `stroke`, `opacity`, `stroke_width`; use `"*"` as wildcard |
 
 Example (curvy SVG with stretched edges):
 
@@ -254,7 +254,7 @@ Raster fields:
 
 3D field:
 
-- `stl_extrusion_mm`: extrusion/depth setting. Default is 1. Set **0** for flat tile caps only (no API extrusion — extrude in Blender/CAD yourself).
+- `stl_extrusion_mm`: extrusion/depth setting. Default is 1. Set **0** for flat tile caps only (no API extrusion; extrude in Blender/CAD yourself).
 
 ## Queue Behavior
 
