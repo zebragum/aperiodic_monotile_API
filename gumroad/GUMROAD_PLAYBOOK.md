@@ -7,7 +7,7 @@ Use this to publish a **polished** Gumroad storefront without fighting Stripe fo
 | Channel | Sell | Why |
 |---------|------|-----|
 | **Gumroad** | Blender Kit (one-time), optional Sample Pack | Discovery, Blender crowd, instant download, email list |
-| **aperiodicgenerator.com** | API keys (Free / Solo / Commercial) | Recurring billing, key minting, docs, job queue |
+| **aperiodicgenerator.com** | API keys (Free / Solo / Pro) | Recurring billing, key minting, docs, job queue |
 
 **Do not** sell duplicate “lifetime API keys” on Gumroad unless you automate fulfillment (manual keys burn time). Instead: Gumroad product **includes a discount code** for Solo lifetime on the site, or clear “Step 2: get your key at…” in `START_HERE.txt`.
 
@@ -126,7 +126,7 @@ If anything fails, reply to this email with your Blender version and a screensho
 1. **One clear hero product** — not five confused SKUs on day one.
 2. **Video or GIF** above the fold (15–30s: boundary pick → Generate → turntable).
 3. **5–8 gallery images:** GLB viewport, wireframe, material randomize, circle vs hex mask, sample SVG in Inkscape.
-4. **FAQ** answering: Do I need internet? (yes) Blender version? (4.0+) API cost? (free test / Solo for GLB) Commercial use? (Commercial plan on site)
+4. **FAQ** answering: Do I need internet? (yes) Blender version? (4.0+) API cost? (free test / Solo for GLB) Studio or client work? (Pro plan on site)
 5. **Refund policy** aligned with `site/refund.html` (link it).
 
 ---

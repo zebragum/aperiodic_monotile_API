@@ -210,15 +210,25 @@ def enumerate_emitted_or_atlas(
     atlas_index: AtlasIndex | None = None,
     cache: _CoreCache | None = None,
     force_substitution: bool = False,
+    require_atlas: bool = False,
 ) -> tuple[list[EmittedTile], AtlasResolution]:
-    """Dispatch: prefer atlas; fall back to substitution.
+    """Dispatch: prefer atlas; fall back to substitution unless ``require_atlas``.
 
     Returns the emitted tile list and an :class:`AtlasResolution` for telemetry
     so the API can log "served from core_n5 (34k tiles)" vs. "live substitution
     at depth=7".
     """
 
+    if require_atlas and force_substitution:
+        raise ValueError("force_substitution is disabled when atlas-only mode is required")
+
     if force_substitution or atlas_index is None or not atlas_index.entries:
+        if require_atlas:
+            if atlas_index is None or not atlas_index.entries:
+                raise LookupError(
+                    "atlas required but no cores are loaded; rebuild or bootstrap atlas assets"
+                )
+            raise ValueError("live substitution is disabled in atlas-only mode")
         emitted, selected_iterations = _enumerate_substitution_aligned(
             tile_family=tile_family,
             patch_version=patch_version,
@@ -249,6 +259,10 @@ def enumerate_emitted_or_atlas(
     try:
         entry = select_core(atlas_index, tile_family=tile_family, extent=extent)
     except LookupError as e:
+        if require_atlas:
+            raise LookupError(
+                f"mask exceeds largest pre-built atlas core; shrink the mask or upgrade to Pro. {e}"
+            ) from e
         emitted, selected_iterations = _enumerate_substitution_aligned(
             tile_family=tile_family,
             patch_version=patch_version,

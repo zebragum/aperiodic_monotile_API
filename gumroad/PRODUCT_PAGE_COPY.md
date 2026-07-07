@@ -44,7 +44,7 @@ Internet required — geometry is generated on the hosted API, not offline.
 
 - Blender **4.0 or newer**
 - API key from aperiodicgenerator.com  
-- Paid **Solo** (or Commercial) plan for production GLB exports  
+- Paid **Solo** (or **Pro**) plan for production GLB exports  
 
 ---
 
@@ -58,7 +58,7 @@ Internet required — geometry is generated on the hosted API, not offline.
 
 ### License
 
-Use exported geometry according to your **API plan** on the website (personal Solo vs Commercial). Do not resell or redistribute this add-on ZIP.
+Use exported geometry according to your **API plan** on the website (personal Solo vs studio Pro). Do not resell or redistribute this add-on ZIP.
 
 Questions: aperiodicgenerator.com/contact.html
 

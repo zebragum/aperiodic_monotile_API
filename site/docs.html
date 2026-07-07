@@ -203,7 +203,7 @@
         <div class="section-heading">
           <p class="eyebrow">Capabilities</p>
           <h2>What paid access unlocks today.</h2>
-          <p>Use this section to quickly compare free previews, Solo, and Commercial access.</p>
+          <p>Use this section to quickly compare free previews, Solo, and Pro access.</p>
         </div>
         <div class="cards">
           <article class="card">
@@ -212,11 +212,11 @@
           </article>
           <article class="card">
             <h3>Solo</h3>
-            <p>$10/month or $79 lifetime for one-person access to production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json.</p>
+            <p>$10/month or $79 lifetime for one-person access to production exporters, with jobs up to 40,000 retained tiles.</p>
           </article>
           <article class="card">
-            <h3>Commercial</h3>
-            <p>$39/month or $399 lifetime for commercial client and business use, with production jobs up to 500,000 retained tiles.</p>
+            <h3>Pro</h3>
+            <p>$100/month or $999 lifetime for studio and client work, with production jobs up to 400,000 retained tiles.</p>
           </article>
           <article class="card">
             <h3>Queue and downloads</h3>
@@ -262,10 +262,10 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
 
       <section id="access" class="section cta">
         <p class="eyebrow">Access model</p>
-        <h2>Solo · Commercial · Free previews.</h2>
+        <h2>Solo · Pro · Free previews.</h2>
         <p>
           Free keys stay constrained to small preview patches and JPG/PNG raster previews. Paid checkout grants
-          <strong>Solo</strong> or <strong>Commercial</strong> keys for production exporters.
+          <strong>Solo</strong> or <strong>Pro</strong> keys for production exporters.
         </p>
         <div id="checkoutClaim" class="demo-stats"></div>
         <div class="hero-actions">
@@ -344,7 +344,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
           const friendlyTier = {
             tier_day_pass: "paid access",
             tier_solo: "paid access",
-            tier_teams: "paid access",
+            tier_teams: "Pro access",
             tier_free: "Free Preview"
           }[payload.tier] || "paid access";
           heading.textContent = `Thank you! You now have a ${friendlyTier}.`;

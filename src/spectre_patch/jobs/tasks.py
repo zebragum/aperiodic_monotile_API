@@ -90,6 +90,7 @@ def run_patch_job(
     storage_root: Path,
     base_limits: LimitsSettings,
     atlas_index: AtlasIndex | None = None,
+    require_atlas: bool = True,
 ) -> None:
 
     row = fetch_job(conn, job_id)
@@ -134,6 +135,7 @@ def run_patch_job(
             substitution_iterations=req.get("substitution_iterations"),
             atlas_index=atlas_index,
             force_substitution=bool(req.get("force_substitution", False)),
+            require_atlas=require_atlas,
         )
 
         nt = len(emitted)

@@ -104,6 +104,11 @@ def run_loop(
             )
         else:
             logger.info("atlas dir %s empty — falling back to live substitution", atlas_dir)
+            if os.environ.get("SPECTRE_PATCH_REQUIRE_ATLAS", "true").lower() in ("1", "true", "yes"):
+                logger.error(
+                    "SPECTRE_PATCH_REQUIRE_ATLAS is enabled but atlas dir %s has no cores",
+                    atlas_dir,
+                )
 
     sleep_for = poll_interval_sec
     drained = 0
@@ -133,6 +138,8 @@ def run_loop(
                 storage_root=storage_root,
                 base_limits=base_limits,
                 atlas_index=atlas_index,
+                require_atlas=os.environ.get("SPECTRE_PATCH_REQUIRE_ATLAS", "true").lower()
+                in ("1", "true", "yes"),
             )
         except Exception as e:
             logger.exception("run_patch_job %s crashed; marking failed", job_id)

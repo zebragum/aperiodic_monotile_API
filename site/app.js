@@ -430,7 +430,7 @@ async function initGenerator() {
     button.addEventListener("click", () => {
       const format = button.getAttribute("data-upgrade-format")?.toUpperCase() || "production";
       if (generatorStatus) {
-        generatorStatus.textContent = `${format} exports are paid production geometry. Start with Solo or Commercial access below.`;
+        generatorStatus.textContent = `${format} exports are paid production geometry. Start with Solo or Pro access below.`;
       }
       trackLaunchEvent("requested_format", {
         format: format.toLowerCase(),
@@ -626,7 +626,7 @@ for (const link of document.querySelectorAll(".sample-downloads a[download]")) {
 
 /**
  * Stripe Checkout — pass plan slug understood by POST /v1/billing/checkout
- * (solo_monthly, solo_lifetime, commercial_monthly, commercial_lifetime).
+ * (solo_monthly, solo_lifetime, pro_monthly, pro_lifetime).
  */
 function emailLooksValid(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

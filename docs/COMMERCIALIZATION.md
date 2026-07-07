@@ -1,5 +1,7 @@
 # Commercialization Plan
 
+> **Live pricing (site + API):** Free · Solo ($10/mo or $79 lifetime, 40k tiles/job) · Pro ($100/mo or $999 lifetime, 400k tiles/job). Internal paid-studio tier id remains `tier_teams`. Older Teams/Commercial figures below are historical notes.
+
 This project makes money by selling convenient, reliable access to generated
 Spectre monotile geometry. The API is the product; plugins and the website are
 the storefront.

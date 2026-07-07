@@ -47,6 +47,10 @@ services:
         value: "1"
       - key: SPECTRE_PATCH_WORKER_COUNT
         value: "2"
+      - key: SPECTRE_PATCH_REQUIRE_ATLAS
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "1"
       - key: SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS
         value: "2000"
       - key: SPECTRE_PATCH_QUEUE_MAX_ACTIVE_JOBS_PER_KEY
@@ -91,8 +95,8 @@ services:
       # Optional Stripe (set after creating Products → Prices):
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY ($10/month)
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME ($79 Solo lifetime)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY ($39/month Commercial)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY ($399 Commercial lifetime)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY ($100/month Pro)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY ($999 Pro lifetime)
       # Legacy Solo monthly fallback: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
         sync: false

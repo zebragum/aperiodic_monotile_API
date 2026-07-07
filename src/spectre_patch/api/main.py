@@ -54,7 +54,7 @@ from slowapi.util import get_remote_address
 from spectre_patch import PATCH_ENGINE_SEMVER
 from spectre_patch.api.schemas import PatchRequest
 from spectre_patch.atlas import AtlasIndex
-from spectre_patch.config_limits import FREE_TIER_RASTER_FORMATS, LimitsSettings
+from spectre_patch.config_limits import DEFAULT_TIER_RULES, FREE_TIER_RASTER_FORMATS, LimitsSettings, TIER_PUBLIC_LABELS
 from spectre_patch.jobs import repo as job_repo
 from spectre_patch.jobs.tasks import run_patch_job
 from spectre_patch.api.signed_urls import build_signed_relative_path
@@ -120,6 +120,9 @@ class ServiceSettings(BaseSettings):
 
     # Logging
     log_level: str = "INFO"
+
+    # Generation: production should serve only from pre-built atlas cores.
+    require_atlas: bool = True
 
     # Billing / self-serve signup. Leave unset to disable billing endpoints.
     public_site_url: str = "https://aperiodicgenerator.com"
@@ -472,6 +475,9 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
     ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
     ("solo_lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
+    ("pro_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
+    ("pro_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
+    # Legacy checkout slugs (still accepted for existing Stripe links).
     ("commercial_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
     ("commercial_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
 )
@@ -502,10 +508,10 @@ def _checkout_price_and_tier(
         plan = "solo_monthly"
     elif plan in ("lifetime", "life", "one_time", "onetime", "solo_lifetime"):
         plan = "solo_lifetime"
-    elif plan in ("commercial", "commercial_month", "commercial_monthly"):
-        plan = "commercial_monthly"
-    elif plan in ("commercial_lifetime", "commercial_life"):
-        plan = "commercial_lifetime"
+    elif plan in ("commercial", "commercial_month", "commercial_monthly", "pro", "pro_month", "pro_monthly"):
+        plan = "pro_monthly"
+    elif plan in ("commercial_lifetime", "commercial_life", "pro_lifetime", "pro_life"):
+        plan = "pro_lifetime"
 
     if not plan:
         plan = "solo_monthly"
@@ -618,11 +624,17 @@ def create_app() -> FastAPI:
         )
         if failed:
             logger.warning("failed %d stale running jobs at API startup", failed)
+        if cfg.require_atlas and not app.state.atlas.entries:
+            logger.error(
+                "SPECTRE_PATCH_REQUIRE_ATLAS is enabled but no atlas cores are loaded — "
+                "patch jobs will fail until atlas assets are bootstrapped"
+            )
         logger.info(
-            "API ready: atlas_cores=%d run_jobs_in_process=%s require_api_key=%s",
+            "API ready: atlas_cores=%d run_jobs_in_process=%s require_api_key=%s require_atlas=%s",
             len(app.state.atlas.entries),
             cfg.run_jobs_in_process,
             cfg.require_api_key,
+            cfg.require_atlas,
         )
         try:
             yield
@@ -996,8 +1008,17 @@ def create_app() -> FastAPI:
                 ],
             },
             "limits": lim.model_dump(),
+            "tier_catalog": {
+                tier_id: {
+                    "label": TIER_PUBLIC_LABELS.get(tier_id, tier_id),
+                    "max_tiles_per_job": int(rules.get("max_tiles_per_job", lim.max_tiles_per_job)),
+                    "max_wall_time_sec": float(rules.get("max_wall_time_sec", lim.max_wall_time_sec)),
+                }
+                for tier_id, rules in DEFAULT_TIER_RULES.items()
+            },
             "atlas": {
                 "available": bool(atlas_entries),
+                "required": bool(cfg.require_atlas),
                 "max_canonical_half_side": max_extent,
                 "max_canonical_full_side": max_extent * 2.0,
                 "cores": atlas_entries,
@@ -1008,6 +1029,7 @@ def create_app() -> FastAPI:
             ),
             "operational": {
                 "run_jobs_in_process": cfg.run_jobs_in_process,
+                "require_atlas": cfg.require_atlas,
                 "rate_limit_post_patch": cfg.rate_limit_post_patch,
                 "queue_max_active_jobs": int(cfg.queue_max_active_jobs),
                 "queue_max_active_jobs_per_key": int(cfg.queue_max_active_jobs_per_key),
@@ -1445,6 +1467,11 @@ def create_app() -> FastAPI:
                         f"disallowed: {', '.join(disallowed)}"
                     ),
                 )
+        if cfg.require_atlas and body.force_substitution:
+            raise HTTPException(
+                status_code=422,
+                detail="force_substitution is disabled; patches are served from pre-built atlas cores only",
+            )
         blob = _dump_request(body)
         size_class, estimated_seconds = _queue_profile(body, cfg)
         api_key_hash_value = getattr(request.state, "monotile_api_key_hash", None)
@@ -1472,6 +1499,7 @@ def create_app() -> FastAPI:
                 storage_root=Path(cfg.storage_dir),
                 base_limits=LimitsSettings(),
                 atlas_index=getattr(app.state, "atlas", None),
+                require_atlas=cfg.require_atlas,
             )
 
         out = {

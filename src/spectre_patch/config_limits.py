@@ -11,7 +11,7 @@ class LimitsSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="SPECTRE_PATCH_", env_file=(".env", "../.env"), extra="ignore")
 
     max_supertile_iterations: int = 26
-    max_tiles_per_job: int = 500_000
+    max_tiles_per_job: int = 400_000
     sync_max_tiles: int = 8000
 
     svg_max_tiles_hard: int = 25_000
@@ -34,25 +34,32 @@ class LimitsSettings(BaseSettings):
 FREE_TIER_RASTER_FORMATS: frozenset[str] = frozenset({"png", "jpg", "jpeg"})
 
 
+# Public marketing labels keyed by internal API tier id (``tier_teams`` = Pro plan).
+TIER_PUBLIC_LABELS: dict[str, str] = {
+    "tier_free": "Free",
+    "tier_day_pass": "Day Pass",
+    "tier_solo": "Solo",
+    "tier_teams": "Pro",
+}
+
 DEFAULT_TIER_RULES: dict[str, dict[str, int | float | bool]] = {
     "tier_free": {
         "max_tiles_per_job": 2500,
         "max_wall_time_sec": 120,
         "stl_instancing_required": False,
     },
-    # Paid Stripe SKUs — same production limits initially; differentiate later if needed.
     "tier_day_pass": {
-        "max_tiles_per_job": 500_000,
+        "max_tiles_per_job": 40_000,
         "max_wall_time_sec": 3600.0,
         "stl_instancing_required": False,
     },
     "tier_solo": {
-        "max_tiles_per_job": 500_000,
+        "max_tiles_per_job": 40_000,
         "max_wall_time_sec": 3600.0,
         "stl_instancing_required": False,
     },
     "tier_teams": {
-        "max_tiles_per_job": 500_000,
+        "max_tiles_per_job": 400_000,
         "max_wall_time_sec": 3600.0,
         "stl_instancing_required": False,
     },
