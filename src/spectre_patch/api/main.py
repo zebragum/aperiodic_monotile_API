@@ -612,6 +612,12 @@ def create_app() -> FastAPI:
         app.state.db = job_repo.connect(Path(cfg.db_path))
         app.state.atlas = AtlasIndex.load(Path(cfg.atlas_dir))
         app.state.boot_time = time.time()
+        limits = LimitsSettings()
+        failed = job_repo.fail_stale_running_jobs(
+            app.state.db, max_age_sec=float(limits.max_wall_time_sec)
+        )
+        if failed:
+            logger.warning("failed %d stale running jobs at API startup", failed)
         logger.info(
             "API ready: atlas_cores=%d run_jobs_in_process=%s require_api_key=%s",
             len(app.state.atlas.entries),
@@ -833,6 +839,53 @@ def create_app() -> FastAPI:
                 "boot_age_sec": time.time() - getattr(app.state, "boot_time", time.time()),
             }
         )
+
+    @app.post("/v1/admin/jobs/{job_id}/cancel", tags=["ops"], include_in_schema=False)
+    async def admin_cancel_job(
+        job_id: str,
+        _: None = Depends(_admin_token_dependency),
+    ) -> dict:
+        conn = app.state.db
+        row = job_repo.fetch_job(conn, job_id)
+        if row is None:
+            raise HTTPException(status_code=404, detail="job not found")
+        if row["status"] != "running":
+            return {
+                "job_id": job_id,
+                "status": row["status"],
+                "cancelled": False,
+                "detail": "job is not running",
+            }
+        ok = job_repo.cancel_running_job(
+            conn,
+            job_id,
+            reason="admin cancelled stuck running job",
+        )
+        if not ok:
+            row = job_repo.fetch_job(conn, job_id)
+            return {
+                "job_id": job_id,
+                "status": row["status"] if row else "unknown",
+                "cancelled": False,
+            }
+        return {"job_id": job_id, "status": "failed", "cancelled": True}
+
+    @app.post("/v1/admin/jobs/cancel-all-running", tags=["ops"], include_in_schema=False)
+    async def admin_cancel_all_running(
+        _: None = Depends(_admin_token_dependency),
+    ) -> dict:
+        conn = app.state.db
+        rows = conn.execute(
+            "SELECT id FROM patch_jobs WHERE status='running'"
+        ).fetchall()
+        cancelled = []
+        for row in rows:
+            jid = str(row["id"])
+            if job_repo.cancel_running_job(
+                conn, jid, reason="admin cancelled all stuck running jobs"
+            ):
+                cancelled.append(jid)
+        return {"cancelled": cancelled, "count": len(cancelled)}
 
     # --------------------------------------------------------- root ----
     @app.get("/", include_in_schema=False)

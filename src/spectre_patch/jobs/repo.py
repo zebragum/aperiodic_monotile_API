@@ -379,6 +379,43 @@ def mark_failed(conn: sqlite3.Connection, job_id: str, err: str) -> None:
     conn.commit()
 
 
+def cancel_running_job(conn: sqlite3.Connection, job_id: str, *, reason: str) -> bool:
+    """Mark a ``running`` job failed. Returns True if a row was updated."""
+
+    cur = conn.execute(
+        """
+        UPDATE patch_jobs
+           SET status='failed', error=?, finished_at=?, claimed_at=NULL, claimed_by=NULL
+         WHERE id=? AND status='running'
+        """,
+        (reason, time.time(), job_id),
+    )
+    conn.commit()
+    return int(cur.rowcount) > 0
+
+
+def fail_stale_running_jobs(conn: sqlite3.Connection, *, max_age_sec: float) -> int:
+    """Fail ``running`` jobs whose ``claimed_at`` is older than ``max_age_sec``."""
+
+    cutoff = time.time() - float(max_age_sec)
+    cur = conn.execute(
+        """
+        UPDATE patch_jobs
+           SET status='failed',
+               error='job exceeded max wall time while running',
+               finished_at=?,
+               claimed_at=NULL,
+               claimed_by=NULL
+         WHERE status='running'
+           AND claimed_at IS NOT NULL
+           AND claimed_at < ?
+        """,
+        (time.time(), cutoff),
+    )
+    conn.commit()
+    return int(cur.rowcount)
+
+
 def fetch_job(conn: sqlite3.Connection, job_id: str) -> sqlite3.Row | None:
     cur = conn.execute("SELECT * FROM patch_jobs WHERE id=?", (job_id,))
     return cur.fetchone()

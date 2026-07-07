@@ -87,6 +87,11 @@ def run_loop(
     requeued = job_repo.requeue_stale_running(conn, max_age_sec=requeue_after_sec)
     if requeued:
         logger.warning("requeued %d stale running jobs at startup", requeued)
+    failed_stale = job_repo.fail_stale_running_jobs(
+        conn, max_age_sec=float(base_limits.max_wall_time_sec)
+    )
+    if failed_stale:
+        logger.warning("failed %d stale running jobs at startup (wall time)", failed_stale)
 
     atlas_index: AtlasIndex | None = None
     if atlas_dir is not None:
@@ -110,6 +115,11 @@ def run_loop(
             time.sleep(min(max_idle_sleep_sec, sleep_for * 2.0))
             continue
         if row is None:
+            failed = job_repo.fail_stale_running_jobs(
+                conn, max_age_sec=float(base_limits.max_wall_time_sec)
+            )
+            if failed:
+                logger.warning("failed %d stale running jobs (wall time)", failed)
             time.sleep(sleep_for)
             sleep_for = min(max_idle_sleep_sec, sleep_for * 1.5)
             continue
