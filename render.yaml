@@ -114,3 +114,13 @@ services:
         sync: false
       - key: SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET
         sync: false
+      # Apparel shop (Printful). Set the API key in the Render Dashboard.
+      # Orders stay as Printful drafts until SHOP_AUTO_CONFIRM is "true".
+      - key: SPECTRE_PATCH_PRINTFUL_API_KEY
+        sync: false
+      - key: SPECTRE_PATCH_PRINTFUL_STORE_ID
+        sync: false
+      - key: SPECTRE_PATCH_SHOP_AUTO_CONFIRM
+        value: "false"
+      - key: SPECTRE_PATCH_SHOP_FLAT_SHIPPING_CENTS
+        value: "499"

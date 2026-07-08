@@ -105,6 +105,24 @@ CREATE INDEX IF NOT EXISTS ix_launch_events_name_created
   ON launch_events(event_name, created);
 CREATE INDEX IF NOT EXISTS ix_launch_events_format_created
   ON launch_events(format, created);
+CREATE TABLE IF NOT EXISTS shop_orders (
+  id TEXT PRIMARY KEY,
+  created REAL NOT NULL,
+  updated REAL NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending_payment',
+  email TEXT,
+  cart_json TEXT NOT NULL,
+  amount_total_cents INTEGER,
+  currency TEXT DEFAULT 'usd',
+  stripe_checkout_session_id TEXT UNIQUE,
+  printful_order_id TEXT,
+  printful_status TEXT,
+  error TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_shop_orders_created
+  ON shop_orders(created);
+CREATE INDEX IF NOT EXISTS ix_shop_orders_status
+  ON shop_orders(status, created);
 """
 
 
@@ -253,6 +271,26 @@ def _migrate(conn: sqlite3.Connection) -> None:
         "CREATE INDEX IF NOT EXISTS ix_launch_events_format_created"
         " ON launch_events(format, created)"
     )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS shop_orders (
+          id TEXT PRIMARY KEY,
+          created REAL NOT NULL,
+          updated REAL NOT NULL,
+          status TEXT NOT NULL DEFAULT 'pending_payment',
+          email TEXT,
+          cart_json TEXT NOT NULL,
+          amount_total_cents INTEGER,
+          currency TEXT DEFAULT 'usd',
+          stripe_checkout_session_id TEXT UNIQUE,
+          printful_order_id TEXT,
+          printful_status TEXT,
+          error TEXT
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_shop_orders_created ON shop_orders(created)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_shop_orders_status ON shop_orders(status, created)")
     conn.commit()
 
 
@@ -861,6 +899,99 @@ def record_launch_event(
     if commit:
         conn.commit()
     return event_id
+
+
+def create_shop_order(
+    conn: sqlite3.Connection,
+    *,
+    cart: list[dict],
+    email: str | None = None,
+) -> str:
+    """Persist a pending apparel order before Stripe Checkout starts.
+
+    The cart is stored server-side so the payment webhook never has to trust
+    client-supplied line items when submitting the Printful order.
+    """
+
+    order_id = str(uuid4())
+    now = time.time()
+    conn.execute(
+        """
+        INSERT INTO shop_orders(id, created, updated, status, email, cart_json)
+        VALUES(?,?,?,'pending_payment',?,?)
+        """,
+        (order_id, now, now, email, json.dumps(cart, sort_keys=True)),
+    )
+    conn.commit()
+    return order_id
+
+
+def fetch_shop_order(conn: sqlite3.Connection, order_id: str) -> sqlite3.Row | None:
+    cur = conn.execute("SELECT * FROM shop_orders WHERE id=? LIMIT 1", (order_id,))
+    return cur.fetchone()
+
+
+def find_shop_order_by_session(
+    conn: sqlite3.Connection,
+    stripe_checkout_session_id: str,
+) -> sqlite3.Row | None:
+    cur = conn.execute(
+        "SELECT * FROM shop_orders WHERE stripe_checkout_session_id=? LIMIT 1",
+        (stripe_checkout_session_id,),
+    )
+    return cur.fetchone()
+
+
+def update_shop_order(
+    conn: sqlite3.Connection,
+    order_id: str,
+    *,
+    status: str | None = None,
+    email: str | None = None,
+    amount_total_cents: int | None = None,
+    currency: str | None = None,
+    stripe_checkout_session_id: str | None = None,
+    printful_order_id: str | None = None,
+    printful_status: str | None = None,
+    error: str | None = None,
+) -> None:
+    sets = ["updated=?"]
+    params: list[object] = [time.time()]
+    for col, val in (
+        ("status", status),
+        ("email", email),
+        ("amount_total_cents", amount_total_cents),
+        ("currency", currency),
+        ("stripe_checkout_session_id", stripe_checkout_session_id),
+        ("printful_order_id", printful_order_id),
+        ("printful_status", printful_status),
+        ("error", error),
+    ):
+        if val is not None:
+            sets.append(f"{col}=?")
+            params.append(val)
+    params.append(order_id)
+    conn.execute(f"UPDATE shop_orders SET {', '.join(sets)} WHERE id=?", params)
+    conn.commit()
+
+
+def claim_shop_order_for_fulfillment(conn: sqlite3.Connection, order_id: str) -> bool:
+    """Atomically move a paid-but-unsubmitted order into ``fulfilling``.
+
+    Returns True only for the caller that wins the transition, so replayed
+    Stripe webhooks can never submit the same Printful order twice.
+    """
+
+    cur = conn.execute(
+        """
+        UPDATE shop_orders
+           SET status='fulfilling', updated=?
+         WHERE id=? AND status='pending_payment'
+        """,
+        (time.time(), order_id),
+    )
+    conn.commit()
+    return int(cur.rowcount) > 0
 
 
 def _event_counts(

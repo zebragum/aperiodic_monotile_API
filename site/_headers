@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; connect-src 'self' https://aperiodic-monotile-api.onrender.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; connect-src 'self' https://api.aperiodicgenerator.com https://aperiodic-monotile-api.onrender.com; img-src 'self' data: https://files.cdn.printful.com https://*.printful.com; script-src 'self' 'unsafe-inline'; style-src 'self'; form-action 'self'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shop Apparel | Aperiodic Monotile Generator</title>
+    <meta
+      name="description"
+      content="Apparel built around the aperiodic monotile, the single shape that tiles forever without repeating. Shirts and more, printed on demand and shipped in the US."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/apparel/" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="shop.css" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Shop Apparel | Aperiodic Monotile Generator" />
+    <meta
+      property="og:description"
+      content="Wear the shape that never repeats. Apparel built around the aperiodic monotile."
+    />
+    <meta property="og:image" content="https://aperiodicgenerator.com/apparel/logo.png" />
+    <meta property="og:url" content="https://aperiodicgenerator.com/apparel/" />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <header class="shop-header">
+      <a class="shop-brand" href="./" aria-label="Apparel shop home">
+        <img src="logo.png" alt="Two interlocking aperiodic monotiles" width="44" height="44" decoding="async" />
+        <span>Shop Apparel</span>
+      </a>
+      <nav class="shop-nav" aria-label="Shop navigation">
+        <a href="../">Generator</a>
+        <a href="../docs.html">API</a>
+      </nav>
+      <button class="cart-button" type="button" id="cartOpen" aria-label="Open cart">
+        Cart
+        <span class="cart-count" id="cartCount" hidden>0</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="shop-hero">
+        <h1>Wear the shape<br />that never repeats.</h1>
+        <p>
+          In 2023, mathematicians found a single tile that covers the plane forever without ever
+          repeating itself. It is called the aperiodic monotile. If your first thought was
+          "I would absolutely wear that", this page is for you.
+        </p>
+        <p class="shop-hero-note">Printed on demand. Shipped in the US.</p>
+      </section>
+
+      <section class="shop-grid-section" aria-label="Products">
+        <p class="shop-status" id="shopStatus">Loading the collection...</p>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <section class="shop-faq">
+        <h2>Good to know</h2>
+        <div class="faq-grid">
+          <article>
+            <h3>Print on demand</h3>
+            <p>Each piece is printed when you order it, so nothing sits in a warehouse and nothing gets wasted.</p>
+          </article>
+          <article>
+            <h3>Secure checkout</h3>
+            <p>Payment runs through Stripe. We never see or store your card details.</p>
+          </article>
+          <article>
+            <h3>The math is real</h3>
+            <p>
+              Every design is generated from true aperiodic tilings. Want to make your own?
+              <a href="../">Try the free generator</a>.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="cart-overlay" id="cartOverlay" hidden>
+      <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+        <div class="cart-drawer-head">
+          <h2>Your cart</h2>
+          <button class="icon-button" type="button" id="cartClose" aria-label="Close cart">&#10005;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-foot">
+          <div class="cart-subtotal">
+            <span>Subtotal</span>
+            <strong id="cartSubtotal">$0.00</strong>
+          </div>
+          <p class="cart-fineprint">Shipping is added at checkout. US addresses only for now.</p>
+          <button class="button-primary" type="button" id="checkoutButton" disabled>Checkout</button>
+          <p class="cart-status" id="cartStatus" aria-live="polite"></p>
+        </div>
+      </aside>
+    </div>
+
+    <dialog class="product-dialog" id="productDialog">
+      <button class="icon-button dialog-close" type="button" id="dialogClose" aria-label="Close">&#10005;</button>
+      <div class="product-dialog-body">
+        <div class="product-dialog-media">
+          <img id="dialogImage" alt="" decoding="async" />
+        </div>
+        <div class="product-dialog-info">
+          <h2 id="dialogTitle"></h2>
+          <p class="dialog-price" id="dialogPrice"></p>
+          <div class="option-group" id="colorGroup" hidden>
+            <span class="option-label">Color</span>
+            <div class="option-buttons" id="colorButtons"></div>
+          </div>
+          <div class="option-group" id="sizeGroup" hidden>
+            <span class="option-label">Size</span>
+            <div class="option-buttons" id="sizeButtons"></div>
+          </div>
+          <button class="button-primary" type="button" id="addToCart" disabled>Select options</button>
+          <p class="dialog-status" id="dialogStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="shop-footer">
+      <p>
+        <a href="../">Aperiodic Monotile Generator</a> &middot;
+        <a href="../terms.html">Terms</a> &middot;
+        <a href="../privacy.html">Privacy</a> &middot;
+        <a href="../refund.html">Refunds</a> &middot;
+        <a href="../contact.html">Contact</a>
+      </p>
+    </footer>
+
+    <script src="shop.js"></script>
+  </body>
+</html>

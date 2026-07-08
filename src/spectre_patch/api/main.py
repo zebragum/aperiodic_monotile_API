@@ -24,6 +24,7 @@ Operational endpoints
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 import json
@@ -44,7 +45,7 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Qu
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
-from pydantic import model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Self
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -52,6 +53,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from spectre_patch import PATCH_ENGINE_SEMVER
+from spectre_patch.api import shop as shop_api
 from spectre_patch.api.schemas import PatchRequest
 from spectre_patch.atlas import AtlasIndex
 from spectre_patch.config_limits import DEFAULT_TIER_RULES, FREE_TIER_RASTER_FORMATS, LimitsSettings, TIER_PUBLIC_LABELS
@@ -140,6 +142,24 @@ class ServiceSettings(BaseSettings):
     stripe_price_id_teams_monthly: str = ""
     stripe_price_id_teams_yearly: str = ""
     stripe_webhook_secret: str = ""
+
+    # Apparel shop (Printful). Leave printful_api_key unset to disable /v1/shop.
+    printful_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("SPECTRE_PATCH_PRINTFUL_API_KEY", "PRINTFUL_API_KEY"),
+    )
+    printful_store_id: str = Field(
+        default="",
+        validation_alias=AliasChoices("SPECTRE_PATCH_PRINTFUL_STORE_ID", "PRINTFUL_STORE_ID"),
+    )
+    """Only required for account-level Printful tokens; store-level tokens
+    already carry the store scope."""
+    shop_auto_confirm: bool = False
+    """When False (default) paid orders are created as Printful drafts for a
+    manual once-over in the dashboard. Set true for hands-off fulfillment."""
+    shop_flat_shipping_cents: int = 499
+    """Flat US shipping charged at Stripe Checkout. Set 0 for free shipping."""
+    rate_limit_shop_checkout: str = "10/minute"
 
     @model_validator(mode="after")
     def _default_cors_allow_origins(self) -> Self:
@@ -636,9 +656,24 @@ def create_app() -> FastAPI:
             cfg.require_api_key,
             cfg.require_atlas,
         )
+        warm_task = None
+        if cfg.printful_api_key:
+            # The cold catalog build makes ~1 Printful call per product; warm
+            # it in the background so the first shopper never eats that wait.
+            async def _warm_shop_catalog() -> None:
+                try:
+                    await shop_api.catalog_cache.products(
+                        cfg.printful_api_key, cfg.printful_store_id or None
+                    )
+                except Exception as e:
+                    logger.warning("shop catalog warmup failed (will retry on demand): %r", e)
+
+            warm_task = asyncio.create_task(_warm_shop_catalog())
         try:
             yield
         finally:
+            if warm_task is not None:
+                warm_task.cancel()
             with suppress(Exception):
                 app.state.db.close()
 
@@ -653,6 +688,7 @@ def create_app() -> FastAPI:
             {"name": "ops"},
             {"name": "capabilities"},
             {"name": "billing"},
+            {"name": "shop"},
             {"name": "jobs"},
         ],
         lifespan=lifespan,
@@ -1390,6 +1426,195 @@ def create_app() -> FastAPI:
         )
         return {"status": "created", "api_key": api_key, "tier": tier}
 
+    # --------------------------------------------------------- shop ----
+    def _shop_configured() -> bool:
+        return bool(cfg.printful_api_key and cfg.stripe_secret_key)
+
+    def _shop_order_public(row) -> dict:
+        return {
+            "order_id": row["id"],
+            "status": row["status"],
+            "printful_status": row["printful_status"],
+        }
+
+    async def _fulfill_shop_order_from_session(session: dict) -> dict:
+        """Submit the Printful order for a paid apparel checkout session.
+
+        Idempotent across Stripe webhook retries and the thank-you page
+        claim: only the caller that wins the ``pending_payment`` ->
+        ``fulfilling`` transition talks to Printful.
+        """
+
+        conn = app.state.db
+        metadata = session.get("metadata") or {}
+        shop_order_id = str(metadata.get("shop_order_id") or "").strip()
+        if not shop_order_id:
+            raise HTTPException(status_code=404, detail="This checkout session has no apparel order attached")
+        row = job_repo.fetch_shop_order(conn, shop_order_id)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Apparel order not found")
+        if row["status"] != "pending_payment":
+            return _shop_order_public(row)
+        if session.get("payment_status") != "paid":
+            raise HTTPException(status_code=402, detail="Checkout session is not paid")
+        if not job_repo.claim_shop_order_for_fulfillment(conn, shop_order_id):
+            return _shop_order_public(job_repo.fetch_shop_order(conn, shop_order_id))
+
+        customer = session.get("customer_details") or {}
+        job_repo.update_shop_order(
+            conn,
+            shop_order_id,
+            email=customer.get("email") or session.get("customer_email"),
+            amount_total_cents=session.get("amount_total"),
+            currency=session.get("currency"),
+        )
+        try:
+            recipient = shop_api.build_printful_recipient(session)
+            cart_lines = json.loads(row["cart_json"])
+            result = await shop_api.submit_printful_order(
+                cfg.printful_api_key,
+                cfg.printful_store_id or None,
+                shop_order_id=shop_order_id,
+                recipient=recipient,
+                cart_lines=cart_lines,
+                auto_confirm=bool(cfg.shop_auto_confirm),
+            )
+        except Exception as e:
+            # A paid order must never silently vanish: park it as
+            # fulfillment_failed so the admin export surfaces it.
+            job_repo.update_shop_order(
+                conn,
+                shop_order_id,
+                status="fulfillment_failed",
+                error=str(e)[:500],
+            )
+            logger.exception("shop: printful submission failed order=%s", shop_order_id)
+            raise
+        job_repo.update_shop_order(
+            conn,
+            shop_order_id,
+            status="submitted",
+            printful_order_id=str(result.get("id") or ""),
+            printful_status=str(result.get("status") or ""),
+        )
+        return _shop_order_public(job_repo.fetch_shop_order(conn, shop_order_id))
+
+    @app.get("/v1/shop/products", tags=["shop"])
+    async def shop_products() -> dict:
+        """Public storefront catalog built from Printful sync products."""
+
+        if not cfg.printful_api_key:
+            raise HTTPException(status_code=503, detail="The apparel shop is not configured yet")
+        products = await shop_api.catalog_cache.products(
+            cfg.printful_api_key,
+            cfg.printful_store_id or None,
+        )
+        return {"products": products, "count": len(products)}
+
+    @app.post("/v1/shop/checkout", tags=["shop"])
+    @limiter.limit(cfg.rate_limit_shop_checkout)
+    async def shop_checkout(request: Request) -> dict:
+        """Start Stripe Checkout for a validated apparel cart.
+
+        Body JSON: ``items`` — list of ``{sync_variant_id, quantity}``,
+        optional ``email``. Prices are resolved server-side from Printful.
+        """
+
+        if not _shop_configured():
+            raise HTTPException(status_code=503, detail="The apparel shop is not configured yet")
+        body = await _json_object_body(request)
+        email = str(body.get("email") or "").strip() or None
+        cart_lines = await shop_api.validate_cart(
+            cfg.printful_api_key,
+            cfg.printful_store_id or None,
+            body.get("items"),
+        )
+        conn = app.state.db
+        shop_order_id = job_repo.create_shop_order(conn, cart=cart_lines, email=email)
+
+        site = cfg.public_site_url.rstrip("/")
+        data: dict[str, str] = {
+            "mode": "payment",
+            "success_url": f"{site}/apparel/thanks.html?session_id={{CHECKOUT_SESSION_ID}}",
+            "cancel_url": f"{site}/apparel/",
+            "metadata[order_type]": "apparel",
+            "metadata[shop_order_id]": shop_order_id,
+            "shipping_address_collection[allowed_countries][0]": "US",
+            "allow_promotion_codes": "true",
+        }
+        for i, line in enumerate(cart_lines):
+            unit_cents = round(float(line["price"]) * 100)
+            data[f"line_items[{i}][quantity]"] = str(line["quantity"])
+            data[f"line_items[{i}][price_data][currency]"] = str(line["currency"]).lower()
+            data[f"line_items[{i}][price_data][unit_amount]"] = str(unit_cents)
+            data[f"line_items[{i}][price_data][product_data][name]"] = str(line["variant_name"])[:120]
+            if line.get("image"):
+                data[f"line_items[{i}][price_data][product_data][images][0]"] = str(line["image"])
+        if cfg.shop_flat_shipping_cents > 0:
+            data["shipping_options[0][shipping_rate_data][display_name]"] = "Standard shipping"
+            data["shipping_options[0][shipping_rate_data][type]"] = "fixed_amount"
+            data["shipping_options[0][shipping_rate_data][fixed_amount][amount]"] = str(
+                int(cfg.shop_flat_shipping_cents)
+            )
+            data["shipping_options[0][shipping_rate_data][fixed_amount][currency]"] = "usd"
+        if email:
+            data["customer_email"] = email
+
+        session = await _stripe_post(cfg, "checkout/sessions", data)
+        job_repo.update_shop_order(
+            conn,
+            shop_order_id,
+            stripe_checkout_session_id=str(session.get("id") or ""),
+        )
+        job_repo.record_launch_event(
+            conn,
+            "checkout_start",
+            source="shop",
+            plan="apparel",
+            metadata={
+                "session_id": session.get("id"),
+                "lines": len(cart_lines),
+                "amount_cents": shop_api.cart_amount_cents(cart_lines),
+            },
+        )
+        return {"checkout_url": session["url"], "session_id": session["id"], "order_id": shop_order_id}
+
+    @app.post("/v1/shop/claim", tags=["shop"])
+    @limiter.limit(cfg.rate_limit_billing_claim)
+    async def shop_claim(request: Request) -> dict:
+        """Thank-you page fallback: verify payment and fulfill if the webhook has not yet."""
+
+        if not _shop_configured():
+            raise HTTPException(status_code=503, detail="The apparel shop is not configured yet")
+        body = await _json_object_body(request)
+        session_id = str(body.get("session_id") or "").strip()
+        if not session_id.startswith("cs_"):
+            raise HTTPException(status_code=422, detail="session_id is required")
+        conn = app.state.db
+        row = job_repo.find_shop_order_by_session(conn, session_id)
+        if row is not None and row["status"] != "pending_payment":
+            return _shop_order_public(row)
+        session = await _stripe_get(cfg, f"checkout/sessions/{session_id}")
+        return await _fulfill_shop_order_from_session(session)
+
+    @app.get("/v1/admin/shop-orders", tags=["shop"], include_in_schema=False)
+    async def admin_shop_orders(
+        _: None = Depends(_admin_token_dependency),
+        limit: int = Query(default=200, ge=1, le=2000),
+    ) -> dict:
+        rows = app.state.db.execute(
+            """
+            SELECT id, created, updated, status, email, amount_total_cents,
+                   currency, stripe_checkout_session_id, printful_order_id,
+                   printful_status, error, cart_json
+              FROM shop_orders
+             ORDER BY created DESC
+             LIMIT ?
+            """,
+            (int(limit),),
+        ).fetchall()
+        return {"orders": [dict(row) for row in rows], "count": len(rows)}
+
     @app.post("/v1/billing/webhook", tags=["billing"], include_in_schema=False)
     async def stripe_webhook(request: Request) -> dict:
         if not cfg.stripe_webhook_secret:
@@ -1403,6 +1628,19 @@ def create_app() -> FastAPI:
             session = event.get("data", {}).get("object", {})
             session_id = str(session.get("id") or "")
             metadata = session.get("metadata") or {}
+            if metadata.get("order_type") == "apparel":
+                # Always ack apparel webhooks: a failed submission is parked
+                # as fulfillment_failed and retried via the thank-you page,
+                # not through Stripe redelivery storms.
+                try:
+                    await _fulfill_shop_order_from_session(session)
+                except Exception:
+                    logger.exception(
+                        "shop webhook: fulfillment failed session=%s order=%s",
+                        session_id,
+                        metadata.get("shop_order_id"),
+                    )
+                return {"received": True}
             tier = str(metadata.get("tier") or "").strip().lower()
             plan_slug = str(metadata.get("checkout_plan") or "").strip().lower()
             plan_tier, plan_ttl = _plan_defaults(plan_slug)

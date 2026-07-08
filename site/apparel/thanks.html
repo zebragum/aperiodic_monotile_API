@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Order confirmed | Shop Apparel</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="shop.css" />
+  </head>
+  <body>
+    <header class="shop-header">
+      <a class="shop-brand" href="./" aria-label="Apparel shop home">
+        <img src="logo.png" alt="Two interlocking aperiodic monotiles" width="44" height="44" decoding="async" />
+        <span>Shop Apparel</span>
+      </a>
+      <nav class="shop-nav" aria-label="Shop navigation">
+        <a href="../">Generator</a>
+      </nav>
+    </header>
+
+    <main class="thanks-main">
+      <img src="logo.png" alt="" decoding="async" />
+      <h1 id="thanksTitle">Locking in your order...</h1>
+      <p id="thanksBody">One moment while we confirm your payment and queue the print.</p>
+      <p class="thanks-status" id="thanksStatus" aria-live="polite"></p>
+      <div class="thanks-actions">
+        <a class="button-primary" href="./">Keep browsing</a>
+      </div>
+    </main>
+
+    <footer class="shop-footer">
+      <p>
+        <a href="../">Aperiodic Monotile Generator</a> &middot;
+        <a href="../refund.html">Refunds</a> &middot;
+        <a href="../contact.html">Contact</a>
+      </p>
+    </footer>
+
+    <script>
+      const apiBase = "https://api.aperiodicgenerator.com";
+      const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
+      const title = document.querySelector("#thanksTitle");
+      const body = document.querySelector("#thanksBody");
+      const status = document.querySelector("#thanksStatus");
+
+      async function apiFetch(path, options = {}) {
+        try {
+          return await fetch(`${apiBase}${path}`, options);
+        } catch (err) {
+          return fetch(`${apiFallbackBase}${path}`, options);
+        }
+      }
+
+      function showSuccess() {
+        title.textContent = "Order confirmed. Nice pick.";
+        body.textContent =
+          "Your piece is headed to the printer. A receipt from Stripe is in your inbox, and shipping updates will follow.";
+        status.textContent = "";
+        try {
+          window.localStorage.removeItem("monotile.shop.cart.v1");
+        } catch (_) {}
+      }
+
+      function showProblem(message) {
+        title.textContent = "Payment received.";
+        body.textContent =
+          "We logged your order and will get it to the printer. If you do not receive a shipping update within two business days, please reach out via the contact page.";
+        status.textContent = message || "";
+      }
+
+      async function claim() {
+        const sessionId = new URLSearchParams(window.location.search).get("session_id");
+        if (!sessionId) {
+          title.textContent = "Thanks for visiting.";
+          body.textContent = "No order was found on this page. Your cart is still saved in the shop.";
+          return;
+        }
+        try {
+          const response = await apiFetch("/v1/shop/claim", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_id: sessionId }),
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (response.ok && (payload.status === "submitted" || payload.status === "fulfilling")) {
+            showSuccess();
+            return;
+          }
+          showProblem();
+          console.error("claim response", response.status, payload);
+        } catch (err) {
+          showProblem();
+          console.error(err);
+        }
+      }
+
+      void claim();
+    </script>
+  </body>
+</html>

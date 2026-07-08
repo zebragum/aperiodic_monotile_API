@@ -37,6 +37,14 @@ SYNC_KEYS = [
     "SPECTRE_PATCH_STRIPE_WEBHOOK_SECRET",
     "SPECTRE_PATCH_PUBLIC_SITE_URL",
     "SPECTRE_PATCH_CORS_ALLOW_ORIGINS",
+    "SPECTRE_PATCH_PRINTFUL_API_KEY",
+]
+
+# Synced only when present in .env; absence is not an error.
+OPTIONAL_SYNC_KEYS = [
+    "SPECTRE_PATCH_PRINTFUL_STORE_ID",
+    "SPECTRE_PATCH_SHOP_AUTO_CONFIRM",
+    "SPECTRE_PATCH_SHOP_FLAT_SHIPPING_CENTS",
 ]
 
 
@@ -54,6 +62,10 @@ def parse_env() -> dict[str, str]:
 
     if not data.get("SPECTRE_PATCH_STRIPE_SECRET_KEY") and data.get("STRIPE_API_SECRET_KEY"):
         data["SPECTRE_PATCH_STRIPE_SECRET_KEY"] = data["STRIPE_API_SECRET_KEY"]
+    if not data.get("SPECTRE_PATCH_PRINTFUL_API_KEY") and data.get("PRINTFUL_API_KEY"):
+        data["SPECTRE_PATCH_PRINTFUL_API_KEY"] = data["PRINTFUL_API_KEY"]
+    if not data.get("SPECTRE_PATCH_PRINTFUL_STORE_ID") and data.get("PRINTFUL_STORE_ID"):
+        data["SPECTRE_PATCH_PRINTFUL_STORE_ID"] = data["PRINTFUL_STORE_ID"]
     if not data.get("SPECTRE_PATCH_CORS_ALLOW_ORIGINS") and data.get("SPECTRE_PATCH_PUBLIC_SITE_URL"):
         data["SPECTRE_PATCH_CORS_ALLOW_ORIGINS"] = data["SPECTRE_PATCH_PUBLIC_SITE_URL"]
 
@@ -104,6 +116,9 @@ def main() -> int:
             env_vars[str(key)] = str(env_var.get("value", ""))
     for key in SYNC_KEYS:
         env_vars[key] = env[key]
+    for key in OPTIONAL_SYNC_KEYS:
+        if env.get(key):
+            env_vars[key] = env[key]
 
     render_request(
         api_key,
