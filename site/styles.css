@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Ojuju:wght@200..800&display=swap");
-
 :root {
   color-scheme: dark;
   --bg: #090b13;
@@ -28,8 +26,8 @@ body {
     radial-gradient(circle at 90% 10%, rgba(255, 209, 102, 0.12), transparent 24rem),
     var(--bg);
   color: var(--text);
-  font-family: "Ojuju", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 500;
+  font-family: "Century Gothic", CenturyGothic, "URW Gothic L", "Segoe UI", Arial, sans-serif;
+  font-weight: 400;
 }
 
 a {
@@ -890,8 +888,8 @@ body {
     linear-gradient(180deg, rgba(240, 112, 72, 0.08), transparent 18rem),
     linear-gradient(90deg, rgba(244, 200, 106, 0.035), transparent 34rem),
     var(--bg);
-  font-family: "Ojuju", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 500;
+  font-family: "Century Gothic", CenturyGothic, "URW Gothic L", "Segoe UI", Arial, sans-serif;
+  font-weight: 400;
   font-size: 16px;
   line-height: 1.55;
 }
