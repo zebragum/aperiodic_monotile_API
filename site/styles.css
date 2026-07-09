@@ -1574,6 +1574,23 @@ pre {
   object-fit: contain;
 }
 
+.demo-video-wide {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 0.42rem;
+  background: #05060a;
+  box-shadow: var(--shadow);
+}
+
+.demo-video-wide video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #05060a;
+}
+
 .screenshot-card {
   overflow: hidden;
   margin: 0;
