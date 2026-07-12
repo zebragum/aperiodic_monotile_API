@@ -81,7 +81,7 @@ ARTICLES: list[Article] = [
   <li>{link("spectre-tile", "Spectre tile")} — the strictly chiral monotile discovered in 2023</li>
   <li>{link("hat-tile", "Hat tile")} — the first aperiodic monotile, March 2023</li>
   <li>{link("substitution-tiling", "Substitution tiling")} — how finite patches grow into infinite tilings</li>
-  <li>{link("moire-and-aliasing", "Moiré and aliasing")} — why non-repeating layouts help graphics pipelines</li>
+  <li>{link("moire-and-aliasing", "Moiré and aliasing")} — layered arrays, phason rivers, and moiré navigation</li>
 </ul>
 """,
             ),
@@ -335,13 +335,15 @@ ARTICLES: list[Article] = [
     Article(
         slug="moire-and-aliasing",
         title="Moiré and aliasing",
-        summary="How regular repetition creates visible artifacts — and why aperiodic layouts are an alternative.",
-        categories=["Concepts", "Computer graphics"],
-        see_also=["computer-graphics", "signal-processing"],
+        summary="Layered aperiodic arrays produce moiré landscapes, phason rivers, and a navigable perceived 3D space.",
+        categories=["Concepts", "Computer graphics", "Research frontiers"],
+        see_also=["computer-graphics", "signal-processing", "aperiodic-monotile"],
         infobox={
-            "Problem": "Beats, seams, texture tiling",
+            "Core effect": "Beat interference between layered arrays",
+            "Controls": "Translation (tx, ty), rotation",
+            "Near-alignment": "Rosette cells, depth-like navigation",
+            "Large rotation": "Phason rivers (open research)",
             "Regular grids": "High risk of moiré",
-            "Aperiodic layouts": "Deterministic, non-repeating",
         },
         sections=[
             Section(
@@ -359,6 +361,104 @@ ARTICLES: list[Article] = [
 """,
             ),
             Section(
+                "Layered arrays and beat patterns",
+                2,
+                """
+<p>
+  Moiré is not only a sampling accident. Take one aperiodic monotile array and <strong>layer a second copy
+  on top</strong> — same seed, same tile scale, but offset by a small transform: a translation
+  (<em>tx</em>, <em>ty</em>) and/or a rotation θ away from perfect alignment. Where the two structured
+  layers agree locally, contrast cancels; where they disagree, macroscopic bright and dark regions appear.
+  The result is a <strong>new visual field</strong> that was not present in either layer alone.
+</p>
+<p>
+  Because both layers are aperiodic, the beat pattern does not settle into a simple repeating wallpaper.
+  Instead it produces large-scale structures — cells, channels, and gradients — whose topology changes
+  smoothly as you adjust the overlay parameters. The same deterministic patch can therefore encode a
+  family of related moiré images, all reproducible from the same tile data.
+</p>
+""",
+            ),
+            Section(
+                "Near-alignment: rosettes and perceived depth",
+                3,
+                """
+<p>
+  At very small rotations from pure alignment — on the order of <strong>one degree</strong> — the
+  interference often organizes into radial <strong>rosette</strong> or cell-like structures: a bright or
+  dark focal center surrounded by lobes that read almost like flowers or lenses. These are not random
+  halos; they are the macroscopic signature of microscopic tile disagreement accumulating across the patch.
+</p>
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/aperiodicmoire-web.png" alt="Aperiodic moiré at 1° rotation: radial rosette cells emerging from layered monotile arrays" width="1400" height="1400" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>1° rotation.</strong> Two aperiodic monotile arrays overlaid with a 1° twist. Near-alignment
+    produces large rosette cells with a strong central focal point — a moiré landscape that feels
+    dimensional even though it is a flat 2D beat pattern.
+    <a href="../../assets/research/wiki/aperiodicmoire.png">Full resolution</a>
+  </figcaption>
+</figure>
+<p>
+  Observers often describe this field as a <strong>navigable 3D space</strong>: nudging <em>tx</em> and
+  <em>ty</em> pans across the moiré terrain, while small changes in rotation θ act like a zoom or
+  dolly — the rosette cells expand, contract, and hand off to neighbors without ever repeating on a
+  simple grid. The perceived depth is an optical effect, not true geometry, but it is stable and
+  controllable — which makes it interesting for interfaces, data visualization, and spatial encoding.
+</p>
+""",
+            ),
+            Section(
+                "Phason rivers",
+                2,
+                """
+<p>
+  At larger rotation offsets the beat field changes character. For example, at <strong>60°</strong> between
+  layers, interference can organize into winding, channel-like structures — <strong>phason rivers</strong>
+  — that flow in broad strokes across the patch. In quasicrystal physics, a <em>phason</em> is a type of
+  structural rearrangement; here the term is used informally for these moiré channels: coherent pathways
+  where the two arrays stay in partial registry over long distances before shearing apart.
+</p>
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/aperiodicrivers-web.png" alt="Phason rivers at 60° rotation: winding moiré channels across layered aperiodic arrays" width="1400" height="1400" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>60° rotation.</strong> The same layered arrays with a 60° relative twist. Interference
+    concentrates into jagged, river-like channels — phason rivers — that cross the field in broad
+    horizontal and vertical strokes.
+    <a href="../../assets/research/wiki/aperiodicrivers.png">Full resolution</a>
+  </figcaption>
+</figure>
+<p>
+  Unlike the near-aligned rosettes, phason rivers are <strong>not intuitive</strong>. Their paths, branch
+  points, and sensitivity to tiny parameter changes are not yet well characterized for aperiodic monotile
+  arrays. Which rotations produce stable rivers? Do rivers form a navigable network or fragment under
+  translation? Can they encode data or serve as routing channels? These questions are <strong>open research
+  frontiers</strong> — worthy of systematic study now that monotile patches can be generated and overlaid
+  reproducibly.
+</p>
+""",
+            ),
+            Section(
+                "Navigation as a control space",
+                2,
+                """
+<p>
+  Treat the overlay parameters as a three-degree-of-freedom control space:
+</p>
+<ul>
+  <li><strong>tx, ty</strong> — translate the upper layer; the moiré field scrolls, revealing new river
+  segments or rosette cells.</li>
+  <li><strong>Rotation θ</strong> — twist the upper layer; at small θ the effect reads as zoom or
+  magnification through the cell structure; at larger θ the topology shifts toward river networks.</li>
+</ul>
+<p>
+  Because the underlying arrays are deterministic, every position in (<em>tx</em>, <em>ty</em>, θ) maps to
+  a unique, reproducible moiré image. That makes the beat field a candidate for <strong>indexed visual
+  storage</strong>, generative art, and experimental interfaces where a user explores a perceived 3D
+  landscape by steering three continuous parameters.
+</p>
+""",
+            ),
+            Section(
                 "Where it shows up",
                 2,
                 f"""
@@ -366,8 +466,9 @@ ARTICLES: list[Article] = [
   <li>Texture mapping, decals, hatching, and stippling in real-time graphics</li>
   <li>Procedural scatter and environment layout in Blender or game engines</li>
   <li>Print and fabrication pipelines where halftone grids interact with material grain</li>
+  <li>Layered aperiodic moiré as a research substrate for phason rivers and spatial encoding</li>
 </ul>
-<p>See {link("computer-graphics")} and {link("signal-processing")} for workflow detail.</p>
+<p>See {link("computer-graphics", "Computer graphics")} and {link("signal-processing", "Signal processing and imaging")} for workflow detail.</p>
 """,
             ),
         ],

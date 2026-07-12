@@ -370,6 +370,35 @@
   font-size: 0.86rem;
 }
 
+.wiki-figure {
+  margin: 1.5rem 0 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  overflow: hidden;
+  background: rgba(9, 11, 19, 0.65);
+  box-shadow: var(--shadow);
+}
+
+.wiki-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wiki-figure figcaption {
+  margin: 0;
+  padding: 0.85rem 1rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+}
+
+.wiki-figure figcaption a {
+  color: var(--accent-2);
+  white-space: nowrap;
+}
+
 .research-badge {
   display: inline-block;
   margin-left: 0.35rem;

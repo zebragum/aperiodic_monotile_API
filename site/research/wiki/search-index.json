@@ -46,10 +46,11 @@
   {
     "slug": "moire-and-aliasing",
     "title": "Moir\u00e9 and aliasing",
-    "summary": "How regular repetition creates visible artifacts \u2014 and why aperiodic layouts are an alternative.",
+    "summary": "Layered aperiodic arrays produce moir\u00e9 landscapes, phason rivers, and a navigable perceived 3D space.",
     "categories": [
       "Concepts",
-      "Computer graphics"
+      "Computer graphics",
+      "Research frontiers"
     ]
   },
   {
