@@ -17,6 +17,8 @@ BASE = "https://aperiodicgenerator.com/research/wiki"
 
 
 def link(slug: str, label: str | None = None) -> str:
+    if label is None and slug in ARTICLE_BY_SLUG:
+        label = ARTICLE_BY_SLUG[slug].title
     text = label or slug.replace("-", " ").title()
     if slug == "index":
         href = "index.html"
