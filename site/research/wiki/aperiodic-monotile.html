@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aperiodic monotile | Research Wiki | Aperiodic Monotile Generator</title>
+    <meta name="description" content="A single shape that tiles the plane without any repeating translational pattern." />
+    <link rel="canonical" href="https://aperiodicgenerator.com/research/wiki/aperiodic-monotile.html" />
+    <meta name="robots" content="index,follow" />
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Aperiodic Monotile Generator</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../index.html">Home</a>
+        <a href="../../docs.html">Docs</a>
+        <a href="../index.html" aria-current="page">Research</a>
+        <a href="index.html">Wiki</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button secondary small" href="../../docs.html#access">Get Access</a>
+      </div>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li class="is-active"><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire-and-aliasing.html">Moiré and aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Aperiodic monotile</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Aperiodic monotile</h1>
+          <p class="wiki-tagline">A single shape that tiles the plane without any repeating translational pattern.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">Definition</a></li>
+<li><a href="#section-1">Ordered without repeating</a></li>
+<li><a href="#section-2">Weak vs strict chirality</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Aperiodic monotile</p>
+  <table><tr><th>Also called</th><td>Einstein problem solution, monotile</td></tr><tr><th>Dimension</th><td>Planar (2D)</td></tr><tr><th>Key property</th><td>Tiles the plane, never periodically</td></tr><tr><th>First example</th><td>Hat tile (2023)</td></tr><tr><th>Chiral example</th><td>Spectre tile (2023)</td></tr></table>
+</aside>
+
+          <h2 id="section-0">Definition</h2>
+<p>
+  An <strong>aperiodic monotile</strong> is a single closed topological disk in the plane whose congruent copies
+  can tile the entire plane, but <em>only</em> in non-periodic arrangements. Unlike Penrose kite-and-dart sets
+  or other multi-tile aperiodic systems, a monotile uses one shape — though reflected copies may be required
+  depending on the tile's chirality.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+</p>
+<p>
+  The long-standing <strong>einstein problem</strong> asked whether such a shape exists. David Smith, Joseph
+  Samuel Myers, Craig S. Kaplan, and Chaim Goodman-Strauss answered it in March 2023 with the Hat tile,
+  followed months later by the strictly chiral Spectre tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+</p>
+<h2 id="section-1">Ordered without repeating</h2>
+<p>
+  Aperiodic tilings are not random. They are highly structured: every tile sits in a deterministic hierarchy
+  produced by substitution rules. Patches can be regenerated from a seed, scaled, and exported with stable
+  tile IDs — making them reproducible geometric datasets, not noise.
+</p>
+<p>
+  That combination — global order, local variety, no translational repetition — is what makes monotile
+  geometry interesting for graphics, materials, education, and algorithmic research.
+</p>
+<h2 id="section-2">Weak vs strict chirality</h2>
+<p>
+  The Hat tile is asymmetric: every tiling mixes unreflected and reflected copies. Some authors treat this
+  as a two-shape system; standard tiling literature counts reflected congruent copies as the same tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+</p>
+<p>
+  The Spectre tile is a <strong>strictly chiral</strong> aperiodic monotile: it admits only homochiral
+  non-periodic tilings, even when reflections are allowed. That distinction matters for physical fabrication
+  where mirrored parts are costly or impossible.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
+</p>
+<h2>See also</h2><p><a href="spectre-tile.html">Spectre tile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-concepts">Concepts</a> · <a href="index.html#category-mathematics">Mathematics</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,143 @@
+[
+  {
+    "slug": "index",
+    "title": "Main Page",
+    "summary": "The aperiodic monotile research wiki \u2014 concepts, mathematics, and application frontiers.",
+    "categories": [
+      "Research"
+    ]
+  },
+  {
+    "slug": "aperiodic-monotile",
+    "title": "Aperiodic monotile",
+    "summary": "A single shape that tiles the plane without any repeating translational pattern.",
+    "categories": [
+      "Concepts",
+      "Mathematics"
+    ]
+  },
+  {
+    "slug": "spectre-tile",
+    "title": "Spectre tile",
+    "summary": "A strictly chiral aperiodic monotile, also known as Tile(1,1), discovered in 2023.",
+    "categories": [
+      "Mathematics",
+      "Concepts"
+    ]
+  },
+  {
+    "slug": "hat-tile",
+    "title": "Hat tile",
+    "summary": "The first aperiodic monotile, an asymmetric 13-gon announced in March 2023.",
+    "categories": [
+      "Mathematics",
+      "Concepts"
+    ]
+  },
+  {
+    "slug": "substitution-tiling",
+    "title": "Substitution tiling",
+    "summary": "A hierarchical method that refines metatiles to produce arbitrarily large aperiodic patches.",
+    "categories": [
+      "Mathematics",
+      "Concepts"
+    ]
+  },
+  {
+    "slug": "moire-and-aliasing",
+    "title": "Moir\u00e9 and aliasing",
+    "summary": "How regular repetition creates visible artifacts \u2014 and why aperiodic layouts are an alternative.",
+    "categories": [
+      "Concepts",
+      "Computer graphics"
+    ]
+  },
+  {
+    "slug": "computer-graphics",
+    "title": "Computer graphics",
+    "summary": "Using aperiodic monotile patches for scenes, textures, meshes, and sampling studies.",
+    "categories": [
+      "Applications"
+    ]
+  },
+  {
+    "slug": "design-and-architecture",
+    "title": "Design, art, and architecture",
+    "summary": "Repeat-free ornamental surfaces, facades, textiles, and spatial studies.",
+    "categories": [
+      "Applications"
+    ]
+  },
+  {
+    "slug": "materials-and-fabrication",
+    "title": "Materials and fabrication",
+    "summary": "From relief panels to STL toolpaths \u2014 one patch, many physical outputs.",
+    "categories": [
+      "Applications"
+    ]
+  },
+  {
+    "slug": "education",
+    "title": "Education",
+    "summary": "Teaching a fresh mathematical discovery through manipulable patches and physical models.",
+    "categories": [
+      "Applications"
+    ]
+  },
+  {
+    "slug": "signal-processing",
+    "title": "Signal processing and imaging",
+    "summary": "Deterministic non-periodic sampling layouts for reconstruction and sensor geometry.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "waves-and-photonics",
+    "title": "Waves, acoustics, and photonics",
+    "summary": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "materials-science",
+    "title": "Materials science and fluids",
+    "summary": "Metamaterials, lattices, electrodes, exchangers, and porous media candidates.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "robotics-and-mobility",
+    "title": "Robotics and mobility",
+    "summary": "Deterministic test surfaces, navigation substrates, and spatial indexing for experiments.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "biology-and-medicine",
+    "title": "Biology and medicine",
+    "summary": "Geometric scaffolds for packing, growth, folding, and implant design studies.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "algorithms-and-machine-learning",
+    "title": "Algorithms and machine learning",
+    "summary": "Structured non-repeating benchmark geometry for spatial algorithms and geometric ML.",
+    "categories": [
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "bibliography",
+    "title": "Bibliography",
+    "summary": "Selected references cited across the wiki.",
+    "categories": [
+      "References"
+    ]
+  }
+]
