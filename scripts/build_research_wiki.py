@@ -76,6 +76,97 @@ FIG_SPECTRE_PATCH = f"""
 </figure>
 """
 
+
+def fig(asset: str, alt: str, caption: str, *, width: int | None = None, extra_class: str = "") -> str:
+    klass = "wiki-figure"
+    if extra_class:
+        klass += f" {extra_class}"
+    width_attr = f' width="{width}"' if width else ""
+    return f"""
+<figure class="{klass}">
+  <img src="{ASSET}/{html.escape(asset)}" alt="{html.escape(alt)}"{width_attr} loading="lazy" decoding="async" />
+  <figcaption>{caption}</figcaption>
+</figure>
+"""
+
+
+FIG_CG_SUNSET = fig(
+    "computer-graphics-sunset.jpg",
+    "Aperiodic monotile floor at sunset with terracotta tones stretching to the horizon",
+    "<strong>Environmental scatter.</strong> Eye-height procedural ground plane — aperiodic monotile "
+    "instances with warm PBR materials, useful for scenes that need ordered but non-repeating structure.",
+    width=1400,
+)
+FIG_CG_BRASS = fig(
+    "computer-graphics-brass.jpg",
+    "Brass aperiodic monotile relief panel with beveled edges and dramatic lighting",
+    "<strong>Material and lighting study.</strong> Instanced monotile meshes with metallic shading — "
+    "the same patch data drives real-time previews, offline renders, and exported GLB assets.",
+    width=1400,
+)
+FIG_DESIGN_FACADE = fig(
+    "design-architecture-facade.jpg",
+    "Warm terracotta aperiodic tiling used as an architectural ground and facade study",
+    "<strong>Ornamental surface.</strong> Repeat-free geometry that reads as intentional cladding — "
+    "scalable from vector masks to fabricated panels.",
+    width=1400,
+)
+FIG_FABRICATION_PANEL = fig(
+    "materials-fabrication-panel.jpg",
+    "Brass relief panel of aperiodic monotile tiles suitable for fabrication reference",
+    "<strong>Physical output reference.</strong> The same patch exports to STL or GLB for molds, relief "
+    "panels, CNC toolpaths, and printed textures.",
+    width=1400,
+)
+FIG_EDUCATION = fig(
+    "education-colorful-patch.png",
+    "Colorful labeled aperiodic monotile patch for classroom demonstration",
+    "<strong>Classroom patch.</strong> Deterministic color per tile — ideal for posters, museum panels, "
+    "and puzzles that show order without translational repetition.",
+    width=1400,
+)
+FIG_SIGNAL = fig(
+    "signal-processing-sampling.png",
+    "Tile centroids as a deterministic non-periodic sampling layout",
+    "<strong>Sampling layout.</strong> Each tile centroid is a reproducible sample point — an alternative "
+    "to regular grids and jittered noise for imaging and sensor-array experiments.",
+    width=1400,
+)
+FIG_WAVES = fig(
+    "waves-photonics-diffraction.png",
+    "Aperiodic tile array styled for wave and diffraction studies",
+    "<strong>Simulation-ready boundaries.</strong> Polygonal cells for comparing how periodic, random, "
+    "and aperiodic scatterers interact with waves.",
+    width=1400,
+)
+FIG_MATERIALS_SCIENCE = fig(
+    "materials-science-lattice.png",
+    "Metallic aperiodic lattice visualization for metamaterial studies",
+    "<strong>Lattice candidate.</strong> Controlled non-periodic pore and strut layouts for metamaterials, "
+    "electrodes, exchangers, and porous-media experiments.",
+    width=1400,
+)
+FIG_ROBOTICS = fig(
+    "robotics-terrain-array.png",
+    "Height-mapped aperiodic tile array as a repeatable navigation test surface",
+    "<strong>Test surface.</strong> A deterministic terrain-like substrate for motion planning, SLAM, "
+    "and texture-based navigation experiments.",
+    width=1400,
+)
+FIG_BIOLOGY = fig(
+    "biology-scaffold-patch.png",
+    "Soft pastel aperiodic packing pattern as a geometric scaffold",
+    "<strong>Geometric scaffold.</strong> Clean packing layouts for exploring cellular, branching, and "
+    "surface-constrained design questions — not biological models by default.",
+    width=1400,
+)
+FIG_ALGORITHMS = fig(
+    "algorithms-graph-patch.png",
+    "Tile adjacency graph overlaid on an aperiodic monotile patch",
+    "<strong>Benchmark graph.</strong> Stable tile IDs and neighbor structure for spatial indexing, "
+    "embeddings, and geometric machine-learning experiments.",
+    width=1400,
+)
 @dataclass
 class Section:
     heading: str
@@ -540,6 +631,8 @@ ARTICLES: list[Article] = [
 <p>Replace obvious grid structure with deterministic non-repeating geometry for scenes, masks, meshes,
 samplers, and materials. Aperiodic layouts are especially interesting when repetition causes aliasing,
 moiré, texture tiling, or visible procedural seams.{cite(4)}{cite(9)}</p>
+{FIG_CG_SUNSET}
+{FIG_CG_BRASS}
 <ul><li>Procedural worlds and environment scatter</li>
 <li>Texture mapping, decals, hatching, stippling, and anti-moiré patterns</li>
 <li>Meshes, subdivision experiments, ray/path tracing layouts, and sampling studies</li></ul>
@@ -557,6 +650,7 @@ moiré, texture tiling, or visible procedural seams.{cite(4)}{cite(9)}</p>
             Section("Overview", 2, f"""
 <p>Make surfaces that feel intentional without becoming wallpaper. Designers can fill any region with
 geometry that stays coherent across scale, works as a vector asset, and can become a real fabricated object.{cite(1)}{cite(3)}{cite(11)}</p>
+{FIG_DESIGN_FACADE}
 <ul><li>Generative sculpture, ornamental tilings, impossible forms, and visual illusions</li>
 <li>Facades, screens, ventilation geometry, textiles, inlays, and packaging</li>
 <li>Lightweight shells, tensile structures, and spatial studies for built environments</li></ul>
@@ -574,6 +668,7 @@ geometry that stays coherent across scale, works as a vector asset, and can beco
             Section("Overview", 2, f"""
 <p>Export the same region as SVG, STL, glTF, CSV, or JSON. One design can become a relief panel, a printed
 texture, an instanced mesh, or a dataset of tile transforms.{cite(1)}{cite(6)}{cite(10)}</p>
+{FIG_FABRICATION_PANEL}
 <ul><li>Toolpath and infill experiments</li>
 <li>Support-free printing studies, topology optimization, and surface finishing</li>
 <li>Architectural panels, molds, product surfaces, screens, and repeat-free decoration</li></ul>
@@ -591,6 +686,7 @@ texture, an instanced mesh, or a dataset of tile transforms.{cite(1)}{cite(6)}{c
             Section("Overview", 2, f"""
 <p>Aperiodic monotiles are a rare chance to teach a fresh mathematical discovery through objects people can
 manipulate. Use generated patches for explainers, workshops, classroom demos, and physical models.{cite(1)}{cite(3)}{cite(4)}</p>
+{FIG_EDUCATION}
 <ul><li>Interactive geometry engines</li><li>VR exploration</li>
 <li>Posters, exhibits, puzzles, and physical models of abstract spaces</li></ul>
 """),
@@ -608,6 +704,7 @@ manipulate. Use generated patches for explainers, workshops, classroom demos, an
 <p>Regular sampling can create artifacts; random sampling can be hard to control. Aperiodic layouts offer
 another family of deterministic patterns to test against reconstruction, denoising, compression, and imaging
 pipelines.{cite(4)}{cite(2)}</p>
+{FIG_SIGNAL}
 <ul><li>Sampling theory, compression, denoising, and reconstruction</li>
 <li>Radar, sonar, MRI, CT, and sensor-array geometry experiments</li>
 <li>Comparisons with grids, jittered samples, blue-noise patterns, and quasi-periodic layouts</li></ul>
@@ -625,6 +722,7 @@ pipelines.{cite(4)}{cite(2)}</p>
             Section("Overview", 2, f"""
 <p>When waves meet structure, geometry matters. Non-repeating tiled surfaces can become candidate layouts
 for scattering, focusing, diffusion, diffraction, beam shaping, and waveguide studies.{cite(2)}{cite(1)}</p>
+{FIG_WAVES}
 <ul><li>Acoustic panels, speaker geometry, concert halls, ultrasound focusing, and acoustic lenses</li>
 <li>Lens design, diffraction control, waveguides, holography, beam shaping, and photonic layouts</li>
 <li>Simulation-ready polygons for comparing periodic, random, and aperiodic boundaries</li></ul>
@@ -643,6 +741,7 @@ for scattering, focusing, diffusion, diffraction, beam shaping, and waveguide st
 <p>Engineers often tune performance by changing geometry: pores, channels, lattices, surfaces, electrodes,
 exchangers, and support structures. Aperiodic arrays give researchers a new way to produce controlled
 non-periodic candidates at many scales.{cite(2)}{cite(5)}{cite(8)}</p>
+{FIG_MATERIALS_SCIENCE}
 <ul><li>Metamaterials, auxetic lattices, acoustic cloaking, photonic crystals, and programmable matter</li>
 <li>Battery electrodes, fuel cells, solar concentrators, thermal exchangers, and porous media</li>
 <li>Drag reduction, turbulence control, microfluidics, blood-flow modeling, and surface textures</li></ul>
@@ -660,6 +759,7 @@ non-periodic candidates at many scales.{cite(2)}{cite(5)}{cite(8)}</p>
             Section("Overview", 2, f"""
 <p>Robots and vehicles interact with surfaces, fields, and maps. A deterministic aperiodic layout can
 become a repeatable test surface, navigation substrate, grasping texture, or spatial index for experiments.{cite(10)}{cite(8)}</p>
+{FIG_ROBOTICS}
 <ul><li>Motion planning, terrain navigation, SLAM, geodesics, spherical grids, and drone path planning</li>
 <li>Grasping surfaces, soft robotics, deployable structures, tire tread, road surfaces, and rail geometry</li>
 <li>Aerodynamic surfaces, heat shields, turbine blades, deployable antennas, and folding structures</li></ul>
@@ -678,6 +778,7 @@ become a repeatable test surface, navigation substrate, grasping texture, or spa
 <p>Natural systems are full of packing, branching, growth, folding, and surface constraints. Aperiodic
 monotile patches are not biological models by default, but they can serve as clean geometric scaffolds
 for asking better questions.{cite(2)}{cite(5)}</p>
+{FIG_BIOLOGY}
 <ul><li>Morphogenesis, shell growth, protein folding, cellular packing, and neural geometry</li>
 <li>Implants, prosthetics, vascular stents, tissue scaffolds, and surgical planning</li>
 <li>Crystal structures, catalysts, zeolites, molecular cages, and drug-binding geometry studies</li></ul>
@@ -696,6 +797,7 @@ for asking better questions.{cite(2)}{cite(5)}</p>
 <p>Because every patch can be regenerated with stable IDs and transforms, the geometry can become a
 benchmark input: structured, non-repeating, and harder to memorize than a regular grid. Cryptographic uses
 should be treated as research only unless formally reviewed.{cite(7)}{cite(9)}{cite(11)}</p>
+{FIG_ALGORITHMS}
 <ul><li>Spatial indexing, nearest-neighbor search, graph embeddings, and geometric hashing</li>
 <li>Geometric deep learning, manifolds, latent spaces, equivariant models, and physical-system priors</li>
 <li>Lattice-inspired experiments, geometric trapdoors, high-dimensional hardness ideas, and quantum-code layouts</li></ul>
