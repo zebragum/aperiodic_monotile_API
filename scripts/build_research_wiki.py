@@ -29,6 +29,53 @@ def cite(num: int) -> str:
     return f'<sup class="citation"><a href="bibliography.html#ref-{num}">[{num}]</a></sup>'
 
 
+ASSET = "../../assets/research/wiki"
+
+FIG_TILE_VARIANTS = f"""
+<figure class="wiki-figure">
+  <img src="{ASSET}/tilevariants-web.png" alt="Tile(1,1) and Spectre edge variants: straight, jagged, wavy, stepped, scalloped, and rounded silhouettes" width="1100" height="900" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>Tile(1,1) / Spectre variants.</strong> One aperiodic monotile footprint with many equivalent edge
+    silhouettes — straight polygon, jagged, wavy, stepped, scalloped, and rounded forms. All tile the same
+    way; only the boundary decoration changes.
+  </figcaption>
+</figure>
+"""
+
+FIG_TILING_ARRAY = f"""
+<figure class="wiki-figure wiki-figure-gif">
+  <img src="{ASSET}/tiling-array-zoom.gif" alt="Animated zoom between a dense aperiodic monotile array and a magnified tile view" width="480" height="480" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>Tiling array.</strong> A dense Spectre / Tile(1,1) patch oscillates between field scale and
+    near-tile magnification — the same array read as texture from afar and as individual tiles up close.
+    <a href="{ASSET}/tiling-array-web.jpg">Full resolution still</a>
+  </figcaption>
+</figure>
+"""
+
+FIG_HAT_TILE = f"""
+<figure class="wiki-figure">
+  <img src="{ASSET}/hat-monotile-commons.png" alt="Hat aperiodic monotile construction from hexagon symmetry lines" width="1100" height="930" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>Hat monotile.</strong> The Hat shape and its construction from hexagon symmetry lines.
+    Diagram by <a href="https://commons.wikimedia.org/wiki/User:Gringer" rel="noopener noreferrer">Gringer</a>,
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer">CC BY-SA 4.0</a>;
+    based on Smith, Myers, Kaplan &amp; Goodman-Strauss (2023).
+  </figcaption>
+</figure>
+"""
+
+FIG_SPECTRE_PATCH = f"""
+<figure class="wiki-figure">
+  <img src="{ASSET}/spectre-tiling-commons.jpg" alt="Zoomed aperiodic tiling patch by Tile(1,1) with odd tiles shaded" width="1400" height="1290" loading="lazy" decoding="async" />
+  <figcaption>
+    <strong>Spectre / Tile(1,1) patch.</strong> A zoomed substitution patch with alternating tile handedness
+    highlighted. Sample image from Kaplan et al.,
+    <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">CC BY 4.0</a>.
+  </figcaption>
+</figure>
+"""
+
 @dataclass
 class Section:
     heading: str
@@ -70,6 +117,8 @@ ARTICLES: list[Article] = [
   <a href="../../index.html">Aperiodic Monotile Generator</a>. It distills peer-reviewed literature,
   tooling lineage, and practical workflows into cross-linked articles you can cite, share, and build on.
 </p>
+{FIG_TILE_VARIANTS}
+{FIG_TILING_ARRAY}
 """,
             ),
             Section(
@@ -166,6 +215,7 @@ ARTICLES: list[Article] = [
   Samuel Myers, Craig S. Kaplan, and Chaim Goodman-Strauss answered it in March 2023 with the Hat tile,
   followed months later by the strictly chiral Spectre tile.{cite(1)}
 </p>
+{FIG_TILE_VARIANTS}
 """,
             ),
             Section(
@@ -181,6 +231,7 @@ ARTICLES: list[Article] = [
   That combination — global order, local variety, no translational repetition — is what makes monotile
   geometry interesting for graphics, materials, education, and algorithmic research.
 </p>
+{FIG_TILING_ARRAY}
 """,
             ),
             Section(
@@ -223,6 +274,8 @@ ARTICLES: list[Article] = [
   only orientation-preserving copies — no reflected tiles are needed. It was introduced in
   <em>A chiral aperiodic monotile</em> as the solution to the strictly chiral einstein problem.{cite(1)}
 </p>
+{FIG_TILE_VARIANTS}
+{FIG_SPECTRE_PATCH}
 """,
             ),
             Section(
@@ -277,6 +330,7 @@ ARTICLES: list[Article] = [
   periodic. It was the first shape proven to solve the einstein problem — tiling with a single prototile
   subject to standard monohedral definitions that allow reflected copies.{cite(1)}
 </p>
+{FIG_HAT_TILE}
 """,
             ),
             Section(
@@ -317,6 +371,7 @@ ARTICLES: list[Article] = [
   metatile with a scaled copy of the full set. After finitely many steps, the limit produces an infinite
   tiling whose local structure is hierarchical but never repeats periodically.{cite(3)}
 </p>
+{FIG_TILING_ARRAY}
 """,
             ),
             Section(
