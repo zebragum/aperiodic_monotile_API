@@ -17,8 +17,6 @@ BASE = "https://aperiodicgenerator.com/research/wiki"
 
 
 def link(slug: str, label: str | None = None) -> str:
-    if label is None and slug in ARTICLE_BY_SLUG:
-        label = ARTICLE_BY_SLUG[slug].title
     text = label or slug.replace("-", " ").title()
     if slug == "index":
         href = "index.html"
@@ -124,16 +122,16 @@ ARTICLES: list[Article] = [
                 2,
                 f"""
 <ul class="wiki-feature-list">
-  <li>{link("computer-graphics")}</li>
-  <li>{link("design-and-architecture")}</li>
-  <li>{link("materials-and-fabrication")}</li>
-  <li>{link("education")}</li>
-  <li>{link("signal-processing")}</li>
-  <li>{link("waves-and-photonics")}</li>
-  <li>{link("materials-science")}</li>
-  <li>{link("robotics-and-mobility")}</li>
-  <li>{link("biology-and-medicine")}</li>
-  <li>{link("algorithms-and-machine-learning")}</li>
+  <li>{link("computer-graphics", "Computer graphics")}</li>
+  <li>{link("design-and-architecture", "Design, art, and architecture")}</li>
+  <li>{link("materials-and-fabrication", "Materials and fabrication")}</li>
+  <li>{link("education", "Education")}</li>
+  <li>{link("signal-processing", "Signal processing and imaging")}</li>
+  <li>{link("waves-and-photonics", "Waves, acoustics, and photonics")}</li>
+  <li>{link("materials-science", "Materials science and fluids")}</li>
+  <li>{link("robotics-and-mobility", "Robotics and mobility")}</li>
+  <li>{link("biology-and-medicine", "Biology and medicine")}</li>
+  <li>{link("algorithms-and-machine-learning", "Algorithms and machine learning")}</li>
 </ul>
 """,
             ),
