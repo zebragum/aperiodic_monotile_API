@@ -117,6 +117,96 @@ REFERENCES: list[dict] = [
          title="A tiling algorithm for the aperiodic monotile Tile(1,1)", arxiv="2406.05236", note=""),
     dict(n=30, authors="Henning U. Voss and Douglas J. Ballon",
          title="Quasilattices of the Spectre monotile", arxiv="2502.06926", note=""),
+    dict(n=31, authors="Michael Baake, Franz Gähler, and Lorenzo Sadun",
+         title="Dynamics and topology of the Hat family of tilings", arxiv="2305.05639",
+         doi="10.1007/s11856-025-2780-8",
+         note="CAP model set, cohomology, and a 4D-to-2D cut-and-project construction."),
+    dict(n=32, authors="Michael Baake, Franz Gähler, Jan Mazáč, and Lorenzo Sadun",
+         title="On the Long-Range Order of the Spectre Tilings", arxiv="2411.15503",
+         doi="10.1007/s00454-025-00756-z",
+         note="CASPr model set, Rauzy-fractal windows, and pure-point diffraction."),
+    dict(n=33, authors="Craig S. Kaplan, Michael O’Keeffe, and Michael M. J. Treacy",
+         title="Periodic diffraction from an aperiodic monohedral tiling",
+         doi="10.1107/S2053273323009506",
+         note="Hat vertex diffraction on an underlying periodic framework."),
+    dict(n=34, authors="Craig S. Kaplan, Michael O’Keeffe, and Michael M. J. Treacy",
+         title="Periodic diffraction from an aperiodic monohedral tiling — the Spectre tiling. Addendum",
+         doi="10.1107/S2053273324008945",
+         note="Spectre diffraction is non-periodic with chiral sixfold point symmetry."),
+    dict(n=35, authors="Michael Baake, Franz Gähler, Jan Mazáč, and Andrew J. Mitchell",
+         title="Diffraction of the Hat and Spectre tilings and some of their relatives",
+         arxiv="2502.03268", doi="10.1063/5.0264955",
+         note="Exact Fourier–Bohr amplitudes from CAP and CASPr model sets."),
+    dict(n=36, authors="Michael Baake, Franz Gähler, Anna Klick, Neil Mañibo, and Jan Mazáč",
+         title="Renormalisation techniques for inflation systems and some of their applications",
+         arxiv="2606.19645",
+         note="Exact renormalization machinery applied to Hat and Spectre diffraction."),
+    dict(n=37, authors="Aurélien Mordret and Adolfo G. Grushin",
+         title="Beating the aliasing limit with aperiodic monotile arrays",
+         arxiv="2408.16476", doi="10.1103/PhysRevApplied.23.034021",
+         note="Hat-family sensor arrays outperform tested periodic and aperiodic baselines."),
+    dict(n=38, authors="Yunfei Qiang, Xiaochuan Fang, Rui-Xin Wu, Qian Chen, and Wei Wang",
+         title="Application of Aperiodic Einstein Monotile in Phased Arrays With Limited Beam Scanning Range",
+         doi="10.1109/OJAP.2024.3499738",
+         note="Simulated Hat phased arrays with low grating lobes and 90% aperture efficiency."),
+    dict(n=39, authors="Hector Roche Carrasco, Justin Schirmann, Aurélien Mordret, and Adolfo G. Grushin",
+         title="A Family of Aperiodic Tilings with Tunable Quantum Geometric Tensor",
+         arxiv="2505.13304", doi="10.1103/dzqm-9kwj",
+         note="Tile-shape geometry tunes topological phases and quantum metric."),
+    dict(n=40, authors="Sergey Alyatkin, Yaroslav V. Kartashov, Kirill Sitnik, Philipp Grigoryev, and Pavlos G. Lagoudakis",
+         title="Observation of an aperiodic polariton monotile", arxiv="2605.13206",
+         note="Experimental polariton realization with Bragg peaks and long-range coherence."),
+    dict(n=41, authors="Valtýr Kári Daníelsson and Helgi Sigurðsson",
+         title="Critical states and anomalous wave transport in an aperiodic polariton monotile",
+         arxiv="2605.29023",
+         note="Predicted critical states and anomalous transport in a Hat optical lattice."),
+    dict(n=42, authors="Daniel John Clarke, Francesca Carter, Iestyn Jowers, and Richard James Moat",
+         title="An isotropic zero Poisson’s ratio metamaterial based on the aperiodic Hat monotile",
+         doi="10.1016/j.apmt.2023.101959",
+         note="Experiment and simulation on printed Hat honeycombs."),
+    dict(n=43, authors="Romain Rieger and Alexandre Danescu",
+         title="Macroscopic elasticity of the hat aperiodic tiling", arxiv="2312.14669",
+         doi="10.1016/j.mechmat.2024.104988",
+         note="Hat lattice converges toward isotropic continuum elasticity."),
+    dict(n=44, authors="Richard J. Moat, Daniel John Clarke, Francesca Carter, Dan Rust, and Iestyn Jowers",
+         title="A class of aperiodic honeycombs with tuneable mechanical properties",
+         doi="10.1016/j.apmt.2024.102127",
+         note="Hat-family geometry independently tunes modulus and Poisson ratio."),
+    dict(n=45, authors="Mohamed M. Naji and Rashid K. Abu Al-Rub",
+         title="Effective elastic properties of novel aperiodic monotile-based lattice metamaterials",
+         doi="10.1016/j.matdes.2024.113102",
+         note="Comparative Hat, Turtle, and Spectre lattice mechanics."),
+    dict(n=46, authors="Jiyoung Jung, Ailin Chen, and Grace X. Gu",
+         title="Aperiodicity is all you need: Aperiodic monotiles for high-performance composites",
+         arxiv="2309.05819", doi="10.1016/j.mattod.2023.12.015",
+         note="Printed composites outperform tested honeycomb controls in stiffness, strength, and toughness."),
+    dict(n=47, authors="Jiyoung Jung, Kundo Park, and Grace X. Gu",
+         title="Exploring the mechanical properties of aperiodic monotile composite family through Gaussian process regression",
+         doi="10.1016/j.eml.2025.102370", note=""),
+    dict(n=48, authors="Jiyoung Jung, Kundo Park, and Grace X. Gu",
+         title="Strength through curvature: Engineering multi-phase materials based on chiral aperiodic monotile patterns",
+         doi="10.1016/j.compstruct.2025.119131", note=""),
+    dict(n=49, authors="Hongru Zhang, Yuanpeng Liu, Jiaming Ma, Ngoc San Ha, and Yi Min Xie",
+         title="High-performance composites with bio-inspired interlocking aperiodic monotiles",
+         doi="10.1016/j.compositesb.2026.113562",
+         note="Experimental interlocking composite with twentyfold fracture-resistance gain over honeycomb."),
+    dict(n=50, authors="Reymond Akpanya, Tom Frederik Görtzen, Yuanpeng Liu, Sascha Stüttgen, Daniel Robertz, Yi Min Xie, and Alice Catherine Niemeyer",
+         title="Constructing Topological Interlocking Assemblies Based on an Aperiodic Monotile",
+         url="https://publications.rwth-aachen.de/record/1006945",
+         note="Three-dimensional identical blocks constrained to aperiodic interlocking assemblies."),
+    dict(n=51, authors="Hugo Hiu Chak Cheng and Gary P. T. Choi",
+         title="Monotile kirigami", arxiv="2604.19586",
+         note="Deployable periodic and aperiodic monotile kirigami constructions."),
+    dict(n=52, authors="Haitao Gao and Aaryash Bharadwaj",
+         title="Percolation Critical Probability of Aperiodic Smith Hat Tile(1,√3)",
+         arxiv="2604.21165", note="Monte Carlo site and bond percolation thresholds."),
+    dict(n=53, authors="Sébastien Labbé and Peter Selinger",
+         title="A construction of the hat tilings by a Markov partition", arxiv="2604.20964",
+         note="Explicit torus Markov partition with fractal boundaries."),
+    dict(n=54, authors="Arnaud Chéritat and Nan Ma",
+         title="4D lift of the tilings by the Smith et al. aperiodic monotile",
+         url="https://www.math.univ-toulouse.fr/~cheritat/2023-monotile/4D-lift/",
+         note="Nan Ma’s coherent R⁴ edge lift, exposition and interactive projections."),
 ]
 
 WEB_RESOURCES = [
@@ -130,6 +220,26 @@ WEB_RESOURCES = [
          url="https://www.printables.com/model/520972-spectre-chiral-aperiodic-monotile"),
     dict(label="National Museum of Mathematics: The Hat and the Spectre — exhibits and the Einstein Mad Hat competition",
          url="https://momath.org/the-hat/"),
+    dict(label="Nan Ma, aperiodic-monotile-4d — original Wolfram Language code and projection experiments (no license; link only)",
+         url="https://github.com/nanma80/aperiodic-monotile-4d"),
+    dict(label="Arnaud Chéritat and Nan Ma, interactive 4D projection applet — CC BY-SA",
+         url="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/"),
+    dict(label="Simon Tatham, Combinatorial Coordinates for the Aperiodic Spectre Tiling",
+         url="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-spectre/"),
+    dict(label="Christian Lawson-Perfect et al., multi-format monotile assets — CC0 SVG, DXF, OpenSCAD, and STL",
+         url="https://github.com/christianp/aperiodic-monotile"),
+    dict(label="Infinite Spectres — MIT-licensed Rust/WebGPU deep-zoom viewer",
+         url="https://github.com/necocen/spectre"),
+    dict(label="Tilings Encyclopedia: Spectre — institutional patch and reference record",
+         url="https://tilings.math.uni-bielefeld.de/substitution/spectre/"),
+    dict(label="Large Spectre Tiling — 488-piece hierarchical group activity",
+         url="https://www.gathering4gardner.org/large-spectre-tiling/"),
+    dict(label="Terracing with Spectres — built CNC-waterjet limestone terrace and process archive",
+         url="https://anarchive.fo.am/silver/spectres/"),
+    dict(label="Hats in Grout — practical fabrication and installation geometry",
+         url="https://archive.bridgesmathart.org/2024/bridges2024-389.html"),
+    dict(label="OEIS A363348 — recursive turn sequence for drawing an infinite Hat tiling",
+         url="https://oeis.org/A363348"),
 ]
 
 
@@ -138,10 +248,20 @@ def render_references_html() -> str:
     for r in REFERENCES:
         authors = f"{html.escape(r['authors'])}, " if r["authors"] else ""
         note = f' <span class="ref-note">— {html.escape(r["note"])}</span>' if r["note"] else ""
+        href = (
+            f"https://doi.org/{r['doi']}" if r.get("doi")
+            else f"https://arxiv.org/abs/{r['arxiv']}" if r.get("arxiv")
+            else r.get("url", "#")
+        )
+        identifier = (
+            f" DOI:{r['doi']}." if r.get("doi")
+            else f" arXiv:{r['arxiv']}." if r.get("arxiv")
+            else ""
+        )
         items.append(
             f'<li id="ref-{r["n"]}">{authors}'
-            f'<a href="https://arxiv.org/abs/{r["arxiv"]}" rel="noopener noreferrer">{html.escape(r["title"])}</a>. '
-            f'arXiv:{r["arxiv"]}.{note}</li>'
+            f'<a href="{href}" rel="noopener noreferrer">{html.escape(r["title"])}</a>.'
+            f'{identifier}{note}</li>'
         )
     web = "".join(
         f'<li><a href="{w["url"]}" rel="noopener noreferrer">{w["label"]}</a></li>' for w in WEB_RESOURCES
@@ -346,6 +466,15 @@ FIG_MOIRE_60DEG = fig(
     "horizontal and vertical strokes. "
     f'<a href="{ASSET}/aperiodicrivers.png">Full resolution</a>',
     width=1400,
+)
+FIG_4D_LIFT = fig(
+    "four-dimensional-lift.png",
+    "Real Tile(1,1) edge vectors lifted into two coordinate planes in four dimensions, then projected as Hat, Tile(1,1), and Turtle",
+    "<strong>One path, a family of projections.</strong> Coral and teal edges lift into separate "
+    "coordinate planes in ℝ⁴. The Hat, Tile(1,1), and Turtle are different linear projections of the "
+    "same closed lifted path. Original diagram generated from this site's canonical Tile(1,1) geometry, "
+    "following Chéritat and Ma’s construction.",
+    width=1600,
 )
 
 
@@ -600,7 +729,10 @@ ARTICLES: list[Article] = [
   tiling shared with the Hat and Turtle.{cite(8)} The substitution system that generates Spectre patches
   admits a homochiral (single-handed) inflation rule,{cite(10)} and tile counts per generation follow
   Fibonacci and Lucas number patterns.{cite(12)} Group-theoretic analysis places these tilings in a broader
-  algebraic framework.{cite(9)}
+  algebraic framework.{cite(9)} Long-range order is now understood through CASPr model sets with five
+  Rauzy-fractal windows and pure-point diffraction,{cite(32)} and crystallographic analysis confirms
+  non-periodic diffraction with chiral sixfold point symmetry.{cite(34)}{cite(35)} Algorithmic quasilattice
+  constructions and explicit tiling generators complement the substitution picture.{cite(29)}{cite(30)}
 </p>
 {FIG_SPECTRE_PATCH}
 <p>
@@ -697,8 +829,11 @@ ARTICLES: list[Article] = [
 <p>
   Because the Hat gives physicists their first aperiodic <em>monotile</em> lattice, it quickly became a
   substrate for model systems. Its tilings have quasicrystalline diffraction structure — sharp Bragg-like
-  peaks with symmetries forbidden to periodic crystals.{cite(6)} Electronic and vibrational properties of
-  the Hat lattice show behavior distinct from both crystals and random media.{cite(20)} Statistical
+  peaks with symmetries forbidden to periodic crystals.{cite(6)} Exact diffraction theory now places Hat
+  tilings in CAP cut-and-project model sets with computable Fourier–Bohr amplitudes,{cite(31)}{cite(35)}
+  while crystallographic analysis shows vertex diffraction riding on an underlying periodic
+  framework.{cite(33)} Electronic and vibrational properties of the Hat lattice show behavior distinct from
+  both crystals and random media.{cite(20)} Statistical
   mechanics has been worked directly on the tiling: the Ising model on the Hat lattice{cite(21)} and dimer
   models on the Spectre tiling{cite(22)} both reveal how aperiodic adjacency changes collective behavior.
   For anyone designing materials, these papers are the evidence base that monotile geometry is not just
@@ -751,7 +886,9 @@ ARTICLES: list[Article] = [
   whole system embeds in a rhombic tiling framework shared by the Hat and Turtle.{cite(8)} Substitution
   systems can even be built from overlapping iterated function systems, connecting tilings to fractal
   geometry.{cite(14)} Sturmian sequences — the one-dimensional cousins of aperiodic order — provide lattice
-  models with closely related structure.{cite(13)}
+  models with closely related structure.{cite(13)} Labbé and Selinger give an explicit torus Markov
+  partition construction for Hat tilings with fractal boundaries,{cite(53)} complementing the inflation
+  picture above.
 </p>
 """,
             ),
@@ -796,6 +933,9 @@ ARTICLES: list[Article] = [
   Random noise avoids repetition but sacrifices structure and reproducibility. Aperiodic monotile patches
   offer a third family: <strong>ordered but non-repeating</strong> layouts whose spectrum has no single
   dominant lattice frequency to beat against, while remaining deterministic and seed-stable.{cite(6)}{cite(27)}
+  Sensor-array simulations on Hat-family layouts show the same principle in hardware: aperiodic monotile
+  arrays can outperform tested periodic and other aperiodic baselines for spatial sampling and
+  reconstruction.{cite(37)}
 </p>
 """,
             ),
@@ -1038,7 +1178,9 @@ ARTICLES: list[Article] = [
                 2,
                 f"""
 <ul>
-  <li>Feature walls, floors, and facades with provable non-repetition</li>
+  <li>Feature walls, floors, and facades with provable non-repetition — including built limestone terraces
+  assembled from hundreds of waterjet-cut Spectre pieces (see {link("bibliography", "bibliography")})</li>
+  <li>Three-dimensional topological interlocking assemblies from identical aperiodic blocks{cite(50)}</li>
   <li>Generative sculpture, ornamental screens, and visual illusions</li>
   <li>Textiles, wallpaper, packaging, embossing, and engraving with no repeat unit</li>
   <li>Lightweight shells, tensile structures, and spatial studies for built environments</li>
@@ -1074,7 +1216,10 @@ ARTICLES: list[Article] = [
   The chirality result is a manufacturing feature, not a footnote: because Spectre tilings never need
   mirrored parts, one mold or die covers the entire surface.{cite(2)} Community fabrication files —
   OpenSCAD models, STLs with orientation grids, laser-cut outlines — are indexed in the
-  {link("bibliography", "bibliography")}.
+  {link("bibliography", "bibliography")}. Experimental Hat honeycombs and aperiodic composite panels
+  demonstrate that these exports translate into measurable mechanical gains,{cite(42)}{cite(46)}{cite(49)}
+  and deployable monotile kirigami shows how flat sheets fold into aperiodic surface
+  structures.{cite(51)}
 </p>
 """,
             ),
@@ -1086,8 +1231,11 @@ ARTICLES: list[Article] = [
   <li>Toolpath and infill experiments — aperiodic infill avoids the resonance planes of periodic infill</li>
   <li>Support-free printing studies, topology optimization, and surface finishing</li>
   <li>Architectural panels, molds, product surfaces, screens, and repeat-free decoration</li>
+  <li>Three-dimensional topological interlocking assemblies built from identical aperiodic
+  blocks{cite(50)}</li>
   <li>Origami-adjacent folding studies: flat-foldable synthesis environments show how computational tools
-  explore fold-pattern spaces{cite(26)}</li>
+  explore fold-pattern spaces{cite(26)}; monotile kirigami extends this to deployable aperiodic
+  sheets{cite(51)}</li>
 </ul>
 """,
             ),
@@ -1163,7 +1311,9 @@ ARTICLES: list[Article] = [
   Recent work on 2D histogram binning shows the practical direction: non-square binning geometries
   materially change what structure an analysis can resolve.{cite(27)} Tile centroids, edges, and adjacency
   graphs from a generated patch provide deterministic, reproducible sampling frames for the same kind of
-  experiments in reconstruction, denoising, and compression.
+  experiments in reconstruction, denoising, and compression. Mordret and Grushin demonstrate the payoff in
+  simulated sensor arrays: Hat-family monotile layouts beat tested periodic and aperiodic baselines for
+  spatial sampling and aliasing resistance.{cite(37)}
 </p>
 """,
             ),
@@ -1175,7 +1325,9 @@ ARTICLES: list[Article] = [
   <li>Sampling theory: compare monotile centroids against grids, jittered grids, blue noise, and Penrose
   point sets in reconstruction benchmarks</li>
   <li>Sensor arrays: radar, sonar, MRI, and CT geometry studies where periodic element spacing creates
-  grating lobes{cite(19)}</li>
+  grating lobes{cite(19)}{cite(37)}</li>
+  <li>Phased arrays: simulated Hat layouts achieve low grating lobes and high aperture efficiency in
+  limited-scan beamforming studies{cite(38)}</li>
   <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
   <li>Anti-aliasing masks and halftone screens; see {link("moire-and-aliasing", "Moiré and aliasing")}</li>
 </ul>
@@ -1212,18 +1364,21 @@ ARTICLES: list[Article] = [
   measurably from periodic and random baselines,{cite(20)} Ising spins on the Hat tiling order
   differently,{cite(21)} and dimer statistics on the Spectre tiling reveal distinctive combinatorial
   structure.{cite(22)} Together these establish that monotile geometry changes wave and lattice physics —
-  the open question is where that change is useful.
+  the open question is where that change is useful. Experimental polariton realizations on monotile lattices
+  now show Bragg peaks and long-range coherence,{cite(40)} with theory predicting critical states and
+  anomalous transport in related optical setups.{cite(41)} Tile-shape geometry can tune topological phases
+  and the quantum geometric tensor in model systems.{cite(39)}
 </p>
 """,
             ),
             Section(
                 "Candidate applications",
                 2,
-                """
+                f"""
 <ul>
   <li>Acoustic diffusers and panels: aperiodic surfaces scatter without the flutter echoes of periodic ones</li>
   <li>Photonic and phononic structures with engineered chiral response</li>
-  <li>Antenna and metasurface layouts that suppress grating lobes</li>
+  <li>Antenna and metasurface layouts that suppress grating lobes{cite(38)}</li>
   <li>Simulation-ready polygon exports for comparing periodic, random, and aperiodic boundaries in FDTD/FEM</li>
 </ul>
 """,
@@ -1256,6 +1411,16 @@ ARTICLES: list[Article] = [
   and measured chiral optical response.{cite(19)} Related lattice families from Sturmian systems{cite(13)}
   and iterated function systems{cite(14)} extend the design space beyond the monotile itself.
 </p>
+<p>
+  Mechanical evidence is now substantial. Printed Hat honeycombs achieve isotropic zero Poisson’s
+  ratio,{cite(42)} converge toward isotropic continuum elasticity,{cite(43)} and allow independent tuning
+  of modulus and Poisson ratio across Hat-family variants.{cite(44)} Comparative studies map effective
+  properties across Hat, Turtle, and Spectre lattices.{cite(45)} In composites, aperiodic monotile
+  reinforcements outperform tested honeycomb controls in stiffness, strength, and toughness,{cite(46)}
+  with follow-on work using machine learning to explore the family{cite(47)} and multi-phase curvature
+  engineering.{cite(48)} Interlocking aperiodic assemblies show dramatic fracture-resistance gains over
+  periodic honeycombs.{cite(49)}
+</p>
 """,
             ),
             Section(
@@ -1280,7 +1445,7 @@ ARTICLES: list[Article] = [
         categories=["Research frontiers"],
         see_also=["algorithms-and-machine-learning"],
         infobox={
-            "Status": "Research frontier",
+            "Status": "Research frontier (no published robotics demo yet)",
             "Key benefit": "Position from local appearance",
         },
         sections=[
@@ -1289,8 +1454,10 @@ ARTICLES: list[Article] = [
                 2,
                 f"""
 <p>
-  Regular grids are the worst possible texture for visual localization: every cell looks like every other
-  cell, so a camera looking at a periodic floor learns nothing about <em>where</em> it is. Random textures
+  <em>No published robotics application uses monotile floors yet; the argument below is a research
+  direction, not a demonstrated product.</em> Regular grids are the worst possible texture for visual
+  localization: every cell looks like every other cell, so a camera looking at a periodic floor learns
+  nothing about <em>where</em> it is. Random textures
   are locally distinctive but cannot be regenerated or queried. An aperiodic monotile surface is the
   interesting middle: <strong>every neighborhood is provably unique</strong>,{cite(2)} yet the whole
   surface is deterministic — a robot that recognizes its local tile configuration can, in principle, look
@@ -1390,7 +1557,9 @@ ARTICLES: list[Article] = [
   is undecidable with three tiles,{cite(24)} and the structured-vs-wild dichotomy is an open research
   program.{cite(23)} On the constructive side, SAT solvers detect isohedral polyforms,{cite(17)} exact
   algorithms extract tessellation generators from data,{cite(25)} and group-theoretic formulations connect
-  tilings to algebra.{cite(9)}
+  tilings to algebra.{cite(9)} Percolation thresholds on Hat-family lattices are now being mapped by Monte
+  Carlo simulation,{cite(52)} giving concrete statistical signatures for random-process models on monotile
+  graphs.
 </p>
 """,
             ),
@@ -1410,20 +1579,132 @@ ARTICLES: list[Article] = [
     ),
     # ------------------------------------------------------------------ #
     Article(
+        slug="four-dimensional-lift",
+        title="Four-dimensional lift",
+        summary="Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory.",
+        categories=["Mathematics", "Visualizations"],
+        see_also=["aperiodic-monotile", "spectre-tile", "substitution-tiling"],
+        infobox={
+            "Initial idea": "Nan Ma",
+            "Exposition": "Arnaud Chéritat with Nan Ma",
+            "First dated artifact": "9 June 2023",
+            "Ambient space": "ℝ⁴ = ℝ² × ℝ²",
+            "Key distinction": "Edge lift ≠ cut-and-project proof",
+        },
+        sections=[
+            Section(
+                "The observation",
+                2,
+                f"""
+<p>
+  The whole Hat or Spectre tiling can be treated as a single static object in four-dimensional space.
+  Arnaud Chéritat credits the initial idea to Nan Ma: not merely lifting one Tile(<em>a,b</em>) outline,
+  but assigning coherent ℝ⁴ coordinates to every vertex in an entire simply connected tiling.{cite(54)}
+  Ma’s earliest securely dated public artifact is the
+  <a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">aperiodic-monotile-4d</a>
+  repository created 9 June 2023.
+</p>
+{FIG_4D_LIFT}
+""",
+            ),
+            Section(
+                "How the lift works",
+                2,
+                f"""
+<p>
+  Write four-space as ℝ⁴ = ℝ²<sub>red</sub> × ℝ²<sub>green</sub>. Tile(<em>a,b</em>) has two
+  direction classes: edges at multiples of 60° and edges at odd multiples of 30°. A directed edge
+  (<em>x,y</em>) in the first class lifts to (<em>x,y,0,0</em>); one in the second lifts to
+  (<em>0,0,x,y</em>). Opposite edges cancel by class, so the fourteen lifted vectors close into one
+  polygonal path in ℝ⁴.
+</p>
+<p>
+  The ordinary two-dimensional tile is recovered by
+  L<sub>a,b</sub>(<em>u,v</em>) = <em>a u + b v</em>. Changing (<em>a,b</em>) changes the
+  projection, not the lifted object: Hat, Tile(1,1), Turtle, Chevron, and Comet are views of the same
+  four-dimensional edge path. Adjacent tiles give their shared edge the same lifted vector; integrating
+  these vectors gives path-independent vertex coordinates across any simply connected patch.{cite(54)}
+</p>
+<p>
+  For homochiral Tile(1,1)/Spectre tilings, tiles rotated by an odd multiple of 30° swap the two edge
+  classes. Animations vary an ℝ⁴→ℝ³ projection while the lifted surface stays still. This is why a
+  complicated coordinated deformation can be understood as moving a camera around one higher-dimensional
+  object.
+</p>
+""",
+            ),
+            Section(
+                "What it proves — and what it does not",
+                2,
+                f"""
+<p>
+  Ma’s construction is best understood as a discrete height function or stepped surface. The edge lift is
+  canonical, but filling each lifted tile interior with a surface is not unique; rendered solids include a
+  visualization choice. The lift does not by itself prove that Hat or Spectre control points form a regular
+  model set.
+</p>
+<p>
+  That stronger result comes from distinct work. Baake, Gähler, and Sadun construct the self-similar CAP
+  representative of the Hat family and a 4:2 cut-and-project scheme with two-dimensional internal
+  space.{cite(31)} Baake, Gähler, Mazáč, and Sadun do the analogous job for Spectre via CASPr and five
+  Rauzy-fractal windows, proving pure-point spectrum and diffraction.{cite(32)} These frameworks use
+  algebraic return modules, Galois conjugation, and acceptance windows—not Ma’s edge coloring.
+</p>
+""",
+            ),
+            Section(
+                "Six dimensions and diffraction",
+                2,
+                f"""
+<p>
+  Socolar’s independent Golden Key construction embeds a related Hat metatiling in a six-dimensional
+  hypercubic lattice and projects selected points to the plane, establishing golden-mean quasiperiodicity
+  and a phason degree of freedom.{cite(6)} Exact diffraction calculations later use CAP and CASPr
+  reprojections plus renormalization cocycles to compute Fourier–Bohr amplitudes through fractal
+  windows.{cite(35)}{cite(36)}
+</p>
+<p>
+  These are complementary views: Ma’s lift explains the moving Tile(<em>a,b</em>) family geometrically;
+  CAP/CASPr explain long-range order dynamically; the six-dimensional Golden Key construction exposes a
+  larger quasiperiodic embedding.
+</p>
+""",
+            ),
+            Section(
+                "Explore it",
+                2,
+                """
+<ul>
+  <li><a href="https://www.math.univ-toulouse.fr/~cheritat/2023-monotile/4D-lift/" rel="noopener noreferrer">Chéritat and Ma’s full exposition</a></li>
+  <li><a href="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/" rel="noopener noreferrer">Interactive 4D projection applet</a> (CC BY-SA)</li>
+  <li><a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">Nan Ma’s Wolfram Language repository</a> (no license; link only)</li>
+</ul>
+""",
+            ),
+        ],
+    ),
+    # ------------------------------------------------------------------ #
+    Article(
         slug="bibliography",
         title="Bibliography",
-        summary="Complete reference list: the arXiv corpus behind this wiki, plus fabrication files and exhibits.",
+        summary="54 curated scholarly references, fabrication files, exhibits, and an automated discovery registry.",
         categories=["References"],
-        see_also=["aperiodic-monotile", "spectre-tile"],
+        see_also=["aperiodic-monotile", "spectre-tile", "four-dimensional-lift"],
         sections=[
-            Section("References", 2, render_references_html()),
+            Section("References", 2, render_references_html() + """
+<p class="ref-note">
+  An automated Crossref/arXiv crawl maintains a separate
+  <a href="source-registry.json">source registry</a> (45 indexed records as of July 2026) for literature
+  discovery. The numbered list above is human-curated and cited throughout the wiki.
+</p>
+"""),
         ],
     ),
 ]
 
 NAV_GROUPS = [
     ("Concepts", ["aperiodic-monotile", "moire-and-aliasing"]),
-    ("Mathematics", ["spectre-tile", "hat-tile", "substitution-tiling"]),
+    ("Mathematics", ["spectre-tile", "hat-tile", "substitution-tiling", "four-dimensional-lift"]),
     ("Applications", [
         "computer-graphics", "design-and-architecture", "materials-and-fabrication", "education",
     ]),

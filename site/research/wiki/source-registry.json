@@ -1,0 +1,1022 @@
+{
+  "generated_at": "2026-07-13T15:05:51.070283+00:00",
+  "method": {
+    "indexes": [
+      "Crossref",
+      "arXiv"
+    ],
+    "queries": [
+      "aperiodic monotile",
+      "hat monotile",
+      "spectre monotile",
+      "Tile(1,1) tiling",
+      "Smith hat tiling",
+      "Hat family tilings"
+    ],
+    "deduplication": "DOI, arXiv ID, then normalized title",
+    "scope_note": "Automated discovery registry; human-curated web resources and citation-chain findings are maintained separately in the wiki."
+  },
+  "count": 45,
+  "records": [
+    {
+      "title": "An Algebraic Realization of the Taylor-Socolar Aperiodic Monotilings",
+      "authors": [
+        "Howard L. Resnikoff"
+      ],
+      "year": 2015,
+      "doi": null,
+      "arxiv": "1504.06823",
+      "url": "http://arxiv.org/abs/1504.06823v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The first aperiodic monotiling, introduced by Taylor, was based on a trapezoidal prototile equipped with 14 distinct decorations. A presentation of the closely related Taylor-Socolar aperiodic monotiling is based on a hexagonal prototile equipped with 7 decorations. This paper gives decoration-free algebraic descriptions equivalent to each of these presentations. It also shows how the monotilings and Taylor triangles pattern that characterizes the aperiodicity can be obtained from just one algebraic equation.",
+      "subjects": [
+        "math.DG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "An aperiodic monotile that forces nonperiodicity through dendrites",
+      "authors": [
+        "Michael Mampusti",
+        "Michael F. Whittaker"
+      ],
+      "year": 2020,
+      "doi": "10.1112/blms.12375",
+      "arxiv": "1903.01158",
+      "url": "https://doi.org/10.1112/blms.12375",
+      "venue": "Bulletin of the London Mathematical Society",
+      "type": "journal-article",
+      "abstract": "We introduce a new type of aperiodic hexagonal monotile; a prototile that admits infinitely many tilings of the plane, but any such tiling lacks any translational symmetry. Adding a copy of our monotile to a patch of tiles must satisfy two rules that apply only to adjacent tiles. The first is inspired by the Socolar--Taylor monotile, but can be realised by shape alone. The second is a local growth rule; a direct isometry of our monotile can be added to any patch of tiles provided that a tree on the monotile connects continuously with a tree on one of its neighbouring tiles. This condition forces tilings to grow along dendrites, which ultimately results in nonperiodic tilings. Our local growth rule initiates a new method to produce tilings of the plane.",
+      "subjects": [
+        "math.CO",
+        "math.DS",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "arXiv"
+      ]
+    },
+    {
+      "title": "Aperiodic Sets of Prototiles Extracted From the Penrose Rhomb Tiling",
+      "authors": [
+        "Mike Winkler"
+      ],
+      "year": 2021,
+      "doi": null,
+      "arxiv": "2106.08155",
+      "url": "http://arxiv.org/abs/2106.08155v3",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "We present aperiodic sets of prototiles whose shapes are based on the well-known Penrose rhomb tiling. Some decorated prototiles lead to an exact Penrose rhomb tiling without any matching rules. We also give an approximate solution to an aperiodic monotile that tessellates the plane (including five types of gaps) only in a nonperiodic way.",
+      "subjects": [
+        "math.GM"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "An aperiodic monotile for the tiler",
+      "authors": [
+        "Vincent Van Dongen"
+      ],
+      "year": 2022,
+      "doi": null,
+      "arxiv": "2203.12382",
+      "url": "http://arxiv.org/abs/2203.12382v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Can the entire plane be paved with a single tile that forces aperiodicity? This is known as the ein Stein problem (in German, ein Stein means one tile). This paper presents an aperiodic monotile for the tiler. It is based on the monotile developed by Taylor and Socolar (whose aperiodicity is forced by means of a non-connected tile that is mainly hexagonal) and motif-based hexagonal tilings that followed this major discovery. The proposed monotile consists of two layers. No motif is needed to make the monotile aperiodic. Additional motifs can be added to the monotile to provide some insights. The proof of aperiodicity is presented with the use of such motifs.",
+      "subjects": [
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "A continuum limit for dense spatial networks",
+      "authors": [
+        "Sidney Holden",
+        "Geoffrey Vasil"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2301.07086",
+      "url": "http://arxiv.org/abs/2301.07086v5",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Many physical systems -- such as optical waveguide lattices and dense neuronal or vascular networks -- can be modeled by metric graphs, where slender \"wires\" (edges) support wave or diffusion equations subject to Kirchhoff conditions at the nodes. This work proposes a continuum-limit framework that replaces edge-based equations with a global coarse-grained partial differential equation (PDE) defined on the continuous space occupied by the network. The derivation naturally introduces an edge-conductivity tensor, an edge-capacity function, and a vertex number density to encode how each microscopic patch of the graph contributes to the macroscopic phenomena. The results have interesting similarities and differences with the Riemannian Laplace-Beltrami operator. We calculate all macroscopic parameters from first principles via a systematic discrete-to-continuous local homogenization, finding an anomalous effective embedding dimension resulting from a homogenized diffusivity. Numerical examples -- including an axisymmetric \"spiderweb\", several periodic lattices, random Delaunay triangulations, nearest-neighbor geometric graphs, and aperiodic monotiles -- demonstrate that each finite model converges to its corresponding PDE (posed on different manifolds like tori, disks, and spheres) in the limit of increasing vertex density.",
+      "subjects": [
+        "math-ph"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Aperiodicity is all you need: Aperiodic monotiles for high-performance composites",
+      "authors": [
+        "Jiyoung Jung",
+        "Ailin Chen",
+        "Grace X. Gu"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2309.05819",
+      "url": "http://arxiv.org/abs/2309.05819v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "This study introduces a novel approach to composite design by employing aperiodic monotiles, shapes that cover surfaces without translational symmetry. Using a combined computational and experimental approach, we study the fracture behavior of composites crafted with these monotiles, and compared their performance against conventional honeycomb patterns. Remarkably, our aperiodic monotile-based composites exhibited superior stiffness, strength, and toughness in comparison to honeycomb designs. This study suggests that leveraging the inherent disorder of aperiodic structures can usher in a new generation of robust and resilient materials.",
+      "subjects": [
+        "physics.app-ph",
+        "cond-mat.mtrl-sci"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Direct Construction of Aperiodic Tilings with the Hat Monotile",
+      "authors": [
+        "Ulrich Reitebuch"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2306.06512",
+      "url": "http://arxiv.org/abs/2306.06512v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "In 2023, the quest for an aperiodic monotile was answered by the hat monotile. In this article, structures in this aperiodic tiling are discovered, which allow for a direct computation of the tiling, similar to well-known methods for the Penrose tilings.",
+      "subjects": [
+        "math.CO"
+      ],
+      "discovered_via": [
+        "aperiodic monotile",
+        "arXiv",
+        "hat monotile"
+      ]
+    },
+    {
+      "title": "Exact Solution to the Quantum and Classical Dimer Models on the Spectre Aperiodic Monotiling",
+      "authors": [
+        "Shobhna Singh",
+        "Felix Flicker"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2309.14447",
+      "url": "http://arxiv.org/abs/2309.14447v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The decades-long search for a shape that tiles the plane only aperiodically under translations and rotations recently ended with the discovery of the `spectre' aperiodic monotile. In this setting we study the dimer model, in which dimers are placed along tile edges such that each vertex meets precisely one dimer. The complexity of the tiling combines with the dimer constraint to allow an exact solution to the model. The partition function is $\\mathcal{Z}=2^{N_{\\textrm{Mystic}}+1}$ where $N_{\\textrm{Mystic}}$ is the number of `Mystic' tiles. We exactly solve the quantum dimer (Rokhsar Kivelson) model in the same setting by identifying an eigenbasis at all interaction strengths $V/t$. We find that test monomers, once created, can be infinitely separated at zero energy cost for all $V/t$, constituting a deconfined phase in a 2+1D bipartite quantum dimer model.",
+      "subjects": [
+        "cond-mat.str-el",
+        "cond-mat.stat-mech",
+        "quant-ph"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Physical properties of an Aperiodic monotile: Graphene-like features, chirality and zero-modes",
+      "authors": [
+        "Justin Schirmann",
+        "Selma Franca",
+        "Felix Flicker",
+        "Adolfo G. Grushin"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2307.11054",
+      "url": "http://arxiv.org/abs/2307.11054v4",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The discovery of the Hat, an aperiodic monotile, has revealed novel mathematical aspects of aperiodic tilings. However, the physics of particles propagating in such a setting remains unexplored. In this work we study spectral and transport properties of a tight-binding model defined on the Hat. We find that (i) the spectral function displays striking similarities to that of graphene, including six-fold symmetry and Dirac-like features; (ii) unlike graphene, the monotile spectral function is chiral, differing for its two enantiomers; (iii) the spectrum has a macroscopic number of degenerate states at zero energy; (iv) when the magnetic flux per plaquette ($φ$) is half of the flux quantum, zero-modes are found localized around the reflected `anti-hats'; and (v) its Hofstadter spectrum is periodic in $φ$, unlike for other quasicrystals. Our work serves as a basis to study wave and electron propagation in possible experimental realizations of the Hat, which we suggest.",
+      "subjects": [
+        "cond-mat.mes-hall"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Planar aperiodic tile sets: from Wang tiles to the Hat and Spectre monotiles",
+      "authors": [
+        "Tinka Bruneau",
+        "Michael F. Whittaker"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2310.06759",
+      "url": "http://arxiv.org/abs/2310.06759v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "A brief history of planar aperiodic tile sets is presented, starting from the Domino Problem proposed by Hao Wang in 1961. We provide highlights that led to the discovery of the Taylor--Socolar aperiodic monotile in 2010 and the Hat and Spectre aperiodic monotiles in 2023. The Spectre tile is an amazingly simple monotile; a single tile whose translated and rotated copies tile the plane but only in a way that lacks any translational periodicity. We showcase this breakthrough discovery through the 60$+$ years that aperiodic tile sets have been considered.",
+      "subjects": [
+        "math.MG"
+      ],
+      "discovered_via": [
+        "aperiodic monotile",
+        "arXiv",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Quasicrystalline structure of the hat monotile tilings",
+      "authors": [
+        "Joshua E. S. Socolar"
+      ],
+      "year": 2023,
+      "doi": "10.1103/physrevb.108.224109",
+      "arxiv": null,
+      "url": "https://doi.org/10.1103/physrevb.108.224109",
+      "venue": "Physical Review B",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "Hat family tilings",
+        "aperiodic monotile",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Quasicrystalline structure of the Smith monotile tilings",
+      "authors": [
+        "Joshua E. S. Socolar"
+      ],
+      "year": 2023,
+      "doi": null,
+      "arxiv": "2305.01174",
+      "url": "http://arxiv.org/abs/2305.01174v4",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Tiling models can reveal unexpected ways in which local constraints give rise to exotic long-range spatial structure. The recently discovered Hat monotile (and its mirror image) has been shown to be aperiodic~[Smith et al., arXiv:2303.10798 (2023)]; it can tile the plane with no holes or overlaps, but cannot do so periodically. We show that the structure enforced by the local space-filling constraints is quasiperiodic with hexagonal (C6) rotational symmetry. Although this symmetry is compatible with periodicity, the incommensurate ratio characterizing the quasiperiodicity stays locked to the golden mean as the tile parameters are continuously varied. We analyze a modification of the metatiles introduced by Smith et al. that yields a set of ``Key tiles'' that can be constructed as projections of a subset of six-dimensional hypercubic lattice points onto the two-dimensional tiling plane. We analytically compute the diffraction pattern of a set of unit masses placed at the tiling vertices, establishing the quasiperiodic nature of the tiling. We point out several unusual features of the family of Key tilings and associated Hat tilings, including the tile rearrangements associated with the phason degree of freedom associated with incommensurate density waves, which exhibit novel features that may influence the elastic properties of a material in which atoms or larger particles spontaneously exhibit the symmetries of the Hat tiling.",
+      "subjects": [
+        "cond-mat.mtrl-sci"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "hat monotile"
+      ]
+    },
+    {
+      "title": "A chiral aperiodic monotile",
+      "authors": [
+        "David Smith",
+        "Joseph Samuel Myers",
+        "Craig S. Kaplan",
+        "Chaim Goodman-Strauss"
+      ],
+      "year": 2024,
+      "doi": "10.5070/c64264241",
+      "arxiv": "2305.17743",
+      "url": "https://doi.org/10.5070/c64264241",
+      "venue": "Combinatorial Theory",
+      "type": "journal-article",
+      "abstract": "The recently discovered \"hat\" aperiodic monotile mixes unreflected and reflected tiles in every tiling it admits, leaving open the question of whether a single shape can tile aperiodically using translations and rotations alone. We show that a close relative of the hat -- the equilateral member of the continuum to which it belongs -- is a weakly chiral aperiodic monotile: it admits only non-periodic tilings if we forbid reflections by fiat. Furthermore, by modifying this polygon's edges we obtain a family of shapes called Spectres that are strictly chiral aperiodic monotiles: they admit only chiral non-periodic tilings based on a hierarchical substitution system.",
+      "subjects": [
+        "cs.DM",
+        "math.CO",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "arXiv",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "A tiling algorithm for the aperiodic monotile Tile(1,1)",
+      "authors": [
+        "Henning U. Voss"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2406.05236",
+      "url": "http://arxiv.org/abs/2406.05236v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "An algorithm is provided to tile the plane with the aperiodic monotile Tile(1,1) recently discovered by Smith et al. (2023). Their geometric construction guidelines are expanded into a numerical MATLAB algorithm. The intention is to remove a possible obstacle for researchers interested in applications of this fundamental tiling of the plane.",
+      "subjects": [
+        "math-ph"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "An aperiodic monotile",
+      "authors": [
+        "David Smith",
+        "Joseph Samuel Myers",
+        "Craig S. Kaplan",
+        "Chaim Goodman-Strauss"
+      ],
+      "year": 2024,
+      "doi": "10.5070/c64163843",
+      "arxiv": "2303.10798",
+      "url": "https://doi.org/10.5070/c64163843",
+      "venue": "Combinatorial Theory",
+      "type": "journal-article",
+      "abstract": "A longstanding open problem asks for an aperiodic monotile, also known as an \"einstein\": a shape that admits tilings of the plane, but never periodic tilings. We answer this problem for topological disk tiles by exhibiting a continuum of combinatorially equivalent aperiodic polygons. We first show that a representative example, the \"hat\" polykite, can form clusters called \"metatiles\", for which substitution rules can be defined. Because the metatiles admit tilings of the plane, so too does the hat. We then prove that generic members of our continuum of polygons are aperiodic, through a new kind of geometric incommensurability argument. Separately, we give a combinatorial, computer-assisted proof that the hat must form hierarchical -- and hence aperiodic -- tilings.",
+      "subjects": [
+        "cs.DM",
+        "math.CO",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "arXiv",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Aperiodic monotiles: from geometry to groups",
+      "authors": [
+        "Thierry Coulbois",
+        "Anahí Gajardo",
+        "Pierre Guillon",
+        "Victor Lutfalla"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2409.15880",
+      "url": "http://arxiv.org/abs/2409.15880v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "In 2023, two striking, nearly simultaneous, mathematical discoveries have excited their respective communities, one by Greenfeld and Tao, the other (the Hat tile) by Smith, Myers, Kaplan and Goodman-Strauss, which can both be summed up as the following: there exists a single tile that tiles, but not periodically (sometimes dubbed the einstein problem). The two settings and the tools are quite different (as emphasized by their almost disjoint bibliographies): one in euclidean geometry, the other in group theory. Both are highly nontrivial: in the first case, one allows complex shapes; in the second one, also the space to tile may be complex. We propose here a framework that embeds both of these problems. From any tile system in this general framework, with some natural additional conditions, we exhibit a construction to simulate it by a group-theoretical tiling. We illustrate our setting by transforming the Hat tile into a new aperiodic group monotile, and we describe the symmetries of both the geometrical Hat tilings and the group tilings we obtain.",
+      "subjects": [
+        "cs.DM",
+        "math.CO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Aperiodic sets of three types of convex polygons",
+      "authors": [
+        "Teruhisa Sugimoto"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2404.00534",
+      "url": "http://arxiv.org/abs/2404.00534v5",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Sets of three types of convex pentagons that are aperiodic with no matching conditions on the edges are created from a chiral aperiodic monotile Tile(1, 1). This method divides the interior of Tile(1,1) into five convex polygons with five or more edges, and we have so far identified four methods.",
+      "subjects": [
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Effective elastic properties of novel aperiodic monotile-based lattice metamaterials",
+      "authors": [
+        "Mohamed M. Naji",
+        "Rashid K. Abu Al-Rub"
+      ],
+      "year": 2024,
+      "doi": "10.1016/j.matdes.2024.113102",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.matdes.2024.113102",
+      "venue": "Materials & Design",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Fibonacci and Lucas Sequences in Aperiodic Monotile Supertiles",
+      "authors": [
+        "Shiying Dong"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2404.19621",
+      "url": "http://arxiv.org/abs/2404.19621v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "This paper first discusses the size and orientation of hat supertiles. Fibonacci and Lucas sequences, as well as a third integer sequence linearly related to the Lucas sequence are involved. The result is then generalized to any aperiodic tile in the hat family.",
+      "subjects": [
+        "math.CO",
+        "cs.DM"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Ising model on the aperiodic Smith hat",
+      "authors": [
+        "Yutaka Okabe",
+        "Komajiro Niizeki",
+        "Yoshiaki Araki"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2402.11331",
+      "url": "http://arxiv.org/abs/2402.11331v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Smith et al discovered an aperiodic monotile of 13-sided shape in 2023. It is called the `Smith hat' and consists of 8 kites. We deal with the statistical physics of the lattice of the kites, which we call the `Smith-kite lattice'. We studied the Ising model on the aperiodic Smith-kite lattice and the dual Smith-kite lattice using Monte Carlo simulations. We combined the Swendsen-Wang multi-cluster algorithm and the replica exchange method. We simulated systems up to the total spin number $939201$. Using the finite-size scaling analysis, we estimated the critical temperature on the Smith-kite lattice as $T_c/J=2.405 \\pm 0.0005$ and that of the dual Smith-kite lattice as $T^{*}_{c}/J=2.143 \\pm 0.0005$. Moreover, we confirmed the duality relation between the critical temperatures on the dual pair of aperiodic lattices, $\\sinh(2J/T_c) \\sinh(2J/T^{*}_{c}) = 1.000 \\pm 0.001$. We also checked the duality relation for the nearest-neighbor correlation at the critical temperature, essentially the energy, $ε(T_c)/\\coth(2J/T_c) + ε(T^{*}_c)/\\coth(2J/T^{*}_c) = 1.000 \\pm 0.001$.",
+      "subjects": [
+        "cond-mat.stat-mech"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "On the long-range order of the Spectre tilings",
+      "authors": [
+        "Michael Baake",
+        "Franz Gähler",
+        "Jan Mazáč",
+        "Lorenzo Sadun"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2411.15503",
+      "url": "http://arxiv.org/abs/2411.15503v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The Spectre is an aperiodic monotile for the Euclidean plane that is truly chiral in the sense that it tiles the plane without any need for a reflected tile. The topological and dynamical properties of the Spectre tilings are very similar to those of the Hat tilings. Specifically, the Spectre sits within a complex $2$-dimensional family of tilings, most of which involve two shapes rather than one. All tilings in the family give topologically conjugate dynamics, up to an overall rescaling and rotation. They all have pure point dynamical spectrum with continuous eigenfunctions and may be obtained from a $4:2$ dimensional cut-and-project scheme with regular windows of Rauzy fractal type. The diffraction measure of any Spectre tiling is pure point as well. For fixed scale and orientation, varying the shapes is MLD equivalent to merely varying the projection direction. These properties all follow from the first Čech cohomology being as small as it possibly could be, leaving no room for shape changes that alter the dynamics.",
+      "subjects": [
+        "math.DS",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Physical Properties of an Aperiodic Monotile with Graphene-like Features, Chirality, and Zero Modes",
+      "authors": [
+        "Justin Schirmann",
+        "Selma Franca",
+        "Felix Flicker",
+        "Adolfo G. Grushin"
+      ],
+      "year": 2024,
+      "doi": "10.1103/physrevlett.132.086402",
+      "arxiv": null,
+      "url": "https://doi.org/10.1103/physrevlett.132.086402",
+      "venue": "Physical Review Letters",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Translational Aperiodic Sets of 7 Polyominoes",
+      "authors": [
+        "Chao Yang",
+        "Zhujun Zhang"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2412.17382",
+      "url": "http://arxiv.org/abs/2412.17382v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Recently, two extraordinary results on aperiodic monotiles have been obtained in two different settings. One is a family of aperiodic monotiles in the plane discovered by Smith, Myers, Kaplan and Goodman-Strauss in 2023, where rotation is allowed, breaking the 50-year-old record (aperiodic sets of two tiles found by Roger Penrose in the 1970s) on the minimum size of aperiodic sets in the plane. The other is the existence of an aperiodic monotile in the translational tiling of $\\mathbb{Z}^n$ for some huge dimension $n$ proved by Greenfeld and Tao. This disproves the long-standing periodic tiling conjecture. However, it is known that there is no aperiodic monotile for translational tiling of the plane. The smallest size of known aperiodic sets for translational tilings of the plane is $8$, which was discovered more than $30$ years ago by Ammann. In this paper, we prove that translational tiling of the plane with a set of $7$ polyominoes is undecidable. As a consequence of the undecidability, we have constructed a family of aperiodic sets of size $7$ for the translational tiling of the plane. This breaks the 30-year-old record of Ammann.",
+      "subjects": [
+        "math.CO",
+        "cs.CC",
+        "cs.CG",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Turtles, Hats and Spectres: Aperiodic structures on a Rhombic tiling",
+      "authors": [
+        "James Smith"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2403.01911",
+      "url": "http://arxiv.org/abs/2403.01911v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "These notes derive aperiodic monotiles (arXiv:2303.10798) from a set of rhombuses with matching rules. This dual construction is used to simplify the proof of aperiodicity by considering the tiling as a colouring game on a Rhombille tiling. A simple recursive substitution system is then introduced to show the existence of a non-periodic tiling without the need for computer-aided verification. A new cut-and-project style construction linking the Turtle tiling with 1-dimensional Fibonacci words provides a second proof of non-periodicity, and an alternative demonstration that the Turtle can tile the plane. Deforming the Turtle into the Hat tile then provides a third proof for non-periodicity by considering the effect on the lattice underlying the Rhombille tiling. Finally, attention turns to the Spectre tile. In collaboration with Erhard Künzel and Yoshiaki Araki, we present two new substitution rules for generating Spectre tilings. This pair of conjugate rules show that the aperiodic monotile tilings can be considered as a 2-dimensional analog to Sturmian words.",
+      "subjects": [
+        "math.MG",
+        "math.CO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Undecidability of Translational Tiling with Three Tiles",
+      "authors": [
+        "Chan Yang",
+        "Zhujun Zhang"
+      ],
+      "year": 2024,
+      "doi": null,
+      "arxiv": "2412.10646",
+      "url": "http://arxiv.org/abs/2412.10646v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Is there a fixed dimension $n$ such that translational tiling of $\\mathbb{Z}^n$ with a monotile is undecidable? Several recent results support a positive answer to this question. Greenfeld and Tao disprove the periodic tiling conjecture by showing that an aperiodic monotile exists in sufficiently high dimension $n$ [Ann. Math. 200(2024), 301-363]. In another paper [to appear in J. Eur. Math. Soc.], they also show that if the dimension $n$ is part of the input, then the translational tiling for subsets of $\\mathbb{Z}^n$ with one tile is undecidable. These two results are very strong pieces of evidence for the conjecture that translational tiling of $\\mathbb{Z}^n$ with a monotile is undecidable, for some fixed $n$. This paper gives another supportive result for this conjecture by showing that translational tiling of the $4$-dimensional space with a set of three connected tiles is undecidable.",
+      "subjects": [
+        "math.CO",
+        "cs.CC",
+        "cs.CG",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "An Alternative Proof for an Aperiodic Monotile",
+      "authors": [
+        "Shigeki Akiyama",
+        "Yoshiaki Araki"
+      ],
+      "year": 2025,
+      "doi": "10.1007/s00454-025-00717-6",
+      "arxiv": "2307.12322",
+      "url": "https://doi.org/10.1007/s00454-025-00717-6",
+      "venue": "Discrete & Computational Geometry",
+      "type": "journal-article",
+      "abstract": "Abstract We give a simple alternative proof that the monotile introduced by [14] is aperiodic.",
+      "subjects": [
+        "math.CO",
+        "math.DS",
+        "math.MG",
+        "math.NT"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "arXiv",
+        "hat monotile"
+      ]
+    },
+    {
+      "title": "Beating the aliasing limit with aperiodic monotile arrays",
+      "authors": [
+        "Adolfo Grushin",
+        "Aurelien Mordret"
+      ],
+      "year": 2025,
+      "doi": "10.5194/egusphere-egu25-7397",
+      "arxiv": "2408.16476",
+      "url": "https://doi.org/10.5194/egusphere-egu25-7397",
+      "venue": "Physical Review Applied",
+      "type": "posted-content",
+      "abstract": "Finding optimal wave sampling methods has far-reaching implications in wave physics, such as seismology, acoustics, and telecommunications. A key challenge is surpassing the Whittaker-Nyquist&#8211;Shannon (WNS) aliasing limit, establishing a frequency below which the signal cannot be faithfully reconstructed. However, the WNS limit applies only to periodic sampling, opening the door to bypass aliasing by aperiodic sampling. In this work, we investigate the efficiency of a recently discovered family of aperiodic monotile tilings, the Hat family, in overcoming the aliasing limit when spatially sampling a wavefield. By analyzing their spectral properties, we show that monotile aperiodic seismic (MAS) arrays, based on a subset of the Hat tiling family, are efficient in surpassing the WNS sampling limit. Our investigation leads us to propose MAS arrays as a novel design principle for seismic arrays. We show that MAS arrays can outperform regular and other aperiodic arrays in realistic beamforming scenarios using single and distributed sources, including station-position noise. While current seismic arrays optimize beamforming or imaging applications using spiral or regular arrays, MAS arrays can accommodate both, as they share properties with both periodic and aperiodic arrays. More generally, our work suggests that aperiodic monotiles can be an efficient design principle in various fields requiring wave sampling.",
+      "subjects": [
+        "cond-mat.dis-nn",
+        "physics.geo-ph",
+        "physics.optics"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "arXiv",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Chiral Diffraction from Aperiodic Monotile Lattice",
+      "authors": [
+        "Yuto Moritake",
+        "Masato Takiguchi",
+        "Takuma Aihara",
+        "Masaya Notomi"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2506.07561",
+      "url": "http://arxiv.org/abs/2506.07561v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Aperiodic systems such as quasiperiodic systems exhibit unique properties different from periodic structures. In 2023, Smith et al. discovered a new aperiodic structure: a single-shaped tile that can only tile space aperiodically, known as an aperiodic monotile. Although the aperiodic monotile possesses intriguing mathematical properties, its experimental investigation remains unexplored. In this study, we report an experimental investigation of diffraction patterns from a monotile lattice using a nanophotonic platform. We observed clear Bragg peaks, which is evidence of long-range order and a chiral structure of the diffraction patterns. Furthermore, we found exotic behavior in circular polarization dependence, which cannot be observed in conventional quasiperiodic structures. These findings establish the monotile lattice as a novel class of aperiodic systems, expanding the study of nonperiodic structures beyond conventional quasicrystals.",
+      "subjects": [
+        "physics.optics"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Diffraction of the Hat and Spectre tilings and some of their relatives",
+      "authors": [
+        "Michael Baake",
+        "Franz Gähler",
+        "Jan Mazáč",
+        "Andrew Mitchell"
+      ],
+      "year": 2025,
+      "doi": "10.1063/5.0264955",
+      "arxiv": "2502.03268",
+      "url": "https://doi.org/10.1063/5.0264955",
+      "venue": "Journal of Mathematical Physics",
+      "type": "journal-article",
+      "abstract": "The diffraction spectra of the Hat and Spectre monotile tilings, which are known to be pure point, are derived and computed explicitly. This is done via model set representatives of self-similar members in the topological conjugacy classes of the Hat and the Spectre tiling, which are the CAP and the CASPr tiling, respectively. This is followed by suitable reprojections of the model sets to represent the original Hat and Spectre tilings, which also allows to calculate their Fourier–Bohr coefficients explicitly. Since the windows of the underlying model sets have fractal boundaries, these coefficients need to be computed via an exact renormalization cocycle in internal space.",
+      "subjects": [
+        "math-ph",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "Crossref",
+        "Hat family tilings",
+        "arXiv",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Dynamics and topology of the Hat family of tilings",
+      "authors": [
+        "Michael Baake",
+        "Franz Gähler",
+        "Lorenzo Sadun"
+      ],
+      "year": 2025,
+      "doi": "10.1007/s11856-025-2780-8",
+      "arxiv": null,
+      "url": "https://doi.org/10.1007/s11856-025-2780-8",
+      "venue": "Israel Journal of Mathematics",
+      "type": "journal-article",
+      "abstract": "Abstract The recently discovered Hat tiling [18] admits a 4-dimensional family of shape deformations, including the 1-parameter family already known to yield alternate monotiles. The continuous hulls resulting from these tilings are all topologically conjugate dynamical systems, and hence have the same dynamics and topology. We construct and analyze a self-similar element of this family called the CAP tiling, and we use it to derive properties of the entire family. The CAP tiling has pure-point dynamical spectrum, which we compute explicitly, and comes from a natural cut-and-project scheme with 2-dimensional Euclidean internal space. All other members of the Hat family, in particular the original version constructed from 30-60-90 right triangles, are obtained via small modifications of the projection from this cut-and-project scheme.",
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "Hat family tilings"
+      ]
+    },
+    {
+      "title": "Evolving Einstein: The instability of aperiodic monotile as a polycrystalline microstructure",
+      "authors": [
+        "Sankarganesh P.",
+        "Vinothkumar G.",
+        "P.G. Kubendran Amos"
+      ],
+      "year": 2025,
+      "doi": "10.1016/j.mtla.2025.102517",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.mtla.2025.102517",
+      "venue": "Materialia",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Exploring the mechanical properties of aperiodic monotile composite family through Gaussian process regression",
+      "authors": [
+        "Jiyoung Jung",
+        "Kundo Park",
+        "Grace X. Gu"
+      ],
+      "year": 2025,
+      "doi": "10.1016/j.eml.2025.102370",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.eml.2025.102370",
+      "venue": "Extreme Mechanics Letters",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Homochiral inflation for the aperiodic monotile Tile(1,1)",
+      "authors": [
+        "Marianne Imperor-Clerc",
+        "Jean-François Sadoc"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2502.15608",
+      "url": "http://arxiv.org/abs/2502.15608v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The recently discovered chiral monotile Tile(1,1) is tiling the plane in a quasiperiodic fashion by taking twelve different orientations when applying $2π/12$ rotation. An homochiral inflation construction of such a quasiperiodic tiling is proposed where the chirality of the monotile is completely fixed at all inflation steps, avoiding to exchange its chirality between two successive steps. Doing so, the twelve possible orientations of the monotile are explicitly coded and the key difference between odd and even orientations is taken into account. The tiling is decomposed using only two different clusters, $Γ$ and $Ω$, each of them taking six possible orientations. This gives a total set of twelve metatiles, which assembly can be mapped onto a triangular lattice. This approach allows to properly separate rotation and translation symmetry elements relating monotiles together. As all possible orientations of the two clusters are already incorporated in the twelve metatiles, positions of adjacent metatiles are given by translations which are along three equivalent directions ($2π/3$ rotation) as evidenced by junction lines. Finally, thanks to the homochiral inflation, the orientation distribution of the monotile at each inflation step is computed.",
+      "subjects": [
+        "math.CO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "On the Undecidability of Tiling the $3$-dimensional Space with a Set of $3$ Polycubes",
+      "authors": [
+        "Chao Yang",
+        "Zhujun Zhang"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2508.00192",
+      "url": "http://arxiv.org/abs/2508.00192v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Translational tiling problems are among the most fundamental and representative undecidable problems in all fields of mathematics. Greenfeld and Tao obtained two remarkable results on the undecidability of translational tiling in recent years. One is the existence of an aperiodic monotile in a space of sufficiently large dimension. The other is the undecidability of translational tiling of periodic subsets of space with a single tile, provided that the dimension of the space is part of the input. These two results support the following conjecture: there is a fixed dimension $n$ such that translational tiling with a single tile is undecidable. One strategy towards solving this conjecture is to prove the undecidability of translational tiling of a fixed dimension space with a set of $k$ tiles, for a positive integer $k$ as small as possible. In this paper, it is shown that translational tiling the $3$-dimensional space with a set of $3$ polycubes is undecidable.",
+      "subjects": [
+        "math.CO",
+        "cs.CG",
+        "math.MG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Ordine privo di periodicità: il fascino matematico delle tassellazioni",
+      "authors": [
+        "Francesco D'Andrea"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2505.21379",
+      "url": "http://arxiv.org/abs/2505.21379v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "This is a review (in Italian) on aperiodic tilings of the plane intended for a general audience. First, we recall some basic results about lattices and periodic tilings. Then, we move on to one-dimensional (domino) tilings and Wang tilings. We present a beautiful proof of the existence of an aperiodic set of Wang prototiles due to J. Kari. Next, we discuss Penrose tilings and their properties. Finally, we briefly present the recent discovery by D. Smith and his collaborators of an aperiodic monotile.",
+      "subjects": [
+        "math.HO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Quasilattices of the Spectre monotile",
+      "authors": [
+        "Henning U. Voss",
+        "Douglas J. Ballon"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2502.06926",
+      "url": "http://arxiv.org/abs/2502.06926v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The Spectre is a family of recently discovered aperiodic monotiles that tile the plane only in non-periodic ways, and novel physical phenomena have been predicted for planar systems made of aperiodic monotiles. It is shown that point decorations of Tile(1,1), the base tile for all Spectres, supports the generation of a large variety of non-periodic quasilattices, in contrast to Bravais-lattices in which all point decorations would be periodic. A lattice generating function is introduced as a mapping from point decorations to quasilattice space, and investigated systematically. It is found that some lattices result from the properties of nearest-neighbor distances of point decorations, and that other lattices show near-periodicity in projections along one of the symmetry axes of the tiling. It is concluded that the lattice generating function can serve as a template for the design of physical potential landscapes that can be controlled by the point decoration as a parameter.",
+      "subjects": [
+        "physics.gen-ph"
+      ],
+      "discovered_via": [
+        "aperiodic monotile",
+        "arXiv",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Strength through curvature: Engineering multi-phase materials based on chiral aperiodic monotile patterns",
+      "authors": [
+        "Jiyoung Jung",
+        "Kundo Park",
+        "Grace X. Gu"
+      ],
+      "year": 2025,
+      "doi": "10.1016/j.compstruct.2025.119131",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.compstruct.2025.119131",
+      "venue": "Composite Structures",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Sturmian lattices and Aperiodic tile sets",
+      "authors": [
+        "Shigeki Akiyama",
+        "Tadahisa Hamada",
+        "Katsuki Ito"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2506.19362",
+      "url": "http://arxiv.org/abs/2506.19362v3",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "We give an explicit algorithm to construct aperiodic tile sets based on Sturmian words of quadratic slopes. The method works for any quadratic irrational slope, and we can produce infinitely many aperiodic tile sets whose underlying scaling constant is a unit of any real quadratic field. There are two key ingredients in our construction. The first one is ``Sturmian lattices''; an interesting grid structure generated by Sturmian words that emerged in an aperiodic monotile called Smith Turtle. We shall give a classification of Sturmian lattices. The second is the bounded displacement equivalence of Delone sets, which plays a central role in this construction.",
+      "subjects": [
+        "math.CO",
+        "math.DS",
+        "math.MG",
+        "math.NT"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "The Path to Aperiodic Monotiles",
+      "authors": [
+        "Craig S. Kaplan"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2509.12216",
+      "url": "http://arxiv.org/abs/2509.12216v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "This article, written for undergraduate mathematics students, provides an accessible introduction to a few key problems in tiling theory: Heesch's problem, the isohedral number problem, and the existence of an aperiodic monotile. I contributed to the solution of the last of these problems in 2023, but many related questions remain open and worthy of study. My goal is to get more students excited about studying tiling theory.",
+      "subjects": [
+        "math.HO",
+        "math.CO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Tilings from Tops of Overlapping Iterated Function Systems",
+      "authors": [
+        "Michael F. Barnsley",
+        "Corey de Wit"
+      ],
+      "year": 2025,
+      "doi": null,
+      "arxiv": "2504.11710",
+      "url": "http://arxiv.org/abs/2504.11710v3",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The top of the attractor $A$ of a hyperbolic iterated function system $\\left\\{ f_{i}:\\mathbb{R}^{n}\\rightarrow\\mathbb{R}^{n}|i=1,2,\\dots,M\\right\\} $ is defined and used to extend self-similar tilings to overlapping systems. The theory provides sequences of approximate supertiles that converge to tilings. Individual tiles in a tiling are limits of nested decreasing sequences of approximate tiles. Examples include systems of finite type, tilings related to aperiodic monotiles, and ones where there are infinitely many distinct but related prototiles.",
+      "subjects": [
+        "math.DS"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Aperiodic ordered lattices with semi Re-entrant einstein monotile",
+      "authors": [
+        "Amin Montazeri",
+        "Mohamad Rahimi",
+        "Mohammadreza Maghzi",
+        "Iman Ahmadian",
+        "Majid Safarabadi"
+      ],
+      "year": 2026,
+      "doi": "10.1016/j.euromechsol.2025.105830",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.euromechsol.2025.105830",
+      "venue": "European Journal of Mechanics - A/Solids",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "hat monotile"
+      ]
+    },
+    {
+      "title": "Mechanical behaviour of aperiodic monotile minimal surface metamaterials",
+      "authors": [
+        "Stephen Daynes"
+      ],
+      "year": 2026,
+      "doi": "10.1016/j.tws.2026.114788",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.tws.2026.114788",
+      "venue": "Thin-Walled Structures",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "aperiodic monotile",
+        "hat monotile",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Monotile kirigami",
+      "authors": [
+        "Hugo Hiu Chak Cheng",
+        "Gary P. T. Choi"
+      ],
+      "year": 2026,
+      "doi": null,
+      "arxiv": "2604.19586",
+      "url": "http://arxiv.org/abs/2604.19586v2",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "Kirigami, the art of paper cutting, has been widely used in the modern design of mechanical metamaterials. In recent years, many kirigami-based metamaterials have been designed based on different planar tiling patterns and applied to different science and engineering problems. However, it is natural to ask whether one can create deployable kirigami structures based on the simplest forms of tilings, namely the monotile patterns. In this work, we answer this question by proving the existence of periodic and aperiodic monotile kirigami structures via explicit constructions. In particular, we present a comprehensive collection of periodic monotile kirigami structures covering all 17 wallpaper groups and aperiodic monotile kirigami structures covering various quasicrystal patterns as well as polykite tilings. We further perform theoretical and computational analyses of monotile kirigami patterns in terms of their shape and size changes under deployment. Altogether, our work paves a new way for the design and analysis of a wider range of shape-morphing metamaterials.",
+      "subjects": [
+        "cond-mat.soft",
+        "cond-mat.mtrl-sci",
+        "cs.CG"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Percolation Critical Probability of Aperiodic Smith Hat tile(1, $\\sqrt3$)",
+      "authors": [
+        "Haitao Gao",
+        "Aaryash Bharadwaj"
+      ],
+      "year": 2026,
+      "doi": null,
+      "arxiv": "2604.21165",
+      "url": "http://arxiv.org/abs/2604.21165v1",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The Smith Hat tile is the first known aperiodic monotile, having been discovered in 2023. The simple structure, constructed using only 8 kites, is unique and well motivated for analysis within percolation theory. The primary goal of this paper is to discover the critical threshold $p_c$ in both site and bond Bernoulli structures using Monte Carlo simulation for the Smith hat tile(1,$\\sqrt3$). Our findings are site and bond values of $p_c^s = 0.822725 \\pm 0.000044$ and $p_c^b = 0.798161 \\pm 0.000044$ for edge percolation and $0.544247 \\pm 0.000101$ for site percolation on the dual graph.",
+      "subjects": [
+        "cond-mat.stat-mech",
+        "physics.data-an"
+      ],
+      "discovered_via": [
+        "Smith hat tiling",
+        "aperiodic monotile",
+        "arXiv"
+      ]
+    },
+    {
+      "title": "Role of (periodic as well as aperiodic) tessellations in contemporary composition. The cases of Tesselles sonores and Le Chapeau à douze cornes by Marisa Acuña",
+      "authors": [
+        "Maria Luisa Acuña Fuentes",
+        "Édouard Thomas"
+      ],
+      "year": 2026,
+      "doi": null,
+      "arxiv": "2601.15179",
+      "url": "http://arxiv.org/abs/2601.15179v3",
+      "venue": "arXiv",
+      "type": "preprint",
+      "abstract": "The recent discovery of a family of aperiodic monotiles, which includes David Smith's famous Hat, has shaken the field of plane tessellations. Music composers have already utilised the visual representation of plane tilings in their artwork (Tom Johnson through his use of Vuza's canons, talea and color in isorhythmic motets...). Constructions of the Hat from elementary geometric polygons provide a different perspective, for example through the sound transformation of microtonal intervals, as seen in Marisa Acuña's piece Le Chapeau à douze cornes.",
+      "subjects": [
+        "math.HO"
+      ],
+      "discovered_via": [
+        "arXiv",
+        "aperiodic monotile"
+      ]
+    }
+  ]
+}

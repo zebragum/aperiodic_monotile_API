@@ -134,9 +134,18 @@
     ]
   },
   {
+    "slug": "four-dimensional-lift",
+    "title": "Four-dimensional lift",
+    "summary": "Nan Ma\u2019s coherent \u211d\u2074 edge lift, and how it differs from CAP/CASPr cut-and-project theory.",
+    "categories": [
+      "Mathematics",
+      "Visualizations"
+    ]
+  },
+  {
     "slug": "bibliography",
     "title": "Bibliography",
-    "summary": "Complete reference list: the arXiv corpus behind this wiki, plus fabrication files and exhibits.",
+    "summary": "54 curated scholarly references, fabrication files, exhibits, and an automated discovery registry.",
     "categories": [
       "References"
     ]

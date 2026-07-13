@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Four-dimensional lift | Research Wiki | Aperiodic Monotile Generator</title>
+    <meta name="description" content="Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory." />
+    <link rel="canonical" href="https://aperiodicgenerator.com/research/wiki/four-dimensional-lift.html" />
+    <meta name="robots" content="index,follow" />
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Aperiodic Monotile Generator</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../index.html">Home</a>
+        <a href="../../docs.html">Docs</a>
+        <a href="../index.html" aria-current="page">Research</a>
+        <a href="index.html">Wiki</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button secondary small" href="../../docs.html#access">Get Access</a>
+      </div>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire-and-aliasing.html">Moiré and aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li class="is-active"><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Four-dimensional lift</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Four-dimensional lift</h1>
+          <p class="wiki-tagline">Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">The observation</a></li>
+<li><a href="#section-1">How the lift works</a></li>
+<li><a href="#section-2">What it proves — and what it does not</a></li>
+<li><a href="#section-3">Six dimensions and diffraction</a></li>
+<li><a href="#section-4">Explore it</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Four-dimensional lift</p>
+  <table><tr><th>Initial idea</th><td>Nan Ma</td></tr><tr><th>Exposition</th><td>Arnaud Chéritat with Nan Ma</td></tr><tr><th>First dated artifact</th><td>9 June 2023</td></tr><tr><th>Ambient space</th><td>ℝ⁴ = ℝ² × ℝ²</td></tr><tr><th>Key distinction</th><td>Edge lift ≠ cut-and-project proof</td></tr></table>
+</aside>
+
+          <h2 id="section-0">The observation</h2>
+<p>
+  The whole Hat or Spectre tiling can be treated as a single static object in four-dimensional space.
+  Arnaud Chéritat credits the initial idea to Nan Ma: not merely lifting one Tile(<em>a,b</em>) outline,
+  but assigning coherent ℝ⁴ coordinates to every vertex in an entire simply connected tiling.<sup class="citation"><a href="bibliography.html#ref-54">[54]</a></sup>
+  Ma’s earliest securely dated public artifact is the
+  <a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">aperiodic-monotile-4d</a>
+  repository created 9 June 2023.
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/four-dimensional-lift.png" alt="Real Tile(1,1) edge vectors lifted into two coordinate planes in four dimensions, then projected as Hat, Tile(1,1), and Turtle" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>One path, a family of projections.</strong> Coral and teal edges lift into separate coordinate planes in ℝ⁴. The Hat, Tile(1,1), and Turtle are different linear projections of the same closed lifted path. Original diagram generated from this site's canonical Tile(1,1) geometry, following Chéritat and Ma’s construction.</figcaption>
+</figure>
+<h2 id="section-1">How the lift works</h2>
+<p>
+  Write four-space as ℝ⁴ = ℝ²<sub>red</sub> × ℝ²<sub>green</sub>. Tile(<em>a,b</em>) has two
+  direction classes: edges at multiples of 60° and edges at odd multiples of 30°. A directed edge
+  (<em>x,y</em>) in the first class lifts to (<em>x,y,0,0</em>); one in the second lifts to
+  (<em>0,0,x,y</em>). Opposite edges cancel by class, so the fourteen lifted vectors close into one
+  polygonal path in ℝ⁴.
+</p>
+<p>
+  The ordinary two-dimensional tile is recovered by
+  L<sub>a,b</sub>(<em>u,v</em>) = <em>a u + b v</em>. Changing (<em>a,b</em>) changes the
+  projection, not the lifted object: Hat, Tile(1,1), Turtle, Chevron, and Comet are views of the same
+  four-dimensional edge path. Adjacent tiles give their shared edge the same lifted vector; integrating
+  these vectors gives path-independent vertex coordinates across any simply connected patch.<sup class="citation"><a href="bibliography.html#ref-54">[54]</a></sup>
+</p>
+<p>
+  For homochiral Tile(1,1)/Spectre tilings, tiles rotated by an odd multiple of 30° swap the two edge
+  classes. Animations vary an ℝ⁴→ℝ³ projection while the lifted surface stays still. This is why a
+  complicated coordinated deformation can be understood as moving a camera around one higher-dimensional
+  object.
+</p>
+<h2 id="section-2">What it proves — and what it does not</h2>
+<p>
+  Ma’s construction is best understood as a discrete height function or stepped surface. The edge lift is
+  canonical, but filling each lifted tile interior with a surface is not unique; rendered solids include a
+  visualization choice. The lift does not by itself prove that Hat or Spectre control points form a regular
+  model set.
+</p>
+<p>
+  That stronger result comes from distinct work. Baake, Gähler, and Sadun construct the self-similar CAP
+  representative of the Hat family and a 4:2 cut-and-project scheme with two-dimensional internal
+  space.<sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup> Baake, Gähler, Mazáč, and Sadun do the analogous job for Spectre via CASPr and five
+  Rauzy-fractal windows, proving pure-point spectrum and diffraction.<sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup> These frameworks use
+  algebraic return modules, Galois conjugation, and acceptance windows—not Ma’s edge coloring.
+</p>
+<h2 id="section-3">Six dimensions and diffraction</h2>
+<p>
+  Socolar’s independent Golden Key construction embeds a related Hat metatiling in a six-dimensional
+  hypercubic lattice and projects selected points to the plane, establishing golden-mean quasiperiodicity
+  and a phason degree of freedom.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup> Exact diffraction calculations later use CAP and CASPr
+  reprojections plus renormalization cocycles to compute Fourier–Bohr amplitudes through fractal
+  windows.<sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup><sup class="citation"><a href="bibliography.html#ref-36">[36]</a></sup>
+</p>
+<p>
+  These are complementary views: Ma’s lift explains the moving Tile(<em>a,b</em>) family geometrically;
+  CAP/CASPr explain long-range order dynamically; the six-dimensional Golden Key construction exposes a
+  larger quasiperiodic embedding.
+</p>
+<h2 id="section-4">Explore it</h2>
+<ul>
+  <li><a href="https://www.math.univ-toulouse.fr/~cheritat/2023-monotile/4D-lift/" rel="noopener noreferrer">Chéritat and Ma’s full exposition</a></li>
+  <li><a href="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/" rel="noopener noreferrer">Interactive 4D projection applet</a> (CC BY-SA)</li>
+  <li><a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">Nan Ma’s Wolfram Language repository</a> (no license; link only)</li>
+</ul>
+<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-visualizations">Visualizations</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

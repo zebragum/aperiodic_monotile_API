@@ -50,6 +50,7 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -106,14 +107,18 @@
   Recent work on 2D histogram binning shows the practical direction: non-square binning geometries
   materially change what structure an analysis can resolve.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup> Tile centroids, edges, and adjacency
   graphs from a generated patch provide deterministic, reproducible sampling frames for the same kind of
-  experiments in reconstruction, denoising, and compression.
+  experiments in reconstruction, denoising, and compression. Mordret and Grushin demonstrate the payoff in
+  simulated sensor arrays: Hat-family monotile layouts beat tested periodic and aperiodic baselines for
+  spatial sampling and aliasing resistance.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
 </p>
 <h2 id="section-1">Experiment directions</h2>
 <ul>
   <li>Sampling theory: compare monotile centroids against grids, jittered grids, blue noise, and Penrose
   point sets in reconstruction benchmarks</li>
   <li>Sensor arrays: radar, sonar, MRI, and CT geometry studies where periodic element spacing creates
-  grating lobes<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup></li>
+  grating lobes<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup><sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup></li>
+  <li>Phased arrays: simulated Hat layouts achieve low grating lobes and high aperture efficiency in
+  limited-scan beamforming studies<sup class="citation"><a href="bibliography.html#ref-38">[38]</a></sup></li>
   <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
   <li>Anti-aliasing masks and halftone screens; see <a href="moire-and-aliasing.html">Moiré and aliasing</a></li>
 </ul>

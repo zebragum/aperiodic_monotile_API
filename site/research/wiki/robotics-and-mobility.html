@@ -50,6 +50,7 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -86,13 +87,15 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Robotics and mobility</p>
-  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key benefit</th><td>Position from local appearance</td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier (no published robotics demo yet)</td></tr><tr><th>Key benefit</th><td>Position from local appearance</td></tr></table>
 </aside>
 
           <h2 id="section-0">Why aperiodic beats periodic here</h2>
 <p>
-  Regular grids are the worst possible texture for visual localization: every cell looks like every other
-  cell, so a camera looking at a periodic floor learns nothing about <em>where</em> it is. Random textures
+  <em>No published robotics application uses monotile floors yet; the argument below is a research
+  direction, not a demonstrated product.</em> Regular grids are the worst possible texture for visual
+  localization: every cell looks like every other cell, so a camera looking at a periodic floor learns
+  nothing about <em>where</em> it is. Random textures
   are locally distinctive but cannot be regenerated or queried. An aperiodic monotile surface is the
   interesting middle: <strong>every neighborhood is provably unique</strong>,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet the whole
   surface is deterministic — a robot that recognizes its local tile configuration can, in principle, look
