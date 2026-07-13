@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Design, art, and architecture | Research Wiki | Aperiodic Monotile Generator</title>
-    <meta name="description" content="Repeat-free ornamental surfaces, facades, textiles, and spatial studies." />
+    <meta name="description" content="Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions." />
     <link rel="canonical" href="https://aperiodicgenerator.com/research/wiki/design-and-architecture.html" />
     <meta name="robots" content="index,follow" />
     <link rel="stylesheet" href="../../styles.css" />
@@ -73,38 +73,86 @@
         <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Design, art, and architecture</span></p>
         <header class="wiki-header">
           <h1 class="wiki-title">Design, art, and architecture</h1>
-          <p class="wiki-tagline">Repeat-free ornamental surfaces, facades, textiles, and spatial studies.</p>
+          <p class="wiki-tagline">Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions.</p>
         </header>
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Overview</a></li>
+<li><a href="#section-0">Surfaces that never wallpaper</a></li>
+<li><a href="#section-1">Tiling a real surface: practical instructions</a></li>
+<li><a href="#section-2">Applications</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Design, art, and architecture</p>
-  <table><tr><th>Status</th><td>Immediately practical</td></tr><tr><th>Exports</th><td>Vector SVG, fabrication meshes</td></tr></table>
+  <table><tr><th>Status</th><td>Immediately practical</td></tr><tr><th>Exports</th><td>Vector SVG, fabrication meshes</td></tr><tr><th>Real-world install</th><td>Single orientation, no flips</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Overview</h2>
-<p>Make surfaces that feel intentional without becoming wallpaper. Designers can fill any region with
-geometry that stays coherent across scale, works as a vector asset, and can become a real fabricated object.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup><sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup></p>
+          <h2 id="section-0">Surfaces that never wallpaper</h2>
+<p>
+  Ornament has always negotiated between order and monotony. Historic zellige, azulejo, and parquet crafts
+  solved it with hand variation; modern manufacturing lost that solution the moment patterns became
+  repeatable. The aperiodic monotile restores it structurally: one manufactured shape, infinite
+  non-repeating arrangements, provable by theorem rather than promised by a craftsman.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+</p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/design-architecture-facade.jpg" alt="Warm terracotta aperiodic tiling used as an architectural ground and facade study" width="1400" loading="lazy" decoding="async" />
-  <figcaption><strong>Ornamental surface.</strong> Repeat-free geometry that reads as intentional cladding — scalable from vector masks to fabricated panels.</figcaption>
+  <img src="../../assets/research/wiki/design-zellige-emerald.jpg" alt="Emerald glazed ceramic Spectre tiles with handmade zellige-style glinting" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Glazed ceramic feature wall.</strong> Every Spectre tile is a physical chip with thickness, grout, and a slight random tilt, so the glaze glints tile-by-tile like handmade zellige. Rendered in Cycles from a generated Tile(1,1) patch.</figcaption>
 </figure>
 
-<ul><li>Generative sculpture, ornamental tilings, impossible forms, and visual illusions</li>
-<li>Facades, screens, ventilation geometry, textiles, inlays, and packaging</li>
-<li>Lightweight shells, tensile structures, and spatial studies for built environments</li></ul>
+<p>
+  Because the tiling is deterministic, a designer can sign off on the <em>exact</em> layout before
+  fabrication — every tile position is known, exportable, and reproducible. And because Tile(1,1) needs no
+  reflected copies, production tooling stays single-sided: one mold, one die, one glaze line.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/design-zellige-sunset.jpg" alt="Warm ochre and slate glazed Spectre tile floor in raking light" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Warm palette study.</strong> The same generated patch, re-glazed. Because tile IDs are stable, a palette change is a data change — the geometry, grout lines, and layout never move.</figcaption>
+</figure>
+<h2 id="section-1">Tiling a real surface: practical instructions</h2>
+<p>
+  Physical monotile installations are already common among mathematicians, makers, and a growing number of
+  tile artisans. The working recipe, distilled from the research community's own guides:
+</p>
+<ol>
+  <li><strong>Choose the Spectre, not the Hat, for physical work.</strong> Hat tilings require reflected
+  copies — for glazed or finished tiles that means two distinct products. The Spectre tiles with one
+  handedness only.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
+  <li><strong>Use curved or keyed edges.</strong> The straight-edged Tile(1,1) <em>can</em> be assembled
+  into a periodic pattern by a well-meaning installer. Curved Spectre edges physically refuse periodic
+  and reflected placements — the geometry enforces correctness.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
+  <li><strong>Get the outline from a trusted source.</strong> Kaplan's
+  <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">project page</a> publishes SVG
+  outlines; community repositories provide OpenSCAD, STL, and DXF for 3D printing, laser cutting, and CNC
+  (see the <a href="bibliography.html">bibliography</a> tools list). Parametric models let you add
+  orientation marks so pieces cannot be laid face-down.</li>
+  <li><strong>Assemble by supertile.</strong> Working tile-by-tile invites dead ends. Pre-assemble the
+  8-to-9-tile clusters from the substitution system, then place clusters — the same hierarchy the
+  mathematics uses. See <a href="substitution-tiling.html">Substitution tiling</a>.</li>
+  <li><strong>Or skip layout entirely:</strong> generate the exact patch for your wall's dimensions with a
+  clipping mask, and deliver the installer a numbered plan where every tile has an ID and position.</li>
+</ol>
+<p>
+  For hybrid designs, research on interfaces between aperiodic and periodic tilings shows how a Spectre
+  field can hand off cleanly to a conventional grid at a boundary — useful where a feature wall meets
+  standard tile.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+</p>
+<h2 id="section-2">Applications</h2>
+<ul>
+  <li>Feature walls, floors, and facades with provable non-repetition</li>
+  <li>Generative sculpture, ornamental screens, and visual illusions</li>
+  <li>Textiles, wallpaper, packaging, embossing, and engraving with no repeat unit</li>
+  <li>Lightweight shells, tensile structures, and spatial studies for built environments</li>
+</ul>
 <h2>See also</h2><p><a href="computer-graphics.html">Computer graphics</a>, <a href="materials-and-fabrication.html">Materials and fabrication</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-applications">Applications</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

@@ -79,42 +79,67 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">How substitution works</a></li>
-<li><a href="#section-1">Practical generation</a></li>
+<li><a href="#section-1">Structure inside the hierarchy</a></li>
+<li><a href="#section-2">Practical generation</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Substitution tiling</p>
-  <table><tr><th>Used by</th><td>Spectre, Hat, Penrose systems</td></tr><tr><th>Output</th><td>Deterministic tile placements</td></tr><tr><th>Key idea</th><td>Inflation / deflation rules</td></tr></table>
+  <table><tr><th>Used by</th><td>Spectre, Hat, Penrose systems</td></tr><tr><th>Output</th><td>Deterministic tile placements</td></tr><tr><th>Key idea</th><td>Inflation / deflation rules</td></tr><tr><th>Tile counts</th><td>Fibonacci–Lucas growth</td></tr></table>
 </aside>
 
           <h2 id="section-0">How substitution works</h2>
 <p>
   <strong>Substitution tilings</strong> start from a small set of metatiles and repeatedly replace each
-  metatile with a scaled copy of the full set. After finitely many steps, the limit produces an infinite
-  tiling whose local structure is hierarchical but never repeats periodically.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  metatile with a configuration of smaller copies. Iterating produces patches at every scale, and in the
+  limit, an infinite tiling whose local structure is hierarchical but never repeats periodically.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  For the Spectre system, nine labeled tile classes (Gamma through Psi) combine into superclusters of
+  roughly eight tiles, which combine into super-superclusters, and so on forever.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup>
 </p>
 
-<figure class="wiki-figure wiki-figure-gif">
-  <img src="../../assets/research/wiki/tiling-array-zoom.gif" alt="Animated zoom between a dense aperiodic monotile array and a magnified tile view" width="480" height="480" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>Tiling array.</strong> A dense Spectre / Tile(1,1) patch oscillates between field scale and
-    near-tile magnification — the same array read as texture from afar and as individual tiles up close.
-    <a href="../../assets/research/wiki/tiling-array-web.jpg">Full resolution still</a>
-  </figcaption>
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline aria-label="&lt;strong&gt;The substitution hierarchy, animated.&lt;/strong&gt; One Tile(1,1) grows into a cluster, then a supercluster, following the real substitution rules. Colors mark which first-generation cluster each tile belongs to, so the hierarchy stays visible as the patch expands. &lt;a href=&quot;../../assets/research/wiki/substitution-hierarchy-still.png&quot;&gt;Supercluster still&lt;/a&gt;">
+    <source src="../../assets/research/wiki/substitution-hierarchy.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>The substitution hierarchy, animated.</strong> One Tile(1,1) grows into a cluster, then a supercluster, following the real substitution rules. Colors mark which first-generation cluster each tile belongs to, so the hierarchy stays visible as the patch expands. <a href="../../assets/research/wiki/substitution-hierarchy-still.png">Supercluster still</a></figcaption>
 </figure>
-<h2 id="section-1">Practical generation</h2>
+
 <p>
-  For engineering and graphics, substitution is stopped once a patch covers a requested mask (rectangle,
-  circle, custom polygon). Each tile receives an ID, transform, and adjacency data — turning abstract
-  mathematics into reproducible geometry files.
+  The animation above is generated from the real Tile(1,1) substitution rules: one tile becomes a cluster
+  of 9, which becomes a supercluster of 71. Each color marks a first-generation cluster, so you can watch
+  the same structural motif recur at each level — the geometric signature of aperiodic order.
 </p>
+<h2 id="section-1">Structure inside the hierarchy</h2>
+<p>
+  The hierarchy is not just qualitative. Tile counts per generation follow Fibonacci and Lucas number
+  recurrences,<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> Spectre tilings decompose into recognizable hexagonal clusters,<sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup> and the
+  whole system embeds in a rhombic tiling framework shared by the Hat and Turtle.<sup class="citation"><a href="bibliography.html#ref-8">[8]</a></sup> Substitution
+  systems can even be built from overlapping iterated function systems, connecting tilings to fractal
+  geometry.<sup class="citation"><a href="bibliography.html#ref-14">[14]</a></sup> Sturmian sequences — the one-dimensional cousins of aperiodic order — provide lattice
+  models with closely related structure.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup>
+</p>
+<h2 id="section-2">Practical generation</h2>
+<p>
+  For engineering and graphics, substitution runs until a patch covers a requested mask (rectangle, circle,
+  custom polygon), then edge tiles are clipped to the boundary. Each tile carries an ID, a label, an affine
+  transform, and adjacency data — turning abstract mathematics into reproducible geometry files. Because
+  the recurrence is deterministic, the same request always returns the same patch: essential for version
+  control, physical fabrication, and scientific reproducibility.
+</p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline aria-label="&lt;strong&gt;Tiling array.&lt;/strong&gt; A steady camera zoom into a dense Spectre / Tile(1,1) field and back out — the same real generated patch read as texture at a distance and as individual tiles up close. &lt;a href=&quot;../../assets/research/wiki/tiling-array-web.jpg&quot;&gt;Full-resolution still&lt;/a&gt;">
+    <source src="../../assets/research/wiki/tiling-array-zoom.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Tiling array.</strong> A steady camera zoom into a dense Spectre / Tile(1,1) field and back out — the same real generated patch read as texture at a distance and as individual tiles up close. <a href="../../assets/research/wiki/tiling-array-web.jpg">Full-resolution still</a></figcaption>
+</figure>
 <h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

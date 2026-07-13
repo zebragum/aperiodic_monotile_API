@@ -78,34 +78,50 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Overview</a></li>
+<li><a href="#section-0">Between the grid and the dice roll</a></li>
+<li><a href="#section-1">Experiment directions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Signal processing and imaging</p>
-  <table><tr><th>Status</th><td>Research frontier</td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key property</th><td>No lattice frequency to alias against</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Overview</h2>
-<p>Regular sampling can create artifacts; random sampling can be hard to control. Aperiodic layouts offer
-another family of deterministic patterns to test against reconstruction, denoising, compression, and imaging
-pipelines.<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup><sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></p>
+          <h2 id="section-0">Between the grid and the dice roll</h2>
+<p>
+  Regular sampling aliases: any signal content near the lattice frequency folds into artifacts. Random
+  sampling trades aliasing for noise and loses reproducibility. Aperiodic monotile layouts offer a third
+  option with a genuinely different spectrum — the quasicrystalline diffraction structure of monotile
+  tilings means sharp spectral features but no periodic lattice to beat against.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
+</p>
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/signal-processing-sampling.png" alt="Tile centroids as a deterministic non-periodic sampling layout" width="1400" loading="lazy" decoding="async" />
   <figcaption><strong>Sampling layout.</strong> Each tile centroid is a reproducible sample point — an alternative to regular grids and jittered noise for imaging and sensor-array experiments.</figcaption>
 </figure>
 
-<ul><li>Sampling theory, compression, denoising, and reconstruction</li>
-<li>Radar, sonar, MRI, CT, and sensor-array geometry experiments</li>
-<li>Comparisons with grids, jittered samples, blue-noise patterns, and quasi-periodic layouts</li></ul>
+<p>
+  Recent work on 2D histogram binning shows the practical direction: non-square binning geometries
+  materially change what structure an analysis can resolve.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup> Tile centroids, edges, and adjacency
+  graphs from a generated patch provide deterministic, reproducible sampling frames for the same kind of
+  experiments in reconstruction, denoising, and compression.
+</p>
+<h2 id="section-1">Experiment directions</h2>
+<ul>
+  <li>Sampling theory: compare monotile centroids against grids, jittered grids, blue noise, and Penrose
+  point sets in reconstruction benchmarks</li>
+  <li>Sensor arrays: radar, sonar, MRI, and CT geometry studies where periodic element spacing creates
+  grating lobes<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup></li>
+  <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
+  <li>Anti-aliasing masks and halftone screens; see <a href="moire-and-aliasing.html">Moiré and aliasing</a></li>
+</ul>
 <h2>See also</h2><p><a href="moire-and-aliasing.html">Moiré and aliasing</a>, <a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

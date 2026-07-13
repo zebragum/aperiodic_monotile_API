@@ -78,34 +78,50 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Overview</a></li>
+<li><a href="#section-0">A benchmark that cannot be memorized</a></li>
+<li><a href="#section-1">Experiment directions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Algorithms and machine learning</p>
-  <table><tr><th>Status</th><td>Research frontier</td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key property</th><td>Structured, non-memorizable, reproducible</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Overview</h2>
-<p>Because every patch can be regenerated with stable IDs and transforms, the geometry can become a
-benchmark input: structured, non-repeating, and harder to memorize than a regular grid. Cryptographic uses
-should be treated as research only unless formally reviewed.<sup class="citation"><a href="bibliography.html#ref-7">[7]</a></sup><sup class="citation"><a href="bibliography.html#ref-9">[9]</a></sup><sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup></p>
+          <h2 id="section-0">A benchmark that cannot be memorized</h2>
+<p>
+  Machine learning systems exploit repetition; aperiodic monotile geometry is repetition-proof by theorem.
+  Because every patch regenerates exactly from stable IDs and transforms, it makes an unusual benchmark
+  input: <strong>structured enough to learn on, impossible to memorize globally, and perfectly
+  reproducible</strong>.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Monotiles are also nearly absent from pre-2023 training corpora, which
+  makes them a probe for how models handle genuinely novel geometric structure.
+</p>
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/algorithms-graph-patch.png" alt="Tile adjacency graph overlaid on an aperiodic monotile patch" width="1400" loading="lazy" decoding="async" />
   <figcaption><strong>Benchmark graph.</strong> Stable tile IDs and neighbor structure for spatial indexing, embeddings, and geometric machine-learning experiments.</figcaption>
 </figure>
 
-<ul><li>Spatial indexing, nearest-neighbor search, graph embeddings, and geometric hashing</li>
-<li>Geometric deep learning, manifolds, latent spaces, equivariant models, and physical-system priors</li>
-<li>Lattice-inspired experiments, geometric trapdoors, high-dimensional hardness ideas, and quantum-code layouts</li></ul>
+<p>
+  The theoretical backdrop is rich. Tiling problems sit at the edge of computability — translational tiling
+  is undecidable with three tiles,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> and the structured-vs-wild dichotomy is an open research
+  program.<sup class="citation"><a href="bibliography.html#ref-23">[23]</a></sup> On the constructive side, SAT solvers detect isohedral polyforms,<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> exact
+  algorithms extract tessellation generators from data,<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> and group-theoretic formulations connect
+  tilings to algebra.<sup class="citation"><a href="bibliography.html#ref-9">[9]</a></sup>
+</p>
+<h2 id="section-1">Experiment directions</h2>
+<ul>
+  <li>Spatial indexing, nearest-neighbor search, graph embeddings, and geometric hashing over tile adjacency graphs</li>
+  <li>Geometric deep learning: equivariant models tested on structure with no translation group</li>
+  <li>Procedural benchmarks for SLAM, navigation, and reconstruction (see Robotics)</li>
+  <li>Cryptographic experiments — geometric trapdoors and hardness ideas — research-only unless formally reviewed</li>
+</ul>
 <h2>See also</h2><p><a href="robotics-and-mobility.html">Robotics and mobility</a>, <a href="signal-processing.html">Signal processing and imaging</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

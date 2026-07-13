@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hat tile | Research Wiki | Aperiodic Monotile Generator</title>
-    <meta name="description" content="The first aperiodic monotile, an asymmetric 13-gon announced in March 2023." />
+    <meta name="description" content="The first aperiodic monotile, an asymmetric polykite announced in March 2023." />
     <link rel="canonical" href="https://aperiodicgenerator.com/research/wiki/hat-tile.html" />
     <meta name="robots" content="index,follow" />
     <link rel="stylesheet" href="../../styles.css" />
@@ -73,53 +73,61 @@
         <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Hat tile</span></p>
         <header class="wiki-header">
           <h1 class="wiki-title">Hat tile</h1>
-          <p class="wiki-tagline">The first aperiodic monotile, an asymmetric 13-gon announced in March 2023.</p>
+          <p class="wiki-tagline">The first aperiodic monotile, an asymmetric polykite announced in March 2023.</p>
         </header>
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">Discovery</a></li>
 <li><a href="#section-1">Why reflections matter</a></li>
+<li><a href="#section-2">Physics on the Hat lattice</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Hat tile</p>
-  <table><tr><th>Announced</th><td>March 2023</td></tr><tr><th>Authors</th><td>Smith, Myers, Kaplan, Goodman-Strauss</td></tr><tr><th>Sides</th><td>13</td></tr><tr><th>Reflections</th><td>Required in every tiling</td></tr><tr><th>Paper</th><td>arXiv:2303.10798</td></tr></table>
+  <table><tr><th>Announced</th><td>March 2023</td></tr><tr><th>Authors</th><td>Smith, Myers, Kaplan, Goodman-Strauss</td></tr><tr><th>Construction</th><td>Polykite (8 kites of a hexagon)</td></tr><tr><th>Reflections</th><td>Required in every tiling</td></tr><tr><th>Diffraction</th><td>Quasicrystalline</td></tr><tr><th>Paper</th><td>arXiv:2303.10798</td></tr></table>
 </aside>
 
           <h2 id="section-0">Discovery</h2>
 <p>
-  The <strong>Hat</strong> is an asymmetric polygon that admits tilings of the plane, but none that are
-  periodic. It was the first shape proven to solve the einstein problem — tiling with a single prototile
-  subject to standard monohedral definitions that allow reflected copies.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+  The <strong>Hat</strong> is an asymmetric polykite — eight kites carved from a hexagonal grid — that
+  admits tilings of the plane, but none that are periodic. Found by hobbyist David Smith and proven
+  aperiodic by Smith, Myers, Kaplan, and Goodman-Strauss, it was the first shape shown to solve the
+  einstein problem.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup> The original paper gives two proofs, one computer-assisted; independent
+  arguments<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup> and a direct construction<sup class="citation"><a href="bibliography.html#ref-5">[5]</a></sup> followed within months, and the shape can also be
+  reached from classical Wang-tile machinery.<sup class="citation"><a href="bibliography.html#ref-7">[7]</a></sup>
 </p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/hat-monotile-commons.png" alt="Hat aperiodic monotile construction from hexagon symmetry lines" width="1100" height="930" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>Hat monotile.</strong> The Hat shape and its construction from hexagon symmetry lines.
-    Diagram by <a href="https://commons.wikimedia.org/wiki/User:Gringer" rel="noopener noreferrer">Gringer</a>,
-    <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer">CC BY-SA 4.0</a>;
-    based on Smith, Myers, Kaplan &amp; Goodman-Strauss (2023).
-  </figcaption>
+  <img src="../../assets/research/wiki/hat-monotile-commons.png" alt="Hat aperiodic monotile construction from hexagon symmetry lines" width="1100" loading="lazy" decoding="async" />
+  <figcaption><strong>Hat monotile.</strong> The Hat shape and its construction from hexagon symmetry lines. Diagram by <a href="https://commons.wikimedia.org/wiki/User:Gringer" rel="noopener noreferrer">Gringer</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer">CC BY-SA 4.0</a>; based on Smith, Myers, Kaplan &amp; Goodman-Strauss (2023).</figcaption>
 </figure>
 <h2 id="section-1">Why reflections matter</h2>
 <p>
-  Every known Hat tiling mixes unreflected and reflected tiles. Whether that counts as a true monotile
-  sparked public debate; the authors and standard references (Grünbaum &amp; Shephard) treat reflected
-  congruent copies as the same tile shape.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  Every Hat tiling mixes unreflected and reflected tiles at a fixed ratio. Whether that disqualifies it as
+  a "true" monotile sparked public debate; the authors and standard references (Grünbaum &amp; Shephard)
+  count reflected congruent copies as the same tile shape.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup> The debate was settled
+  constructively two months later: the <a href="spectre-tile.html">Spectre</a> tiles aperiodically with no
+  reflected copies at all.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
+<h2 id="section-2">Physics on the Hat lattice</h2>
 <p>
-  The subsequent Spectre tile answered the stricter question: a shape that tiles aperiodically without
-  any reflected copies at all.
+  Because the Hat gives physicists their first aperiodic <em>monotile</em> lattice, it quickly became a
+  substrate for model systems. Its tilings have quasicrystalline diffraction structure — sharp Bragg-like
+  peaks with symmetries forbidden to periodic crystals.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup> Electronic and vibrational properties of
+  the Hat lattice show behavior distinct from both crystals and random media.<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> Statistical
+  mechanics has been worked directly on the tiling: the Ising model on the Hat lattice<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup> and dimer
+  models on the Spectre tiling<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup> both reveal how aperiodic adjacency changes collective behavior.
+  For anyone designing materials, these papers are the evidence base that monotile geometry is not just
+  decoration — it changes physics.
 </p>
 <h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

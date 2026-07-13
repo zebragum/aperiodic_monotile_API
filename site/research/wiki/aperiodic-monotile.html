@@ -79,15 +79,16 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">Definition</a></li>
-<li><a href="#section-1">Ordered without repeating</a></li>
-<li><a href="#section-2">Weak vs strict chirality</a></li>
+<li><a href="#section-1">Sixty years of near misses</a></li>
+<li><a href="#section-2">Ordered without repeating</a></li>
+<li><a href="#section-3">Weak vs strict chirality</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Aperiodic monotile</p>
-  <table><tr><th>Also called</th><td>Einstein problem solution, monotile</td></tr><tr><th>Dimension</th><td>Planar (2D)</td></tr><tr><th>Key property</th><td>Tiles the plane, never periodically</td></tr><tr><th>First example</th><td>Hat tile (2023)</td></tr><tr><th>Chiral example</th><td>Spectre tile (2023)</td></tr></table>
+  <table><tr><th>Also called</th><td>Einstein problem solution, monotile</td></tr><tr><th>Dimension</th><td>Planar (2D)</td></tr><tr><th>Key property</th><td>Tiles the plane, never periodically</td></tr><tr><th>First example</th><td>Hat tile (March 2023)</td></tr><tr><th>Chiral example</th><td>Spectre tile (May 2023)</td></tr><tr><th>Open since</th><td>1960s (Wang tiles era)</td></tr></table>
 </aside>
 
           <h2 id="section-0">Definition</h2>
@@ -98,45 +99,71 @@
   depending on the tile's chirality.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
 </p>
 <p>
-  The long-standing <strong>einstein problem</strong> asked whether such a shape exists. David Smith, Joseph
-  Samuel Myers, Craig S. Kaplan, and Chaim Goodman-Strauss answered it in March 2023 with the Hat tile,
-  followed months later by the strictly chiral Spectre tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+  The long-standing <strong>einstein problem</strong> (German <em>ein Stein</em>, "one stone") asked whether such
+  a shape exists. David Smith, Joseph Samuel Myers, Craig S. Kaplan, and Chaim Goodman-Strauss answered it in
+  March 2023 with the Hat tile,<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup> followed two months later by the strictly chiral Spectre tile.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+  Independent proofs and alternative constructions followed within months,<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup><sup class="citation"><a href="bibliography.html#ref-5">[5]</a></sup> a measure of how
+  much attention the discovery drew.
 </p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/tilevariants-web.png" alt="Tile(1,1) and Spectre edge variants: straight, jagged, wavy, stepped, scalloped, and rounded silhouettes" width="1100" height="900" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>Tile(1,1) / Spectre variants.</strong> One aperiodic monotile footprint with many equivalent edge
-    silhouettes — straight polygon, jagged, wavy, stepped, scalloped, and rounded forms. All tile the same
-    way; only the boundary decoration changes.
-  </figcaption>
+  <img src="../../assets/research/wiki/tilevariants-web.png" alt="Tile(1,1) and Spectre edge variants: straight, jagged, wavy, stepped, scalloped, and rounded silhouettes" width="1100" loading="lazy" decoding="async" />
+  <figcaption><strong>Tile(1,1) / Spectre variants.</strong> One aperiodic monotile footprint with many equivalent edge silhouettes — straight polygon, jagged, wavy, stepped, scalloped, and rounded forms. All tile the same way; only the boundary decoration changes.</figcaption>
 </figure>
-<h2 id="section-1">Ordered without repeating</h2>
+<h2 id="section-1">Sixty years of near misses</h2>
 <p>
-  Aperiodic tilings are not random. They are highly structured: every tile sits in a deterministic hierarchy
-  produced by substitution rules. Patches can be regenerated from a seed, scaled, and exported with stable
-  tile IDs — making them reproducible geometric datasets, not noise.
+  The road to the monotile runs through most of modern tiling theory.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup> Wang tiles (1960s) first linked
+  tiling to logic: Berger proved the tiling problem undecidable by building aperiodic sets of over 20,000
+  square tiles. Raphael Robinson cut that to six; Penrose reached two with the kite and dart in 1974. For
+  nearly fifty years the count sat at two, with mathematicians unsure whether a single-shape solution existed
+  at all. Recent work continues to map where the boundary of decidability lies — translational tiling
+  becomes undecidable with as few as three tiles,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> and the structured-versus-wild dichotomy for
+  translational tilings remains an active frontier.<sup class="citation"><a href="bibliography.html#ref-23">[23]</a></sup>
 </p>
 <p>
-  That combination — global order, local variety, no translational repetition — is what makes monotile
-  geometry interesting for graphics, materials, education, and algorithmic research.
+  Adjacent discoveries continue: an aperiodic set of three <em>convex</em> polygons was found in 2024,<sup class="citation"><a href="bibliography.html#ref-15">[15]</a></sup>
+  and SAT solvers are now used to search polyform space for shapes with prescribed tiling behavior.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup>
 </p>
-{FIG_TILING_ARRAY}
-<h2 id="section-2">Weak vs strict chirality</h2>
+<h2 id="section-2">Ordered without repeating</h2>
 <p>
-  The Hat tile is asymmetric: every tiling mixes unreflected and reflected copies. Some authors treat this
-  as a two-shape system; standard tiling literature counts reflected congruent copies as the same tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+  Aperiodic tilings are not random. They are among the most structured objects in geometry: every tile sits
+  in a deterministic hierarchy produced by substitution rules,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup> tile counts across
+  generations follow Fibonacci-like recurrences,<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> and the diffraction structure of Hat tilings is
+  quasicrystalline — sharp peaks, like a crystal, but with symmetries no crystal can have.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
 </p>
 <p>
-  The Spectre tile is a <strong>strictly chiral</strong> aperiodic monotile: it admits only homochiral
-  non-periodic tilings, even when reflections are allowed. That distinction matters for physical fabrication
-  where mirrored parts are costly or impossible.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
+  For practical work this means patches can be regenerated from a seed, scaled, and exported with stable
+  tile IDs — reproducible geometric datasets, not noise. That combination of global order, local variety,
+  and zero translational repetition is exactly what makes monotile geometry valuable as a design and
+  engineering primitive: it fills space as reliably as a grid while guaranteeing that no two regions ever
+  look the same.
+</p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline aria-label="&lt;strong&gt;Tiling array.&lt;/strong&gt; A steady camera zoom into a dense Spectre / Tile(1,1) field and back out — the same real generated patch read as texture at a distance and as individual tiles up close. &lt;a href=&quot;../../assets/research/wiki/tiling-array-web.jpg&quot;&gt;Full-resolution still&lt;/a&gt;">
+    <source src="../../assets/research/wiki/tiling-array-zoom.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Tiling array.</strong> A steady camera zoom into a dense Spectre / Tile(1,1) field and back out — the same real generated patch read as texture at a distance and as individual tiles up close. <a href="../../assets/research/wiki/tiling-array-web.jpg">Full-resolution still</a></figcaption>
+</figure>
+<h2 id="section-3">Weak vs strict chirality</h2>
+<p>
+  The Hat tile is asymmetric: every tiling mixes unreflected and reflected copies. Some observers argued this
+  makes it a two-shape system; standard tiling literature counts reflected congruent copies as the same
+  tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+</p>
+<p>
+  The Spectre tile closed the question. Tile(1,1) is <em>weakly</em> chiral — banning reflections by rule
+  leaves only non-periodic tilings — and its curved-edge Spectre variants are <em>strictly</em> chiral: the
+  geometry itself makes reflected copies unusable, so only single-handed non-periodic tilings exist.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+  That distinction matters physically. A glazed ceramic tile, a stamped metal panel, or an injection-molded
+  part cannot be flipped; a shape that tiles without reflections is cheaper to manufacture and impossible to
+  install wrong-side-up.
 </p>
 <h2>See also</h2><p><a href="spectre-tile.html">Spectre tile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-concepts">Concepts</a> · <a href="index.html#category-mathematics">Mathematics</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

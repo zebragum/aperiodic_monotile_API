@@ -78,20 +78,45 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Overview</a></li>
+<li><a href="#section-0">The problem with repeats</a></li>
+<li><a href="#section-1">Same material, different geometry</a></li>
+<li><a href="#section-2">Workflows</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Computer graphics</p>
-  <table><tr><th>Status</th><td>Immediately practical</td></tr><tr><th>Formats</th><td>SVG, GLB, STL, PNG, JSON</td></tr></table>
+  <table><tr><th>Status</th><td>Immediately practical</td></tr><tr><th>Formats</th><td>SVG, GLB, STL, PNG, JSON</td></tr><tr><th>Key benefit</th><td>No visible repeats, fully deterministic</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Overview</h2>
-<p>Replace obvious grid structure with deterministic non-repeating geometry for scenes, masks, meshes,
-samplers, and materials. Aperiodic layouts are especially interesting when repetition causes aliasing,
-moiré, texture tiling, or visible procedural seams.<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup><sup class="citation"><a href="bibliography.html#ref-9">[9]</a></sup></p>
+          <h2 id="section-0">The problem with repeats</h2>
+<p>
+  Every graphics artist knows the failure mode: a tiled texture or instanced grid looks fine up close, then
+  the camera pulls back and the repetition snaps into view — visible seams, moiré shimmer, wallpaper
+  patterns marching across the frame. The classic fixes all trade something away. Larger textures cost
+  memory; randomized scatter loses structure and is hard to make deterministic; blend-based tiling blurs
+  detail.
+</p>
+<p>
+  An aperiodic monotile patch attacks the root cause. The geometry itself is mathematically incapable of
+  translational repetition,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet it is a single instanced shape — one mesh, one material slot, one
+  draw-call strategy — and every placement is deterministic and seed-stable. You get grid-like production
+  economics with guaranteed non-repetition.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup>
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/periodic-vs-aperiodic.jpg" alt="Split render: periodic hexagon floor on the left, aperiodic Spectre tile floor on the right, same glazed ceramic material" width="2048" loading="lazy" decoding="async" />
+  <figcaption><strong>Periodic vs aperiodic.</strong> Same glazed ceramic, same light, one seam. The hexagonal grid (left) repeats identically in every direction; the Spectre floor (right) is equally ordered but never repeats — every neighborhood is unique. Both are real geometry: an equal-area hex grid and a generated Tile(1,1) patch.</figcaption>
+</figure>
+<h2 id="section-1">Same material, different geometry</h2>
+<p>
+  The split render above makes the argument visually: identical glazed-ceramic material, identical sun,
+  one seam. The hexagonal floor on the left is calm but relentlessly repetitive — the eye finds rows
+  instantly, and at render scale those rows become aliasing bands. The Spectre floor on the right has the
+  same tile density and the same manufacturing simplicity (one shape!), but every neighborhood is unique.
+  Nothing marches; nothing bands.
+</p>
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/computer-graphics-sunset.jpg" alt="Aperiodic monotile floor at sunset with terracotta tones stretching to the horizon" width="1400" loading="lazy" decoding="async" />
@@ -103,15 +128,28 @@ moiré, texture tiling, or visible procedural seams.<sup class="citation"><a hre
   <img src="../../assets/research/wiki/computer-graphics-brass.jpg" alt="Brass aperiodic monotile relief panel with beveled edges and dramatic lighting" width="1400" loading="lazy" decoding="async" />
   <figcaption><strong>Material and lighting study.</strong> Instanced monotile meshes with metallic shading — the same patch data drives real-time previews, offline renders, and exported GLB assets.</figcaption>
 </figure>
-
-<ul><li>Procedural worlds and environment scatter</li>
-<li>Texture mapping, decals, hatching, stippling, and anti-moiré patterns</li>
-<li>Meshes, subdivision experiments, ray/path tracing layouts, and sampling studies</li></ul>
+<h2 id="section-2">Workflows</h2>
+<ul>
+  <li><strong>Environment scatter and grounds</strong> — instance one tile mesh over patch transforms
+  (CSV/JSON export) in Blender, Houdini, Unreal, or Three.js; the renders on this page use exactly this
+  pipeline.</li>
+  <li><strong>Texture synthesis</strong> — bake a patch to a texture whose autocorrelation has no lattice
+  peaks; useful for anti-moiré hatching, stippling, and decals.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup></li>
+  <li><strong>Meshes and subdivision</strong> — clipped SVG/GLB patches as base meshes for relief,
+  displacement, and parametric surface studies.</li>
+  <li><strong>Sampling studies</strong> — tile centroids as deterministic non-periodic sample points; see
+  <a href="signal-processing.html">Signal processing and imaging</a>.</li>
+</ul>
+<p>
+  Because tile IDs are stable across regenerations, look-dev iterates safely: change the palette, the
+  material, or the displacement while the layout stays pinned. The interface between aperiodic and
+  periodic regions can even be controlled explicitly when a scene needs both.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+</p>
 <h2>See also</h2><p><a href="moire-and-aliasing.html">Moiré and aliasing</a>, <a href="design-and-architecture.html">Design, art, and architecture</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-applications">Applications</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

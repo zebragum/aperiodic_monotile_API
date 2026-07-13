@@ -89,17 +89,16 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Moiré and aliasing</p>
-  <table><tr><th>Core effect</th><td>Beat interference between layered arrays</td></tr><tr><th>Controls</th><td>Translation (tx, ty), rotation</td></tr><tr><th>Near-alignment</th><td>Rosette cells, depth-like navigation</td></tr><tr><th>Large rotation</th><td>Phason rivers (open research)</td></tr><tr><th>Regular grids</th><td>High risk of moiré</td></tr></table>
+  <table><tr><th>Core effect</th><td>Beat interference between layered arrays</td></tr><tr><th>Controls</th><td>Translation (tx, ty), rotation</td></tr><tr><th>Near-alignment</th><td>Rosette cells, depth-like navigation</td></tr><tr><th>Large rotation</th><td>Phason rivers (open research)</td></tr><tr><th>Regular grids</th><td>High risk of aliasing</td></tr></table>
 </aside>
 
           <h2 id="section-0">The artifact problem</h2>
 <p>
-  Regular grids and repeating textures create moiré interference when sampled, displayed, or printed at
-  certain scales. Random noise avoids repetition but sacrifices structure and reproducibility.
-</p>
-<p>
-  Aperiodic monotile patches offer a third family: <strong>ordered but non-repeating</strong> layouts that
-  reduce obvious periodic beats while remaining deterministic and seed-stable.
+  Regular grids and repeating textures create aliasing and moiré interference when sampled, displayed, or
+  printed at certain scales — the spatial frequencies of the pattern beat against the sampling frequency.
+  Random noise avoids repetition but sacrifices structure and reproducibility. Aperiodic monotile patches
+  offer a third family: <strong>ordered but non-repeating</strong> layouts whose spectrum has no single
+  dominant lattice frequency to beat against, while remaining deterministic and seed-stable.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup><sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup>
 </p>
 <h2 id="section-1">Layered arrays and beat patterns</h2>
 <p>
@@ -122,15 +121,12 @@
   dark focal center surrounded by lobes that read almost like flowers or lenses. These are not random
   halos; they are the macroscopic signature of microscopic tile disagreement accumulating across the patch.
 </p>
+
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/aperiodicmoire-web.png" alt="Aperiodic moiré at 1° rotation: radial rosette cells emerging from layered monotile arrays" width="1400" height="1400" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>1° rotation.</strong> Two aperiodic monotile arrays overlaid with a 1° twist. Near-alignment
-    produces large rosette cells with a strong central focal point — a moiré landscape that feels
-    dimensional even though it is a flat 2D beat pattern.
-    <a href="../../assets/research/wiki/aperiodicmoire.png">Full resolution</a>
-  </figcaption>
+  <img src="../../assets/research/wiki/aperiodicmoire-web.png" alt="Aperiodic moiré at 1° rotation: radial rosette cells emerging from layered monotile arrays" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>1° rotation.</strong> Two aperiodic monotile arrays overlaid with a 1° twist. Near-alignment produces large rosette cells with a strong central focal point — a moiré landscape that feels dimensional even though it is a flat 2D beat pattern. <a href="../../assets/research/wiki/aperiodicmoire.png">Full resolution</a></figcaption>
 </figure>
+
 <p>
   Observers often describe this field as a <strong>navigable 3D space</strong>: nudging <em>tx</em> and
   <em>ty</em> pans across the moiré terrain, while small changes in rotation θ act like a zoom or
@@ -146,15 +142,12 @@
   structural rearrangement; here the term is used informally for these moiré channels: coherent pathways
   where the two arrays stay in partial registry over long distances before shearing apart.
 </p>
+
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/aperiodicrivers-web.png" alt="Phason rivers at 60° rotation: winding moiré channels across layered aperiodic arrays" width="1400" height="1400" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>60° rotation.</strong> The same layered arrays with a 60° relative twist. Interference
-    concentrates into jagged, river-like channels — phason rivers — that cross the field in broad
-    horizontal and vertical strokes.
-    <a href="../../assets/research/wiki/aperiodicrivers.png">Full resolution</a>
-  </figcaption>
+  <img src="../../assets/research/wiki/aperiodicrivers-web.png" alt="Phason rivers at 60° rotation: winding moiré channels across layered aperiodic arrays" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>60° rotation.</strong> The same layered arrays with a 60° relative twist. Interference concentrates into jagged, river-like channels — phason rivers — that cross the field in broad horizontal and vertical strokes. <a href="../../assets/research/wiki/aperiodicrivers.png">Full resolution</a></figcaption>
 </figure>
+
 <p>
   Unlike the near-aligned rosettes, phason rivers are <strong>not intuitive</strong>. Their paths, branch
   points, and sensitivity to tiny parameter changes are not yet well characterized for aperiodic monotile
@@ -191,7 +184,7 @@
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-concepts">Concepts</a> · <a href="index.html#category-computer-graphics">Computer graphics</a> · <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

@@ -42,7 +42,9 @@ def ease(t: float) -> float:
     return 0.5 - 0.5 * math.cos(math.pi * t)
 
 
-def build_zoom_gif(src: Path, out_name: str, frames: int = 16, duration_ms: int = 140) -> Path:
+def build_zoom_gif(src: Path, out_name: str, frames: int = 36, duration_ms: int = 80) -> Path:
+    """Steady zoom in then back out: every frame is a real crop of the source
+    at a smoothly interpolated scale, centered on a fixed anchor point."""
     img = Image.open(src).convert("RGB")
     w, h = img.size
     side = min(w, h)
@@ -51,20 +53,28 @@ def build_zoom_gif(src: Path, out_name: str, frames: int = 16, duration_ms: int 
     square = img.crop((left, top, left + side, top + side))
 
     out_size = 480
-    full = square.resize((out_size, out_size), Image.Resampling.LANCZOS)
-    zoom_box = (int(side * 0.22), int(side * 0.22), int(side * 0.36), int(side * 0.36))
-    zoom = square.crop(zoom_box).resize((out_size, out_size), Image.Resampling.NEAREST)
+    # Anchor the zoom slightly off-center so structure sweeps past the camera.
+    anchor = (side * 0.46, side * 0.44)
+    wide = float(side)
+    near = side * 0.12  # ~8x magnification at the closest point
+
+    def crop_at(scale_side: float) -> Image.Image:
+        half_s = scale_side / 2.0
+        cx = min(max(anchor[0], half_s), side - half_s)
+        cy = min(max(anchor[1], half_s), side - half_s)
+        box = (int(cx - half_s), int(cy - half_s), int(cx + half_s), int(cy + half_s))
+        return square.crop(box).resize((out_size, out_size), Image.Resampling.LANCZOS)
 
     sequence: list[Image.Image] = []
     half = frames // 2
     for i in range(half):
         t = ease(i / max(half - 1, 1))
-        blended = Image.blend(full, zoom, t)
-        sequence.append(blended.quantize(colors=32, method=Image.Quantize.MEDIANCUT))
-    for i in range(half):
-        t = ease(i / max(half - 1, 1))
-        blended = Image.blend(zoom, full, t)
-        sequence.append(blended.quantize(colors=32, method=Image.Quantize.MEDIANCUT))
+        # Interpolate in log space so the zoom speed feels constant.
+        s = math.exp(math.log(wide) * (1 - t) + math.log(near) * t)
+        frame = crop_at(s)
+        sequence.append(frame.quantize(colors=64, method=Image.Quantize.MEDIANCUT))
+    # Zoom back out by reversing (skip endpoints to avoid double frames).
+    sequence.extend(sequence[-2:0:-1])
 
     out = ASSETS / out_name
     sequence[0].save(
@@ -92,7 +102,7 @@ def main() -> None:
 
     src_jpg = PATENT / "Z_Space_PPA_Final_html_m7e07b4b9.jpg"
     copy_optimize_png(src_jpg, "tiling-array-web.jpg", max_w=1400)
-    build_zoom_gif(src_jpg, "tiling-array-zoom.gif", frames=16, duration_ms=140)
+    build_zoom_gif(src_jpg, "tiling-array-zoom.gif", frames=36, duration_ms=80)
 
     hat_svg_url = (
         "https://commons.wikimedia.org/wiki/Special:FilePath/"

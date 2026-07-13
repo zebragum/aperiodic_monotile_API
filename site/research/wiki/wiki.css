@@ -327,23 +327,38 @@
   gap: 1rem;
 }
 
-.wiki-category-grid article {
-  padding: 1rem 1.1rem;
+.wiki-category-card {
+  display: block;
+  padding: 1.1rem 1.2rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
   background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
 }
 
-.wiki-category-grid h3 {
+.wiki-category-card:hover {
+  border-color: rgba(255, 106, 74, 0.55);
+  background: rgba(255, 106, 74, 0.07);
+  transform: translateY(-2px);
+}
+
+.wiki-category-card h3 {
   margin: 0 0 0.45rem;
   font-size: 1rem;
+  color: var(--text);
 }
 
-.wiki-category-grid ul {
-  margin: 0;
-  padding-left: 1.1rem;
+.wiki-category-card p {
+  margin: 0 0 0.6rem;
   color: var(--muted);
   font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.wiki-category-cta {
+  font-size: 0.85rem;
+  color: var(--accent-2);
 }
 
 .wiki-categories {
@@ -407,6 +422,27 @@
 
 .wiki-figure-gif img {
   image-rendering: pixelated;
+}
+
+.wiki-figure-video {
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wiki-figure-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ref-note {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+.references-web {
+  list-style: disc;
 }
 
 .research-badge {

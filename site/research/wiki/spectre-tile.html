@@ -79,64 +79,94 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">Overview</a></li>
-<li><a href="#section-1">Substitution structure</a></li>
-<li><a href="#section-2">Relationship to the Hat</a></li>
+<li><a href="#section-1">Geometry and structure</a></li>
+<li><a href="#section-2">Substitution structure</a></li>
+<li><a href="#section-3">Relationship to the Hat</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Spectre tile</p>
-  <table><tr><th>Also known as</th><td>Tile(1,1), Spectre</td></tr><tr><th>Announced</th><td>May 2023</td></tr><tr><th>Authors</th><td>Smith, Myers, Kaplan, Goodman-Strauss</td></tr><tr><th>Chirality</th><td>Strictly chiral</td></tr><tr><th>Paper</th><td>arXiv:2305.17743</td></tr></table>
+  <table><tr><th>Also known as</th><td>Tile(1,1), Spectre</td></tr><tr><th>Announced</th><td>May 2023</td></tr><tr><th>Authors</th><td>Smith, Myers, Kaplan, Goodman-Strauss</td></tr><tr><th>Sides</th><td>14 (equilateral)</td></tr><tr><th>Chirality</th><td>Strictly chiral (curved edges)</td></tr><tr><th>Paper</th><td>arXiv:2305.17743</td></tr></table>
 </aside>
 
           <h2 id="section-0">Overview</h2>
 <p>
-  The <strong>Spectre</strong> is a 13-sided polygon (Tile(1,1)) that tiles the plane aperiodically using
-  only orientation-preserving copies — no reflected tiles are needed. It was introduced in
-  <em>A chiral aperiodic monotile</em> as the solution to the strictly chiral einstein problem.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+  The <strong>Spectre</strong> is a 14-sided equilateral polygon — Tile(1,1) in the Hat's shape continuum —
+  that tiles the plane aperiodically using only translations and rotations. No reflected tiles are needed,
+  and in the strict curved-edge form, none are even possible. It was introduced in <em>A chiral aperiodic
+  monotile</em> as the solution to the "vampire einstein" problem: an aperiodic monotile that casts no
+  mirror image.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/tilevariants-web.png" alt="Tile(1,1) and Spectre edge variants: straight, jagged, wavy, stepped, scalloped, and rounded silhouettes" width="1100" height="900" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>Tile(1,1) / Spectre variants.</strong> One aperiodic monotile footprint with many equivalent edge
-    silhouettes — straight polygon, jagged, wavy, stepped, scalloped, and rounded forms. All tile the same
-    way; only the boundary decoration changes.
-  </figcaption>
+  <img src="../../assets/research/wiki/tilevariants-web.png" alt="Tile(1,1) and Spectre edge variants: straight, jagged, wavy, stepped, scalloped, and rounded silhouettes" width="1100" loading="lazy" decoding="async" />
+  <figcaption><strong>Tile(1,1) / Spectre variants.</strong> One aperiodic monotile footprint with many equivalent edge silhouettes — straight polygon, jagged, wavy, stepped, scalloped, and rounded forms. All tile the same way; only the boundary decoration changes.</figcaption>
 </figure>
 
+<p>
+  The straight-edged Tile(1,1) is subtle: allowed reflections give it a simple periodic tiling, so it is
+  only aperiodic when reflections are forbidden by rule (<em>weakly chiral</em>). Modifying its edges with
+  matching curves — any of the variant silhouettes above — removes that escape hatch and produces the
+  strictly chiral Spectre family.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+</p>
+<h2 id="section-1">Geometry and structure</h2>
+<p>
+  Spectre tilings hide a surprising amount of internal order. Every Spectre tiling decomposes into
+  recognizable hexagonal clusters,<sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup> and the whole family can be derived from an underlying rhombic
+  tiling shared with the Hat and Turtle.<sup class="citation"><a href="bibliography.html#ref-8">[8]</a></sup> The substitution system that generates Spectre patches
+  admits a homochiral (single-handed) inflation rule,<sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup> and tile counts per generation follow
+  Fibonacci and Lucas number patterns.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> Group-theoretic analysis places these tilings in a broader
+  algebraic framework.<sup class="citation"><a href="bibliography.html#ref-9">[9]</a></sup>
+</p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/spectre-tiling-commons.jpg" alt="Zoomed aperiodic tiling patch by Tile(1,1) with odd tiles shaded" width="1400" height="1290" loading="lazy" decoding="async" />
-  <figcaption>
-    <strong>Spectre / Tile(1,1) patch.</strong> A zoomed substitution patch with alternating tile handedness
-    highlighted. Sample image from Kaplan et al.,
-    <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">CC BY 4.0</a>.
-  </figcaption>
+  <img src="../../assets/research/wiki/spectre-tiling-commons.jpg" alt="Zoomed aperiodic tiling patch by Tile(1,1) with odd tiles shaded" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>Spectre / Tile(1,1) patch.</strong> A zoomed substitution patch with alternating tile handedness highlighted. Sample image from Kaplan et al., <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">CC BY 4.0</a>.</figcaption>
 </figure>
-<h2 id="section-1">Substitution structure</h2>
+
+<p>
+  Conversions between Tile(1,1) tilings and other aperiodic families are constructive: non-periodic
+  Tile(1,1) tilings can be transformed into tilings by other chiral monotile shapes.<sup class="citation"><a href="bibliography.html#ref-16">[16]</a></sup> Independent
+  proof techniques — including Akiyama and Araki's alternative argument — confirmed aperiodicity through
+  different routes.<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup>
+</p>
+<h2 id="section-2">Substitution structure</h2>
 <p>
   Like other modern aperiodic tiles, Spectre patches are generated by substitution: a finite set of
-  metatiles refines into smaller copies until a target region is filled. Public tooling — including Kaplan's
-  <a href="https://cs.uwaterloo.ca/~csk/spectre/app.html" rel="noopener noreferrer">Spectre explorer</a>
-  and community ports — implements these rules for interactive exploration and export.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup>
+  metatiles refines into smaller copies until a target region is filled. See
+  <a href="substitution-tiling.html">Substitution tiling</a> for the full picture, including an animated walk
+  up the hierarchy. Public tooling — Kaplan's
+  <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">Spectre explorer</a> and
+  community ports — implements these rules for interactive exploration.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline aria-label="&lt;strong&gt;The substitution hierarchy, animated.&lt;/strong&gt; One Tile(1,1) grows into a cluster, then a supercluster, following the real substitution rules. Colors mark which first-generation cluster each tile belongs to, so the hierarchy stays visible as the patch expands. &lt;a href=&quot;../../assets/research/wiki/substitution-hierarchy-still.png&quot;&gt;Supercluster still&lt;/a&gt;">
+    <source src="../../assets/research/wiki/substitution-hierarchy.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>The substitution hierarchy, animated.</strong> One Tile(1,1) grows into a cluster, then a supercluster, following the real substitution rules. Colors mark which first-generation cluster each tile belongs to, so the hierarchy stays visible as the patch expands. <a href="../../assets/research/wiki/substitution-hierarchy-still.png">Supercluster still</a></figcaption>
+</figure>
+
 <p>
   The Aperiodic Monotile Generator API packages this mathematics for production workflows: clipped patches,
-  stable tile transforms, and exporters (SVG, STL, GLB, CSV, JSON).
+  stable tile IDs and transforms, and exporters (SVG, STL, GLB, CSV, JSON) — the exact pipeline used to
+  produce the renders across this wiki.
 </p>
-<h2 id="section-2">Relationship to the Hat</h2>
+<h2 id="section-3">Relationship to the Hat</h2>
 <p>
-  The Spectre construction refines the Hat discovery by removing the need for mirrored tiles. Researchers
-  have also studied conversions between Tile(1,1) tilings and other aperiodic layouts.<sup class="citation"><a href="bibliography.html#ref-7">[7]</a></sup>
-  Kaplan's historical survey traces the full path from Penrose tiles to modern monotiles.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  The Hat is Tile(1,√3) and the Turtle is Tile(√3,1); the Spectre's Tile(1,1) sits at the equilateral point
+  of the same continuum.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Every Spectre tiling is closely related to a tiling with sparse hats in a
+  dense field of turtles, and vice versa — the three descriptions morph continuously into each other.
+  Kaplan's historical survey traces the whole path from Penrose tiles to these modern monotiles.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  Wang-tile machinery provides yet another route to both shapes.<sup class="citation"><a href="bibliography.html#ref-7">[7]</a></sup>
 </p>
 <h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-07-12. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-07-13. Content is curated from peer-reviewed sources cited in each article.</p>
         </footer>
       </article>
     </div>

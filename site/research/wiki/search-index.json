@@ -28,7 +28,7 @@
   {
     "slug": "hat-tile",
     "title": "Hat tile",
-    "summary": "The first aperiodic monotile, an asymmetric 13-gon announced in March 2023.",
+    "summary": "The first aperiodic monotile, an asymmetric polykite announced in March 2023.",
     "categories": [
       "Mathematics",
       "Concepts"
@@ -64,7 +64,7 @@
   {
     "slug": "design-and-architecture",
     "title": "Design, art, and architecture",
-    "summary": "Repeat-free ornamental surfaces, facades, textiles, and spatial studies.",
+    "summary": "Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions.",
     "categories": [
       "Applications"
     ]
@@ -96,7 +96,7 @@
   {
     "slug": "waves-and-photonics",
     "title": "Waves, acoustics, and photonics",
-    "summary": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies.",
+    "summary": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies \u2014 now with experimental results.",
     "categories": [
       "Research frontiers"
     ]
@@ -112,7 +112,7 @@
   {
     "slug": "robotics-and-mobility",
     "title": "Robotics and mobility",
-    "summary": "Deterministic test surfaces, navigation substrates, and spatial indexing for experiments.",
+    "summary": "Aperiodic surfaces as navigation substrates: every neighborhood is a unique landmark.",
     "categories": [
       "Research frontiers"
     ]
@@ -136,7 +136,7 @@
   {
     "slug": "bibliography",
     "title": "Bibliography",
-    "summary": "Selected references cited across the wiki.",
+    "summary": "Complete reference list: the arXiv corpus behind this wiki, plus fabrication files and exhibits.",
     "categories": [
       "References"
     ]
