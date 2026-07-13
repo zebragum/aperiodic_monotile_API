@@ -625,10 +625,15 @@ textarea {
   gap: 1rem;
 }
 
+.cards--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .card,
 .price-card {
   padding: 1.35rem;
   border-radius: 1.4rem;
+  min-width: 0;
 }
 
 .card p,
@@ -643,6 +648,12 @@ textarea {
   color: #f8e8d9;
   font-size: 0.85rem;
   line-height: 1.5;
+}
+
+.cards--three .card pre {
+  overflow-x: visible;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .docs-section {
@@ -791,6 +802,7 @@ ul.pricing-value-list {
   .demo-shell,
   .docs-section,
   .cards,
+  .cards--three,
   .domain-catalog,
   .pricing-grid {
     grid-template-columns: 1fr;
@@ -1673,4 +1685,19 @@ pre {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+.legacy-banner {
+  margin: 1rem auto 0;
+  max-width: 72rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  text-align: center;
+}
+
+.legacy-banner a {
+  color: var(--accent-2);
 }
