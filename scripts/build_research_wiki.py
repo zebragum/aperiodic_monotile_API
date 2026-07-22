@@ -207,6 +207,70 @@ REFERENCES: list[dict] = [
          title="4D lift of the tilings by the Smith et al. aperiodic monotile",
          url="https://www.math.univ-toulouse.fr/~cheritat/2023-monotile/4D-lift/",
          note="Nan Ma’s coherent R⁴ edge lift, exposition and interactive projections."),
+    dict(n=55, authors="Josep Batle and Adam Bednorz",
+         title="Quantum error-correcting codes from aperiodic monotiles: the Hat and the Spectre",
+         arxiv="2607.15326",
+         note="Li–Boyle QECCs extended to Hat and Spectre; local recoverability and SE(2) classical-bit storage."),
+    dict(n=56, authors="Rachel Greenfeld and Terence Tao",
+         title="Undecidability of translational monotilings",
+         doi="10.4171/jems/1673",
+         note="Algorithmic undecidability of translational monotiles in ℤᵈ for d≥3."),
+    dict(n=57, authors="Teruhisa Sugimoto",
+         title="Converting non-periodic tilings with Tile(1, 1) into tilings with three types of pentagons, II",
+         url="https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/1282",
+         note="Part II: Tile(1,1) to three-pentagon tilings after rhombus subdivision."),
+    dict(n=58, authors="Chao Yang and Zhujun Zhang",
+         title="Translational Aperiodic Sets of 7 Polyominoes",
+         arxiv="2412.17382",
+         note="Smallest known translational aperiodic polyomino set; cites Hat discovery."),
+    dict(n=59, authors="Chao Yang and Zhujun Zhang",
+         title="On the Undecidability of Tiling the 3-dimensional Space with a Set of 3 Polycubes",
+         arxiv="2508.00192",
+         note="Translational undecidability in 3D with only three polycubes."),
+    dict(n=60, authors="Stephen Daynes",
+         title="Mechanical behaviour of aperiodic monotile minimal surface metamaterials",
+         doi="10.1016/j.tws.2026.114788",
+         note="TPMS cells on Hat, Turtle, and Spectre lattices; stiffness–density trade-offs."),
+    dict(n=61, authors="Sankarganesh P., Vinothkumar G., and P. G. Kubendran Amos",
+         title="Evolving Einstein: The instability of aperiodic monotile as a polycrystalline microstructure",
+         doi="10.1016/j.mtla.2025.102517",
+         note="Phase-field polycrystalline evolution on Hat-family lattice topology."),
+    dict(n=62, authors="Amin Montazeri, Mohammad Reza Ghaffari, and co-authors",
+         title="Aperiodic ordered lattices with semi Re-entrant einstein monotile",
+         doi="10.1016/j.euromechsol.2025.105830",
+         note="Re-entrant lattice inspired by einstein geometry; band-gap FEA (not Smith tile shape)."),
+    dict(n=63, authors="Sidney Holden and Geoffrey Vasil",
+         title="A continuum limit for dense spatial networks",
+         arxiv="2301.07086",
+         note="Homogenization framework with Hat monotile as a convergence example."),
+    dict(n=64, authors="Yuanpeng Liu, Jiaming Ma, and co-authors",
+         title="Aperiodic-unit-cell microlattices",
+         doi="10.1002/smll.202307369",
+         note="Einstein-inspired 3D microlattices; progressive collapse vs honeycomb (geometry-inspired)."),
+    dict(n=65, authors="Yuanpeng Liu and co-authors",
+         title="Aperiodic interpenetrating-phase composites",
+         doi="10.1002/adfm.202406890",
+         note="3D-printed monotile-inspired Ti–epoxy lattice; high specific energy absorption."),
+    dict(n=66, authors="Iestyn Jowers and Richard J. Moat",
+         title="What Lies Beneath a Family of Aperiodic Monotilings",
+         url="https://archive.bridgesmathart.org/2025/bridges2025-169.html",
+         note="Bridges 2025: vertex arrangements and subsidiary polygon systems in the Hat family."),
+    dict(n=67, authors="David Richeson",
+         title="Fold-and-Cut Lines for the Hat, Turtle, and Spectre Tiles",
+         url="https://archive.bridgesmathart.org/2025/bridges2025-567.html",
+         note="Bridges 2025: one-cut paper construction crease patterns."),
+    dict(n=68, authors="Hanan Keren, Shlomi Levi, and Alon Leib",
+         title="Aperiodic Monotile Phased Array Antenna and System with No Grating Lobes",
+         url="https://patents.google.com/patent/US20240396208A1/en",
+         note="US patent application: Hat polykite phased-array geometry (proposal, not lab validation)."),
+    dict(n=69, authors="Vincent van Dongen",
+         title="Lifted Aperiodic Hat and Turtle",
+         url="https://hal.science/hal-04090715",
+         note="3D polyhedral wall modules from Hat/Turtle outlines (architectural lift, not Ma’s ℝ⁴ lift)."),
+    dict(n=70, authors="Shobhna Singh",
+         title="Constrained models in aperiodic systems",
+         url="https://orca.cardiff.ac.uk/id/eprint/181483/",
+         note="Cardiff PhD thesis: Spectre dimer models, optimization, and quasicrystalline graphs."),
 ]
 
 WEB_RESOURCES = [
@@ -242,6 +306,122 @@ WEB_RESOURCES = [
          url="https://oeis.org/A363348"),
 ]
 
+WEB_RESOURCE_SECTIONS: list[tuple[str, list[dict]]] = [
+    ("Official project pages and discoverer accounts", [
+        dict(label="Kaplan, <em>Aperiodic Monotiles</em> — discovery chronology and community links",
+             url="https://isohedral.ca/aperiodic-monotiles/"),
+        dict(label="David Smith, Hedraweb — discoverer blog and physical experiments",
+             url="https://hedraweb.blogspot.com/"),
+        dict(label="David Smith, <em>The Special One</em> — first-person Tile(1,1) / Spectre story",
+             url="https://hedraweb.wordpress.com/2023/06/02/the-special-one/"),
+        dict(label="Joseph Myers — publications and preprints",
+             url="https://www.polyomino.org.uk/publications/"),
+        dict(label="Chaim Goodman-Strauss — papers and notes",
+             url="https://chaimgoodmanstrauss.com/papers/"),
+        dict(label="Combinatorial Theory — Hat paper (open access)",
+             url="https://doi.org/10.5070/c64163843"),
+        dict(label="Combinatorial Theory — Spectre paper (open access)",
+             url="https://doi.org/10.5070/c64264241"),
+    ]),
+    ("Generators, code, and datasets", [
+        dict(label="isohedral/hatviz — official Hat patch builder (BSD-3-Clause)",
+             url="https://github.com/isohedral/hatviz"),
+        dict(label="isohedral/hatvalidate — computer-assisted aperiodicity verification",
+             url="https://github.com/isohedral/hatvalidate"),
+        dict(label="henningle/TileOneOne — reference Tile(1,1) MATLAB generator (MIT)",
+             url="https://github.com/henningle/TileOneOne"),
+        dict(label="jsm28/AperiodicMonotilesLean — Lean formalization staging repo",
+             url="https://github.com/jsm28/AperiodicMonotilesLean"),
+        dict(label="reversi-fun/symbolic-spectre-tiles — symbolic coordinates and CSV/SVG export (MPL-2.0)",
+             url="https://github.com/reversi-fun/symbolic-spectre-tiles"),
+        dict(label="ctkrug/monotile — infinite Spectre pan/zoom studio",
+             url="https://apps.charliekrug.com/monotile/"),
+        dict(label="Ricky Reusser — WebGPU aperiodic monotile rendering notebook",
+             url="https://rreusser.github.io/notebooks/aperiodic-monotile/"),
+        dict(label="Ricky Reusser — deep-zoom aperiodic monotile notebook",
+             url="https://rreusser.github.io/notebooks/zooming-aperiodic-monotile/"),
+        dict(label="James Smith — AperiodicCube 3D interactive demo",
+             url="https://jpdsmith.github.io/AperiodicCube/"),
+        dict(label="Simon Tatham — coordinate algorithms for Hat tilings",
+             url="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-tilings/"),
+        dict(label="Simon Tatham — finite-state transducers for Hat and Spectre",
+             url="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-transducers/"),
+        dict(label="Simon Tatham — refinable frontier (H7/H8 and Spectre hex types)",
+             url="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-refine/"),
+        dict(label="Jaap Scherphuis — PolyForm Puzzle Solver (discovery-era search tool)",
+             url="https://www.jaapsch.net/puzzles/polysolver.htm"),
+        dict(label="Spectre Tiling Playground — manual editor with TILE coordinate format",
+             url="https://bnaskrecki.faculty.wmi.amu.edu.pl/spectre/"),
+        dict(label="Beach Spectre Practise — touch-friendly substitution trainer",
+             url="https://beach-spectre-practise.think.somethingorotherwhatever.com/"),
+    ]),
+    ("Institutional references and OEIS", [
+        dict(label="Tilings Encyclopedia — Hat substitution record",
+             url="https://tilings.math.uni-bielefeld.de/substitution/hat/"),
+        dict(label="Tilings Encyclopedia — CAP representative",
+             url="https://tilings.math.uni-bielefeld.de/substitution/cap/"),
+        dict(label="Tilings Encyclopedia — aperiodic monotile glossary",
+             url="https://tilings.math.uni-bielefeld.de/glossary/aperiodic-monotile/"),
+        dict(label="OEIS A363445 — Hat perimeter fractal turn sequence",
+             url="https://oeis.org/A363445"),
+        dict(label="OEIS A397115–A397123 — Spectre hierarchical cluster counts (2026)",
+             url="https://oeis.org/A397115"),
+    ]),
+    ("Museums, competitions, and workshops", [
+        dict(label="UKMT Einstein Mad Hat Awards — competition archive",
+             url="https://ukmt.org.uk/hat-awards"),
+        dict(label="Hatfest — Oxford / Grimm Network conference archive",
+             url="https://sites.google.com/view/thegrimmnetwork/hatfest"),
+        dict(label="Cambridge Faculty of Mathematics — Tip of the Hat celebration",
+             url="https://www.maths.cam.ac.uk/features/tip-hat-celebrating-aperiodic-monotile-discovery"),
+        dict(label="Marcello Seri — Spectres, Hats and Maths workshop kits (CC BY 4.0)",
+             url="https://academic.mseri.me/pe.htm"),
+        dict(label="Bridges 2024 — Group activity to build a Spectre tiling",
+             url="https://archive.bridgesmathart.org/2024/bridges2024-385.html"),
+        dict(label="Numberphile — Discovery of the Aperiodic Monotile",
+             url="https://www.youtube.com/watch?v=_ZS3Oqg1AX0"),
+        dict(label="Quanta — Hobbyist finds maths elusive Einstein tile",
+             url="https://www.quantamagazine.org/hobbyist-finds-maths-elusive-einstein-tile-20230404/"),
+    ]),
+    ("Fabrication, installations, and products", [
+        dict(label="Beach Spectres — public sand-tiling project and how-to guides",
+             url="https://beachspectres.com/"),
+        dict(label="Printables — Einstein Tiles family (Hat, Tile(1,1), Spectre variants)",
+             url="https://www.printables.com/model/574374-einstein-tiles-original-and-chiral"),
+        dict(label="Spirko/SpectreOpenSCAD — parametric Spectre STL generator (GPL-3.0)",
+             url="https://github.com/Spirko/SpectreOpenSCAD"),
+        dict(label="vmagnin/hat_polykite — laser-cut Hat and Tile(1,1) sheets",
+             url="https://github.com/vmagnin/hat_polykite"),
+        dict(label="Nervous System — wooden Spectre puzzle (111 pieces)",
+             url="https://n-e-r-v-o-u-s.com/shop/product.php?code=409"),
+    ]),
+]
+
+
+def render_web_resources_html(*, compact: bool = False) -> str:
+    parts: list[str] = []
+    for heading, items in WEB_RESOURCE_SECTIONS:
+        level = 3 if compact else 2
+        parts.append(f'<h{level}>{html.escape(heading)}</h{level}>')
+        parts.append('<ul class="references-list references-web">')
+        for item in items:
+            parts.append(
+                f'<li><a href="{item["url"]}" rel="noopener noreferrer">{item["label"]}</a></li>'
+            )
+        parts.append("</ul>")
+    parts.append(
+        '<h3>Curated quick links</h3>'
+        if compact
+        else '<h2 id="section-quick">Curated quick links</h2>'
+    )
+    parts.append('<ul class="references-list references-web">')
+    for item in WEB_RESOURCES:
+        parts.append(
+            f'<li><a href="{item["url"]}" rel="noopener noreferrer">{item["label"]}</a></li>'
+        )
+    parts.append("</ul>")
+    return "".join(parts)
+
 
 def render_references_html() -> str:
     items = []
@@ -263,13 +443,9 @@ def render_references_html() -> str:
             f'<a href="{href}" rel="noopener noreferrer">{html.escape(r["title"])}</a>.'
             f'{identifier}{note}</li>'
         )
-    web = "".join(
-        f'<li><a href="{w["url"]}" rel="noopener noreferrer">{w["label"]}</a></li>' for w in WEB_RESOURCES
-    )
     return (
         '<ol class="references-list">' + "".join(items) + "</ol>"
-        '<h2 id="section-1">Tools, files, and exhibits</h2>'
-        '<ul class="references-list references-web">' + web + "</ul>"
+        + render_web_resources_html()
     )
 
 
@@ -559,9 +735,14 @@ ARTICLES: list[Article] = [
     <p>Graphics, design, fabrication, education, and research frontiers</p>
     <span class="wiki-category-cta">Start with Computer graphics &rarr;</span>
   </a>
+  <a class="wiki-category-card" href="resources-and-tools.html">
+    <h3>Resources</h3>
+    <p>Generators, datasets, museums, fabrication files, OEIS, and built installations</p>
+    <span class="wiki-category-cta">Browse resources &amp; tools &rarr;</span>
+  </a>
   <a class="wiki-category-card" href="bibliography.html">
     <h3>References</h3>
-    <p>Complete arXiv bibliography with stable citation anchors, plus fabrication files and exhibits</p>
+    <p>{len(REFERENCES)} curated scholarly sources plus an automated discovery registry</p>
     <span class="wiki-category-cta">Open the bibliography &rarr;</span>
   </a>
 </div>
@@ -633,8 +814,9 @@ ARTICLES: list[Article] = [
   square tiles. Raphael Robinson cut that to six; Penrose reached two with the kite and dart in 1974. For
   nearly fifty years the count sat at two, with mathematicians unsure whether a single-shape solution existed
   at all. Recent work continues to map where the boundary of decidability lies — translational tiling
-  becomes undecidable with as few as three tiles,{cite(24)} and the structured-versus-wild dichotomy for
-  translational tilings remains an active frontier.{cite(23)}
+  becomes undecidable with as few as three tiles,{cite(24)} translational monotiles are undecidable in
+  higher dimensions,{cite(56)} and the structured-versus-wild dichotomy for translational tilings remains
+  an active frontier.{cite(23)}
 </p>
 <p>
   Adjacent discoveries continue: an aperiodic set of three <em>convex</em> polygons was found in 2024,{cite(15)}
@@ -737,7 +919,8 @@ ARTICLES: list[Article] = [
 {FIG_SPECTRE_PATCH}
 <p>
   Conversions between Tile(1,1) tilings and other aperiodic families are constructive: non-periodic
-  Tile(1,1) tilings can be transformed into tilings by other chiral monotile shapes.{cite(16)} Independent
+  Tile(1,1) tilings can be transformed into tilings by other chiral monotile shapes.{cite(16)} Sugimoto’s
+  two-part program converts Tile(1,1) patches into three-pentagon tilings,{cite(16)}{cite(57)} Independent
   proof techniques — including Akiyama and Araki's alternative argument — confirmed aperiodicity through
   different routes.{cite(4)}
 </p>
@@ -1216,7 +1399,7 @@ ARTICLES: list[Article] = [
   The chirality result is a manufacturing feature, not a footnote: because Spectre tilings never need
   mirrored parts, one mold or die covers the entire surface.{cite(2)} Community fabrication files —
   OpenSCAD models, STLs with orientation grids, laser-cut outlines — are indexed in the
-  {link("bibliography", "bibliography")}. Experimental Hat honeycombs and aperiodic composite panels
+  {link("bibliography", "bibliography")} and {link("resources-and-tools", "Resources and tools")}. Experimental Hat honeycombs and aperiodic composite panels
   demonstrate that these exports translate into measurable mechanical gains,{cite(42)}{cite(46)}{cite(49)}
   and deployable monotile kirigami shows how flat sheets fold into aperiodic surface
   structures.{cite(51)}
@@ -1327,7 +1510,8 @@ ARTICLES: list[Article] = [
   <li>Sensor arrays: radar, sonar, MRI, and CT geometry studies where periodic element spacing creates
   grating lobes{cite(19)}{cite(37)}</li>
   <li>Phased arrays: simulated Hat layouts achieve low grating lobes and high aperture efficiency in
-  limited-scan beamforming studies{cite(38)}</li>
+  limited-scan beamforming studies{cite(38)}; patent filings propose Hat polykite elements for SATCOM
+  arrays (proposal only).{cite(68)}</li>
   <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
   <li>Anti-aliasing masks and halftone screens; see {link("moire-and-aliasing", "Moiré and aliasing")}</li>
 </ul>
@@ -1419,7 +1603,14 @@ ARTICLES: list[Article] = [
   reinforcements outperform tested honeycomb controls in stiffness, strength, and toughness,{cite(46)}
   with follow-on work using machine learning to explore the family{cite(47)} and multi-phase curvature
   engineering.{cite(48)} Interlocking aperiodic assemblies show dramatic fracture-resistance gains over
-  periodic honeycombs.{cite(49)}
+  periodic honeycombs.{cite(49)} TPMS cells patterned on Hat, Turtle, and Spectre tilings offer another
+  design axis for thin-walled metamaterials,{cite(60)} and phase-field studies explore polycrystalline
+  evolution on Hat-family meshes.{cite(61)}
+</p>
+<p class="ref-note">
+  Several papers label new lattices “einstein monotile” while using geometry <em>inspired by</em> rather
+  than identical to Smith’s Hat or Spectre — see refs.&nbsp;[62] and [64]–[65]. Always verify whether a
+  source uses canonical tile outlines or a derivative mesh.
 </p>
 """,
             ),
@@ -1559,7 +1750,8 @@ ARTICLES: list[Article] = [
   algorithms extract tessellation generators from data,{cite(25)} and group-theoretic formulations connect
   tilings to algebra.{cite(9)} Percolation thresholds on Hat-family lattices are now being mapped by Monte
   Carlo simulation,{cite(52)} giving concrete statistical signatures for random-process models on monotile
-  graphs.
+  graphs. Batle and Bednorz extend Li–Boyle quantum error-correcting codes to Hat and Spectre tilings,
+  grounding recoverability in the supertile hierarchy and CAP torus parametrization.{cite(55)}
 </p>
 """,
             ),
@@ -1685,17 +1877,72 @@ ARTICLES: list[Article] = [
     ),
     # ------------------------------------------------------------------ #
     Article(
+        slug="resources-and-tools",
+        title="Resources and tools",
+        summary="Generators, datasets, museums, fabrication files, OEIS sequences, and built installations.",
+        categories=["References", "Meta"],
+        see_also=["bibliography", "education", "materials-and-fabrication"],
+        infobox={
+            "Scope": "Public web resources through July 2026",
+            "Scholarly papers": f"See {link('bibliography', 'Bibliography')} ({len(REFERENCES)} refs)",
+            "Auto-discovery": "Crossref/arXiv registry JSON",
+            "Terminology": "Tile(1,1) ≠ Spectre",
+        },
+        sections=[
+            Section(
+                "How to use this index",
+                2,
+                f"""
+<p>
+  The numbered {link("bibliography", "bibliography")} holds peer-reviewed and preprint research with stable
+  citation anchors. This page catalogs everything else: official generators, open fabrication files,
+  museum exhibits, workshop kits, games, OEIS sequences, journalism, and documented installations.
+</p>
+<p>
+  <strong>Tile(1,1) is not the same as Spectre.</strong> The straight-edged Tile(1,1) polygon admits a
+  periodic tiling if reflected copies are mixed; Spectres are edge-modified, strictly chiral shapes. Many
+  community repositories reuse the word “Spectre” for straight-edged outlines — verify the geometry before
+  fabrication.{cite(2)}
+</p>
+<p>
+  An automated crawl maintains a machine-readable
+  <a href="source-registry.json">source registry</a> for literature discovery. The lists below are
+  human-curated and tiered: link freely, but check each site’s license before republishing assets.
+</p>
+""",
+            ),
+            Section(
+                "Catalog",
+                2,
+                render_web_resources_html(compact=True),
+            ),
+            Section(
+                "Still missing?",
+                2,
+                """
+<p>
+  No single index can guarantee completeness on the open web. If you maintain a generator, dataset,
+  fabrication guide, or installation archive that belongs here,
+  <a href="../../contact.html">contact us</a> with a URL, license, and one-line description.
+</p>
+""",
+            ),
+        ],
+    ),
+    # ------------------------------------------------------------------ #
+    Article(
         slug="bibliography",
         title="Bibliography",
-        summary="54 curated scholarly references, fabrication files, exhibits, and an automated discovery registry.",
+        summary=f"{len(REFERENCES)} curated scholarly references, tools index, and an automated discovery registry.",
         categories=["References"],
-        see_also=["aperiodic-monotile", "spectre-tile", "four-dimensional-lift"],
+        see_also=["aperiodic-monotile", "spectre-tile", "four-dimensional-lift", "resources-and-tools"],
         sections=[
-            Section("References", 2, render_references_html() + """
+            Section("References", 2, render_references_html() + f"""
 <p class="ref-note">
   An automated Crossref/arXiv crawl maintains a separate
-  <a href="source-registry.json">source registry</a> (45 indexed records as of July 2026) for literature
-  discovery. The numbered list above is human-curated and cited throughout the wiki.
+  <a href="source-registry.json">source registry</a> for literature discovery. The numbered list above is
+  human-curated and cited throughout the wiki. For generators, museums, and fabrication files see
+  {link("resources-and-tools", "Resources and tools")}.
 </p>
 """),
         ],
@@ -1712,7 +1959,7 @@ NAV_GROUPS = [
         "signal-processing", "waves-and-photonics", "materials-science",
         "robotics-and-mobility", "biology-and-medicine", "algorithms-and-machine-learning",
     ]),
-    ("Meta", ["bibliography"]),
+    ("Meta", ["resources-and-tools", "bibliography"]),
 ]
 
 ARTICLE_BY_SLUG = {a.slug: a for a in ARTICLES}

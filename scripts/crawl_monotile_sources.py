@@ -30,6 +30,17 @@ QUERIES = (
     "Tile(1,1) tiling",
     "Smith hat tiling",
     "Hat family tilings",
+    "einstein monotile",
+    "chiral aperiodic monotile",
+    "Smith monotile",
+    "polykite hat",
+    "CAP tiling hat",
+    "CASPr spectre",
+    "monotile metamaterial",
+    "monotile diffraction",
+    "Tile(1,√3)",
+    "Turtle monotile",
+    "quasilattice spectre",
 )
 
 RELEVANT = re.compile(
@@ -37,8 +48,12 @@ RELEVANT = re.compile(
     r"aperiodic\s+monotil|"
     r"hat\s+(?:mono)?til|"
     r"spectre\s+(?:mono)?til|"
-    r"tile\s*\(\s*1\s*,\s*1\s*\)|"
-    r"einstein\s+monotil"
+    r"turtle\s+(?:mono)?til|"
+    r"tile\s*\(\s*1\s*,\s*[\d√]+|"
+    r"smith\s+(?:hat|mono)?til|"
+    r"polykite|"
+    r"\bCAP\b|\bCASPr\b|"
+    r"einstein\s+(?:monotil|tile|problem)"
     r")",
     re.IGNORECASE,
 )
@@ -46,8 +61,18 @@ RELEVANT = re.compile(
 
 def request_json(url: str) -> dict[str, Any]:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=60) as response:
-        return json.loads(response.read().decode("utf-8"))
+    last_error: Exception | None = None
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            last_error = exc
+            if exc.code == 429 and attempt < 4:
+                time.sleep(2 ** attempt + 1)
+                continue
+            raise
+    raise last_error  # pragma: no cover
 
 
 def request_text(url: str) -> str:

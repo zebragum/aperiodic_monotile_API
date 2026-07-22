@@ -1,211 +1,217 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://untiling.com/</loc>
+    <loc>https://aperiodicgenerator.com/</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://untiling.com/landing-legacy.html</loc>
+    <loc>https://aperiodicgenerator.com/landing-legacy.html</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://untiling.com/#demo</loc>
+    <loc>https://aperiodicgenerator.com/#demo</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://untiling.com/apparel/</loc>
+    <loc>https://aperiodicgenerator.com/apparel/</loc>
     <lastmod>2026-07-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://untiling.com/docs.html</loc>
+    <loc>https://aperiodicgenerator.com/docs.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://untiling.com/agents.html</loc>
+    <loc>https://aperiodicgenerator.com/agents.html</loc>
     <lastmod>2026-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/</loc>
-    <lastmod>2026-07-12</lastmod>
+    <loc>https://aperiodicgenerator.com/research/</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/aperiodic-monotile.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/aperiodic-monotile.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/spectre-tile.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/spectre-tile.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/hat-tile.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/hat-tile.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/substitution-tiling.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/substitution-tiling.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/four-dimensional-lift.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/four-dimensional-lift.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/moire-and-aliasing.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/moire-and-aliasing.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/computer-graphics.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/computer-graphics.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/design-and-architecture.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/design-and-architecture.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/materials-and-fabrication.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/materials-and-fabrication.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/education.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/education.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/signal-processing.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/signal-processing.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/waves-and-photonics.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/waves-and-photonics.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/materials-science.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/materials-science.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/robotics-and-mobility.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/robotics-and-mobility.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/biology-and-medicine.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/biology-and-medicine.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/algorithms-and-machine-learning.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/algorithms-and-machine-learning.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/research/wiki/bibliography.html</loc>
-    <lastmod>2026-07-13</lastmod>
+    <loc>https://aperiodicgenerator.com/research/wiki/resources-and-tools.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://aperiodicgenerator.com/research/wiki/bibliography.html</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://untiling.com/agent-guide.md</loc>
+    <loc>https://aperiodicgenerator.com/agent-guide.md</loc>
     <lastmod>2026-05-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://untiling.com/use-cases/blender.html</loc>
+    <loc>https://aperiodicgenerator.com/use-cases/blender.html</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/use-cases/fabrication.html</loc>
+    <loc>https://aperiodicgenerator.com/use-cases/fabrication.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/use-cases/generative-art.html</loc>
+    <loc>https://aperiodicgenerator.com/use-cases/generative-art.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/use-cases/applications.html</loc>
+    <loc>https://aperiodicgenerator.com/use-cases/applications.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://untiling.com/terms.html</loc>
+    <loc>https://aperiodicgenerator.com/terms.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://untiling.com/privacy.html</loc>
+    <loc>https://aperiodicgenerator.com/privacy.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://untiling.com/refund.html</loc>
+    <loc>https://aperiodicgenerator.com/refund.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://untiling.com/contact.html</loc>
+    <loc>https://aperiodicgenerator.com/contact.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://untiling.com/attribution.html</loc>
+    <loc>https://aperiodicgenerator.com/attribution.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

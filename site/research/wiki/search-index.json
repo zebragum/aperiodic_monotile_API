@@ -143,9 +143,18 @@
     ]
   },
   {
+    "slug": "resources-and-tools",
+    "title": "Resources and tools",
+    "summary": "Generators, datasets, museums, fabrication files, OEIS sequences, and built installations.",
+    "categories": [
+      "References",
+      "Meta"
+    ]
+  },
+  {
     "slug": "bibliography",
     "title": "Bibliography",
-    "summary": "54 curated scholarly references, fabrication files, exhibits, and an automated discovery registry.",
+    "summary": "70 curated scholarly references, tools index, and an automated discovery registry.",
     "categories": [
       "References"
     ]
