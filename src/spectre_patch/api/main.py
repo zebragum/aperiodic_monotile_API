@@ -485,6 +485,7 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
         return False
     return bool(
         cfg.stripe_price_id_solo_monthly
+        or cfg.stripe_price_id_solo_yearly
         or cfg.stripe_price_id_lifetime
         or cfg.stripe_price_id_teams_monthly
         or cfg.stripe_price_id_teams_yearly
@@ -494,12 +495,11 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
 
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
     ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
-    ("solo_lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
+    ("solo_yearly", "tier_solo", "stripe_price_id_solo_yearly", "subscription", None),
     ("pro_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
-    ("pro_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
+    ("pro_yearly", "tier_teams", "stripe_price_id_teams_yearly", "subscription", None),
     # Legacy checkout slugs (still accepted for existing Stripe links).
     ("commercial_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
-    ("commercial_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
 )
 
 
@@ -526,12 +526,32 @@ def _checkout_price_and_tier(
     plan = str(plan_raw or "").strip().lower().replace("-", "_")
     if plan in ("solo", "solo_month", "solo_monthly", "month", "monthly"):
         plan = "solo_monthly"
-    elif plan in ("lifetime", "life", "one_time", "onetime", "solo_lifetime"):
-        plan = "solo_lifetime"
+    elif plan in (
+        "year",
+        "yearly",
+        "solo_year",
+        "solo_yearly",
+        "lifetime",
+        "life",
+        "one_time",
+        "onetime",
+        "solo_lifetime",
+    ):
+        plan = "solo_yearly"
     elif plan in ("commercial", "commercial_month", "commercial_monthly", "pro", "pro_month", "pro_monthly"):
         plan = "pro_monthly"
-    elif plan in ("commercial_lifetime", "commercial_life", "pro_lifetime", "pro_life"):
-        plan = "pro_lifetime"
+    elif plan in (
+        "commercial_yearly",
+        "commercial_year",
+        "commercial_lifetime",
+        "commercial_life",
+        "pro_yearly",
+        "pro_year",
+        "pro_lifetime",
+        "pro_life",
+        "teams_yearly",
+    ):
+        plan = "pro_yearly"
 
     if not plan:
         plan = "solo_monthly"
@@ -541,6 +561,8 @@ def _checkout_price_and_tier(
             price_id = str(getattr(cfg, attr, "") or "").strip()
             if not price_id and slug == "solo_monthly" and cfg.stripe_price_id_studio.strip():
                 price_id = cfg.stripe_price_id_studio.strip()
+            if not price_id and slug == "solo_yearly" and cfg.stripe_price_id_lifetime.strip():
+                price_id = cfg.stripe_price_id_lifetime.strip()
             if price_id:
                 return price_id, tier, slug, mode, ttl_seconds
             raise HTTPException(
@@ -1286,10 +1308,13 @@ def create_app() -> FastAPI:
             "studio_checkout_available": _billing_configured(cfg),
             "plans": {
                 "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
-                "solo_lifetime": bool(cfg.stripe_price_id_lifetime),
+                "solo_yearly": bool(cfg.stripe_price_id_solo_yearly or cfg.stripe_price_id_lifetime),
                 "pro_monthly": bool(cfg.stripe_price_id_teams_monthly),
-                "pro_lifetime": bool(cfg.stripe_price_id_teams_yearly),
+                "pro_yearly": bool(cfg.stripe_price_id_teams_yearly),
                 "commercial_monthly": bool(cfg.stripe_price_id_teams_monthly),
+                # Legacy aliases for older checkout links and clients.
+                "solo_lifetime": bool(cfg.stripe_price_id_solo_yearly or cfg.stripe_price_id_lifetime),
+                "pro_lifetime": bool(cfg.stripe_price_id_teams_yearly),
                 "commercial_lifetime": bool(cfg.stripe_price_id_teams_yearly),
             },
             "public_site_url": cfg.public_site_url,
@@ -1301,8 +1326,9 @@ def create_app() -> FastAPI:
         """Start Stripe Checkout.
 
         Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
-        ``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or
-        ``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.
+        ``solo_monthly``, ``solo_yearly``, ``pro_monthly``, or ``pro_yearly``.
+        Legacy aliases ``solo_lifetime`` and ``commercial_lifetime`` map to the
+        yearly plans. Omitted ``plan`` defaults to ``solo_monthly``.
         """
 
         if not _billing_configured(cfg):

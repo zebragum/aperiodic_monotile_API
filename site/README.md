@@ -1,12 +1,12 @@
-# Aperiodic Monotile API Website
+# Untiling API Website
 
-Static marketing and documentation site for the Aperiodic Monotile API.
+Static marketing and documentation site for the Untiling API.
 
 ## What This Demo Does
 
 - Shows pre-generated, view-only Spectre tiling examples.
-- Avoids calling the live API on every visitor interaction, which keeps the free
-  public demo cheap to host.
+- Avoids calling the live API on every visitor interaction, which keeps the public
+  demo inexpensive to host.
 - Explains use cases, pricing direction, API request shape, and signed-download
   flow.
 
@@ -18,7 +18,7 @@ API jobs. The recommended first launch is:
 1. Static site + preloaded examples for anonymous visitors.
 2. Authenticated API keys for downloadable/custom geometry.
 3. Optional "Generate live preview" later, guarded by rate limits, CAPTCHA, and
-   a low free quota.
+   a low preview-tier quota.
 
 ## Local Preview
 
@@ -41,5 +41,5 @@ or any static host. Once the domain is known, update:
 
 Initial Render target:
 
-- Site: `https://aperiodicgenerator.com`
-- API: `https://api.aperiodicgenerator.com`
+- Site: `https://untiling.com`
+- API: `https://api.untiling.com`

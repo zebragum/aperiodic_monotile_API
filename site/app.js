@@ -56,8 +56,13 @@ const demoSvgHost = document.querySelector("#demoSvgHost");
 const checkoutStatus = document.querySelector("#checkoutStatus");
 
 const svgTextCache = new Map();
-const apiBase = "https://api.aperiodicgenerator.com";
-const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
+const apiBase = window.SITE_CONFIG?.apiBase || "https://api.untiling.com";
+const apiFallbackBase =
+  window.SITE_CONFIG?.apiFallbacks?.[0] || "https://api.aperiodicgenerator.com";
+const apiFallbackBases = window.SITE_CONFIG?.apiFallbacks || [
+  "https://api.aperiodicgenerator.com",
+  "https://aperiodic-monotile-api.onrender.com",
+];
 const analyticsVisitorKey = "monotile.analytics.visitor.v1";
 const analyticsSessionKey = "monotile.analytics.session.v1";
 const generatorTileDataUrl = "assets/samples/sample-tiles.json";
@@ -143,7 +148,7 @@ function trackLaunchEvent(eventName, payload = {}) {
     ...payload,
   };
   const json = JSON.stringify(body);
-  if (navigator.sendBeacon && apiBase.includes("aperiodicgenerator.com")) {
+  if (navigator.sendBeacon && (apiBase.includes("untiling.com") || apiBase.includes("aperiodicgenerator.com"))) {
     const blob = new Blob([json], { type: "application/json" });
     if (navigator.sendBeacon(`${apiBase}/v1/analytics/events`, blob)) return;
   }
@@ -156,11 +161,18 @@ function trackLaunchEvent(eventName, payload = {}) {
 }
 
 async function apiFetch(path, options = {}) {
-  try {
-    return await fetch(`${apiBase}${path}`, options);
-  } catch (err) {
-    return fetch(`${apiFallbackBase}${path}`, options);
+  const bases = [apiBase, ...apiFallbackBases.filter((b) => b !== apiBase)];
+  let lastErr;
+  for (const base of bases) {
+    try {
+      const response = await fetch(`${base}${path}`, options);
+      if (response.ok || response.status < 500) return response;
+      lastErr = new Error(`HTTP ${response.status} from ${base}`);
+    } catch (err) {
+      lastErr = err;
+    }
   }
+  throw lastErr || new Error("API unreachable");
 }
 
 function clonePalette(palette) {
@@ -395,7 +407,7 @@ function downloadCanvas(kind) {
     }
     trackLaunchEvent("sample_download", {
       sample_file: filename,
-      metadata: { source: "free_generator", kind },
+      metadata: { source: "preview_generator", kind },
     });
   }, mime, kind === "jpg" ? 0.92 : undefined);
 }
@@ -409,7 +421,7 @@ async function initGenerator() {
     renderGenerator();
   } catch (err) {
     console.error(err);
-    if (generatorStatus) generatorStatus.textContent = "Could not load the free generator data.";
+    if (generatorStatus) generatorStatus.textContent = "Could not load the preview generator data.";
   }
   generatorShape?.addEventListener("change", renderGenerator);
   generatorScale?.addEventListener("input", renderGenerator);
@@ -432,7 +444,7 @@ async function initGenerator() {
       }
       trackLaunchEvent("requested_format", {
         format: format.toLowerCase(),
-        metadata: { source: "free_generator_upgrade_prompt" },
+        metadata: { source: "preview_generator_upgrade_prompt" },
       });
       document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });

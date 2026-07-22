@@ -411,7 +411,7 @@
     },
     "/v1/billing/checkout": {
       "post": {
-        "description": "Start Stripe Checkout.\n\nBody JSON (optional unless defaulting): ``email``, ``plan`` \u2014 one of\n``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or\n``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.",
+        "description": "Start Stripe Checkout.\n\nBody JSON (optional unless defaulting): ``email``, ``plan`` \u2014 one of\n``solo_monthly``, ``solo_yearly``, ``pro_monthly``, or ``pro_yearly``.\nLegacy aliases ``solo_lifetime`` and ``commercial_lifetime`` map to the yearly plans.\nOmitted ``plan`` defaults to ``solo_monthly``.",
         "operationId": "create_checkout_v1_billing_checkout_post",
         "responses": {
           "200": {

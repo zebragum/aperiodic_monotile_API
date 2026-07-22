@@ -1,12 +1,12 @@
-# Aperiodic Monotile API Guide for AI Agents
+# Untiling API Guide for AI Agents
 
-This file is the canonical machine-readable integration brief for the Aperiodic Monotile API.
+This file is the canonical machine-readable integration brief for the Untiling API.
 
-Base API URL: `https://api.aperiodicgenerator.com`
+Base API URL: `https://api.untiling.com`
 
-Public docs: `https://aperiodicgenerator.com/docs.html`
+Public docs: `https://untiling.com/docs.html`
 
-Human support: `https://aperiodicgenerator.com/contact.html`
+Human support: `https://untiling.com/contact.html`
 
 ## What This API Does
 
@@ -29,7 +29,7 @@ Most production calls require:
 X-API-Key: YOUR_API_KEY
 ```
 
-Free keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
+Preview-tier keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
 
 Paid Solo and Pro keys can request production exporters.
 
@@ -188,7 +188,7 @@ Rounded rectangle:
 
 ## Common Request Examples
 
-Small free preview:
+Small preview example:
 
 ```json
 {

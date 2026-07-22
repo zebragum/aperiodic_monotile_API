@@ -3,88 +3,59 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic Monotile Generator | Aperiodic Geometry for Designers and Developers</title>
+    <title>Untiling | Non-Repeating Geometry for Blender</title>
     <meta
       name="description"
-      content="Generator for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
-    />
-    <meta
-      name="keywords"
-      content="aperiodic monotile, spectre tile, Tile(1,1), monotile API, aperiodic tiling, SVG tiling, Blender tiling, procedural geometry, CAD pattern generator, wave propagation, anti-aliasing patterns"
+      content="Blender add-on for aperiodic monotile patches. Editable N-gon instances, custom edge styles, label collections, bevel tools, and GLB import via the hosted API."
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
-    <link rel="canonical" href="https://aperiodicgenerator.com/" />
-    <link rel="stylesheet" href="styles.css" />
-
+    <link rel="canonical" href="https://untiling.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Aperiodic Monotile Generator" />
+    <meta property="og:title" content="Untiling — Non-Repeating Geometry for Blender" />
     <meta
       property="og:description"
-      content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, PNG, JPG, STL, GLB, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
+      content="Generate surfaces that never visibly repeat. Blender add-on for aperiodic monotile patches with GLB import via the hosted API."
     />
-    <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
-    <meta property="og:video" content="https://aperiodicgenerator.com/assets/generator-video-web.mp4" />
-    <meta property="og:url" content="https://aperiodicgenerator.com/" />
+    <meta property="og:image" content="https://untiling.com/assets/generator-video-poster.jpg" />
+    <meta property="og:video" content="https://untiling.com/assets/generator-video-web.mp4" />
+    <meta property="og:url" content="https://untiling.com/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Aperiodic Monotile Generator",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web API",
-        "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, PNG, JPG, STL, GLB, CSV, JSON.",
-        "offers": [
-          {"@type": "Offer", "name": "Free preview tier", "price": "0", "priceCurrency": "USD"},
-          {"@type": "Offer", "name": "Solo", "price": "10", "priceCurrency": "USD"},
-          {"@type": "Offer", "name": "Pro", "price": "99", "priceCurrency": "USD"}
-        ]
-      }
-    </script>
+    <meta name="twitter:image" content="https://untiling.com/assets/generator-video-poster.jpg" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Aperiodic Monotile Generator home">
-        <img
-          class="brand-mark"
-          src="assets/brand-mark.svg"
-          alt=""
-          width="32"
-          height="32"
-          decoding="async"
-        />
-        <span>Aperiodic Monotile Generator</span>
+      <a class="brand" href="#top" aria-label="Untiling home">
+        <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
+        <a href="#demo">Demo</a>
         <a href="docs.html">Docs</a>
+        <a href="research/index.html">Research</a>
         <a href="agents.html">AI Guide</a>
-        <a href="apparel/">Shop Apparel</a>
+        <a href="landing-legacy.html#pricing">Pricing</a>
       </nav>
       <div class="header-actions">
-        <a class="button secondary small" href="#pricing">Pricing</a>
-        <a class="button small" href="docs.html#access">Get Access</a>
+        <a class="button secondary small" href="docs.html#access">Get Access</a>
+        <a class="button small" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
       </div>
     </header>
-
     <main id="top">
-      <section id="demo" class="section generator-hero">
+      <section class="section docs-hero">
         <div class="generator-intro">
           <div class="generator-copy">
-            <p class="eyebrow">Free non-repeating 2D/3D generator</p>
-            <h1>Generate without patterns.</h1>
-            <p class="hero-text hero-context">
-              Aperiodic tilings have unique properties useful for a variety of applications. From computer
-              graphics and signal processing to metamaterials, cryptography, and education.
-              It's all built on the aperiodic monotile, a single shape sometimes called the Spectre tile,
-              that tiles the plane forever without ever repeating.
-              <a href="use-cases/applications.html">See More</a>.
-            </p>
+            <p class="eyebrow">Blender · aperiodic monotiles</p>
+            <h1>Generate surfaces that never visibly repeat.</h1>
             <p class="hero-text">
-              Build free JPG or PNG previews. Upgrade for SVG, GLB, STL, CSV, and JSON exports.
+              Stop obvious CG tiling. Generate aperiodic monotile patches in Blender — one shape, no repeating
+              wallpaper unit, excellent for floors, facades, and panels where square grids give themselves away on camera.
             </p>
+            <div class="hero-actions">
+              <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender add-on (v0.3.10)</a>
+              <a class="button secondary" href="docs.html#access">Get API key</a>
+            </div>
           </div>
           <figure class="generator-video-card">
             <video controls preload="none" playsinline poster="assets/generator-video-poster.jpg" aria-label="Aperiodic monotile generator video">
@@ -92,233 +63,167 @@
             </video>
           </figure>
         </div>
-
-        <div class="generator-app" aria-label="Free aperiodic monotile generator">
-          <aside class="generator-controls">
-            <div class="generator-control-header">
-              <p class="eyebrow">Generate a tiling</p>
-            </div>
-            <div class="generator-control-row">
-              <label>
-                Boundary
-                <select id="generatorShape" autocomplete="off">
-                  <option value="rectangle" selected>Rectangle</option>
-                  <option value="circle">Circle</option>
-                  <option value="triangle">Triangle</option>
-                  <option value="hexagon">Hexagon</option>
-                  <option value="rounded_rect">Rounded rectangle</option>
-                </select>
-              </label>
-              <label>
-                Tile scale
-                <input id="generatorScale" type="range" min="0.55" max="1.65" value="0.9" step="0.05" />
-                <span class="range-readout"><span id="generatorScaleValue">0.90</span>x tile size</span>
-              </label>
-            </div>
-            <div class="palette-editor" aria-label="Nine color palette">
-              <div class="palette-editor-heading">
-                <span>9-color palette</span>
-                <button class="button-link" type="button" id="randomizePalette">Randomize</button>
-              </div>
-              <div id="paletteGrid" class="palette-grid"></div>
-            </div>
-            <div class="generator-actions">
-              <button class="button" type="button" id="downloadPng">Download PNG free</button>
-              <button class="button secondary" type="button" id="downloadJpg">Download JPG free</button>
-            </div>
-            <div class="paid-format-upsell" aria-label="Paid production export formats">
-              <div class="paid-format-buttons">
-                <button class="button secondary small" type="button" data-upgrade-format="svg">SVG</button>
-                <button class="button secondary small" type="button" data-upgrade-format="glb">GLB</button>
-                <button class="button secondary small" type="button" data-upgrade-format="stl">STL</button>
-              </div>
-            </div>
-          </aside>
-          <div class="generator-preview-panel">
-            <div class="generator-preview-toolbar">
-              <span id="generatorSummary">Rectangle · 0.90x · PNG/JPG free</span>
-              <span class="preview-badge">Live preview</span>
-            </div>
-            <canvas id="generatorCanvas" width="1400" height="900" aria-label="Generated aperiodic monotile preview"></canvas>
-          </div>
-        </div>
       </section>
 
-      <section id="samples" class="section samples-section">
-        <div class="section-heading">
-          <p class="eyebrow">Sample outputs</p>
-          <h2>Download real files before you integrate.</h2>
+      <section class="section docs-section" id="demo">
+        <div>
+          <p class="eyebrow">Demo</p>
+          <h2>Watch the add-on in Blender.</h2>
           <p>
-            Open a sample in Blender, CAD, Illustrator, a 3D viewer, or your own parser. These are ordinary
-            API artifacts with clipped boundaries and tile data.
+            Patch generation, editable N-gon instances, edge styles, collections, and materials in one walkthrough.
           </p>
         </div>
-        <div class="sample-downloads" aria-label="Sample output downloads">
-          <a href="assets/samples/sample-tiles.glb" download>GLB scene</a>
-          <a href="assets/samples/sample-linework.stl" download>STL linework</a>
-          <a href="assets/samples/sample-independent-stl.zip" download>STL ZIP tiles</a>
-          <a href="assets/samples/sample-patch.svg" download>SVG patch</a>
-          <a href="assets/samples/sample-preview.png" download>PNG preview</a>
-          <a href="assets/samples/sample-preview.jpg" download>JPG preview</a>
-          <a href="assets/samples/sample-tiles.csv" download>CSV tile data</a>
-          <a href="assets/samples/sample-tiles.json" download>JSON tile data</a>
+        <figure class="demo-video-wide">
+          <video controls preload="none" playsinline poster="assets/blender-demo-poster.jpg" aria-label="Blender add-on full demo video">
+            <source src="assets/blender-demo-web.mp4" type="video/mp4" />
+          </video>
+        </figure>
+      </section>
+
+      <section class="section">
+        <div class="feature-grid cards">
+          <article class="card">
+            <h3>Surfaces without obvious repetition</h3>
+            <p>
+              Ordered variation for floors, facades, panels, sculpture, and procedural environments without a
+              wallpaper repeat unit giving the game away on camera.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Editable N-gon instances</h3>
+            <p>
+              Import one clean Tile(1,1) mesh and distribute linked instances across the patch. Edit one tile,
+              they all update.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Custom edge styles</h3>
+            <p>
+              Flat, curvy, wavy, jagged, blocky, or draw your own edge profile with the in-viewport guide line
+              and stamp it onto every tile edge.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Organize by tile type</h3>
+            <p>
+              One click sorts instances into label collections so you can assign different materials, bevels,
+              or modifiers per tile family.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Bevel and weighted normals</h3>
+            <p>
+              Add bevel modifiers and weighted normals across the patch in one step for clean shading on
+              architectural surfaces.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Flexible boundaries</h3>
+            <p>
+              Fill rectangles, circles, triangles, and more. Match selected object bounds, tune tile scale and
+              depth, then generate inside Blender.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section id="use-cases" class="section">
+      <section class="section docs-section">
+        <div>
+          <p class="eyebrow">In Blender</p>
+          <h2>Monotile panel in the 3D View sidebar and Scene properties.</h2>
+          <p>
+            Paste your API key, pick a boundary and tile scale, choose instance or GLB output, set side style and
+            depth, then generate. The panel also lives under Scene properties if the N-sidebar tab is hard to find.
+          </p>
+        </div>
+        <figure class="screenshot-card">
+          <img
+            src="assets/blender-addon-panel.png"
+            width="1920"
+            height="1080"
+            alt="Blender viewport showing an aperiodic monotile patch with the Monotile add-on panel open, including boundary, generation, and custom edge style controls."
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            Rectangle patch with custom edge profile, editable N-gon instances, and label collections ready for
+            per-type materials.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section docs-section">
+        <div>
+          <p class="eyebrow">Install</p>
+          <h2>Install the add-on, paste your API key, generate GLB geometry.</h2>
+          <p>
+            In Blender 4.2+, open <strong>Edit &gt; Preferences &gt; Add-ons &gt; Install...</strong>, choose the
+            downloaded zip, enable <strong>Untiling</strong>, then open the
+            <strong>Monotile</strong> tab in the 3D View sidebar (or Scene properties).
+          </p>
+        </div>
+        <pre class="code-card"><code>1. Download the Blender add-on ZIP
+2. Install and enable it in Blender Preferences
+3. Paste your API key in the Monotile panel
+4. Choose boundary, scale, side style, and depth
+5. Generate editable N-gon instances or GLB</code></pre>
+      </section>
+
+      <section class="section">
         <div class="section-heading">
-          <p class="eyebrow">Practical uses</p>
-          <h2>When you want to avoid patterns, use this generator for non-repeating geometry, good for...</h2>
+          <p class="eyebrow">Workflow tips</p>
+          <h2>From first patch to shaded surface.</h2>
         </div>
         <div class="cards">
           <article class="card">
-            <h3>Blender and 3D workflows</h3>
+            <h3>Start with instances</h3>
             <p>
-              Instance tiles in Blender, Houdini, or Three.js for architectural panels,
-              animation, sculpture, and procedural scenes. Non-repeating structure helps avoid
-              obvious tiling, moire, and grid artifacts while staying deterministic.
-            </p>
-            <a href="use-cases/blender.html">Blender workflow guide</a>
-          </article>
-          <article class="card">
-            <h3>Generative art and design</h3>
-            <p>Create non-repeating compositions with stable IDs, deterministic seeds, clipping masks, and compact vector output.</p>
-            <a href="use-cases/generative-art.html">Generative art guide</a>
-          </article>
-          <article class="card">
-            <h3>Materials and surface studies</h3>
-            <p>Export SVG, STL, or GLB geometry for product surfaces, relief panels, printed textures, molds, and physical studies.</p>
-            <a href="use-cases/fabrication.html">Surface workflow guide</a>
-          </article>
-          <article class="card">
-            <h3>Scientific communication</h3>
-            <p>
-              Turn a recent mathematical discovery into visuals people can understand: classroom handouts,
-              museum panels, research figures, grant graphics, physical models, and interactive demos that
-              show order without repetition.
+              N-gon instances are the fastest path for materials, bevels, and collection organization. Switch to
+              GLB when you need a single merged mesh for export.
             </p>
           </article>
           <article class="card">
-            <h3>Textiles and surface design</h3>
+            <h3>Shape edges in the viewport</h3>
             <p>
-              Build aperiodic motifs for wallpaper, fashion, packaging,
-              embossing, engraving, and repeat-free decorative systems.
+              Set Side Style to Custom, edit the guide line, then apply the profile to every tile. Curvy and wavy
+              presets are there when you want a quick stylized look.
             </p>
           </article>
           <article class="card">
-            <h3>AI research</h3>
+            <h3>Materials per label</h3>
             <p>
-              In contrast to common polygons, which have been studied for thousands of years,
-              aperiodic monotiles are largely absent from AI training data. As pattern-learning
-              machines, this pattern-defying geometry represents a huge challenge to navigate and
-              a useful device for researchers.
+              After import, use Organize into Label Collections, then assign materials per collection or run
+              randomize materials for quick look-dev passes.
             </p>
-          </article>
-          <article class="card">
-            <h3>Developer pipelines</h3>
-            <p>Request tilings from scripts, job queues, design tools, or plugins instead of maintaining local substitution code.</p>
           </article>
         </div>
       </section>
 
-      <section id="docs" class="section docs-section">
+      <section class="section docs-section cta">
         <div>
-          <p class="eyebrow">API documentation</p>
-          <h2>One request creates a clipped geometry patch.</h2>
+          <p class="eyebrow">Access</p>
+          <h2>Blender add-on download. Hosted API for generation.</h2>
           <p>
-            POST JSON with your mask, tile scale, and exporter formats.
-            When a job completes, artifact downloads arrive as signed, time-limited URLs.
+            The add-on ZIP is available from this site. Patch generation runs through the hosted API with
+            free JPG and PNG exports on the <a href="landing-legacy.html">legacy generator page</a>. Paid Solo
+            and Pro tiers unlock production GLB, STL, SVG, CSV, and JSON exports for heavier scenes.
           </p>
         </div>
-        <div class="code-stack">
-          <pre class="code-card"><code>{
-  "formats": ["svg", "glb"],
-  "mask": {"type": "rectangle", "width": 90, "height": 40},
-  "scale": 1
-}</code></pre>
-          <pre class="code-card code-card-secondary"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
-  -d '{
-  "scale": 1,
-  "mask": {"type": "triangle", "side_length": 50},
-  "formats": ["jpg"],
-  "jpg_width_px": 900,
-  "jpg_height_px": 780,
-  "jpg_quality": 90
-}'</code></pre>
+        <div class="hero-actions">
+          <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
+          <a class="button secondary" href="docs.html#access">Get API key</a>
+          <a class="button secondary" href="landing-legacy.html#pricing">View pricing</a>
         </div>
-      </section>
-
-      <section id="pricing" class="section pricing">
-        <div class="section-heading">
-          <p class="eyebrow">Pricing</p>
-          <h2>Production geometry with free previews</h2>
-          <p>
-            Raster previews stay free so anyone can sanity-check meshes. Paid plans unlock full vector exporters,
-            higher limits, and the operational layer you build on, with no copyrights on tiling math.
-          </p>
-        </div>
-        <div class="pricing-grid">
-          <article class="price-card">
-            <h3>Free</h3>
-            <p class="price">$0</p>
-            <p class="price-note">Small preview patches · JPG/PNG raster previews only</p>
-            <ul>
-              <li>Small preview patches for demos and experimentation</li>
-              <li>Raster image previews only: JPG or PNG</li>
-              <li>Public docs &amp; examples</li>
-            </ul>
-          </article>
-          <article class="price-card featured">
-            <h3>Solo</h3>
-            <p class="price">$10<span class="price-unit">/mo</span></p>
-            <p class="price-note">One-person license for production exports</p>
-            <ul>
-              <li>Production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
-              <li>Production jobs up to 40,000 retained tiles</li>
-              <li>Or $79 lifetime for one person</li>
-            </ul>
-            <div class="pricing-actions">
-              <button class="button" type="button" data-checkout-plan="solo_monthly">Subscribe monthly</button>
-              <button class="button secondary" type="button" data-checkout-plan="solo_lifetime">Buy lifetime</button>
-            </div>
-          </article>
-          <article class="price-card">
-            <h3>Pro</h3>
-            <p class="price">$99<span class="price-unit">/mo</span></p>
-            <p class="price-note">Studio license with a much higher tile ceiling</p>
-            <ul>
-              <li>Production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
-              <li>Production jobs up to 400,000 retained tiles</li>
-              <li>Or $999 lifetime for studio and client work</li>
-            </ul>
-            <div class="pricing-actions">
-              <button class="button" type="button" data-checkout-plan="pro_monthly">Subscribe monthly</button>
-              <button class="button secondary" type="button" data-checkout-plan="pro_lifetime">Buy lifetime</button>
-            </div>
-          </article>
-        </div>
-        <p class="checkout-status" id="checkoutStatus" aria-live="polite"></p>
-        <p class="pricing-ip-note">
-          <strong>Outputs &amp; rights.</strong> We retain no copyrights in your geometries: API responses are deterministic
-          facts about planar substitution, not creative expression on their own (think uncolored grids). Your
-          project becomes protectable once you add design choices, palettes, composites, narration, tooling, brand, or integration work.
-          The guide in <a href="docs.html#outputs">docs&nbsp;› outputs</a> explains the positioning.
-        </p>
       </section>
     </main>
-
     <footer class="footer">
       <p>
-        <a href="apparel/">Shop Apparel</a> ·
-        <a href="docs.html#outputs">Ownership &amp; outputs</a> · <a href="terms.html">Terms</a> ·
+        <a href="use-cases/blender.html">Blender guide (legacy URL)</a> ·
+        <a href="landing-legacy.html">Generator demo</a> ·
+        <a href="docs.html">Docs</a> · <a href="terms.html">Terms</a> ·
         <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> ·
-        <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a> ·
-        <a href="sitemap.xml">Sitemap</a>
+        <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a>
       </p>
     </footer>
-
-    <script src="app.js"></script>
   </body>
 </html>

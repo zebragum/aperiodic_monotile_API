@@ -32,25 +32,36 @@
 
     <footer class="shop-footer">
       <p>
-        <a href="../">Aperiodic Monotile Generator</a> &middot;
+        <a href="../">Untiling</a> &middot;
         <a href="../refund.html">Refunds</a> &middot;
         <a href="../contact.html">Contact</a>
       </p>
     </footer>
 
+    <script src="../site-config.js"></script>
     <script>
-      const apiBase = "https://api.aperiodicgenerator.com";
-      const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
+      const apiBase = window.SITE_CONFIG?.apiBase || "https://api.untiling.com";
+      const apiFallbackBases = window.SITE_CONFIG?.apiFallbacks || [
+        "https://api.aperiodicgenerator.com",
+        "https://aperiodic-monotile-api.onrender.com",
+      ];
       const title = document.querySelector("#thanksTitle");
       const body = document.querySelector("#thanksBody");
       const status = document.querySelector("#thanksStatus");
 
       async function apiFetch(path, options = {}) {
-        try {
-          return await fetch(`${apiBase}${path}`, options);
-        } catch (err) {
-          return fetch(`${apiFallbackBase}${path}`, options);
+        const bases = [apiBase, ...apiFallbackBases.filter((b) => b !== apiBase)];
+        let lastErr;
+        for (const base of bases) {
+          try {
+            const response = await fetch(`${base}${path}`, options);
+            if (response.ok || response.status < 500) return response;
+            lastErr = new Error(`HTTP ${response.status} from ${base}`);
+          } catch (err) {
+            lastErr = err;
+          }
         }
+        throw lastErr || new Error("API unreachable");
       }
 
       function showSuccess() {

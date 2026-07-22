@@ -1,5 +1,8 @@
-const apiBase = "https://api.aperiodicgenerator.com";
-const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
+const apiBase = window.SITE_CONFIG?.apiBase || "https://api.untiling.com";
+const apiFallbackBases = window.SITE_CONFIG?.apiFallbacks || [
+  "https://api.aperiodicgenerator.com",
+  "https://aperiodic-monotile-api.onrender.com",
+];
 const cartStorageKey = "monotile.shop.cart.v1";
 
 const shopStatus = document.querySelector("#shopStatus");
@@ -31,11 +34,18 @@ let selectedColor = null;
 let selectedSize = null;
 
 async function apiFetch(path, options = {}) {
-  try {
-    return await fetch(`${apiBase}${path}`, options);
-  } catch (err) {
-    return fetch(`${apiFallbackBase}${path}`, options);
+  const bases = [apiBase, ...apiFallbackBases.filter((b) => b !== apiBase)];
+  let lastErr;
+  for (const base of bases) {
+    try {
+      const response = await fetch(`${base}${path}`, options);
+      if (response.ok || response.status < 500) return response;
+      lastErr = new Error(`HTTP ${response.status} from ${base}`);
+    } catch (err) {
+      lastErr = err;
+    }
   }
+  throw lastErr || new Error("API unreachable");
 }
 
 function money(value) {

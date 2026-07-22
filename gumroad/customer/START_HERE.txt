@@ -1,19 +1,19 @@
 ================================================================================
-  APERIODIC MONOTILE GENERATOR — BLENDER KIT
-  Thank you for your purchase.
+  UNTILING — BLENDER KIT
+  Thank you for your download.
 ================================================================================
 
-WHAT YOU BOUGHT
----------------
-This kit is for Blender artists who want large aperiodic monotile surfaces that
-do NOT read like obvious CG tiling. You get:
+WHAT YOU GOT
+------------
+This is the curated Blender kit from Gumroad. The same add-on is on our site —
+this ZIP bundles install files, samples, and a quick-start guide.
 
-  1. aperiodic_monotile_generator_blender.zip  — install in Blender 4.2+ (includes blender_manifest.toml)
+  1. aperiodic_monotile_generator_blender.zip  — install in Blender 4.2+
   2. samples/                                   — example SVG, PNG, GLB, CSV, JSON
   3. This guide
 
 You still need an API key from the hosted generator (see below). The add-on
-calls the live API to build geometry; it does not run offline.
+calls the live API; it does not run offline.
 
 
 WHY THIS EXISTS (30 seconds)
@@ -25,21 +25,20 @@ beat — surfaces look more natural on floors, facades, and environments.
 
 STEP 1 — GET AN API KEY
 -----------------------
-Open:  https://aperiodicgenerator.com/docs.html#access
+Open:  https://untiling.com/docs.html#access
 
-  • Free tier: small PNG/JPG previews only (good for testing the add-on flow)
-  • Solo plan ($10/mo or $79 lifetime): production exports including GLB, up to 40,000 tiles per job
-  • Pro plan ($99/mo or $999 lifetime): studio license, up to 400,000 tiles per job
+  • Preview tier: small PNG/JPG preview exports (good for testing the workflow)
+  • Solo plan ($10/mo or $79/yr): production exports including GLB
+  • Pro plan ($99/mo or $999/yr): studio license, higher tile limits
 
-If you received a discount code in your Gumroad receipt email, apply it at checkout
-on the site.
+Add-on download: untiling.com
 
 
 STEP 2 — INSTALL THE ADD-ON
 ---------------------------
 1. In Blender: Edit → Preferences → Add-ons → Install…
 2. Select: aperiodic_monotile_generator_blender.zip
-3. Enable: "Aperiodic Monotile Generator"
+3. Enable: "Untiling"
 4. Press N in the 3D View → sidebar tab "Monotile"
 
 
@@ -51,20 +50,20 @@ STEP 3 — FIRST SCENE
 4. Click "Generate and Import GLB"
 5. Wait for the job to finish (Blender may pause while polling)
 
-Imported tiles land in a collection named Monotile <job_id>.
+imported tiles land in a collection named Monotile <job_id>.
 
 
 TIPS
 ----
 • Use "Use Selected Bounds" on a flat reference object to size a rectangle fill.
 • "Randomize Tile Materials" helps preview palette variation on mesh tiles.
-• API docs: https://aperiodicgenerator.com/docs.html
-• AI integration brief: https://aperiodicgenerator.com/agents.html
+• API docs: https://untiling.com/docs.html
+• AI integration brief: https://untiling.com/agents.html
 
 
 SUPPORT
 -------
-Issues or bugs: https://aperiodicgenerator.com/contact.html
+Issues or bugs: https://untiling.com/contact.html
 Include your Gumroad email and what step failed.
 
 

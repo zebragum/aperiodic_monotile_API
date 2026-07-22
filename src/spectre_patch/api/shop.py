@@ -34,6 +34,123 @@ CATALOG_TTL_SECONDS = 1800.0
 MAX_CART_LINES = 20
 MAX_LINE_QUANTITY = 10
 
+# Products hidden from the storefront (substring match on the Printful sync
+# product name, case-insensitive). They stay untouched in Printful.
+HIDDEN_NAME_PATTERNS: tuple[str, ...] = (
+    "ASYMMETRIC",
+    "TIE-DYE",
+    "STAR BLUE",
+    "THE HEART",
+    "COOL LIGHTRED",
+    "COOL VIOLET",
+    "FIRE BROWN",
+    "WARM LIGHT",
+)
+
+# Merchandised order, most likely to sell first. Exact sync product names,
+# uppercase. Anything not listed falls back to a category tier below.
+CURATED_ORDER: tuple[str, ...] = (
+    # Hero: the flagship tee, then the dark/dev-culture favorites.
+    "THE UNIFORM",
+    "DARK MODE TEE",
+    "HER UNIFORM",
+    "MATRIX TEE",
+    "DARKMODE WOMENS TEE",
+    "HOODIE",
+    # Core tee colorways, unisex and womens interleaved by shade.
+    "UNIFORM WHITE TEE",
+    "HER UNIFORM WHITE TEE",
+    "UNIFORM BLUE TEE",
+    "UNIFORM BLUE WOMENS TEE",
+    "COOL BLUE TEE",
+    "COOL BLUE WOMENS TEE",
+    "UNIFORM GREEN TEE",
+    "UNIFORM GREEN WOMENS TEE",
+    "UNIFORM LIGHTRED TEE",
+    "UNIFORM LIGHTRED WOMENS TEE",
+    "CAMO TEE",
+    "CAMO WOMENS TEE",
+    # Higher-ticket outerwear.
+    "BOMBER",
+    "POLO",
+    # Easy add-on accessories.
+    "BLACK MUG",
+    "WHITE MUG",
+    "BLACK I-PHONE CASE",
+    "DARKMODE I-PHONE CASE",
+    "WHITE I-PHONE CASE",
+    "BLACK SAMSUNG CASE",
+    "DARKMODE SAMSUNG CASE",
+    "WHITE SAMSUNG CASE",
+    "TOTE BAG",
+    "REVERSIBLE BUCKET HAT",
+    "BACKPACK",
+    "FANNY PACK",
+    "PILLOW",
+    # Loungewear and swim.
+    "LOUNGE PANTS",
+    "YOGA PANTS",
+    "SKATER SKIRT",
+    "1-PIECE SWIMSUIT",
+    # Footwear: bigger commitment, browsed later.
+    "MENS BLACK TENNIS SHOE",
+    "MENS WHITE TENNIS SHOE",
+    "MENS HIGH-TOP",
+    "WOMENS HIGH-TOP",
+    "WOMENS BLACK SLIP-ONS",
+    "WOMENS WHITE SLIP-ONS",
+    "MENS BLACK SLIDES",
+    "WOMENS SLIDES",
+    # Kids and youth close out the page.
+    "MATRIX YOUTH TEE",
+    "UNIFORM YOUTH TEE",
+    "UNIFORM BLUE YOUTH TEE",
+    "UNIFORM GREEN YOUTH TEE",
+    "UNIFORM LIGHTRED YOUTH TEE",
+    "CAMO YOUTH TEE",
+    "COOL BLUE KIDS TEE",
+    "UNIFORM BLUE KIDS TEE",
+    "UNIFORM GREEN KIDS TEE",
+    "CAMO KIDS TEE",
+    "YOUTH LEGGINGS",
+    "KIDS LEGGINGS",
+    "YOUTH SWIMSUIT",
+    "KIDS SWIMSUIT",
+)
+
+_CURATED_RANK = {name: i for i, name in enumerate(CURATED_ORDER)}
+
+
+def _is_hidden(name: str) -> bool:
+    upper = name.upper()
+    return any(pattern in upper for pattern in HIDDEN_NAME_PATTERNS)
+
+
+def _fallback_tier(name: str) -> int:
+    """Category tier for products added to Printful after this list was made."""
+
+    upper = name.upper()
+    if "KIDS" in upper or "YOUTH" in upper:
+        return 70
+    if "TEE" in upper or "SHIRT" in upper:
+        return 40
+    if any(k in upper for k in ("HOODIE", "BOMBER", "POLO", "JACKET", "SWEAT")):
+        return 45
+    if any(k in upper for k in ("MUG", "CASE", "TOTE", "HAT", "BACKPACK", "FANNY", "PILLOW", "STICKER")):
+        return 50
+    if any(k in upper for k in ("PANTS", "SKIRT", "SWIMSUIT", "LEGGINGS")):
+        return 55
+    if any(k in upper for k in ("SHOE", "HIGH-TOP", "SLIP-ON", "SLIDES", "SNEAKER")):
+        return 60
+    return 65
+
+
+def _catalog_sort_key(position: int, name: str) -> tuple[int, int, int]:
+    rank = _CURATED_RANK.get(name.upper().strip())
+    if rank is not None:
+        return (0, rank, position)
+    return (1, _fallback_tier(name), position)
+
 
 class PrintfulError(HTTPException):
     """Customer-safe wrapper; raw Printful responses stay in the server log."""
@@ -185,8 +302,20 @@ class CatalogCache:
         async def load_detail(summary: dict) -> dict | None:
             if summary.get("is_ignored") or not summary.get("synced"):
                 return None
+            if _is_hidden(str(summary.get("name") or "")):
+                return None
             async with gate:
-                detail = await printful_get(api_key, f"/sync/products/{summary['id']}", store_id=store_id)
+                try:
+                    detail = await printful_get(
+                        api_key, f"/sync/products/{summary['id']}", store_id=store_id
+                    )
+                except (httpx.HTTPError, PrintfulError):
+                    # One transient failure should not hide a product for a
+                    # whole cache TTL; retry once before giving up.
+                    await asyncio.sleep(1.5)
+                    detail = await printful_get(
+                        api_key, f"/sync/products/{summary['id']}", store_id=store_id
+                    )
             result = detail.get("result") or {}
             sync_product = result.get("sync_product") or {}
             thumbnail = sync_product.get("thumbnail_url") or summary.get("thumbnail_url")
@@ -218,6 +347,14 @@ class CatalogCache:
             products.append(item)
             for v in item["variants"]:
                 variant_index[v["id"]] = {**v, "product_name": item["name"]}
+
+        products = [
+            p
+            for _, p in sorted(
+                enumerate(products),
+                key=lambda pair: _catalog_sort_key(pair[0], pair[1]["name"]),
+            )
+        ]
 
         self._products = products
         self._variant_index = variant_index

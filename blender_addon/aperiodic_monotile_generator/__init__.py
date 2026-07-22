@@ -1,6 +1,6 @@
 bl_info = {
-    "name": "Aperiodic Monotile Generator",
-    "author": "Aperiodic Monotile Generator",
+    "name": "Untiling",
+    "author": "Untiling",
     "version": (0, 3, 10),
     "blender": (4, 2, 0),
     "location": "View3D > Sidebar > Monotile",
@@ -46,7 +46,7 @@ from .profile_ui import (
 )
 
 
-DEFAULT_API_BASE = "https://api.aperiodicgenerator.com"
+DEFAULT_API_BASE = "https://api.untiling.com"
 
 # Aperiodic monotile type label → distinct hues (visible in Material Preview).
 _LABEL_COLORS = {
