@@ -953,6 +953,46 @@ def api_key_usage_summary(
             }
         )
 
+    # Job rows are GC'd after ~24h; launch_events keep a longer usage trail.
+    event_rows = conn.execute(
+        """
+        SELECT event_name, COUNT(*) AS n
+          FROM launch_events
+         WHERE api_key_hash=?
+         GROUP BY event_name
+         ORDER BY n DESC
+        """,
+        (key_hash,),
+    ).fetchall()
+    event_format_rows = conn.execute(
+        """
+        SELECT COALESCE(format, '(none)') AS format, COUNT(*) AS n
+          FROM launch_events
+         WHERE api_key_hash=?
+           AND event_name='requested_format'
+         GROUP BY COALESCE(format, '(none)')
+         ORDER BY n DESC
+        """,
+        (key_hash,),
+    ).fetchall()
+    event_bounds = conn.execute(
+        """
+        SELECT MIN(created) AS first_event, MAX(created) AS last_event
+          FROM launch_events
+         WHERE api_key_hash=?
+        """,
+        (key_hash,),
+    ).fetchone()
+    first_success = conn.execute(
+        """
+        SELECT COUNT(*) AS n
+          FROM launch_events
+         WHERE api_key_hash=?
+           AND event_name='first_successful_job'
+        """,
+        (key_hash,),
+    ).fetchone()
+
     return {
         "key": {
             "key_prefix": key_row["key_prefix"],
@@ -980,6 +1020,22 @@ def api_key_usage_summary(
             "last_job_at": bounds["last_job"] if bounds else None,
             "last_finished_at": bounds["last_finished"] if bounds else None,
             "recent": recent,
+            "note": (
+                "Completed/failed patch_jobs are pruned after SPECTRE_PATCH_JOB_GC_HOURS "
+                "(default 24h). Prefer events for historical usage."
+            ),
+        },
+        "events": {
+            "by_name": [
+                {"event_name": row["event_name"], "count": int(row["n"])} for row in event_rows
+            ],
+            "requested_formats": [
+                {"format": row["format"], "count": int(row["n"])} for row in event_format_rows
+            ],
+            "first_successful_job_events": int(first_success["n"]) if first_success else 0,
+            "first_event_at": event_bounds["first_event"] if event_bounds else None,
+            "last_event_at": event_bounds["last_event"] if event_bounds else None,
+            "total": sum(int(row["n"]) for row in event_rows),
         },
     }
 
