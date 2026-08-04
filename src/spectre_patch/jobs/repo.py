@@ -730,6 +730,98 @@ def clear_one_time_plaintext(conn: sqlite3.Connection, key_hash: str) -> None:
     conn.commit()
 
 
+def revoke_api_keys(
+    conn: sqlite3.Connection,
+    *,
+    stripe_subscription_id: str | None = None,
+    stripe_customer_id: str | None = None,
+    stripe_checkout_session_id: str | None = None,
+    key_prefix: str | None = None,
+    reason: str = "revoked",
+) -> list[dict]:
+    """Mark matching active API keys as revoked. Returns summaries of rows changed."""
+
+    clauses: list[str] = ["status='active'"]
+    params: list[object] = []
+    if stripe_subscription_id:
+        clauses.append("stripe_subscription_id=?")
+        params.append(stripe_subscription_id)
+    if stripe_customer_id:
+        clauses.append("stripe_customer_id=?")
+        params.append(stripe_customer_id)
+    if stripe_checkout_session_id:
+        clauses.append("stripe_checkout_session_id=?")
+        params.append(stripe_checkout_session_id)
+    if key_prefix:
+        clauses.append("key_prefix=?")
+        params.append(key_prefix)
+    if len(clauses) == 1:
+        return []
+
+    where = " AND ".join(clauses)
+    rows = conn.execute(
+        f"""
+        SELECT key_hash, key_prefix, tier, customer_email, stripe_customer_id,
+               stripe_subscription_id, stripe_checkout_session_id, status
+          FROM api_keys
+         WHERE {where}
+        """,
+        tuple(params),
+    ).fetchall()
+    if not rows:
+        return []
+
+    conn.execute(
+        f"UPDATE api_keys SET status=? WHERE {where}",
+        (str(reason or "revoked"), *params),
+    )
+    conn.commit()
+    return [
+        {
+            "key_prefix": row["key_prefix"],
+            "tier": row["tier"],
+            "customer_email": row["customer_email"],
+            "stripe_customer_id": row["stripe_customer_id"],
+            "stripe_subscription_id": row["stripe_subscription_id"],
+            "stripe_checkout_session_id": row["stripe_checkout_session_id"],
+            "previous_status": row["status"],
+        }
+        for row in rows
+    ]
+
+
+def list_api_keys(
+    conn: sqlite3.Connection,
+    *,
+    limit: int = 200,
+    status: str | None = None,
+) -> list[sqlite3.Row]:
+    if status:
+        return conn.execute(
+            """
+            SELECT key_prefix, tier, status, created, label, customer_email,
+                   stripe_customer_id, stripe_subscription_id, stripe_checkout_session_id,
+                   expires_at
+              FROM api_keys
+             WHERE status=?
+             ORDER BY created DESC
+             LIMIT ?
+            """,
+            (status, int(limit)),
+        ).fetchall()
+    return conn.execute(
+        """
+        SELECT key_prefix, tier, status, created, label, customer_email,
+               stripe_customer_id, stripe_subscription_id, stripe_checkout_session_id,
+               expires_at
+          FROM api_keys
+         ORDER BY created DESC
+         LIMIT ?
+        """,
+        (int(limit),),
+    ).fetchall()
+
+
 def create_or_update_lead(
     conn: sqlite3.Connection,
     *,

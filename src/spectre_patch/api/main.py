@@ -485,7 +485,6 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
         return False
     return bool(
         cfg.stripe_price_id_solo_monthly
-        or cfg.stripe_price_id_solo_yearly
         or cfg.stripe_price_id_lifetime
         or cfg.stripe_price_id_teams_monthly
         or cfg.stripe_price_id_teams_yearly
@@ -495,11 +494,12 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
 
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
     ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
-    ("solo_yearly", "tier_solo", "stripe_price_id_solo_yearly", "subscription", None),
+    ("solo_lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
     ("pro_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
-    ("pro_yearly", "tier_teams", "stripe_price_id_teams_yearly", "subscription", None),
+    ("pro_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
     # Legacy checkout slugs (still accepted for existing Stripe links).
     ("commercial_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
+    ("commercial_lifetime", "tier_teams", "stripe_price_id_teams_yearly", "payment", None),
 )
 
 
@@ -526,32 +526,12 @@ def _checkout_price_and_tier(
     plan = str(plan_raw or "").strip().lower().replace("-", "_")
     if plan in ("solo", "solo_month", "solo_monthly", "month", "monthly"):
         plan = "solo_monthly"
-    elif plan in (
-        "year",
-        "yearly",
-        "solo_year",
-        "solo_yearly",
-        "lifetime",
-        "life",
-        "one_time",
-        "onetime",
-        "solo_lifetime",
-    ):
-        plan = "solo_yearly"
+    elif plan in ("lifetime", "life", "one_time", "onetime", "solo_lifetime"):
+        plan = "solo_lifetime"
     elif plan in ("commercial", "commercial_month", "commercial_monthly", "pro", "pro_month", "pro_monthly"):
         plan = "pro_monthly"
-    elif plan in (
-        "commercial_yearly",
-        "commercial_year",
-        "commercial_lifetime",
-        "commercial_life",
-        "pro_yearly",
-        "pro_year",
-        "pro_lifetime",
-        "pro_life",
-        "teams_yearly",
-    ):
-        plan = "pro_yearly"
+    elif plan in ("commercial_lifetime", "commercial_life", "pro_lifetime", "pro_life"):
+        plan = "pro_lifetime"
 
     if not plan:
         plan = "solo_monthly"
@@ -561,8 +541,6 @@ def _checkout_price_and_tier(
             price_id = str(getattr(cfg, attr, "") or "").strip()
             if not price_id and slug == "solo_monthly" and cfg.stripe_price_id_studio.strip():
                 price_id = cfg.stripe_price_id_studio.strip()
-            if not price_id and slug == "solo_yearly" and cfg.stripe_price_id_lifetime.strip():
-                price_id = cfg.stripe_price_id_lifetime.strip()
             if price_id:
                 return price_id, tier, slug, mode, ttl_seconds
             raise HTTPException(
@@ -1300,6 +1278,59 @@ def create_app() -> FastAPI:
             )
         return {"leads": payload, "count": len(payload)}
 
+    @app.get("/v1/admin/api-keys", tags=["billing"], include_in_schema=False)
+    async def admin_list_api_keys(
+        _: None = Depends(_admin_token_dependency),
+        limit: int = Query(default=200, ge=1, le=2000),
+        status: str | None = Query(default=None),
+    ) -> dict:
+        rows = job_repo.list_api_keys(app.state.db, limit=limit, status=status)
+        payload = [
+            {
+                "key_prefix": row["key_prefix"],
+                "tier": row["tier"],
+                "status": row["status"],
+                "created": row["created"],
+                "label": row["label"],
+                "customer_email": row["customer_email"],
+                "stripe_customer_id": row["stripe_customer_id"],
+                "stripe_subscription_id": row["stripe_subscription_id"],
+                "stripe_checkout_session_id": row["stripe_checkout_session_id"],
+                "expires_at": row["expires_at"],
+            }
+            for row in rows
+        ]
+        return {"api_keys": payload, "count": len(payload)}
+
+    @app.post("/v1/admin/api-keys/revoke", tags=["billing"], include_in_schema=False)
+    async def admin_revoke_api_keys(
+        request: Request,
+        _: None = Depends(_admin_token_dependency),
+    ) -> dict:
+        body = await _json_object_body(request)
+        sub_id = _clean_tracking_string(body.get("stripe_subscription_id"), 128)
+        cust_id = _clean_tracking_string(body.get("stripe_customer_id"), 128)
+        session_id = _clean_tracking_string(body.get("stripe_checkout_session_id"), 200)
+        key_prefix = _clean_tracking_string(body.get("key_prefix"), 64)
+        reason = _clean_tracking_string(body.get("reason"), 64) or "revoked"
+        if not any((sub_id, cust_id, session_id, key_prefix)):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Provide stripe_subscription_id, stripe_customer_id, "
+                    "stripe_checkout_session_id, and/or key_prefix"
+                ),
+            )
+        revoked = job_repo.revoke_api_keys(
+            app.state.db,
+            stripe_subscription_id=sub_id,
+            stripe_customer_id=cust_id,
+            stripe_checkout_session_id=session_id,
+            key_prefix=key_prefix,
+            reason=reason,
+        )
+        return {"revoked": revoked, "count": len(revoked)}
+
     @app.get("/v1/billing/status", tags=["billing"])
     async def billing_status() -> dict:
         return {
@@ -1308,13 +1339,10 @@ def create_app() -> FastAPI:
             "studio_checkout_available": _billing_configured(cfg),
             "plans": {
                 "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
-                "solo_yearly": bool(cfg.stripe_price_id_solo_yearly or cfg.stripe_price_id_lifetime),
+                "solo_lifetime": bool(cfg.stripe_price_id_lifetime),
                 "pro_monthly": bool(cfg.stripe_price_id_teams_monthly),
-                "pro_yearly": bool(cfg.stripe_price_id_teams_yearly),
-                "commercial_monthly": bool(cfg.stripe_price_id_teams_monthly),
-                # Legacy aliases for older checkout links and clients.
-                "solo_lifetime": bool(cfg.stripe_price_id_solo_yearly or cfg.stripe_price_id_lifetime),
                 "pro_lifetime": bool(cfg.stripe_price_id_teams_yearly),
+                "commercial_monthly": bool(cfg.stripe_price_id_teams_monthly),
                 "commercial_lifetime": bool(cfg.stripe_price_id_teams_yearly),
             },
             "public_site_url": cfg.public_site_url,
@@ -1326,9 +1354,8 @@ def create_app() -> FastAPI:
         """Start Stripe Checkout.
 
         Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
-        ``solo_monthly``, ``solo_yearly``, ``pro_monthly``, or ``pro_yearly``.
-        Legacy aliases ``solo_lifetime`` and ``commercial_lifetime`` map to the
-        yearly plans. Omitted ``plan`` defaults to ``solo_monthly``.
+        ``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or
+        ``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.
         """
 
         if not _billing_configured(cfg):
@@ -1650,7 +1677,8 @@ def create_app() -> FastAPI:
         if not _verify_stripe_signature(payload, sig, cfg.stripe_webhook_secret):
             raise HTTPException(status_code=400, detail="Invalid Stripe signature")
         event = json.loads(payload.decode("utf-8"))
-        if event.get("type") == "checkout.session.completed":
+        event_type = str(event.get("type") or "")
+        if event_type == "checkout.session.completed":
             session = event.get("data", {}).get("object", {})
             session_id = str(session.get("id") or "")
             metadata = session.get("metadata") or {}
@@ -1707,6 +1735,36 @@ def create_app() -> FastAPI:
                     "(checkout_plan=%r). Inspect the Stripe Dashboard.",
                     session_id,
                     metadata.get("checkout_plan"),
+                )
+        elif event_type in {
+            "customer.subscription.deleted",
+            "customer.subscription.updated",
+        }:
+            # Monthly/Teams keys are permanent until we revoke them. When Stripe
+            # cancels a subscription (payment_failed or customer cancel), drop
+            # the matching DB keys so access does not outlive billing.
+            obj = event.get("data", {}).get("object", {}) or {}
+            sub_id = str(obj.get("id") or "").strip()
+            cust_id = str(obj.get("customer") or "").strip()
+            status = str(obj.get("status") or "").strip().lower()
+            should_revoke = event_type == "customer.subscription.deleted" or status in {
+                "canceled",
+                "unpaid",
+                "incomplete_expired",
+            }
+            if should_revoke and (sub_id or cust_id):
+                revoked = job_repo.revoke_api_keys(
+                    app.state.db,
+                    stripe_subscription_id=sub_id or None,
+                    stripe_customer_id=None if sub_id else (cust_id or None),
+                    reason="subscription_ended",
+                )
+                logger.info(
+                    "stripe webhook: revoked %s API key(s) for subscription=%s customer=%s status=%s",
+                    len(revoked),
+                    sub_id or None,
+                    cust_id or None,
+                    status or None,
                 )
         return {"received": True}
 
