@@ -4,14 +4,18 @@ services:
     name: aperiodic-monotile-api
     repo: https://github.com/zebragum/aperiodic_monotile_API.git
     branch: main
-    plan: pro
+    # Personal / pack-production tier: keep the generator online cheaply.
+    # Standard (~$25/mo, 2GB) handles solo SVG/GLB work; Pro was for multi-tenant load.
+    plan: standard
     region: oregon
     dockerCommand: /usr/bin/tini -- /app/entrypoint.sh api-worker
     healthCheckPath: /healthz
     disk:
       name: spectre-data
       mountPath: /app/data
-      sizeGB: 64
+      # Prefer 10GB for new services. Existing Render disks cannot shrink — resize
+      # down only by recreating the disk/service if storage cost still hurts.
+      sizeGB: 10
     envVars:
       - key: SPECTRE_PATCH_API_SECRET
         generateValue: true
@@ -46,7 +50,7 @@ services:
       - key: UVICORN_WORKERS
         value: "1"
       - key: SPECTRE_PATCH_WORKER_COUNT
-        value: "2"
+        value: "1"
       - key: SPECTRE_PATCH_REQUIRE_ATLAS
         value: "true"
       - key: WEB_CONCURRENCY
@@ -94,10 +98,9 @@ services:
         sync: false
       # Optional Stripe (set after creating Products → Prices):
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_MONTHLY ($10/month)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_SOLO_YEARLY ($79/year Solo)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME (legacy env name; maps to Solo yearly)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_LIFETIME ($79 Solo lifetime)
       # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_MONTHLY ($99/month Pro)
-      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY ($999/year Pro)
+      # - SPECTRE_PATCH_STRIPE_PRICE_ID_TEAMS_YEARLY ($999 Pro lifetime)
       # Legacy Solo monthly fallback: SPECTRE_PATCH_STRIPE_PRICE_ID_STUDIO
       - key: SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS
         sync: false
