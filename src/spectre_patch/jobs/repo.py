@@ -822,6 +822,168 @@ def list_api_keys(
     ).fetchall()
 
 
+def api_key_usage_summary(
+    conn: sqlite3.Connection,
+    *,
+    key_prefix: str | None = None,
+    stripe_subscription_id: str | None = None,
+    stripe_customer_id: str | None = None,
+    stripe_checkout_session_id: str | None = None,
+    recent_limit: int = 25,
+) -> dict | None:
+    """Return job usage for one API key row (matched by Stripe ids or key prefix)."""
+
+    clauses: list[str] = []
+    params: list[object] = []
+    if key_prefix:
+        clauses.append("key_prefix=?")
+        params.append(key_prefix)
+    if stripe_subscription_id:
+        clauses.append("stripe_subscription_id=?")
+        params.append(stripe_subscription_id)
+    if stripe_customer_id:
+        clauses.append("stripe_customer_id=?")
+        params.append(stripe_customer_id)
+    if stripe_checkout_session_id:
+        clauses.append("stripe_checkout_session_id=?")
+        params.append(stripe_checkout_session_id)
+    if not clauses:
+        return None
+
+    key_row = conn.execute(
+        f"""
+        SELECT key_hash, key_prefix, tier, status, created, label, customer_email,
+               stripe_customer_id, stripe_subscription_id, stripe_checkout_session_id,
+               expires_at
+          FROM api_keys
+         WHERE {' AND '.join(clauses)}
+         ORDER BY created DESC
+         LIMIT 1
+        """,
+        tuple(params),
+    ).fetchone()
+    if key_row is None:
+        return None
+
+    key_hash = key_row["key_hash"]
+    status_rows = conn.execute(
+        """
+        SELECT status, COUNT(*) AS n
+          FROM patch_jobs
+         WHERE api_key_hash=?
+         GROUP BY status
+         ORDER BY n DESC
+        """,
+        (key_hash,),
+    ).fetchall()
+    totals = {str(row["status"]): int(row["n"]) for row in status_rows}
+    total_jobs = sum(totals.values())
+
+    bounds = conn.execute(
+        """
+        SELECT MIN(created) AS first_job, MAX(created) AS last_job,
+               MAX(finished_at) AS last_finished
+          FROM patch_jobs
+         WHERE api_key_hash=?
+        """,
+        (key_hash,),
+    ).fetchone()
+
+    size_rows = conn.execute(
+        """
+        SELECT COALESCE(size_class, '(none)') AS size_class, COUNT(*) AS n
+          FROM patch_jobs
+         WHERE api_key_hash=?
+         GROUP BY COALESCE(size_class, '(none)')
+         ORDER BY n DESC
+        """,
+        (key_hash,),
+    ).fetchall()
+
+    format_counts: dict[str, int] = {}
+    job_rows = conn.execute(
+        """
+        SELECT id, created, finished_at, status, tier, size_class, request_json, error
+          FROM patch_jobs
+         WHERE api_key_hash=?
+         ORDER BY created DESC
+         LIMIT ?
+        """,
+        (key_hash, max(1, min(int(recent_limit), 200))),
+    ).fetchall()
+
+    # Full-history format rollup (not just recent window).
+    all_req = conn.execute(
+        "SELECT request_json FROM patch_jobs WHERE api_key_hash=?",
+        (key_hash,),
+    ).fetchall()
+    for row in all_req:
+        try:
+            body = json.loads(row["request_json"] or "{}")
+        except json.JSONDecodeError:
+            continue
+        for fmt in body.get("formats") or []:
+            label = str(fmt).strip().lower()
+            if not label:
+                continue
+            format_counts[label] = format_counts.get(label, 0) + 1
+
+    recent = []
+    for row in job_rows:
+        formats: list[str] = []
+        mask_type = None
+        try:
+            body = json.loads(row["request_json"] or "{}")
+            formats = [str(f).strip().lower() for f in (body.get("formats") or []) if str(f).strip()]
+            mask = body.get("mask") if isinstance(body.get("mask"), dict) else {}
+            mask_type = str(mask.get("type") or "") or None
+        except json.JSONDecodeError:
+            pass
+        recent.append(
+            {
+                "id": row["id"],
+                "created": row["created"],
+                "finished_at": row["finished_at"],
+                "status": row["status"],
+                "tier": row["tier"],
+                "size_class": row["size_class"],
+                "formats": formats,
+                "mask_type": mask_type,
+                "error": row["error"],
+            }
+        )
+
+    return {
+        "key": {
+            "key_prefix": key_row["key_prefix"],
+            "tier": key_row["tier"],
+            "status": key_row["status"],
+            "created": key_row["created"],
+            "label": key_row["label"],
+            "customer_email": key_row["customer_email"],
+            "stripe_customer_id": key_row["stripe_customer_id"],
+            "stripe_subscription_id": key_row["stripe_subscription_id"],
+            "stripe_checkout_session_id": key_row["stripe_checkout_session_id"],
+            "expires_at": key_row["expires_at"],
+        },
+        "jobs": {
+            "total": total_jobs,
+            "by_status": totals,
+            "by_size_class": [
+                {"size_class": row["size_class"], "count": int(row["n"])} for row in size_rows
+            ],
+            "by_format": [
+                {"format": fmt, "count": count}
+                for fmt, count in sorted(format_counts.items(), key=lambda kv: (-kv[1], kv[0]))
+            ],
+            "first_job_at": bounds["first_job"] if bounds else None,
+            "last_job_at": bounds["last_job"] if bounds else None,
+            "last_finished_at": bounds["last_finished"] if bounds else None,
+            "recent": recent,
+        },
+    }
+
+
 def create_or_update_lead(
     conn: sqlite3.Connection,
     *,

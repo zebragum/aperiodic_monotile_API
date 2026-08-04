@@ -1302,6 +1302,35 @@ def create_app() -> FastAPI:
         ]
         return {"api_keys": payload, "count": len(payload)}
 
+    @app.get("/v1/admin/api-keys/usage", tags=["billing"], include_in_schema=False)
+    async def admin_api_key_usage(
+        _: None = Depends(_admin_token_dependency),
+        key_prefix: str | None = Query(default=None),
+        stripe_subscription_id: str | None = Query(default=None),
+        stripe_customer_id: str | None = Query(default=None),
+        stripe_checkout_session_id: str | None = Query(default=None),
+        recent_limit: int = Query(default=25, ge=1, le=200),
+    ) -> dict:
+        if not any((key_prefix, stripe_subscription_id, stripe_customer_id, stripe_checkout_session_id)):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Provide key_prefix, stripe_subscription_id, "
+                    "stripe_customer_id, and/or stripe_checkout_session_id"
+                ),
+            )
+        summary = job_repo.api_key_usage_summary(
+            app.state.db,
+            key_prefix=_clean_tracking_string(key_prefix, 64),
+            stripe_subscription_id=_clean_tracking_string(stripe_subscription_id, 128),
+            stripe_customer_id=_clean_tracking_string(stripe_customer_id, 128),
+            stripe_checkout_session_id=_clean_tracking_string(stripe_checkout_session_id, 200),
+            recent_limit=recent_limit,
+        )
+        if summary is None:
+            raise HTTPException(status_code=404, detail="API key not found")
+        return summary
+
     @app.post("/v1/admin/api-keys/revoke", tags=["billing"], include_in_schema=False)
     async def admin_revoke_api_keys(
         request: Request,
