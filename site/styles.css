@@ -1866,7 +1866,7 @@ pre {
 }
 
 .linktree {
-  width: min(26rem, calc(100% - 2rem));
+  width: min(28rem, calc(100% - 2rem));
   margin: 0 auto;
   padding: clamp(2.5rem, 8vh, 4.5rem) 0 2rem;
   text-align: center;
@@ -1897,11 +1897,27 @@ pre {
 }
 
 .linktree-lead {
-  margin: 0 auto 1.75rem;
+  margin: 0 auto 1.35rem;
   max-width: 24rem;
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.55;
+}
+
+.linktree-hero {
+  margin: 0 0 1.25rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: #05060a;
+}
+
+.linktree-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
 }
 
 .linktree-links {
@@ -1910,7 +1926,8 @@ pre {
   gap: 0.75rem;
 }
 
-.linktree-links a {
+.linktree-links a,
+.linktree-card {
   display: block;
   padding: 0.95rem 1.1rem;
   border: 1px solid var(--line);
@@ -1923,17 +1940,37 @@ pre {
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
-.linktree-links a:hover {
+.linktree-card {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.45rem;
+  text-align: left;
+}
+
+.linktree-card img {
+  width: 5.5rem;
+  height: 5.5rem;
+  object-fit: cover;
+  border-radius: 0.55rem;
+  background: #05060a;
+}
+
+.linktree-links a:hover,
+.linktree-card:hover {
   border-color: rgba(255, 209, 102, 0.45);
   background: rgba(255, 255, 255, 0.07);
 }
 
-.linktree-links a.is-accent {
+.linktree-links a.is-accent,
+.linktree-card.is-accent {
   color: var(--accent-2);
   border-color: rgba(255, 209, 102, 0.35);
 }
 
-.linktree-links a.is-accent:hover {
+.linktree-links a.is-accent:hover,
+.linktree-card.is-accent:hover {
   color: var(--accent);
   border-color: rgba(255, 106, 74, 0.45);
 }
