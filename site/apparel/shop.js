@@ -350,9 +350,20 @@ function renderProducts() {
 
 async function loadProducts() {
   try {
-    const response = await apiFetch("/v1/shop/products");
-    if (!response.ok) throw new Error(`Shop unavailable (${response.status})`);
-    const payload = await response.json();
+    let payload = null;
+    try {
+      const response = await apiFetch("/v1/shop/products");
+      if (response.ok) {
+        payload = await response.json();
+      }
+    } catch (err) {
+      console.warn("Live shop catalog unavailable, trying static fallback.", err);
+    }
+    if (!payload?.products?.length) {
+      const fallback = await fetch("catalog.json", { cache: "no-cache" });
+      if (!fallback.ok) throw new Error(`Shop unavailable (${fallback.status})`);
+      payload = await fallback.json();
+    }
     products = (payload.products || []).filter((p) => p.variants?.length);
     if (!products.length) {
       shopStatus.textContent = "The first drop is being printed. Check back soon.";

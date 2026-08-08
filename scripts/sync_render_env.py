@@ -19,8 +19,11 @@ import urllib.request
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
-ENV_PATHS = (ROOT / ".env", ROOT.parent / ".env")
+ROOT = Path(__file__).resolve().parents[1]  # spectre_patch_api/
+ENV_PATHS = (
+    ROOT / ".env",
+    ROOT.parent / ".env",
+)
 RENDER_API = "https://api.render.com/v1"
 
 SYNC_KEYS = [
