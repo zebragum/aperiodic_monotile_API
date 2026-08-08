@@ -6,5 +6,5 @@ https://aperiodicgenerator.com/index.html /generate.html 200
 https://www.aperiodicgenerator.com/index.html /generate.html 200
 
 # Old names → clean URLs
-/landing-legacy.html /demo.html 301
-/landing-legacy.html#pricing /pricing.html 301
+/landing-legacy.html /web.html 301
+/demo.html /web.html 301

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Web generator | Aperiodic Generator</title>
+    <meta
+      name="description"
+      content="Make aperiodic monotile patches in the browser. Free PNG/JPG. Paid SVG and 3D with an API key."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#101322" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/web.html" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Web generator | Aperiodic Generator" />
+    <meta property="og:description" content="Shape → size → format → Make it. Same idea as the Windows app, in the browser." />
+    <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
+    <meta property="og:url" content="https://aperiodicgenerator.com/web.html" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="generate.html" aria-label="Aperiodic Generator home">
+        <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Aperiodic Generator</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="generate.html#tools">Tools</a>
+        <a href="web.html" aria-current="page">Web</a>
+        <a href="docs.html">API Docs</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="https://untiling.com/">Untiling</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button small" href="pricing.html">Get a key</a>
+      </div>
+    </header>
+
+    <main class="webgen-page" id="top">
+      <section class="webgen">
+        <div class="webgen-copy">
+          <p class="eyebrow">Web generator</p>
+          <h1>Make a shape that never repeats.</h1>
+          <p class="hero-text">
+            Same flow as the Windows app: pick a shape, pick a size, pick a format, press Make it.
+            Pictures are free. Drawings and 3D need a key.
+          </p>
+        </div>
+
+        <div class="webgen-app">
+          <form id="webgenForm" class="webgen-form" autocomplete="off">
+            <fieldset>
+              <legend>1. Shape</legend>
+              <label class="webgen-field">
+                <span>Shape</span>
+                <select id="wgShape" name="shape">
+                  <option value="rectangle" selected>Rectangle</option>
+                  <option value="circle">Circle</option>
+                  <option value="square">Square</option>
+                  <option value="triangle">Triangle</option>
+                  <option value="regular_hexagon">Hexagon</option>
+                </select>
+              </label>
+              <div id="wgSizeRect" class="webgen-row">
+                <label class="webgen-field">
+                  <span>Width</span>
+                  <input id="wgWidth" type="number" min="1" step="any" value="40" />
+                </label>
+                <label class="webgen-field">
+                  <span>Height</span>
+                  <input id="wgHeight" type="number" min="1" step="any" value="24" />
+                </label>
+              </div>
+              <div id="wgSizeSingle" class="webgen-row" hidden>
+                <label class="webgen-field">
+                  <span id="wgSizeLabel">Size</span>
+                  <input id="wgSize" type="number" min="1" step="any" value="20" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>2. What do you want?</legend>
+              <label class="webgen-field">
+                <span>Format</span>
+                <select id="wgFormat" name="format">
+                  <option value="png" selected>Picture (PNG) — free</option>
+                  <option value="jpg">Picture (JPG) — free</option>
+                  <option value="svg">Drawing (SVG) — paid</option>
+                  <option value="glb">3D model (GLB) — paid</option>
+                </select>
+              </label>
+              <label class="webgen-field" id="wgDepthWrap">
+                <span>Thickness</span>
+                <input id="wgDepth" type="number" min="0" step="any" value="0" disabled />
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>3. API key (for SVG / 3D)</legend>
+              <label class="webgen-field">
+                <span>Key</span>
+                <input id="wgKey" type="password" placeholder="Paste after checkout" />
+              </label>
+              <div class="webgen-row">
+                <button type="button" class="button secondary" id="wgGetKey">Get a key</button>
+                <a class="button secondary" href="pricing.html">Pricing</a>
+              </div>
+            </fieldset>
+
+            <div class="webgen-actions">
+              <button type="submit" class="button" id="wgMake">Make it</button>
+              <p id="wgStatus" class="webgen-status" aria-live="polite">Ready.</p>
+            </div>
+          </form>
+
+          <div class="webgen-result">
+            <p class="eyebrow">Result</p>
+            <div id="wgPreview" class="webgen-preview" hidden>
+              <img id="wgPreviewImg" alt="Generated monotile preview" />
+            </div>
+            <ul id="wgDownloads" class="webgen-downloads"></ul>
+            <p class="webgen-hint">
+              Prefer offline? Grab the
+              <a href="assets/downloads/AperiodicGenerator.exe" download>Windows app</a>,
+              <a href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Blender add-on</a>,
+              or <a href="assets/downloads/untiling_inkscape_extension.zip" download>Inkscape extension</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        <a href="generate.html">Home</a> ·
+        <a href="pricing.html">Pricing</a> ·
+        <a href="docs.html">Docs</a> ·
+        <a href="https://untiling.com/">Untiling</a>
+      </p>
+    </footer>
+    <script src="site-config.js"></script>
+    <script src="web-generator.js"></script>
+  </body>
+</html>
