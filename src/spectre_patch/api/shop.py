@@ -20,8 +20,10 @@ Only ``httpx`` is used, matching the existing Stripe integration.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import time
+from pathlib import Path
 
 import httpx
 from fastapi import HTTPException
@@ -33,6 +35,40 @@ PRINTFUL_API = "https://api.printful.com"
 CATALOG_TTL_SECONDS = 1800.0
 MAX_CART_LINES = 20
 MAX_LINE_QUANTITY = 10
+
+
+def _load_seed_products() -> list[dict]:
+    """Optional baked catalog so /v1/shop/products stays fast on cold boot."""
+
+    here = Path(__file__).resolve()
+    candidates = (
+        here.with_name("shop_catalog_seed.json"),
+        here.parents[3] / "site" / "apparel" / "catalog.json",
+    )
+    for path in candidates:
+        try:
+            if not path.is_file():
+                continue
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            products = payload.get("products") if isinstance(payload, dict) else payload
+            if isinstance(products, list) and products:
+                return products
+        except Exception as e:
+            logger.warning("shop catalog seed unreadable path=%s err=%r", path, e)
+    return []
+
+
+def _variant_index_from_products(products: list[dict]) -> dict[int, dict]:
+    index: dict[int, dict] = {}
+    for product in products:
+        name = str(product.get("name") or "")
+        for variant in product.get("variants") or []:
+            try:
+                vid = int(variant["id"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            index[vid] = {**variant, "product_name": name}
+    return index
 
 # Products hidden from the storefront (substring match on the Printful sync
 # product name, case-insensitive). They stay untouched in Printful.
@@ -244,6 +280,12 @@ class CatalogCache:
         self._fetched_at = 0.0
         self._products: list[dict] = []
         self._variant_index: dict[int, dict] = {}
+        # Seed so cold boots never block the storefront on a full Printful crawl.
+        seed = _load_seed_products()
+        if seed:
+            self._products = seed
+            self._variant_index = _variant_index_from_products(seed)
+            logger.info("shop catalog seeded: products=%d variants=%d", len(seed), len(self._variant_index))
 
     def _fresh(self) -> bool:
         return bool(self._products) and (time.time() - self._fetched_at) < CATALOG_TTL_SECONDS
