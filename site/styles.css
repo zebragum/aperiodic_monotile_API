@@ -2049,8 +2049,8 @@ pre {
 
 .hub-link-list--compact {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -2063,7 +2063,10 @@ pre {
 }
 
 .hub-link-list--compact a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 0.75rem;
@@ -2076,6 +2079,12 @@ pre {
 .hub-link-list--compact a:hover {
   border-color: rgba(255, 209, 102, 0.45);
   background: rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 720px) {
+  .hub-link-list--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .webgen-page {
