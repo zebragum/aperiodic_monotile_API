@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rhino script | Aperiodic Generator</title>
+    <meta name="description" content="Rhino / Grasshopper script to fetch aperiodic monotile patches from the API." />
+    <link rel="canonical" href="https://aperiodicgenerator.com/rhino.html" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="generate.html">
+        <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Aperiodic Generator</span>
+      </a>
+      <nav class="nav">
+        <a href="generate.html#tools">Tools</a>
+        <a href="docs.html">API Docs</a>
+        <a class="nav-demo" href="generate.html#demo">Demo</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button small" href="docs.html#access">Get started</a>
+      </div>
+    </header>
+    <main>
+      <section class="section docs-hero">
+        <p class="eyebrow">Rhino</p>
+        <h1>Script-editor fetch into a folder.</h1>
+        <p class="hero-text">
+          Basic Python for Rhino / Grasshopper: set formats and mask, run, files land on disk.
+          Mesh formats use depth 0 by default.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="assets/downloads/untiling_rhino_script.zip" download>Download Rhino script</a>
+          <a class="button secondary" href="docs.html#access">Get started</a>
+        </div>
+      </section>
+      <section class="section">
+        <ul class="feature-list">
+          <li><strong>Edit</strong> <code>FORMATS</code>, mask size, <code>OUTPUT_DIR</code>, and API key.</li>
+          <li><strong>Run</strong> in the Rhino script editor, or call <code>fetch_and_save(...)</code> from Grasshopper.</li>
+          <li><strong>Depth</strong> defaults to 0 for STL/GLB unless you raise it.</li>
+        </ul>
+      </section>
+    </main>
+    <footer class="footer">
+      <p><a href="generate.html">Generator</a> · <a href="docs.html">Docs</a></p>
+    </footer>
+  </body>
+</html>

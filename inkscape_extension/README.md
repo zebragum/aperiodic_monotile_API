@@ -1,0 +1,85 @@
+# Aperiodic Monotile — Inkscape extension
+
+Minimal Inkscape 1.2+ effect that calls the hosted
+[Aperiodic Monotile API](https://api.aperiodicgenerator.com), downloads `patch.svg`,
+and inserts it into the current document.
+
+## Install
+
+1. Copy **both** files into your Inkscape user extensions folder:
+   - `untiling_monotile.inx`
+   - `untiling_monotile.py`
+2. Restart Inkscape (or open Extensions → Refresh if available).
+3. Open **Extensions → Aperiodic Monotile → Aperiodic Monotile Patch (API)**.
+
+### Extensions folder locations
+
+| OS | Typical path |
+|----|----------------|
+| Windows | `%APPDATA%\inkscape\extensions` |
+| macOS | `~/Library/Application Support/org.inkscape.Inkscape/config/inkscape/extensions` |
+| Linux | `~/.config/inkscape/extensions` |
+
+In Inkscape: **Edit → Preferences → System → User extensions** shows the exact folder.
+
+## API key
+
+Pick one (first match wins):
+
+1. Paste the key in the extension dialog.
+2. Set environment variable `UNTILING_API_KEY`.
+3. Create `untiling_api_key.txt` next to `untiling_monotile.py` with a single line containing the key.
+
+SVG export needs a **paid** API key (free tier is raster-only).
+
+## Parameters
+
+| UI field | API mapping |
+|----------|-------------|
+| Mask width / height | `mask: { type: rectangle, width, height }` |
+| Tile scale | `scale` |
+| Compact SVG | `svg_compact` |
+| Max wait | Client-side poll timeout (seconds) |
+
+No STL extrusion / depth field — this extension requests `formats: ["svg"]` only.
+
+## Packaging (zip-ready)
+
+To distribute a drop-in zip for users:
+
+```text
+untiling_inkscape_extension.zip
+├── untiling_monotile.inx
+└── untiling_monotile.py
+```
+
+Zip the **two files at the archive root** (do not nest them in an extra folder unless you tell users to flatten on install). Users unzip / copy both files into the Inkscape extensions folder and restart Inkscape.
+
+Example (from this directory):
+
+```powershell
+Compress-Archive -Path untiling_monotile.inx, untiling_monotile.py `
+  -DestinationPath untiling_inkscape_extension.zip -Force
+```
+
+```bash
+zip untiling_inkscape_extension.zip untiling_monotile.inx untiling_monotile.py
+```
+
+Optional: include a one-line `untiling_api_key.txt.example` in the zip, but never ship a real key.
+
+## How it works
+
+1. `POST /v1/patch` with `formats: ["svg"]` and a rectangle mask.
+2. Poll `GET /v1/jobs/{job_id}` until `completed` (or timeout).
+3. `GET /v1/jobs/{job_id}/urls`, download `patch.svg`.
+4. Append a group to the current layer; also write a tempfile under the OS temp dir for debugging.
+
+Uses **urllib** only for HTTP (no `requests`). `inkex` is provided by Inkscape.
+
+## Troubleshooting
+
+- **Missing API key** — set UI / env / config file as above.
+- **Free tier error** — SVG is not on the free raster preview tier; use a paid key.
+- **Timeout** — raise Max wait; the server job may still finish later.
+- **Network blocked** — Inkscape’s Python must reach `https://api.aperiodicgenerator.com`.

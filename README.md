@@ -74,7 +74,7 @@ API, download a GLB, and import it into the current Blender scene.
   "mask": {"type": "rectangle", "width": 90, "height": 40},
   "formats": ["glb"],
   "scale": 1,
-  "stl_extrusion_mm": 1
+  "stl_extrusion_mm": 0
 }
 ```
 

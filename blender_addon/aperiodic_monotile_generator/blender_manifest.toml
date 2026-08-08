@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "aperiodic_monotile_generator"
-version = "0.3.10"
+version = "0.3.11"
 name = "Aperiodic Monotile Generator"
 tagline = "Generate aperiodic monotile patches as editable N-gon instances or GLB via the hosted API"
 maintainer = "Aperiodic Monotile Generator <support@aperiodicgenerator.com>"

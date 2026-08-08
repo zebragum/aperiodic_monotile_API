@@ -217,7 +217,7 @@ def run_patch_job(
                 )
             )
 
-        thickness = float(req.get("stl_extrusion_mm", 1.0))
+        thickness = float(req.get("stl_extrusion_mm", 0.0))
 
         manifest_inst = stl_export.instancing_manifest_bytes(
             emitted,

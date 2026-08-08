@@ -95,7 +95,7 @@ class PatchRequest(BaseModel):
     force_substitution: bool = False
 
     # Format-specific options
-    stl_extrusion_mm: Annotated[float, Field(ge=0.0, le=1.0e4)] = 1.0
+    stl_extrusion_mm: Annotated[float, Field(ge=0.0, le=1.0e4)] = 0.0
     png_width_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
     png_height_px: Annotated[int, Field(gt=0, le=32_000)] | None = None
     jpg_width_px: Annotated[int, Field(gt=0, le=32_000)] | None = None

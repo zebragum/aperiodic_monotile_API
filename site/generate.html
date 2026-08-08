@@ -6,7 +6,7 @@
     <title>Aperiodic Generator | Create surfaces that never repeat</title>
     <meta
       name="description"
-      content="Blender add-on and API for aperiodic monotile patches. Editable N-gon instances, custom edge styles, and GLB export — create surfaces that never repeat."
+      content="Desktop app, Blender add-on, Inkscape extension, and API for aperiodic monotile patches. Free JPG/PNG. Paid SVG or 3D. Depth defaults to 0."
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
@@ -15,7 +15,7 @@
     <meta property="og:title" content="Aperiodic Generator — Create surfaces that never repeat" />
     <meta
       property="og:description"
-      content="Blender add-on and hosted API for aperiodic monotile patches that never repeat."
+      content="Desktop, Blender, Inkscape, and API tools for aperiodic monotile patches that never repeat."
     />
     <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
     <meta property="og:video" content="https://aperiodicgenerator.com/assets/generator-video-web.mp4" />
@@ -33,28 +33,28 @@
       </a>
       <nav class="nav" aria-label="Primary navigation">
         <a class="nav-demo" href="#demo">Demo</a>
-        <a href="#install">Blender</a>
+        <a href="#tools">Tools</a>
         <a href="docs.html">API Docs</a>
         <a href="landing-legacy.html#pricing">Pricing</a>
         <a href="https://untiling.com/">Untiling</a>
       </nav>
       <div class="header-actions">
         <a class="button secondary small" href="docs.html#access">Get started</a>
-        <a class="button small" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
+        <a class="button small" href="assets/downloads/AperiodicGenerator.exe" download>Download app</a>
       </div>
     </header>
     <main id="top">
       <section class="section docs-hero">
         <div class="generator-intro">
           <div class="generator-copy">
-            <p class="eyebrow">Blender · API</p>
+            <p class="eyebrow">Desktop · API · Blender · Inkscape</p>
             <h1>Create surfaces that never repeat.</h1>
             <p class="hero-text">
-              Stop obvious CG tiling. Generate aperiodic monotile patches in Blender — one shape, no repeating
-              wallpaper unit, excellent for floors, facades, and panels where square grids give themselves away on camera.
+              One shape. Ordered variation. No wallpaper unit. Generate patches as images, SVG, or 3D —
+              then take them into design tools, fabrication, or scenes. Depth defaults to flat (0).
             </p>
             <div class="hero-actions">
-              <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender add-on (v0.3.10)</a>
+              <a class="button" href="assets/downloads/AperiodicGenerator.exe" download>Download Windows app</a>
               <a class="button secondary" href="docs.html#access">Get started</a>
             </div>
           </div>
@@ -66,12 +66,46 @@
         </div>
       </section>
 
+      <section class="section" id="tools">
+        <div class="section-heading">
+          <p class="eyebrow">Tools</p>
+          <h2>Pick a front door. Same geometry underneath.</h2>
+        </div>
+        <ul class="hub-link-list">
+          <li>
+            <a href="assets/downloads/AperiodicGenerator.exe" download><strong>Windows app</strong></a>
+            <span>Basic desktop generator — mask, formats, depth 0 by default, save files to a folder.</span>
+          </li>
+          <li>
+            <a href="docs.html"><strong>API</strong></a>
+            <span>One JSON request. Free JPG/PNG. Paid SVG or 3D.</span>
+          </li>
+          <li>
+            <a href="assets/downloads/aperiodic_monotile_generator_blender.zip" download><strong>Blender add-on</strong></a>
+            <span>Instances, edge styles, collections — the deep 3D path that paved the way.</span>
+          </li>
+          <li>
+            <a href="assets/downloads/untiling_inkscape_extension.zip" download><strong>Inkscape extension</strong></a>
+            <span>Pull SVG patches straight into a drawing document.</span>
+          </li>
+          <li>
+            <a href="rhino.html"><strong>Rhino script</strong></a>
+            <span>Script-editor / Grasshopper-friendly fetch into a folder.</span>
+          </li>
+          <li>
+            <a href="landing-legacy.html"><strong>Web generator</strong></a>
+            <span>Quick raster checks in the browser.</span>
+          </li>
+        </ul>
+      </section>
+
       <section class="section docs-section" id="demo">
         <div>
           <p class="eyebrow demo-eyebrow">Demo</p>
-          <h2>Watch the add-on in Blender.</h2>
+          <h2>Blender walkthrough (still the richest demo).</h2>
           <p>
-            Patch generation, editable N-gon instances, edge styles, collections, and materials in one walkthrough.
+            Patch generation, editable N-gon instances, edge styles, collections, and materials in one video.
+            The same API powers the desktop app and other add-ons.
           </p>
         </div>
         <figure class="demo-video-wide">
@@ -89,113 +123,62 @@
             wallpaper repeat unit giving the game away on camera.
           </li>
           <li>
-            <strong>Editable N-gon instances</strong>
-            Import one clean Tile(1,1) mesh and distribute linked instances across the patch. Edit one tile,
-            they all update.
+            <strong>Flat by default</strong>
+            Depth starts at 0 — planar caps you can extrude yourself. Raise depth only when you want API extrusion.
           </li>
           <li>
-            <strong>Custom edge styles</strong>
-            Flat, curvy, wavy, jagged, blocky, or draw your own edge profile with the in-viewport guide line
-            and stamp it onto every tile edge.
-          </li>
-          <li>
-            <strong>Organize by tile type</strong>
-            One click sorts instances into label collections so you can assign different materials, bevels,
-            or modifiers per tile family.
-          </li>
-          <li>
-            <strong>Bevel and weighted normals</strong>
-            Add bevel modifiers and weighted normals across the patch in one step for clean shading on
-            architectural surfaces.
+            <strong>Images, vectors, meshes</strong>
+            Free JPG/PNG previews. Paid SVG, CSV, JSON, STL, GLB, and related packs.
           </li>
           <li>
             <strong>Flexible boundaries</strong>
-            Fill rectangles, circles, triangles, and more. Match selected object bounds, tune tile scale and
-            depth, then generate inside Blender.
+            Rectangles, circles, triangles, hexagons, rounded rects — tune tile scale and generate.
+          </li>
+          <li>
+            <strong>Blender when you need it</strong>
+            Editable N-gon instances, custom edge profiles, label collections, bevels, weighted normals.
           </li>
         </ul>
-      </section>
-
-      <section class="section docs-section">
-        <div>
-          <p class="eyebrow">In Blender</p>
-          <h2>Monotile panel in the 3D View sidebar and Scene properties.</h2>
-          <p>
-            Paste your API key, pick a boundary and tile scale, choose instance or GLB output, set side style and
-            depth, then generate. The panel also lives under Scene properties if the N-sidebar tab is hard to find.
-          </p>
-        </div>
-        <figure class="screenshot-card">
-          <img
-            src="assets/blender-addon-panel.png"
-            width="1920"
-            height="1080"
-            alt="Blender viewport showing an aperiodic monotile patch with the Monotile add-on panel open."
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>
-            Rectangle patch with custom edge profile, editable N-gon instances, and label collections ready for
-            per-type materials.
-          </figcaption>
-        </figure>
       </section>
 
       <section class="section docs-section" id="install">
         <div>
           <p class="eyebrow">Install</p>
-          <h2>Install the add-on, paste your API key, generate GLB geometry.</h2>
-          <p>
-            In Blender 4.2+, open <strong>Edit &gt; Preferences &gt; Add-ons &gt; Install...</strong>, choose the
-            downloaded zip, enable <strong>Untiling</strong>, then open the
-            <strong>Monotile</strong> tab in the 3D View sidebar (or Scene properties).
-          </p>
-        </div>
-        <pre class="code-card"><code>1. Download the Blender add-on ZIP
-2. Install and enable it in Blender Preferences
-3. Paste your API key in the Monotile panel
-4. Choose boundary, scale, side style, and depth
-5. Generate editable N-gon instances or GLB</code></pre>
-      </section>
-
-      <section class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Workflow tips</p>
-          <h2>From first patch to shaded surface.</h2>
+          <h2>Desktop app, or Blender, or call the API.</h2>
         </div>
         <ul class="feature-list">
           <li>
-            <strong>Start with instances</strong>
-            N-gon instances are the fastest path for materials, bevels, and collection organization. Switch to
-            GLB when you need a single merged mesh for export.
+            <strong>Windows app</strong>
+            Download <code>AperiodicGenerator.exe</code>, paste your API key, pick formats, Generate.
           </li>
           <li>
-            <strong>Shape edges in the viewport</strong>
-            Set Side Style to Custom, edit the guide line, then apply the profile to every tile. Curvy and wavy
-            presets are there when you want a quick stylized look.
+            <strong>Blender</strong>
+            Install the ZIP in Preferences → Add-ons, enable Untiling, open the Monotile sidebar. Depth defaults to 0.
           </li>
           <li>
-            <strong>Materials per label</strong>
-            After import, use Organize into Label Collections, then assign materials per collection or run
-            randomize materials for quick look-dev passes.
+            <strong>Inkscape</strong>
+            Copy the extension files into Inkscape’s extensions folder and restart.
+          </li>
+          <li>
+            <strong>API</strong>
+            <code>POST /v1/patch</code> — see docs. <code>stl_extrusion_mm</code> defaults to 0.
           </li>
         </ul>
       </section>
 
       <section class="section docs-section cta">
         <div>
-          <p class="eyebrow">Access</p>
-          <h2>Blender add-on download. Hosted API for generation.</h2>
+          <p class="eyebrow">Get started</p>
+          <h2>Free JPG or PNG. Paid SVG or 3D.</h2>
           <p>
-            Free JPG or PNG for previews. Paid SVG or 3D when you need vectors or meshes.
-            The Blender kit ZIP is a free download — paste your API key and generate from the sidebar.
+            Grab a key, download the Windows app or Blender kit, or hit the API directly.
             Try the <a href="landing-legacy.html">web generator</a> for quick raster checks.
           </p>
         </div>
         <div class="hero-actions">
-          <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender kit</a>
+          <a class="button" href="assets/downloads/AperiodicGenerator.exe" download>Download Windows app</a>
+          <a class="button secondary" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Blender kit</a>
           <a class="button secondary" href="docs.html#access">Get started</a>
-          <a class="button secondary" href="landing-legacy.html#pricing">View pricing</a>
         </div>
       </section>
     </main>

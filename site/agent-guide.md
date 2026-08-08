@@ -1,12 +1,12 @@
-# Untiling API Guide for AI Agents
+# Aperiodic Monotile API Guide for AI Agents
 
-This file is the canonical machine-readable integration brief for the Untiling API.
+This file is the canonical machine-readable integration brief for the Aperiodic Monotile API.
 
-Base API URL: `https://api.untiling.com`
+Base API URL: `https://api.aperiodicgenerator.com`
 
-Public docs: `https://untiling.com/docs.html`
+Public docs: `https://aperiodicgenerator.com/docs.html`
 
-Human support: `https://untiling.com/contact.html`
+Human support: `https://aperiodicgenerator.com/contact.html`
 
 ## What This API Does
 
@@ -29,7 +29,7 @@ Most production calls require:
 X-API-Key: YOUR_API_KEY
 ```
 
-Preview-tier keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
+Free keys can request small raster previews only: `png`, `jpg`, or `jpeg`.
 
 Paid Solo and Pro keys can request production exporters.
 
@@ -188,7 +188,7 @@ Rounded rectangle:
 
 ## Common Request Examples
 
-Small preview example:
+Small free preview:
 
 ```json
 {
@@ -219,7 +219,7 @@ Square GLB field:
 {
   "mask": {"type": "square", "half_side": 25},
   "formats": ["glb"],
-  "stl_extrusion_mm": 1
+  "stl_extrusion_mm": 0
 }
 ```
 
@@ -229,7 +229,7 @@ Independent fabrication tiles:
 {
   "mask": {"type": "regular_hexagon", "circumradius": 35},
   "formats": ["stl_zip", "obj_zip"],
-  "stl_extrusion_mm": 1
+  "stl_extrusion_mm": 0
 }
 ```
 
@@ -254,7 +254,7 @@ Raster fields:
 
 3D field:
 
-- `stl_extrusion_mm`: extrusion/depth setting. Default is 1. Set **0** for flat tile caps only (no API extrusion; extrude in Blender/CAD yourself).
+- `stl_extrusion_mm`: extrusion/depth setting. Default is **0** (flat tile caps). Raise above 0 to extrude in the API.
 
 ## Queue Behavior
 

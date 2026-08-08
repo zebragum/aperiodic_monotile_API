@@ -1,7 +1,7 @@
 bl_info = {
-    "name": "Untiling",
-    "author": "Untiling",
-    "version": (0, 3, 10),
+    "name": "Aperiodic Monotile Generator",
+    "author": "Aperiodic Monotile Generator",
+    "version": (0, 3, 11),
     "blender": (4, 2, 0),
     "location": "View3D > Sidebar > Monotile",
     "description": "Generate aperiodic monotile patches from the hosted API as editable N-gon instances or GLB.",
@@ -46,7 +46,7 @@ from .profile_ui import (
 )
 
 
-DEFAULT_API_BASE = "https://api.untiling.com"
+DEFAULT_API_BASE = "https://api.aperiodicgenerator.com"
 
 # Aperiodic monotile type label → distinct hues (visible in Material Preview).
 _LABEL_COLORS = {
@@ -166,10 +166,10 @@ class MonotileGeneratorSettings(PropertyGroup):
     )
     extrusion_mm: FloatProperty(
         name="Depth",
-        default=1.0,
+        default=0.0,
         min=0.0,
         soft_max=20.0,
-        description="GLB/STL extrusion depth in mm; 0 = flat tile caps only (extrude yourself in Blender)",
+        description="GLB/STL extrusion depth in mm; 0 = flat tile caps (default). Raise to extrude in the API.",
     )
     import_json: BoolProperty(
         name="Also request JSON",
