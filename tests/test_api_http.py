@@ -254,14 +254,16 @@ def test_cors_defaults_from_public_site_url_when_unset():
 
 
 def test_api_key_required_when_configured():
+    """Invalid keys are rejected; missing keys stay anonymous free tier."""
+
     os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
     os.environ["SPECTRE_PATCH_API_KEY_TIERS_JSON"] = '{"free-secret":"tier_free","solo-secret":"tier_solo"}'
     try:
         with tempfile.TemporaryDirectory() as tmp:
             with TestClient(_build_app(Path(tmp))) as client:
-                # Missing key → 401
+                # Missing key → anonymous free (capabilities still work)
                 r = client.get("/v1/capabilities")
-                assert r.status_code == 401
+                assert r.status_code == 200
                 # Wrong key → 403
                 r = client.get("/v1/capabilities", headers={"X-API-Key": "wrong"})
                 assert r.status_code == 403
@@ -271,6 +273,33 @@ def test_api_key_required_when_configured():
     finally:
         os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
         os.environ.pop("SPECTRE_PATCH_API_KEY_TIERS_JSON", None)
+
+
+def test_anonymous_free_tier_allows_raster_rejects_svg():
+    os.environ["SPECTRE_PATCH_REQUIRE_API_KEY"] = "true"
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            with TestClient(_build_app(Path(tmp))) as client:
+                raster = {
+                    "formats": ["png"],
+                    "png_width_px": 128,
+                    "png_height_px": 128,
+                    "mask": {"type": "square", "half_side": 4.0},
+                }
+                r = client.post("/v1/patch", json=raster)
+                assert r.status_code == 200
+                assert r.json()["tier"] == "tier_free"
+
+                paid = {
+                    "formats": ["svg"],
+                    "mask": {"type": "square", "half_side": 4.0},
+                }
+                r = client.post("/v1/patch", json=paid)
+                assert r.status_code == 422
+                msg = r.json()["error"]["message"].lower()
+                assert "paid key" in msg or "free tier" in msg or "raster" in msg
+    finally:
+        os.environ.pop("SPECTRE_PATCH_REQUIRE_API_KEY", None)
 
 
 def test_api_key_tier_map_overrides_client_claimed_tier():

@@ -26,13 +26,14 @@
         <span>Aperiodic Generator</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="docs.html">API Docs</a>
         <a href="generate.html#tools">Tools</a>
+        <a href="web.html">Web</a>
+        <a href="docs.html" aria-current="page">API Docs</a>
+        <a href="pricing.html">Pricing</a>
         <a href="https://untiling.com/">Untiling</a>
       </nav>
       <div class="header-actions">
-        <a class="button secondary small" href="pricing.html">Pricing</a>
-        <a class="button small" href="#access">Get started</a>
+        <a class="button small" href="web.html">Web generator</a>
       </div>
     </header>
 
@@ -41,37 +42,58 @@
         <p class="eyebrow">Docs</p>
         <h1>Generate aperiodic monotile geometry from one JSON request.</h1>
         <p class="hero-text">
-          Mask in, patch out — JPG/PNG for previews, SVG and 3D when you need production geometry,
-          plus a free Blender add-on kit.
+          Mask in, patch out — JPG/PNG for free previews, SVG and 3D with a paid key.
+          Same API powers the web generator, Windows app, Blender, Inkscape, and Rhino.
         </p>
       </section>
 
       <section id="access" class="section cta">
         <p class="eyebrow">Get started</p>
-        <h2>Free JPG or PNG. Paid SVG or 3D. Desktop, Blender, Inkscape, API.</h2>
+        <h2>Free JPG or PNG. Paid SVG or 3D.</h2>
         <p>
-          Start with raster previews. Unlock SVG and 3D when you need vectors or meshes.
-          Pick any front door below.
+          Raster previews need no API key. If you ask a generator for SVG or 3D, it will tell you
+          to get a key — buy that on <a href="pricing.html">Pricing</a>. Download any front door below.
         </p>
         <ul class="feature-list access-list">
           <li>
             <strong>Free JPG or PNG</strong>
-            Small preview patches for look-dev and layout checks.
+            Small preview patches — no key required.
           </li>
           <li>
             <strong>Paid SVG or 3D</strong>
-            Production exporters: SVG, CSV, JSON, STL, GLB, and related mesh packs.
+            Production exporters unlock with a key from Pricing. Generators prompt you when you need one.
           </li>
           <li>
             <strong>Apps &amp; add-ons</strong>
-            Windows desktop app, Blender kit, Inkscape extension, Rhino script — same API underneath.
+            Web, Windows, Blender, Inkscape, Rhino — same API underneath.
           </li>
         </ul>
         <div id="checkoutClaim" class="demo-stats"></div>
-        <div class="hero-actions">
-          <a class="button" href="assets/downloads/AperiodicGenerator.exe" download>Download Windows app</a>
-          <a class="button secondary" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Blender kit</a>
-          <a class="button secondary" href="pricing.html">Checkout</a>
+        <div class="download-grid">
+          <a href="web.html">
+            <strong>Web generator</strong>
+            <span>Browser twin of the Windows app.</span>
+          </a>
+          <a href="assets/downloads/AperiodicGenerator.exe" download>
+            <strong>Windows app</strong>
+            <span>Offline desktop client.</span>
+          </a>
+          <a href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>
+            <strong>Blender add-on</strong>
+            <span>3D View sidebar kit.</span>
+          </a>
+          <a href="assets/downloads/untiling_inkscape_extension.zip" download>
+            <strong>Inkscape extension</strong>
+            <span>SVG into a drawing document.</span>
+          </a>
+          <a href="assets/downloads/untiling_rhino_script.zip" download>
+            <strong>Rhino script</strong>
+            <span>Fetch patches into a folder.</span>
+          </a>
+          <a href="pricing.html">
+            <strong>Get an API key</strong>
+            <span>Only needed for SVG / 3D exports.</span>
+          </a>
         </div>
       </section>
 
@@ -94,14 +116,14 @@
             </p>
             <pre class="code-card"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: YOUR_API_KEY" \
   -H "Idempotency-Key: demo-001" \
   -d '{
     "mask": {"type": "circle", "radius": 50},
-    "formats": ["svg", "png"],
+    "formats": ["png"],
     "png_width_px": 1200,
     "png_height_px": 1200
-  }'</code></pre>
+  }'
+# JPG/PNG: no API key. For SVG/GLB/STL, add: -H "X-API-Key: YOUR_API_KEY"</code></pre>
           </div>
         </details>
 
@@ -194,8 +216,8 @@
           </summary>
           <div class="docs-fold-body">
             <ul class="feature-list">
-              <li><strong>Free JPG or PNG</strong> Small preview patches, raster only.</li>
-              <li><strong>Paid SVG or 3D</strong> Production exporters and larger jobs.</li>
+              <li><strong>Free JPG or PNG</strong> Small preview patches, raster only — no API key.</li>
+              <li><strong>Paid SVG or 3D</strong> Production exporters and larger jobs — key from Pricing.</li>
               <li><strong>Queue and downloads</strong> Status, wait estimates, signed artifact URLs.</li>
             </ul>
             <p class="domain-see">

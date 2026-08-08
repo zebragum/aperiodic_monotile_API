@@ -460,21 +460,24 @@ def _admin_token_dependency(
 
 
 def _api_key_dependency(request: Request, api_key: str | None = Header(default=None, alias="X-API-Key")) -> str | None:
-    """Enforce X-API-Key when configured. Used by every ``/v1/*`` endpoint."""
+    """Resolve API key / tier for ``/v1/*`` endpoints.
+
+    Missing keys are allowed as anonymous ``tier_free`` (JPG/PNG only). Paid
+    exporters still require a valid paid key — enforced in ``POST /v1/patch``.
+    When ``require_api_key`` is true, a *present but invalid* key is rejected.
+    """
 
     cfg = svc_settings()
-    if not cfg.require_api_key:
-        if api_key:
-            tier = _tier_for_api_key(request, api_key, cfg)
-            if tier:
-                setattr(request.state, "monotile_tier", tier)
-                setattr(request.state, "monotile_api_key_hash", job_repo.hash_api_key(api_key))
-        return api_key
     if not api_key:
-        raise HTTPException(status_code=401, detail="Missing X-API-Key")
+        # Anonymous free tier: raster previews without buying a key.
+        setattr(request.state, "monotile_tier", "tier_free")
+        return None
     tier = _tier_for_api_key(request, api_key, cfg)
     if tier is None:
-        raise HTTPException(status_code=403, detail="Invalid X-API-Key")
+        if cfg.require_api_key:
+            raise HTTPException(status_code=403, detail="Invalid X-API-Key")
+        # Soft mode: ignore unknown keys and stay on free.
+        return api_key
     setattr(request.state, "monotile_tier", tier)
     setattr(request.state, "monotile_api_key_hash", job_repo.hash_api_key(api_key))
     return api_key
@@ -1815,9 +1818,10 @@ def create_app() -> FastAPI:
                 raise HTTPException(
                     status_code=422,
                     detail=(
-                        "free tier accepts only raster preview formats "
-                        f"({', '.join(sorted(FREE_TIER_RASTER_FORMATS))}); "
-                        f"disallowed: {', '.join(disallowed)}"
+                        "JPG/PNG previews are free without an API key. "
+                        "SVG and 3D need a paid key from Pricing. "
+                        f"Free tier allows only: {', '.join(sorted(FREE_TIER_RASTER_FORMATS))}. "
+                        f"Disallowed: {', '.join(disallowed)}"
                     ),
                 )
         if cfg.require_atlas and body.force_substitution:
