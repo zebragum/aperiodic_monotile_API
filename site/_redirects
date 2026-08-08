@@ -8,3 +8,4 @@ https://www.aperiodicgenerator.com/index.html /generate.html 200
 # Old names → clean URLs
 /landing-legacy.html /web.html 301
 /demo.html /web.html 301
+/use-cases/generative-art.html /art.html 301
