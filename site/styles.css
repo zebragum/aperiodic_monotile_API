@@ -641,6 +641,12 @@ textarea {
   border-radius: 1.4rem;
 }
 
+.price-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .card p,
 .price-card li {
   color: var(--muted);
@@ -675,6 +681,8 @@ textarea {
 
 .price-card ul {
   padding-left: 1.2rem;
+  flex: 1 1 auto;
+  margin-bottom: 0;
 }
 
 .price {
@@ -719,7 +727,11 @@ ul.pricing-value-list {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  /* Reserve space for two stacked CTAs so Free/Solo/Pro buttons share a baseline */
+  min-height: 6.4rem;
+  justify-content: flex-end;
 }
 
 .pricing-actions .button.secondary {
@@ -1163,6 +1175,12 @@ h3 {
 .card,
 .price-card {
   padding: 1rem 1.05rem;
+}
+
+.price-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card,
