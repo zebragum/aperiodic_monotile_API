@@ -434,7 +434,7 @@ async function initGenerator() {
         format: format.toLowerCase(),
         metadata: { source: "free_generator_upgrade_prompt" },
       });
-      document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      location.assign("pricing.html");
     });
   });
 }

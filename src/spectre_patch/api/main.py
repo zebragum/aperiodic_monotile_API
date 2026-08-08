@@ -1396,7 +1396,7 @@ def create_app() -> FastAPI:
             body.get("plan"),
         )
         success_url = f"{cfg.public_site_url.rstrip('/')}/docs.html?checkout=success&session_id={{CHECKOUT_SESSION_ID}}#access"
-        cancel_url = f"{cfg.public_site_url.rstrip('/')}/#pricing"
+        cancel_url = f"{cfg.public_site_url.rstrip('/')}/pricing.html"
         data = {
             "mode": checkout_mode,
             "line_items[0][price]": stripe_price_id,
