@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Untiling API Documentation | Aperiodic Tiling Geometry</title>
+    <title>API Docs | Aperiodic Generator</title>
     <meta
       name="description"
-      content="Documentation for generating aperiodic monotile geometry with the Untiling API, including masks, SVG options, signed downloads, and preview and paid API access."
+      content="Documentation for generating aperiodic monotile geometry with the Aperiodic Generator API, including masks, SVG options, signed downloads, and free/paid API access."
     />
     <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://untiling.com/docs.html" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/docs.html" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Untiling home">
+      <a class="brand" href="generate.html" aria-label="Aperiodic Generator home">
         <img
           class="brand-mark"
           src="assets/brand-mark.svg"
@@ -23,13 +23,13 @@
           height="32"
           decoding="async"
         />
-        <span>Untiling</span>
+        <span>Aperiodic Generator</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="docs.html">Docs</a>
-        <a href="research/index.html">Research</a>
-        <a href="agents.html">AI Guide</a>
-        <a href="apparel/">Shop Apparel</a>
+        <a class="nav-demo" href="generate.html#demo">Demo</a>
+        <a href="generate.html#install">Blender</a>
+        <a href="docs.html" aria-current="page">API Docs</a>
+        <a href="https://untiling.com/">Untiling</a>
       </nav>
       <div class="header-actions">
         <a class="button secondary small" href="landing-legacy.html#pricing">Pricing</a>
@@ -58,7 +58,7 @@
             automatically.
           </p>
         </div>
-        <pre class="code-card"><code>curl -X POST https://api.untiling.com/v1/patch \
+        <pre class="code-card"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Idempotency-Key: demo-001" \
@@ -79,7 +79,7 @@
             type and dimensions.
           </p>
         </div>
-        <div class="cards cards--three">
+        <div class="cards">
           <article class="card">
             <h3>Circle</h3>
             <pre><code>{"type":"circle","radius":50}</code></pre>
@@ -205,20 +205,20 @@
         <div class="section-heading">
           <p class="eyebrow">Capabilities</p>
           <h2>What paid access unlocks today.</h2>
-          <p>Use this section to compare Preview, Solo, and Pro access.</p>
+          <p>Use this section to quickly compare free previews, Solo, and Pro access.</p>
         </div>
         <div class="cards">
           <article class="card">
-            <h3>Preview exports</h3>
-            <p>Small preview patches with free raster outputs: JPG, JPEG, or PNG.</p>
+            <h3>Free previews</h3>
+            <p>Small preview patches with raster outputs only: JPG, JPEG, or PNG.</p>
           </article>
           <article class="card">
             <h3>Solo</h3>
-            <p>$10/month or $79/year for one-person access to production exporters, with jobs up to 40,000 retained tiles.</p>
+            <p>$10/month or $79 lifetime for one-person access to production exporters, with jobs up to 40,000 retained tiles.</p>
           </article>
           <article class="card">
             <h3>Pro</h3>
-            <p>$99/month or $999/year for studio and client work, with production jobs up to 400,000 retained tiles.</p>
+            <p>$99/month or $999 lifetime for studio and client work, with production jobs up to 400,000 retained tiles.</p>
           </article>
           <article class="card">
             <h3>Queue and downloads</h3>
@@ -227,7 +227,7 @@
         </div>
         <p class="domain-see">
           Developers can also call
-          <a href="https://api.untiling.com/v1/capabilities"><code>GET /v1/capabilities</code></a>.
+          <a href="https://api.aperiodicgenerator.com/v1/capabilities"><code>GET /v1/capabilities</code></a>.
         </p>
       </section>
 
@@ -264,9 +264,9 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
 
       <section id="access" class="section cta">
         <p class="eyebrow">Access model</p>
-        <h2>Solo · Pro · Preview exports.</h2>
+        <h2>Solo · Pro · Free previews.</h2>
         <p>
-          Preview keys stay constrained to small preview patches and free JPG/PNG raster exports. Paid checkout grants
+          Free keys stay constrained to small preview patches and JPG/PNG raster previews. Paid checkout grants
           <strong>Solo</strong> or <strong>Pro</strong> keys for production exporters.
         </p>
         <div id="checkoutClaim" class="demo-stats"></div>
@@ -279,7 +279,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
     </main>
 
     <footer class="footer">
-      <p>Documentation for the Untiling API.</p>
+      <p>Documentation for the Aperiodic Monotile API.</p>
       <p><a href="index.html">Home</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a> · <button type="button" id="bugReportTrigger" class="button-link">Report a bug</button></p>
     </footer>
 
@@ -310,7 +310,6 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       </form>
     </dialog>
 
-    <script src="../site-config.js"></script>
     <script>
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get("session_id");
@@ -344,7 +343,7 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
             tier_day_pass: "paid access",
             tier_solo: "paid access",
             tier_teams: "Pro access",
-            tier_free: "Preview"
+            tier_free: "Free Preview"
           }[payload.tier] || "paid access";
           heading.textContent = `Thank you! You now have a ${friendlyTier}.`;
           const code = document.createElement("code");
@@ -420,27 +419,17 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
       }
       claimKey();
 
-      const API_BASE = window.SITE_CONFIG?.apiBase || "https://api.untiling.com";
-      const API_FALLBACKS = window.SITE_CONFIG?.apiFallbacks || [
-        "https://api.aperiodicgenerator.com",
-        "https://aperiodic-monotile-api.onrender.com",
-      ];
+      const API_BASE = "https://api.aperiodicgenerator.com";
+      const API_FALLBACK_BASE = "https://aperiodic-monotile-api.onrender.com";
       const BUG_STORE_KEY = "monotile.bugReport.draft.v1";
       const RID_STORE_KEY = "monotile.lastRequestId.v1";
 
       async function apiFetch(path, options = {}) {
-        const bases = [API_BASE, ...API_FALLBACKS.filter((b) => b !== API_BASE)];
-        let lastErr;
-        for (const base of bases) {
-          try {
-            const response = await fetch(`${base}${path}`, options);
-            if (response.ok || response.status < 500) return response;
-            lastErr = new Error(`HTTP ${response.status} from ${base}`);
-          } catch (err) {
-            lastErr = err;
-          }
+        try {
+          return await fetch(`${API_BASE}${path}`, options);
+        } catch (err) {
+          return fetch(`${API_FALLBACK_BASE}${path}`, options);
         }
-        throw lastErr || new Error("API unreachable");
       }
 
       function rememberRequestId(rid) {

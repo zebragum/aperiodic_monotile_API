@@ -80,6 +80,16 @@ a {
   color: var(--text);
 }
 
+.nav a.nav-demo,
+.demo-eyebrow {
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.nav a.nav-demo:hover {
+  color: var(--accent);
+}
+
 .header-actions {
   display: inline-flex;
   align-items: center;
@@ -625,15 +635,10 @@ textarea {
   gap: 1rem;
 }
 
-.cards--three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .card,
 .price-card {
   padding: 1.35rem;
   border-radius: 1.4rem;
-  min-width: 0;
 }
 
 .card p,
@@ -648,12 +653,6 @@ textarea {
   color: #f8e8d9;
   font-size: 0.85rem;
   line-height: 1.5;
-}
-
-.cards--three .card pre {
-  overflow-x: visible;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
 }
 
 .docs-section {
@@ -802,7 +801,6 @@ ul.pricing-value-list {
   .demo-shell,
   .docs-section,
   .cards,
-  .cards--three,
   .domain-catalog,
   .pricing-grid {
     grid-template-columns: 1fr;
@@ -1629,6 +1627,82 @@ pre {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.feature-list {
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+  max-width: 44rem;
+  list-style: disc;
+}
+
+.feature-list li {
+  margin: 0 0 1.1rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.feature-list li:last-child {
+  margin-bottom: 0;
+}
+
+.feature-list strong {
+  display: block;
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.hub-hero .hub-copy {
+  max-width: 40rem;
+}
+
+.hub-link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.hub-link-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.hub-link-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.hub-link-list a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 1.15rem;
+}
+
+.hub-link-list a:hover {
+  color: var(--accent-2);
+}
+
+.hub-link-list a.nav-demo,
+.hub-link-list a.nav-demo strong {
+  color: var(--accent-2);
+}
+
+.hub-link-list a.nav-demo:hover,
+.hub-link-list a.nav-demo:hover strong {
+  color: var(--accent);
+}
+
+.hub-link-list span {
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 @media (max-width: 900px) {

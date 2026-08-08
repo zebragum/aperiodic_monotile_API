@@ -1,0 +1,6 @@
+# Force aperiodicgenerator.com root to the generator-first page (200 rewrite).
+# Untiling.com keeps serving /index.html as the hub.
+https://aperiodicgenerator.com/ /generate.html 200
+https://www.aperiodicgenerator.com/ /generate.html 200
+https://aperiodicgenerator.com/index.html /generate.html 200
+https://www.aperiodicgenerator.com/index.html /generate.html 200

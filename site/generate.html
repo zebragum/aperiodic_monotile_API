@@ -3,52 +3,64 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic Monotile Blender Add-on | Non-Repeating Geometry</title>
+    <title>Aperiodic Generator | Create surfaces that never repeat</title>
     <meta
       name="description"
-      content="Free Blender add-on for aperiodic monotile patches. Editable N-gon instances, custom edge styles, label collections, bevel tools, and GLB import via the hosted API."
+      content="Blender add-on and API for aperiodic monotile patches. Editable N-gon instances, custom edge styles, and GLB export — create surfaces that never repeat."
     />
-    <link rel="canonical" href="https://aperiodicgenerator.com/use-cases/blender.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#101322" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Aperiodic Generator — Create surfaces that never repeat" />
+    <meta
+      property="og:description"
+      content="Blender add-on and hosted API for aperiodic monotile patches that never repeat."
+    />
     <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
     <meta property="og:video" content="https://aperiodicgenerator.com/assets/generator-video-web.mp4" />
-    <link rel="stylesheet" href="../styles.css" />
+    <meta property="og:url" content="https://aperiodicgenerator.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="site-config.js"></script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="../generate.html">
-        <img class="brand-mark" src="../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+      <a class="brand" href="#top" aria-label="Aperiodic Generator home">
+        <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
         <span>Aperiodic Generator</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a class="nav-demo" href="../generate.html#demo">Demo</a>
+        <a class="nav-demo" href="#demo">Demo</a>
         <a href="#install">Blender</a>
-        <a href="../docs.html">API Docs</a>
+        <a href="docs.html">API Docs</a>
+        <a href="landing-legacy.html#pricing">Pricing</a>
         <a href="https://untiling.com/">Untiling</a>
       </nav>
       <div class="header-actions">
-        <a class="button secondary small" href="../docs.html#access">Get API key</a>
-        <a class="button small" href="../assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
+        <a class="button secondary small" href="docs.html#access">Get API key</a>
+        <a class="button small" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
       </div>
     </header>
-    <main>
+    <main id="top">
       <section class="section docs-hero">
         <div class="generator-intro">
           <div class="generator-copy">
-            <p class="eyebrow">Blender add-on</p>
-            <h1>Aperiodic monotile geometry for Blender.</h1>
+            <p class="eyebrow">Blender · API</p>
+            <h1>Create surfaces that never repeat.</h1>
             <p class="hero-text">
-              Generate aperiodic monotile patches in Blender for non-repeating geometry, excellent for avoiding
-              common tiling and aliasing artifacts and ensuring proven non-repetition without losing regularity.
-              Aperiodic monotiles are one shape that tiles without ever forming a pattern.
+              Stop obvious CG tiling. Generate aperiodic monotile patches in Blender — one shape, no repeating
+              wallpaper unit, excellent for floors, facades, and panels where square grids give themselves away on camera.
             </p>
             <div class="hero-actions">
-              <a class="button" href="../assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender add-on (v0.3.10)</a>
-              <a class="button secondary" href="../docs.html#access">Get API key</a>
+              <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender add-on (v0.3.10)</a>
+              <a class="button secondary" href="docs.html#access">Get API key</a>
             </div>
           </div>
           <figure class="generator-video-card">
-            <video controls preload="none" playsinline poster="../assets/generator-video-poster.jpg" aria-label="Aperiodic monotile generator video">
-              <source src="../assets/generator-video-web.mp4" type="video/mp4" />
+            <video controls preload="none" playsinline poster="assets/generator-video-poster.jpg" aria-label="Aperiodic monotile generator video">
+              <source src="assets/generator-video-web.mp4" type="video/mp4" />
             </video>
           </figure>
         </div>
@@ -63,8 +75,8 @@
           </p>
         </div>
         <figure class="demo-video-wide">
-          <video controls preload="none" playsinline poster="../assets/blender-demo-poster.jpg" aria-label="Blender add-on full demo video">
-            <source src="../assets/blender-demo-web.mp4" type="video/mp4" />
+          <video controls preload="none" playsinline poster="assets/blender-demo-poster.jpg" aria-label="Blender add-on full demo video">
+            <source src="assets/blender-demo-web.mp4" type="video/mp4" />
           </video>
         </figure>
       </section>
@@ -115,10 +127,10 @@
         </div>
         <figure class="screenshot-card">
           <img
-            src="../assets/blender-addon-panel.png"
+            src="assets/blender-addon-panel.png"
             width="1920"
             height="1080"
-            alt="Blender viewport showing an aperiodic monotile patch with the Monotile add-on panel open, including boundary, generation, and custom edge style controls."
+            alt="Blender viewport showing an aperiodic monotile patch with the Monotile add-on panel open."
             loading="lazy"
             decoding="async"
           />
@@ -129,7 +141,7 @@
         </figure>
       </section>
 
-      <section class="section docs-section">
+      <section class="section docs-section" id="install">
         <div>
           <p class="eyebrow">Install</p>
           <h2>Install the add-on, paste your API key, generate GLB geometry.</h2>
@@ -139,7 +151,7 @@
             <strong>Monotile</strong> tab in the 3D View sidebar (or Scene properties).
           </p>
         </div>
-        <pre class="code-card" id="install"><code>1. Download the Blender add-on ZIP
+        <pre class="code-card"><code>1. Download the Blender add-on ZIP
 2. Install and enable it in Blender Preferences
 3. Paste your API key in the Monotile panel
 4. Choose boundary, scale, side style, and depth
@@ -151,53 +163,50 @@
           <p class="eyebrow">Workflow tips</p>
           <h2>From first patch to shaded surface.</h2>
         </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Start with instances</h3>
-            <p>
-              N-gon instances are the fastest path for materials, bevels, and collection organization. Switch to
-              GLB when you need a single merged mesh for export.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Shape edges in the viewport</h3>
-            <p>
-              Set Side Style to Custom, edit the guide line, then apply the profile to every tile. Curvy and wavy
-              presets are there when you want a quick stylized look.
-            </p>
-          </article>
-          <article class="card">
-            <h3>Materials per label</h3>
-            <p>
-              After import, use Organize into Label Collections, then assign materials per collection or run
-              randomize materials for quick look-dev passes.
-            </p>
-          </article>
-        </div>
+        <ul class="feature-list">
+          <li>
+            <strong>Start with instances</strong>
+            N-gon instances are the fastest path for materials, bevels, and collection organization. Switch to
+            GLB when you need a single merged mesh for export.
+          </li>
+          <li>
+            <strong>Shape edges in the viewport</strong>
+            Set Side Style to Custom, edit the guide line, then apply the profile to every tile. Curvy and wavy
+            presets are there when you want a quick stylized look.
+          </li>
+          <li>
+            <strong>Materials per label</strong>
+            After import, use Organize into Label Collections, then assign materials per collection or run
+            randomize materials for quick look-dev passes.
+          </li>
+        </ul>
       </section>
 
       <section class="section docs-section cta">
         <div>
           <p class="eyebrow">Access</p>
-          <h2>Free add-on download. Hosted API for generation.</h2>
+          <h2>Blender add-on download. Hosted API for generation.</h2>
           <p>
-            The add-on ZIP is a free download from this site. Patch generation runs through the hosted API with
-            free JPG and PNG previews on the <a href="../landing-legacy.html">legacy generator page</a>. Paid Solo and Pro tiers unlock production GLB, STL, SVG,
-            CSV, and JSON exports for heavier scenes.
+            The add-on ZIP is available from this site. Patch generation runs through the hosted API with
+            JPG and PNG preview exports on the <a href="landing-legacy.html">legacy generator page</a>. Paid Solo
+            and Pro tiers unlock production GLB, STL, SVG, CSV, and JSON exports for heavier scenes.
           </p>
         </div>
         <div class="hero-actions">
-          <a class="button" href="../assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
-          <a class="button secondary" href="../docs.html#access">Get API key</a>
-          <a class="button secondary" href="../landing-legacy.html#pricing">View pricing</a>
+          <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download add-on</a>
+          <a class="button secondary" href="docs.html#access">Get API key</a>
+          <a class="button secondary" href="landing-legacy.html#pricing">View pricing</a>
         </div>
       </section>
     </main>
     <footer class="footer">
       <p>
-        <a href="../index.html">Home</a> · <a href="../landing-legacy.html">Generator demo</a> · <a href="../docs.html">Docs</a> · <a href="../terms.html">Terms</a> ·
-        <a href="../privacy.html">Privacy</a> · <a href="../refund.html">Refunds</a> ·
-        <a href="../contact.html">Contact</a> · <a href="../attribution.html">Attribution</a>
+        <a href="https://untiling.com/">Untiling home</a> ·
+        <a href="use-cases/blender.html">Blender guide</a> ·
+        <a href="landing-legacy.html">Web generator</a> ·
+        <a href="docs.html">Docs</a> · <a href="terms.html">Terms</a> ·
+        <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> ·
+        <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a>
       </p>
     </footer>
   </body>
