@@ -802,7 +802,9 @@ ul.pricing-value-list {
 .docs-fold summary::after {
   content: "+";
   position: absolute;
+  top: 50%;
   right: 1.15rem;
+  transform: translateY(-50%);
   color: var(--accent-2);
   font-weight: 700;
 }
