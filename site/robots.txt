@@ -4,6 +4,6 @@ Allow: /agent-guide.md
 Allow: /agents.html
 
 # AI agents: start with the markdown integration brief.
-# https://untiling.com/agent-guide.md
+# https://aperiodicgenerator.com/agent-guide.md
 
-Sitemap: https://untiling.com/sitemap.xml
+Sitemap: https://aperiodicgenerator.com/sitemap.xml

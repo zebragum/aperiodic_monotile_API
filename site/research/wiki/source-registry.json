@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T06:04:58.814179+00:00",
+  "generated_at": "2026-07-22T06:13:40.915103+00:00",
   "method": {
     "indexes": [
       "Crossref",
@@ -11,13 +11,224 @@
       "spectre monotile",
       "Tile(1,1) tiling",
       "Smith hat tiling",
-      "Hat family tilings"
+      "Hat family tilings",
+      "einstein monotile",
+      "chiral aperiodic monotile",
+      "Smith monotile",
+      "polykite hat",
+      "CAP tiling hat",
+      "CASPr spectre",
+      "monotile metamaterial",
+      "monotile diffraction",
+      "Tile(1,√3)",
+      "Turtle monotile",
+      "quasilattice spectre"
     ],
     "deduplication": "DOI, arXiv ID, then normalized title",
     "scope_note": "Automated discovery registry; human-curated web resources and citation-chain findings are maintained separately in the wiki."
   },
-  "count": 47,
+  "count": 71,
   "records": [
+    {
+      "title": "Sechstes Cap. Worin Danischmend die Schwachheit hat, mit einem Malender über häusliche Glückseligkeit zu Dispuetren",
+      "authors": [],
+      "year": 1854,
+      "doi": "10.1515/9783112399507-007",
+      "arxiv": null,
+      "url": "https://doi.org/10.1515/9783112399507-007",
+      "venue": "C. M. Wielands Sämmtliche Werke Band 9",
+      "type": "book-chapter",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Sechsundzwanzigstes Cap. Danischmend hat den Einfall, sich zum Imam aufzuwersen",
+      "authors": [],
+      "year": 1854,
+      "doi": "10.1515/9783112399507-027",
+      "arxiv": null,
+      "url": "https://doi.org/10.1515/9783112399507-027",
+      "venue": "C. M. Wielands Sämmtliche Werke Band 9",
+      "type": "book-chapter",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "JENKINS V. EDWIN HOPE, THE DENTON HAT AND CAP MANUFACTURING COMPANY, AND WILSON AND STAFFORD, LD.",
+      "authors": [],
+      "year": 1896,
+      "doi": "10.1093/rpc/13.4.57",
+      "arxiv": null,
+      "url": "https://doi.org/10.1093/rpc/13.4.57",
+      "venue": "Reports of Patent, Design and Trade Mark Cases",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Foreword cap and bells or shovel hat",
+      "authors": [
+        "J. Suran"
+      ],
+      "year": 1962,
+      "doi": "10.1109/isscc.1962.1157431",
+      "arxiv": null,
+      "url": "https://doi.org/10.1109/isscc.1962.1157431",
+      "venue": "1962 IEEE International Solid-State Circuits Conference. Digest of Technical Papers",
+      "type": "proceedings-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "THE WAGES REGULATION (HAT, CAP AND MILLINERY) (HOLIDAYS) ORDER 1966",
+      "authors": [],
+      "year": 1967,
+      "doi": "10.1108/eb021266",
+      "arxiv": null,
+      "url": "https://doi.org/10.1108/eb021266",
+      "venue": "Knight's Industrial Law Reports",
+      "type": "journal-article",
+      "abstract": "Whereas the Minister of Labour (hereafter in this Order referred to as “the Minister”) has received from the Hat, Cap and Millinery Wages Council (Great Britain) the wages regulation proposals set out in the Schedule hereto;",
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "THE WAGES REGULATION (HAT, CAP AND MILLINERY) ORDER 1966",
+      "authors": [],
+      "year": 1967,
+      "doi": "10.1108/eb021265",
+      "arxiv": null,
+      "url": "https://doi.org/10.1108/eb021265",
+      "venue": "Knight's Industrial Law Reports",
+      "type": "journal-article",
+      "abstract": "Whereas the Minister of Labour (hereafter in this Order referred to as “the Minister”) has received from the Hat, Cap and Millinery Wages Council (Great Britain) the wages regulation proposals set out in the Schedule hereto;",
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "The Cap in the Hat: Unoriented 2D Strings and Matrix(-Vector) Models",
+      "authors": [
+        "Oren Bergman",
+        "Shinji Hirano"
+      ],
+      "year": 2004,
+      "doi": "10.1088/1126-6708/2004/01/043",
+      "arxiv": null,
+      "url": "https://doi.org/10.1088/1126-6708/2004/01/043",
+      "venue": "Journal of High Energy Physics",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Her Cap Is Now a Hard Hat",
+      "authors": [
+        "David Belcher"
+      ],
+      "year": 2007,
+      "doi": "10.1097/01.naj.0000268182.38304.40",
+      "arxiv": null,
+      "url": "https://doi.org/10.1097/01.naj.0000268182.38304.40",
+      "venue": "AJN, American Journal of Nursing",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "BP Top Hat cap tests are inconclusive",
+      "authors": [],
+      "year": 2010,
+      "doi": "10.1016/s0262-4079(10)61768-x",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/s0262-4079(10)61768-x",
+      "venue": "New Scientist",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Cellular Form of Prion Protein Inhibits Reelin-Mediated Shedding of Caspr from the Neuronal Cell Surface to Potentiate Caspr-Mediated Inhibition of Neurite Outgrowth",
+      "authors": [
+        "V. Devanathan",
+        "I. Jakovcevski",
+        "A. Santuccione",
+        "S. Li",
+        "H. J. Lee",
+        "E. Peles",
+        "I. Leshchyns'ka",
+        "V. Sytnyk",
+        "M. Schachner"
+      ],
+      "year": 2010,
+      "doi": "10.1523/jneurosci.5657-09.2010",
+      "arxiv": null,
+      "url": "https://doi.org/10.1523/jneurosci.5657-09.2010",
+      "venue": "Journal of Neuroscience",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CASPr spectre"
+      ]
+    },
+    {
+      "title": "T1999 Gene Expression Changes in Hepatitis C Infected Liver as Measured by Encode Tiling Array Analysis of Both 5′ CAP and 3′ poly(A) RNA",
+      "authors": [
+        "Milan E. Folkers",
+        "Don Delker",
+        "Christopher I. Maxwell",
+        "Cassie A. Nelson",
+        "David A. Nix",
+        "Curt H. Hagedorn"
+      ],
+      "year": 2010,
+      "doi": "10.1016/s0016-5085(10)63895-4",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/s0016-5085(10)63895-4",
+      "venue": "Gastroenterology",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
     {
       "title": "An Algebraic Realization of the Taylor-Socolar Aperiodic Monotilings",
       "authors": [
@@ -36,6 +247,109 @@
       "discovered_via": [
         "arXiv",
         "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "The Wandering Hat: Iterations of the Medieval Jewish Pointed Cap",
+      "authors": [
+        "Naomi Lubrich"
+      ],
+      "year": 2015,
+      "doi": "10.1007/s10835-015-9250-5",
+      "arxiv": null,
+      "url": "https://doi.org/10.1007/s10835-015-9250-5",
+      "venue": "Jewish History",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Copped hat, copped cap",
+      "authors": [],
+      "year": 2017,
+      "doi": "10.5040/9781474269728.708",
+      "arxiv": null,
+      "url": "https://doi.org/10.5040/9781474269728.708",
+      "venue": "The Dictionary of Fashion History",
+      "type": "other",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Davy Crockett cap, Davy Crockett hat",
+      "authors": [],
+      "year": 2017,
+      "doi": "10.5040/9781474269728.830",
+      "arxiv": null,
+      "url": "https://doi.org/10.5040/9781474269728.830",
+      "venue": "The Dictionary of Fashion History",
+      "type": "other",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Hat cap",
+      "authors": [],
+      "year": 2017,
+      "doi": "10.5040/9781474269728.1341",
+      "arxiv": null,
+      "url": "https://doi.org/10.5040/9781474269728.1341",
+      "venue": "The Dictionary of Fashion History",
+      "type": "other",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "CAP tiling hat",
+        "Crossref"
+      ]
+    },
+    {
+      "title": "Headgear: Hat, Cap, Hood, Mitre",
+      "authors": [
+        "Elizabeth Coatsworth",
+        "Gale R. Owen-Crocker"
+      ],
+      "year": 2018,
+      "doi": "10.1163/9789004352162_003",
+      "arxiv": null,
+      "url": "https://doi.org/10.1163/9789004352162_003",
+      "venue": "Clothing the Past: Surviving Garments from Early Medieval to Early Modern Western Europe",
+      "type": "book-chapter",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
+      ]
+    },
+    {
+      "title": "Tip the Hat: Does A Superior Cloth Surgeons Cap Really Exist?",
+      "authors": [
+        "Jason Nealy MD"
+      ],
+      "year": 2019,
+      "doi": "10.32474/scsoaj.2019.02.000135",
+      "arxiv": null,
+      "url": "https://doi.org/10.32474/scsoaj.2019.02.000135",
+      "venue": "Surgery & Case Studies: Open Access Journal",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
       ]
     },
     {
@@ -58,8 +372,45 @@
       ],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
         "aperiodic monotile",
-        "arXiv"
+        "arXiv",
+        "chiral aperiodic monotile",
+        "monotile diffraction"
+      ]
+    },
+    {
+      "title": "Black Hat, Combat Helmet, Thinking Cap:",
+      "authors": [
+        "Mark Zelcer"
+      ],
+      "year": 2020,
+      "doi": "10.2307/jj.18252454.8",
+      "arxiv": null,
+      "url": "https://doi.org/10.2307/jj.18252454.8",
+      "venue": "Off the Derech",
+      "type": "book-chapter",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "CAP tiling hat",
+        "Crossref"
+      ]
+    },
+    {
+      "title": "Caspr 2 antibody associated diseaseâ€“An unusual presentation",
+      "authors": [],
+      "year": 2020,
+      "doi": "10.18231/2455-8451.2018.0025",
+      "arxiv": null,
+      "url": "https://doi.org/10.18231/2455-8451.2018.0025",
+      "venue": "IP Indian Journal of Neurosciences",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CASPr spectre"
       ]
     },
     {
@@ -144,6 +495,61 @@
       "discovered_via": [
         "arXiv",
         "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Application of Aperiodic 'Einstein' Monotile in Limited Field of View Phased Arrays",
+      "authors": [
+        "Xiaochuan Fang",
+        "Yunfei Qiang",
+        "Rui-Xin Wu",
+        "Wei Wang"
+      ],
+      "year": 2023,
+      "doi": "10.22541/au.170258922.25005332/v1",
+      "arxiv": null,
+      "url": "https://doi.org/10.22541/au.170258922.25005332/v1",
+      "venue": null,
+      "type": "posted-content",
+      "abstract": "The discovery of the 'Einstein' monotile represents one of the most significant advancements in geometry in 2023. Research based on this monotile has been initiated across various fields. This paper introduces a limited field-of-view (LFOV) phased array based on the 'Einstein' monotile (Hat polykite) to address grating lobes. The proposed phased array demonstrates reduced implementation complexity compared to aperiodic phased arrays constructed from periodic or conditionally aperiodic tiles. It also exhibits increased engineering practicality compared to aperiodic phased arrays made from non-'Einstein' aperiodic tiles, particularly in assembly with loadbearing lattice structures. Two examples of Hat polykite-based phased arrays are presented in this paper. In Example A, a phased array is introduced where each subarray consists of a single antenna element. The proposed phased array is optimized to achieve a maximum grating lobe level (MGL) of-15 dB. In Example B, a subarray based on the Hat polykite comprises 8 antenna elements. The optimized phased array achieves an aperture efficiency of 90% and maintains a flat grating lobe level within a beam scanning range of 18°.",
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
+        "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
+        "spectre monotile"
+      ]
+    },
+    {
+      "title": "Decoding Complexity: Comparative Study of Smith Monotile Quasicrystals",
+      "authors": [
+        "Saksham Sharma"
+      ],
+      "year": 2023,
+      "doi": "10.58445/rars.761",
+      "arxiv": null,
+      "url": "https://doi.org/10.58445/rars.761",
+      "venue": null,
+      "type": "posted-content",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
+        "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
+        "spectre monotile"
       ]
     },
     {
@@ -251,8 +657,14 @@
       "discovered_via": [
         "Crossref",
         "Hat family tilings",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
       ]
     },
@@ -272,6 +684,7 @@
         "cond-mat.mtrl-sci"
       ],
       "discovered_via": [
+        "Smith monotile",
         "arXiv",
         "hat monotile"
       ]
@@ -298,9 +711,15 @@
       ],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
         "arXiv",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
       ]
     },
@@ -346,9 +765,15 @@
       ],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
         "arXiv",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
       ]
     },
@@ -392,8 +817,9 @@
         "math.MG"
       ],
       "discovered_via": [
+        "aperiodic monotile",
         "arXiv",
-        "aperiodic monotile"
+        "chiral aperiodic monotile"
       ]
     },
     {
@@ -412,7 +838,13 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
-        "aperiodic monotile"
+        "Smith monotile",
+        "Turtle monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
+        "monotile diffraction",
+        "monotile metamaterial"
       ]
     },
     {
@@ -434,6 +866,26 @@
       "discovered_via": [
         "arXiv",
         "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "Hat, Cap and Headdress",
+      "authors": [
+        "Arthur Marsh",
+        "Victoria Ryan",
+        "John B. Smethurst"
+      ],
+      "year": 2024,
+      "doi": "10.4324/9781003575320-27",
+      "arxiv": null,
+      "url": "https://doi.org/10.4324/9781003575320-27",
+      "venue": "Historical Directory of Trade Unions",
+      "type": "book-chapter",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CAP tiling hat"
       ]
     },
     {
@@ -500,7 +952,10 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
-        "aperiodic monotile"
+        "Smith monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "monotile diffraction"
       ]
     },
     {
@@ -593,9 +1048,15 @@
       ],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
         "arXiv",
-        "hat monotile"
+        "chiral aperiodic monotile",
+        "einstein monotile",
+        "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial"
       ]
     },
     {
@@ -618,10 +1079,37 @@
       ],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
         "arXiv",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
+      ]
+    },
+    {
+      "title": "CASPR THE UNFRIENDLY GHOST: CASPR2 ENCEPHALITIS",
+      "authors": [
+        "GHALIB SHAIKH",
+        "RESHMA THOMAS",
+        "COLEMAN SWAIM",
+        "JOHN HUSTON"
+      ],
+      "year": 2025,
+      "doi": "10.1016/j.chest.2025.07.1507",
+      "arxiv": null,
+      "url": "https://doi.org/10.1016/j.chest.2025.07.1507",
+      "venue": "CHEST",
+      "type": "journal-article",
+      "abstract": null,
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CASPr spectre"
       ]
     },
     {
@@ -710,8 +1198,14 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
       ]
     },
@@ -732,7 +1226,10 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
-        "aperiodic monotile"
+        "Smith monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "monotile diffraction"
       ]
     },
     {
@@ -838,7 +1335,11 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
-        "aperiodic monotile"
+        "Smith monotile",
+        "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "monotile diffraction",
+        "monotile metamaterial"
       ]
     },
     {
@@ -927,8 +1428,14 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
-        "hat monotile"
+        "chiral aperiodic monotile",
+        "einstein monotile",
+        "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial"
       ]
     },
     {
@@ -970,8 +1477,14 @@
       "subjects": [],
       "discovered_via": [
         "Crossref",
+        "Smith monotile",
+        "Turtle monotile",
         "aperiodic monotile",
+        "chiral aperiodic monotile",
+        "einstein monotile",
         "hat monotile",
+        "monotile diffraction",
+        "monotile metamaterial",
         "spectre monotile"
       ]
     },
@@ -996,6 +1509,31 @@
       "discovered_via": [
         "arXiv",
         "aperiodic monotile"
+      ]
+    },
+    {
+      "title": "NgR1 regulates Caspr dynamics driving axonal degeneration during inflammatory demyelination",
+      "authors": [
+        "Danica Nheu",
+        "Jae Young Lee",
+        "Lijun Li",
+        "Alexander A Velumian",
+        "Ezgi Ozturk",
+        "Michael G Fehlings",
+        "Catriona McLean",
+        "Steven Petratos"
+      ],
+      "year": 2026,
+      "doi": "10.21203/rs.3.rs-8389600/v1",
+      "arxiv": null,
+      "url": "https://doi.org/10.21203/rs.3.rs-8389600/v1",
+      "venue": null,
+      "type": "posted-content",
+      "abstract": "Abstract Axo-glial units are highly organized microstructures propagating saltatory conduction which are disrupted during multiple sclerosis (MS). Nogo receptor 1 (NgR1) has been suggested to govern axonal damage during MS and in the animal model of MS, experimental autoimmune encephalomyelitis (EAE). We have previously identified that naïve ngr1 −/− mice display elongated internodes, paranodes, and nodes of Ranvier. Moreover, compound action potentials of optic nerves and spinal cords from naïve ngr1 −/− mice were delayed and reduced. Here we show that decreased interaction between the cellular prion protein (PrP C ) and Caspr, with enhanced Caspr cleavage occur in EAE-induced ngr1 −/− mice. Furthermore, EAE-induced ngr1 −/− mice showed preservation in conduction velocity and amplitude at peak stage of disease and did not lead to axonopathy with a reduction in full-length Caspr, but instead its sustained expression. In MS cerebellar white matter tissue, Caspr was found to interact with proteins associated with axonal degeneration and gliosis, highlighting its potential involvement in pathological remodeling of the axo-glial unit. Collectively, our data suggest that NgR1 may partially regulate the axo-myelinic structure through PrP c -bound, Caspr-mediated adhesion, which is dysregulated during neuroinflammation leading to axonal damage throughout EAE.",
+      "subjects": [],
+      "discovered_via": [
+        "Crossref",
+        "CASPr spectre"
       ]
     },
     {

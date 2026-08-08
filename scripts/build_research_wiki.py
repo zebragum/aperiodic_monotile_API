@@ -13,7 +13,7 @@ SITE_ROOT = Path(__file__).resolve().parents[1] / "site"
 WIKI_ROOT = SITE_ROOT / "research" / "wiki"
 RESEARCH_ROOT = SITE_ROOT / "research"
 TODAY = date.today().isoformat()
-BASE = "https://aperiodicgenerator.com/research/wiki"
+BASE = "https://untiling.com/research/wiki"
 
 
 def link(slug: str, label: str | None = None) -> str:
@@ -692,8 +692,8 @@ ARTICLES: list[Article] = [
   forever without ever repeating.
 </p>
 <p>
-  This wiki is maintained by the team behind
-  <a href="../../index.html">Aperiodic Monotile Generator</a>. It distills the peer-reviewed literature
+  This wiki is part of
+  <a href="../../index.html">Untiling</a>. It distills the peer-reviewed literature
   ({len(REFERENCES)} sources and counting), tooling lineage, and practical workflows into cross-linked
   articles you can cite, share, and build on. Every figure is real generated monotile geometry — no
   placeholder patterns.
@@ -940,7 +940,7 @@ ARTICLES: list[Article] = [
 </p>
 {FIG_HIERARCHY}
 <p>
-  The Aperiodic Monotile Generator API packages this mathematics for production workflows: clipped patches,
+  The Aperiodic Monotile API packages this mathematics for production workflows: clipped patches,
   stable tile IDs and transforms, and exporters (SVG, STL, GLB, CSV, JSON) — the exact pipeline used to
   produce the renders across this wiki.
 </p>
@@ -2045,7 +2045,7 @@ def render_page(article: Article) -> str:
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{html.escape(page_title)} | Aperiodic Monotile Generator</title>
+    <title>{html.escape(page_title)} | Aperiodic Monotile wiki | Untiling</title>
     <meta name="description" content="{html.escape(article.summary)}" />
     <link rel="canonical" href="{canonical}" />
     <meta name="robots" content="index,follow" />
@@ -2056,17 +2056,15 @@ def render_page(article: Article) -> str:
     <header class="site-header">
       <a class="brand" href="../../index.html">
         <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
-        <span>Aperiodic Monotile Generator</span>
+        <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../index.html">Home</a>
-        <a href="../../docs.html">Docs</a>
-        <a href="../index.html" aria-current="page">Research</a>
-        <a href="index.html">Wiki</a>
+        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../index.html">Research</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
+        <a href="../../apparel/">Shop</a>
+        <a href="index.html" aria-current="page">Wiki</a>
       </nav>
-      <div class="header-actions">
-        <a class="button secondary small" href="../../docs.html#access">Get Access</a>
-      </div>
     </header>
 
     <div class="wiki-toolbar">

@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Untiling | Aperiodic Monotile Art, Research, Generator &amp; Shop</title>
+    <title>Untiling | Surfaces that never repeat</title>
     <meta
       name="description"
-      content="Untiling is home for aperiodic monotile surfaces — art, research, Blender generation, API, and shop. Create surfaces that never repeat."
+      content="Untiling is a home for aperiodic monotiles — art, research, shop, and culture around shapes that tile forever without repeating."
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
     <link rel="canonical" href="https://untiling.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Untiling — Create surfaces that never repeat" />
+    <meta property="og:title" content="Untiling — Surfaces that never repeat" />
     <meta
       property="og:description"
-      content="Art, research, generator, and shop built around aperiodic monotile geometry."
+      content="Art, research, shop, and culture around aperiodic monotile geometry."
     />
     <meta property="og:image" content="https://untiling.com/assets/generator-video-poster.jpg" />
     <meta property="og:url" content="https://untiling.com/" />
@@ -40,27 +40,23 @@
       <nav class="nav" aria-label="Primary navigation">
         <a href="use-cases/generative-art.html">Art</a>
         <a href="research/index.html">Research</a>
-        <a href="generate.html">Generator</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="apparel/">Shop</a>
-        <a class="nav-demo" href="generate.html#demo">Demo</a>
+        <a href="https://www.instagram.com/untiling/">Instagram</a>
       </nav>
-      <div class="header-actions">
-        <a class="button secondary small" href="docs.html#access">Get started</a>
-        <a class="button small" href="generate.html">Open generator</a>
-      </div>
     </header>
     <main id="top">
       <section class="section docs-hero hub-hero">
         <div class="generator-copy hub-copy">
           <p class="eyebrow">Aperiodic monotiles</p>
-          <h1>Create surfaces that never repeat.</h1>
+          <h1>Surfaces that never repeat.</h1>
           <p class="hero-text">
-            One shape. Ordered variation. No wallpaper unit giving the game away — for art, research,
-            fabrication, and Blender scenes.
+            One shape can tile the plane forever without a wallpaper unit. Untiling is where that idea
+            lives in culture — art, research, shop, and notes — not only in software.
           </p>
           <div class="hero-actions">
-            <a class="button" href="generate.html">Open generator</a>
-            <a class="button secondary" href="research/wiki/index.html">Research wiki</a>
+            <a class="button" href="research/wiki/index.html">Aperiodic Monotile wiki</a>
+            <a class="button secondary" href="apparel/">Shop</a>
           </div>
         </div>
       </section>
@@ -68,81 +64,54 @@
       <section class="section hub-menu" aria-label="Explore Untiling">
         <div class="section-heading">
           <p class="eyebrow">Explore</p>
-          <h2>Everything around the monotile.</h2>
+          <h2>Around the monotile.</h2>
         </div>
         <ul class="hub-link-list">
           <li>
             <a href="use-cases/generative-art.html"><strong>Art</strong></a>
-            <span>Motifs, patterns, and visual studies built from aperiodic geometry.</span>
+            <span>Motifs, studies, and visual work built from aperiodic geometry.</span>
           </li>
           <li>
             <a href="research/index.html"><strong>Research</strong></a>
             <span>Wiki, papers, and field notes on Spectre / Tile(1,1) and applications.</span>
           </li>
           <li>
-            <a href="generate.html"><strong>Generator</strong></a>
-            <span>Desktop app, API, Blender, Inkscape — create patches that never repeat.</span>
-          </li>
-          <li>
             <a href="apparel/"><strong>Shop</strong></a>
             <span>Apparel and products that wear the shape.</span>
           </li>
           <li>
-            <a href="docs.html"><strong>Docs &amp; API</strong></a>
-            <span>Capabilities, checkout, and production export formats.</span>
+            <a class="nav-generator" href="https://aperiodicgenerator.com/"><strong>Generator</strong></a>
+            <span>Software lives on aperiodicgenerator.com — desktop, Blender, Inkscape, API.</span>
           </li>
           <li>
-            <a class="nav-demo" href="generate.html#demo"><strong>Demo</strong></a>
-            <span>Watch the Blender add-on generate and shade a live patch.</span>
+            <a href="https://www.instagram.com/untiling/"><strong>Instagram</strong></a>
+            <span>Visual posts from the project.</span>
+          </li>
+          <li>
+            <a href="https://arxiv.org/abs/2509.12216"><strong>Reading</strong></a>
+            <span>Craig S. Kaplan, <em>The Path to Aperiodic Monotiles</em> (arXiv:2509.12216).</span>
           </li>
         </ul>
       </section>
 
       <section class="section docs-section" id="why">
         <div>
-          <p class="eyebrow">Why monotiles</p>
-          <h2>Ordered surfaces without a repeating unit.</h2>
+          <p class="eyebrow">Why it matters</p>
+          <h2>Order without a repeating unit.</h2>
+          <p class="hero-text">
+            Regular grids announce themselves. Aperiodic monotiles keep local order while refusing a global
+            wallpaper repeat — useful for floors, facades, textiles, graphics, and any surface where
+            obvious tiling ruins the read.
+          </p>
         </div>
-        <ul class="feature-list">
-          <li>
-            <strong>Surfaces without obvious repetition</strong>
-            Ordered variation for floors, facades, panels, sculpture, and procedural environments without a
-            wallpaper repeat unit giving the game away on camera.
-          </li>
-          <li>
-            <strong>Editable N-gon instances</strong>
-            Import one clean Tile(1,1) mesh and distribute linked instances across the patch. Edit one tile,
-            they all update.
-          </li>
-          <li>
-            <strong>Custom edge styles</strong>
-            Flat, curvy, wavy, jagged, blocky, or draw your own edge profile with the in-viewport guide line
-            and stamp it onto every tile edge.
-          </li>
-          <li>
-            <strong>Organize by tile type</strong>
-            One click sorts instances into label collections so you can assign different materials, bevels,
-            or modifiers per tile family.
-          </li>
-          <li>
-            <strong>Bevel and weighted normals</strong>
-            Add bevel modifiers and weighted normals across the patch in one step for clean shading on
-            architectural surfaces.
-          </li>
-          <li>
-            <strong>Flexible boundaries</strong>
-            Fill rectangles, circles, triangles, and more. Match selected object bounds, tune tile scale and
-            depth (default 0), then generate.
-          </li>
-        </ul>
       </section>
     </main>
     <footer class="footer">
       <p>
-        <a href="generate.html">Generator</a> ·
         <a href="https://aperiodicgenerator.com/">Aperiodic Generator</a> ·
-        <a href="docs.html">Docs</a> · <a href="terms.html">Terms</a> ·
-        <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> ·
+        <a href="https://www.instagram.com/untiling/">Instagram</a> ·
+        <a href="research/wiki/index.html">Wiki</a> ·
+        <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> ·
         <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a>
       </p>
     </footer>

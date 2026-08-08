@@ -80,13 +80,13 @@ a {
   color: var(--text);
 }
 
-.nav a.nav-demo,
+.nav a.nav-generator,
 .demo-eyebrow {
   color: var(--accent-2);
   font-weight: 700;
 }
 
-.nav a.nav-demo:hover {
+.nav a.nav-generator:hover {
   color: var(--accent);
 }
 
@@ -1773,13 +1773,13 @@ pre {
   color: var(--accent-2);
 }
 
-.hub-link-list a.nav-demo,
-.hub-link-list a.nav-demo strong {
+.hub-link-list a.nav-generator,
+.hub-link-list a.nav-generator strong {
   color: var(--accent-2);
 }
 
-.hub-link-list a.nav-demo:hover,
-.hub-link-list a.nav-demo:hover strong {
+.hub-link-list a.nav-generator:hover,
+.hub-link-list a.nav-generator:hover strong {
   color: var(--accent);
 }
 

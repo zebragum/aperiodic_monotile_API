@@ -86,6 +86,15 @@ img {
   color: var(--white);
 }
 
+.shop-nav a.nav-generator {
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.shop-nav a.nav-generator:hover {
+  color: var(--pink);
+}
+
 .cart-button {
   position: relative;
   display: inline-flex;
