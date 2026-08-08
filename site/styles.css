@@ -1920,6 +1920,90 @@ pre {
   object-fit: cover;
 }
 
+.hub-carousel {
+  margin: 0 0 1.35rem;
+  outline: none;
+}
+
+.hub-carousel-viewport {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: #05060a;
+}
+
+.hub-carousel-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hub-carousel-slide {
+  margin: 0;
+}
+
+.hub-carousel-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hub-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.hub-carousel-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hub-carousel-btn:hover {
+  border-color: rgba(255, 209, 102, 0.45);
+}
+
+.hub-carousel-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: 14rem;
+}
+
+.hub-carousel-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+}
+
+.hub-carousel-dot.is-active {
+  background: var(--accent-2);
+  transform: scale(1.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-carousel-slide img {
+    transition: none;
+  }
+}
+
 .linktree-links {
   display: flex;
   flex-direction: column;

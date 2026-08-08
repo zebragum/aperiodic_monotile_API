@@ -17,10 +17,10 @@
       property="og:description"
       content="The most exhaustive resource for everything related to aperiodic monotiles: art, research, software and more."
     />
-    <meta property="og:image" content="https://untiling.com/assets/research/wiki/tiling-array-web.jpg" />
+    <meta property="og:image" content="https://untiling.com/assets/hub/aperiodic-banner.png" />
     <meta property="og:url" content="https://untiling.com/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://untiling.com/assets/research/wiki/tiling-array-web.jpg" />
+    <meta name="twitter:image" content="https://untiling.com/assets/hub/aperiodic-banner.png" />
     <link rel="stylesheet" href="styles.css" />
     <script>
       (function () {
@@ -42,15 +42,58 @@
         Art, research, software, and everything related to aperiodic monotiles.
       </p>
 
-      <figure class="linktree-hero">
-        <img
-          src="assets/research/wiki/tiling-array-web.jpg"
-          width="1100"
-          height="620"
-          alt="Dense aperiodic monotile field"
-          decoding="async"
-        />
-      </figure>
+      <div
+        class="hub-carousel"
+        data-carousel
+        aria-roledescription="carousel"
+        aria-label="Untiling gallery"
+      >
+        <div class="hub-carousel-viewport">
+          <ul class="hub-carousel-track">
+            <li class="hub-carousel-slide is-active" data-slide>
+              <img src="assets/hub/aperiodic-banner.png" alt="Aperiodic Monotiles — Non-repeating Geometry" width="1200" height="675" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/hub/neon-outline.png" alt="Neon spectre outlines on black" width="1024" height="1024" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/hub/rainbow-sleeve.png" alt="Rainbow gradient spectre lattice" width="1024" height="1024" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/hub/monotile-glasses.png" alt="Glasses with aperiodic monotile lenses" width="1024" height="1024" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/tiling-array-web.jpg" alt="Dense tiling array" width="1100" height="620" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/education-rainbow-ripple.jpg" alt="Rainbow ripple field" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/generator-video-poster.jpg" alt="Horizon over aperiodic ground" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/design-zellige-emerald.jpg" alt="Emerald zellige panel" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/computer-graphics-sunset.jpg" alt="Sunset computer graphics tiling" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/computer-graphics-brass.jpg" alt="Brass monotile surface" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/substitution-hierarchy-still.png" alt="Substitution hierarchy" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+            <li class="hub-carousel-slide" data-slide hidden>
+              <img src="assets/research/wiki/aperiodicmoire-web.png" alt="Aperiodic moiré" width="1200" height="800" loading="lazy" decoding="async" />
+            </li>
+          </ul>
+        </div>
+        <div class="hub-carousel-controls">
+          <button type="button" class="hub-carousel-btn" data-carousel-prev aria-label="Previous image">‹</button>
+          <div class="hub-carousel-dots" data-carousel-dots role="tablist" aria-label="Slides"></div>
+          <button type="button" class="hub-carousel-btn" data-carousel-next aria-label="Next image">›</button>
+        </div>
+      </div>
 
       <nav class="linktree-links" aria-label="Untiling links">
         <a href="research/wiki/index.html">Wiki</a>
@@ -70,5 +113,6 @@
         <a href="attribution.html">Attribution</a>
       </p>
     </footer>
+    <script src="hub-carousel.js"></script>
   </body>
 </html>
