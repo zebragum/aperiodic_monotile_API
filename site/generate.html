@@ -6,7 +6,7 @@
     <title>Aperiodic Generator | Create surfaces that never repeat</title>
     <meta
       name="description"
-      content="Desktop app, Blender add-on, Inkscape extension, and API for aperiodic monotile patches. Free JPG/PNG. Paid SVG or 3D."
+      content="Web, desktop, Blender, Inkscape, and API tools for aperiodic monotile patches. Free JPG/PNG. Paid SVG or 3D."
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
@@ -15,7 +15,7 @@
     <meta property="og:title" content="Aperiodic Generator — Create surfaces that never repeat" />
     <meta
       property="og:description"
-      content="Desktop, Blender, Inkscape, and API tools for aperiodic monotile patches that never repeat."
+      content="Generate aperiodic monotile patches as images, SVG, or 3D."
     />
     <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
     <meta property="og:video" content="https://aperiodicgenerator.com/assets/generator-video-web.mp4" />
@@ -35,27 +35,22 @@
         <a href="web.html">Web</a>
         <a href="#tools">Tools</a>
         <a href="#demo">Demo</a>
-        <a href="docs.html">API Docs</a>
+        <a href="docs.html">Docs</a>
         <a href="pricing.html">Pricing</a>
         <a href="https://untiling.com/">Untiling</a>
       </nav>
       <div class="header-actions">
-        <a class="button secondary small" href="web.html">Web generator</a>
-        <a class="button small" href="assets/downloads/AperiodicGenerator.exe" download>Download app</a>
+        <a class="button small" href="web.html">Open web generator</a>
       </div>
     </header>
     <main id="top">
       <section class="section docs-hero">
         <div class="generator-intro">
           <div class="generator-copy">
-            <p class="eyebrow">Web · Desktop · Blender · Inkscape · API</p>
             <h1>Create surfaces that never repeat.</h1>
-            <p class="hero-text">
-              One shape. Ordered variation. No wallpaper unit. Generate patches as images, SVG, or 3D —
-              then take them into design tools, fabrication, or scenes.
-            </p>
+            <p class="hero-text">Images free. SVG and 3D with a key.</p>
             <div class="hero-actions">
-              <a class="button" href="web.html">Open web generator</a>
+              <a class="button" href="web.html">Web generator</a>
               <a class="button secondary" href="assets/downloads/AperiodicGenerator.exe" download>Windows app</a>
             </div>
           </div>
@@ -69,128 +64,37 @@
 
       <section class="section" id="tools">
         <div class="section-heading">
-          <p class="eyebrow">Tools</p>
-          <h2>Pick a front door. Same geometry underneath.</h2>
+          <h2>Tools</h2>
         </div>
-        <ul class="hub-link-list">
-          <li>
-            <a href="web.html"><strong>Web generator</strong></a>
-            <span>Browser twin of the Windows app — shape, size, format, Make it.</span>
-          </li>
-          <li>
-            <a href="assets/downloads/AperiodicGenerator.exe" download><strong>Windows app</strong></a>
-            <span>Offline desktop generator — mask, formats, depth 0 by default, save to a folder.</span>
-          </li>
-          <li>
-            <a href="assets/downloads/aperiodic_monotile_generator_blender.zip" download><strong>Blender add-on</strong></a>
-            <span>Instances, edge styles, collections — the deep 3D path.</span>
-          </li>
-          <li>
-            <a href="assets/downloads/untiling_inkscape_extension.zip" download><strong>Inkscape extension</strong></a>
-            <span>Pull SVG patches straight into a drawing document.</span>
-          </li>
-          <li>
-            <a href="rhino.html"><strong>Rhino script</strong></a>
-            <span>Script-editor / Grasshopper-friendly fetch into a folder.</span>
-          </li>
-          <li>
-            <a href="docs.html"><strong>API</strong></a>
-            <span>One JSON request. Free JPG/PNG. Paid SVG or 3D.</span>
-          </li>
+        <ul class="hub-link-list hub-link-list--compact">
+          <li><a href="web.html"><strong>Web</strong></a></li>
+          <li><a href="assets/downloads/AperiodicGenerator.exe" download><strong>Windows</strong></a></li>
+          <li><a href="assets/downloads/aperiodic_monotile_generator_blender.zip" download><strong>Blender</strong></a></li>
+          <li><a href="assets/downloads/untiling_inkscape_extension.zip" download><strong>Inkscape</strong></a></li>
+          <li><a href="rhino.html"><strong>Rhino</strong></a></li>
+          <li><a href="docs.html"><strong>API</strong></a></li>
         </ul>
       </section>
 
       <section class="section docs-section" id="demo">
-        <div>
-          <p class="eyebrow demo-eyebrow">Demo</p>
-          <h2>Blender walkthrough (still the richest demo).</h2>
-          <p>
-            Patch generation, editable N-gon instances, edge styles, collections, and materials in one video.
-            The same API powers the desktop app and other add-ons.
-          </p>
+        <div class="section-heading">
+          <h2>Demo</h2>
         </div>
         <figure class="demo-video-wide">
-          <video controls preload="none" playsinline poster="assets/blender-demo-poster.jpg" aria-label="Blender add-on full demo video">
+          <video controls preload="none" playsinline poster="assets/blender-demo-poster.jpg" aria-label="Blender add-on demo">
             <source src="assets/blender-demo-web.mp4" type="video/mp4" />
           </video>
         </figure>
       </section>
-
-      <section class="section">
-        <ul class="feature-list">
-          <li>
-            <strong>Surfaces without obvious repetition</strong>
-            Ordered variation for floors, facades, panels, sculpture, and procedural environments without a
-            wallpaper repeat unit giving the game away on camera.
-          </li>
-          <li>
-            <strong>Flat by default</strong>
-            Picture and vector exports stay planar. Raise thickness only when you want 3D extrusion.
-          </li>
-          <li>
-            <strong>Images, vectors, meshes</strong>
-            Free JPG/PNG previews. Paid SVG, CSV, JSON, STL, GLB, and related packs.
-          </li>
-          <li>
-            <strong>Flexible boundaries</strong>
-            Rectangles, circles, triangles, hexagons, rounded rects — tune tile scale and generate.
-          </li>
-          <li>
-            <strong>Blender when you need it</strong>
-            Editable N-gon instances, custom edge profiles, label collections, bevels, weighted normals.
-          </li>
-        </ul>
-      </section>
-
-      <section class="section docs-section" id="install">
-        <div>
-          <p class="eyebrow">Install</p>
-          <h2>Desktop app, or Blender, or call the API.</h2>
-        </div>
-        <ul class="feature-list">
-          <li>
-            <strong>Windows app</strong>
-            Download <code>AperiodicGenerator.exe</code>, paste your API key, pick formats, Generate.
-          </li>
-          <li>
-            <strong>Blender</strong>
-            Install the ZIP in Preferences → Add-ons, enable Untiling, open the Monotile sidebar.
-          </li>
-          <li>
-            <strong>Inkscape</strong>
-            Copy the extension files into Inkscape’s extensions folder and restart.
-          </li>
-          <li>
-            <strong>API</strong>
-            <code>POST /v1/patch</code> — see docs.
-          </li>
-        </ul>
-      </section>
-
-      <section class="section docs-section cta">
-        <div>
-          <p class="eyebrow">Get started</p>
-          <h2>Free JPG or PNG. Paid SVG or 3D.</h2>
-          <p>
-            Grab a key, download the Windows app or Blender kit, or hit the API directly.
-            Try the <a href="web.html">web generator</a> for quick raster checks.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <a class="button" href="assets/downloads/AperiodicGenerator.exe" download>Download Windows app</a>
-          <a class="button secondary" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Blender kit</a>
-          <a class="button secondary" href="docs.html#access">Get started</a>
-        </div>
-      </section>
     </main>
     <footer class="footer">
       <p>
-        <a href="https://untiling.com/">Untiling home</a> ·
-        <a href="use-cases/blender.html">Blender guide</a> ·
-        <a href="web.html">Web generator</a> ·
-        <a href="docs.html">Docs</a> · <a href="terms.html">Terms</a> ·
-        <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> ·
-        <a href="contact.html">Contact</a> · <a href="attribution.html">Attribution</a>
+        <a href="https://untiling.com/">Untiling</a> ·
+        <a href="pricing.html">Pricing</a> ·
+        <a href="docs.html">Docs</a> ·
+        <a href="terms.html">Terms</a> ·
+        <a href="privacy.html">Privacy</a> ·
+        <a href="contact.html">Contact</a>
       </p>
     </footer>
   </body>
