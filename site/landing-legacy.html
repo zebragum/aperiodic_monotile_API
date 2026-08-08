@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Generator Demo (Legacy) | Untiling</title>
+    <title>Generator Demo (Legacy) | Aperiodic Monotile Generator</title>
     <meta
       name="description"
       content="Generator for custom aperiodic monotile arrays. Export SVG, PNG, JPG, STL, GLB, CSV, JSON. Fully tiled patches without deep iteration. For rendering, design, 3D printing, waves, keyed workflows, and research."
@@ -14,31 +14,31 @@
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#101322" />
-    <link rel="canonical" href="https://untiling.com/landing-legacy.html" />
+    <link rel="canonical" href="https://aperiodicgenerator.com/landing-legacy.html" />
     <link rel="stylesheet" href="styles.css" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Untiling" />
+    <meta property="og:title" content="Aperiodic Monotile Generator" />
     <meta
       property="og:description"
       content="Custom aperiodic monotile arrays: masks, tile scale, multi-format export (SVG, PNG, JPG, STL, GLB, CSV, JSON). Gap-free patches without hand-tuning substitution depth."
     />
-    <meta property="og:image" content="https://untiling.com/assets/generator-video-poster.jpg" />
-    <meta property="og:video" content="https://untiling.com/assets/generator-video-web.mp4" />
-    <meta property="og:url" content="https://untiling.com/landing-legacy.html" />
+    <meta property="og:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
+    <meta property="og:video" content="https://aperiodicgenerator.com/assets/generator-video-web.mp4" />
+    <meta property="og:url" content="https://aperiodicgenerator.com/landing-legacy.html" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://untiling.com/assets/generator-video-poster.jpg" />
+    <meta name="twitter:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Untiling",
+        "name": "Aperiodic Monotile Generator",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web API",
         "description": "Customizable aperiodic monotile arrays with parameterized masks, deterministic seeds, and exports to SVG, PNG, JPG, STL, GLB, CSV, JSON.",
         "offers": [
-          {"@type": "Offer", "name": "Preview tier", "price": "0", "priceCurrency": "USD"},
+          {"@type": "Offer", "name": "Free preview tier", "price": "0", "priceCurrency": "USD"},
           {"@type": "Offer", "name": "Solo", "price": "10", "priceCurrency": "USD"},
           {"@type": "Offer", "name": "Pro", "price": "99", "priceCurrency": "USD"}
         ]
@@ -47,7 +47,7 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Untiling home">
+      <a class="brand" href="index.html" aria-label="Aperiodic Monotile Generator home">
         <img
           class="brand-mark"
           src="assets/brand-mark.svg"
@@ -56,7 +56,7 @@
           height="32"
           decoding="async"
         />
-        <span>Untiling</span>
+        <span>Aperiodic Monotile Generator</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
         <a href="docs.html">Docs</a>
@@ -65,7 +65,7 @@
       </nav>
       <div class="header-actions">
         <a class="button secondary small" href="#pricing">Pricing</a>
-        <a class="button small" href="docs.html#access">Get Access</a>
+        <a class="button small" href="docs.html#access">Get started</a>
       </div>
     </header>
 
@@ -76,7 +76,7 @@
       <section id="demo" class="section generator-hero">
         <div class="generator-intro">
           <div class="generator-copy">
-            <p class="eyebrow">Non-repeating 2D/3D preview</p>
+            <p class="eyebrow">Free non-repeating 2D/3D generator</p>
             <h1>Generate without patterns.</h1>
             <p class="hero-text hero-context">
               Aperiodic tilings have unique properties useful for a variety of applications. From computer
@@ -86,7 +86,7 @@
               <a href="use-cases/applications.html">See More</a>.
             </p>
             <p class="hero-text">
-              Download JPG and PNG for free. Upgrade for SVG, GLB, STL, CSV, and JSON exports.
+              Build free JPG or PNG previews. Upgrade for SVG, GLB, STL, CSV, and JSON exports.
             </p>
           </div>
           <figure class="generator-video-card">
@@ -96,7 +96,7 @@
           </figure>
         </div>
 
-        <div class="generator-app" aria-label="Aperiodic monotile preview">
+        <div class="generator-app" aria-label="Free aperiodic monotile generator">
           <aside class="generator-controls">
             <div class="generator-control-header">
               <p class="eyebrow">Generate a tiling</p>
@@ -126,8 +126,8 @@
               <div id="paletteGrid" class="palette-grid"></div>
             </div>
             <div class="generator-actions">
-              <button class="button" type="button" id="downloadPng">Download PNG (free)</button>
-              <button class="button secondary" type="button" id="downloadJpg">Download JPG (free)</button>
+              <button class="button" type="button" id="downloadPng">Download PNG free</button>
+              <button class="button secondary" type="button" id="downloadJpg">Download JPG free</button>
             </div>
             <div class="paid-format-upsell" aria-label="Paid production export formats">
               <div class="paid-format-buttons">
@@ -240,7 +240,7 @@
   "mask": {"type": "rectangle", "width": 90, "height": 40},
   "scale": 1
 }</code></pre>
-          <pre class="code-card code-card-secondary"><code>curl -X POST https://api.untiling.com/v1/patch \
+          <pre class="code-card code-card-secondary"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{
@@ -257,20 +257,20 @@
       <section id="pricing" class="section pricing">
         <div class="section-heading">
           <p class="eyebrow">Pricing</p>
-          <h2>Production geometry with preview exports</h2>
+          <h2>Production geometry with free previews</h2>
           <p>
-            Raster preview exports let you sanity-check meshes before upgrading. Paid plans unlock full vector exporters,
+            Raster previews stay free so anyone can sanity-check meshes. Paid plans unlock full vector exporters,
             higher limits, and the operational layer you build on, with no copyrights on tiling math.
           </p>
         </div>
         <div class="pricing-grid">
           <article class="price-card">
-            <h3>Preview</h3>
+            <h3>Free</h3>
             <p class="price">$0</p>
-            <p class="price-note">Preview tier · small patches · free JPG/PNG raster exports</p>
+            <p class="price-note">Small preview patches · JPG/PNG raster previews only</p>
             <ul>
               <li>Small preview patches for demos and experimentation</li>
-              <li>Free raster exports: JPG or PNG</li>
+              <li>Raster image previews only: JPG or PNG</li>
               <li>Public docs &amp; examples</li>
             </ul>
           </article>
@@ -281,11 +281,11 @@
             <ul>
               <li>Production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
               <li>Production jobs up to 40,000 retained tiles</li>
-              <li>Or $79/year for one person</li>
+              <li>Or $79 lifetime for one person</li>
             </ul>
             <div class="pricing-actions">
               <button class="button" type="button" data-checkout-plan="solo_monthly">Subscribe monthly</button>
-              <button class="button secondary" type="button" data-checkout-plan="solo_yearly">Subscribe yearly</button>
+              <button class="button secondary" type="button" data-checkout-plan="solo_lifetime">Buy lifetime</button>
             </div>
           </article>
           <article class="price-card">
@@ -295,11 +295,11 @@
             <ul>
               <li>Production exporters: SVG, PNG, JPG, CSV, JSON, STL, GLB</li>
               <li>Production jobs up to 400,000 retained tiles</li>
-              <li>Or $999/year for studio and client work</li>
+              <li>Or $999 lifetime for studio and client work</li>
             </ul>
             <div class="pricing-actions">
               <button class="button" type="button" data-checkout-plan="pro_monthly">Subscribe monthly</button>
-              <button class="button secondary" type="button" data-checkout-plan="pro_yearly">Subscribe yearly</button>
+              <button class="button secondary" type="button" data-checkout-plan="pro_lifetime">Buy lifetime</button>
             </div>
           </article>
         </div>
@@ -323,7 +323,6 @@
       </p>
     </footer>
 
-    <script src="site-config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

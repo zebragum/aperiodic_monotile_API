@@ -33,32 +33,67 @@
       </nav>
       <div class="header-actions">
         <a class="button secondary small" href="landing-legacy.html#pricing">Pricing</a>
-        <a class="button small" href="#access">Get Access</a>
+        <a class="button small" href="#access">Get started</a>
       </div>
     </header>
 
     <main>
       <section class="section docs-hero">
-        <p class="eyebrow">Developer docs</p>
+        <p class="eyebrow">Docs</p>
         <h1>Generate aperiodic monotile geometry from one JSON request.</h1>
         <p class="hero-text">
-          The API accepts canonical geometry masks and returns job artifacts:
-          compact SVG for design tools, CSV/JSON for instancing, and mesh formats
-          for 3D workflows.
+          Mask in, patch out — JPG/PNG for previews, SVG and 3D when you need production geometry,
+          plus a free Blender add-on kit.
         </p>
       </section>
 
-      <section class="section docs-section">
-        <div>
-          <p class="eyebrow">Endpoint</p>
-          <h2>POST /v1/patch</h2>
-          <p>
-            Create a deterministic patch job from a mask and output formats. The backend assumes an
-            infinite aperiodic monotile tiling, clips it to your requested shape, and chooses the atlas/core depth
-            automatically.
-          </p>
+      <section id="access" class="section cta">
+        <p class="eyebrow">Get started</p>
+        <h2>Free JPG or PNG. Paid SVG or 3D. Plus a Blender download kit.</h2>
+        <p>
+          Start with raster previews. Unlock SVG and 3D exporters when you need vectors or meshes.
+          The Blender add-on ZIP is a free download either way.
+        </p>
+        <ul class="feature-list access-list">
+          <li>
+            <strong>Free JPG or PNG</strong>
+            Small preview patches for look-dev and layout checks.
+          </li>
+          <li>
+            <strong>Paid SVG or 3D</strong>
+            Production exporters: SVG, CSV, JSON, STL, GLB, and related mesh packs.
+          </li>
+          <li>
+            <strong>Blender download kit</strong>
+            Free add-on that talks to the API from the 3D View sidebar.
+          </li>
+        </ul>
+        <div id="checkoutClaim" class="demo-stats"></div>
+        <div class="hero-actions">
+          <a class="button" href="assets/downloads/aperiodic_monotile_generator_blender.zip" download>Download Blender kit</a>
+          <a class="button secondary" href="landing-legacy.html#pricing">Checkout</a>
+          <a class="button secondary" href="agents.html">AI agent guide</a>
         </div>
-        <pre class="code-card"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
+      </section>
+
+      <section class="section docs-toc">
+        <div class="section-heading">
+          <p class="eyebrow">Reference</p>
+          <h2>Expand a topic when you need it.</h2>
+        </div>
+
+        <details class="docs-fold" id="endpoint">
+          <summary>
+            <span class="docs-fold-label">Endpoint</span>
+            <span class="docs-fold-title">POST /v1/patch</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              Create a deterministic patch job from a mask and output formats. The backend assumes an
+              infinite aperiodic monotile tiling, clips it to your requested shape, and chooses the atlas/core depth
+              automatically.
+            </p>
+            <pre class="code-card"><code>curl -X POST https://api.aperiodicgenerator.com/v1/patch \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Idempotency-Key: demo-001" \
@@ -68,94 +103,62 @@
     "png_width_px": 1200,
     "png_height_px": 1200
   }'</code></pre>
-      </section>
+          </div>
+        </details>
 
-      <section class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Supported masks</p>
-          <h2>Shape-first requests for practical design work.</h2>
-          <p>
-            Shape sizes are in canonical units. Masks are centered automatically, so the request only needs the shape
-            type and dimensions.
-          </p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Circle</h3>
-            <pre><code>{"type":"circle","radius":50}</code></pre>
-          </article>
-          <article class="card">
-            <h3>Rectangle</h3>
-            <pre><code>{"type":"rectangle","width":90,"height":40}</code></pre>
-          </article>
-          <article class="card">
-            <h3>Triangle</h3>
-            <pre><code>{"type":"triangle","side_length":50}</code></pre>
-          </article>
-          <article class="card">
-            <h3>Square</h3>
-            <pre><code>{"type":"square","half_side":6.25}</code></pre>
-          </article>
-          <article class="card">
-            <h3>Hexagon</h3>
-            <pre><code>{"type":"regular_hexagon","circumradius":50}</code></pre>
-          </article>
-          <article class="card">
-            <h3>Rounded rectangle</h3>
-            <pre><code>{"type":"rounded_rect","width":90,"height":40,"corner_radius":5}</code></pre>
-          </article>
-        </div>
-      </section>
+        <details class="docs-fold" id="masks">
+          <summary>
+            <span class="docs-fold-label">Supported masks</span>
+            <span class="docs-fold-title">Shape-first requests</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              Shape sizes are in canonical units. Masks are centered automatically, so the request only needs the shape
+              type and dimensions.
+            </p>
+            <ul class="feature-list">
+              <li><strong>Circle</strong> <code>{"type":"circle","radius":50}</code></li>
+              <li><strong>Rectangle</strong> <code>{"type":"rectangle","width":90,"height":40}</code></li>
+              <li><strong>Triangle</strong> <code>{"type":"triangle","side_length":50}</code></li>
+              <li><strong>Square</strong> <code>{"type":"square","half_side":6.25}</code></li>
+              <li><strong>Hexagon</strong> <code>{"type":"regular_hexagon","circumradius":50}</code></li>
+              <li><strong>Rounded rectangle</strong> <code>{"type":"rounded_rect","width":90,"height":40,"corner_radius":5}</code></li>
+            </ul>
+          </div>
+        </details>
 
-      <section class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Boundary behavior</p>
-          <h2>Default to a fully tiled clipped panel.</h2>
-          <p>
-            The default launch behavior is <code>clip</code>: every tile that reaches the mask boundary is trimmed
-            exactly to the requested outline, so the output reads as a crop from a fully tiled infinite plane.
-          </p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Clipped edge tiles</h3>
-            <p>Trims edge tiles to the mask so the exported outline lands exactly where you asked.</p>
-          </article>
-          <article class="card">
-            <h3>Whole-tile modes</h3>
-            <p>Whole-tile modes can remain internal or advanced. Most users should not need to think about them.</p>
-          </article>
-          <article class="card">
-            <h3>Future polygons</h3>
-            <p>Arbitrary polygons and monotile-shaped masks are feasible, but they should ship with validation and simple examples.</p>
-          </article>
-        </div>
-      </section>
+        <details class="docs-fold" id="boundary">
+          <summary>
+            <span class="docs-fold-label">Boundary behavior</span>
+            <span class="docs-fold-title">Fully tiled clipped panel</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              Default is <code>clip</code>: edge tiles trim to the mask so the export reads as a crop from a fully tiled plane.
+            </p>
+            <ul class="feature-list">
+              <li><strong>Clipped edge tiles</strong> Outline lands exactly where you asked.</li>
+              <li><strong>Whole-tile modes</strong> Internal/advanced — most users can ignore them.</li>
+              <li><strong>Future polygons</strong> Arbitrary polygons are feasible with validation and examples.</li>
+            </ul>
+          </div>
+        </details>
 
-      <section class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Color and labels</p>
-          <h2>White tiles and black strokes by default. Labels when you want control.</h2>
-          <p>
-            Each emitted tile already carries a label such as <code>Gamma</code> or <code>Psi</code>. That makes
-            label-driven palettes possible: color one tile class, hide another, or make only one class opaque.
-          </p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Default</h3>
-            <p>White fill, black stroke, fully opaque. Good for CAD import, surface studies, and clean previews.</p>
-          </article>
-          <article class="card">
-            <h3>Deterministic palette</h3>
-            <p>Current option: stable per-tile colors generated from tile IDs. Useful for debugging and visual variety.</p>
-          </article>
-          <article class="card">
-            <h3>Palette by label</h3>
-            <p>Planned option: assign fill, stroke, and opacity by tile label, with <code>*</code> as the default fallback.</p>
-          </article>
-        </div>
-        <pre class="code-card"><code>{
+        <details class="docs-fold" id="style">
+          <summary>
+            <span class="docs-fold-label">Color and labels</span>
+            <span class="docs-fold-title">White fill, black stroke by default</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              Each tile carries a label such as <code>Gamma</code> or <code>Psi</code> for palettes and filtering.
+            </p>
+            <ul class="feature-list">
+              <li><strong>Default</strong> White fill, black stroke — good for CAD and clean previews.</li>
+              <li><strong>Deterministic palette</strong> Stable per-tile colors from tile IDs.</li>
+              <li><strong>Palette by label</strong> Planned: fill/stroke/opacity by label, with <code>*</code> fallback.</li>
+            </ul>
+            <pre class="code-card"><code>{
   "style": {
     "fill": "#ffffff",
     "stroke": "#000000",
@@ -166,115 +169,76 @@
     }
   }
 }</code></pre>
-      </section>
+          </div>
+        </details>
 
-      <section class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Outputs</p>
-          <h2>Choose preview images, vectors, data, or 3D scene files.</h2>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>JPG / PNG</h3>
-            <p>Hosted raster previews. Render includes CairoSVG and Pillow, so users can request image files directly from the API.</p>
-          </article>
-          <article class="card">
-            <h3>SVG / CSV / JSON</h3>
-            <p>SVG for design tools; CSV/JSON when your own pipeline needs tile IDs, labels, and transforms.</p>
-          </article>
-          <article class="card">
-            <h3>GLB</h3>
-            <p>Interactive 3D patch: one named tile node per tile, with fill and stroke geometry. Best for Blender, game engines, Three.js, and realtime scenes where tiles need to move, change color, or respond independently.</p>
-          </article>
-          <article class="card">
-            <h3>STL</h3>
-            <p>Physical mesh output. Best when the tiling is treated as one locked panel or printable surface.</p>
-          </article>
-          <article class="card">
-            <h3>STL_ZIP / OBJ_ZIP</h3>
-            <p>Independent-tile exports: one movable object/file per tile, clearly separate from whole-panel mesh output.</p>
-          </article>
-          <article class="card">
-            <h3>instance_json</h3>
-            <p>Lightweight transform manifest for custom importers, USD/Houdini workflows, and scripts that instantiate tiles themselves.</p>
-          </article>
-        </div>
-      </section>
+        <details class="docs-fold" id="outputs">
+          <summary>
+            <span class="docs-fold-label">Outputs</span>
+            <span class="docs-fold-title">Images, vectors, data, 3D</span>
+          </summary>
+          <div class="docs-fold-body">
+            <ul class="feature-list">
+              <li><strong>JPG / PNG</strong> Free raster previews from the API.</li>
+              <li><strong>SVG / CSV / JSON</strong> Paid vectors and tile metadata for pipelines.</li>
+              <li><strong>GLB</strong> Paid interactive 3D — one named node per tile.</li>
+              <li><strong>STL</strong> Paid physical mesh for panels and print.</li>
+              <li><strong>STL_ZIP / OBJ_ZIP</strong> Paid one-file-per-tile packs.</li>
+              <li><strong>instance_json</strong> Paid transform manifest for custom importers.</li>
+            </ul>
+          </div>
+        </details>
 
-      <section id="capabilities" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Capabilities</p>
-          <h2>What paid access unlocks today.</h2>
-          <p>Use this section to quickly compare free previews, Solo, and Pro access.</p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <h3>Free previews</h3>
-            <p>Small preview patches with raster outputs only: JPG, JPEG, or PNG.</p>
-          </article>
-          <article class="card">
-            <h3>Solo</h3>
-            <p>$10/month or $79 lifetime for one-person access to production exporters, with jobs up to 40,000 retained tiles.</p>
-          </article>
-          <article class="card">
-            <h3>Pro</h3>
-            <p>$99/month or $999 lifetime for studio and client work, with production jobs up to 400,000 retained tiles.</p>
-          </article>
-          <article class="card">
-            <h3>Queue and downloads</h3>
-            <p>Jobs return queue status, position, and estimated wait. Completed artifacts use fixed server-side signed download URLs.</p>
-          </article>
-        </div>
-        <p class="domain-see">
-          Developers can also call
-          <a href="https://api.aperiodicgenerator.com/v1/capabilities"><code>GET /v1/capabilities</code></a>.
-        </p>
-      </section>
+        <details class="docs-fold" id="capabilities">
+          <summary>
+            <span class="docs-fold-label">Capabilities</span>
+            <span class="docs-fold-title">What free vs paid unlocks</span>
+          </summary>
+          <div class="docs-fold-body">
+            <ul class="feature-list">
+              <li><strong>Free JPG or PNG</strong> Small preview patches, raster only.</li>
+              <li><strong>Paid SVG or 3D</strong> Production exporters and larger jobs.</li>
+              <li><strong>Queue and downloads</strong> Status, wait estimates, signed artifact URLs.</li>
+            </ul>
+            <p class="domain-see">
+              Live limits:
+              <a href="https://api.aperiodicgenerator.com/v1/capabilities"><code>GET /v1/capabilities</code></a>
+              · <a href="landing-legacy.html#pricing">Pricing</a>
+            </p>
+          </div>
+        </details>
 
-      <section class="section docs-section">
-        <div>
-          <p class="eyebrow">Job lifecycle</p>
-          <h2>Poll once, then fetch signed URLs.</h2>
-          <p>
-            The patch endpoint returns a `job_id`. Poll `GET /v1/jobs/{job_id}`
-            until the job is complete, then call `/v1/jobs/{job_id}/urls` to get
-            signed download URLs for the generated artifacts.
-          </p>
-        </div>
-        <pre class="code-card"><code>GET /v1/jobs/{job_id}
+        <details class="docs-fold" id="jobs">
+          <summary>
+            <span class="docs-fold-label">Job lifecycle</span>
+            <span class="docs-fold-title">Poll, then signed URLs</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              <code>POST /v1/patch</code> returns a <code>job_id</code>. Poll until complete, then fetch signed download URLs.
+            </p>
+            <pre class="code-card"><code>GET /v1/jobs/{job_id}
 GET /v1/jobs/{job_id}/urls
 GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
-      </section>
+          </div>
+        </details>
 
-      <section id="outputs" class="section docs-section">
-        <div>
-          <p class="eyebrow">Outputs &amp; ownership</p>
-          <h2>You own your pipeline; tiling facts stay facts.</h2>
-          <p>
-            Plain geometry snapshots (uncolored coordinates, repeatable substitution outputs, CSV rows of affine transforms)
-            are closer to encyclopedic mathematics than expressive authorship on their own, much like plotting a Cartesian grid or hex lattice.
-          </p>
-          <p>
-            <strong>Company stance:</strong> we do not assert ownership or exclusive licensed rights simply because you exported a patch via the API.
-            Your protectable creativity begins wherever you add substantive design choices: art direction, materials, shading, composites,
-            narrative, branding, UI, tools, games, textiles, apparel, signage, motion, typography, palettes, and other integration work that goes beyond raw coordinates.
-          </p>
-        </div>
-      </section>
-
-      <section id="access" class="section cta">
-        <p class="eyebrow">Access model</p>
-        <h2>Solo · Pro · Free previews.</h2>
-        <p>
-          Free keys stay constrained to small preview patches and JPG/PNG raster previews. Paid checkout grants
-          <strong>Solo</strong> or <strong>Pro</strong> keys for production exporters.
-        </p>
-        <div id="checkoutClaim" class="demo-stats"></div>
-        <div class="hero-actions">
-          <a class="button secondary" href="#capabilities">View capabilities</a>
-          <a class="button secondary" href="agents.html">AI agent guide</a>
-          <a class="button" href="landing-legacy.html#pricing">Pricing and Checkout</a>
-        </div>
+        <details class="docs-fold" id="ownership">
+          <summary>
+            <span class="docs-fold-label">Outputs &amp; ownership</span>
+            <span class="docs-fold-title">You own your pipeline</span>
+          </summary>
+          <div class="docs-fold-body">
+            <p>
+              Plain geometry snapshots are closer to encyclopedic mathematics than expressive authorship —
+              like plotting a Cartesian grid or hex lattice.
+            </p>
+            <p>
+              We do not assert ownership simply because you exported a patch. Your protectable creativity starts
+              where you add design: materials, art direction, composites, branding, tools, games, textiles, and so on.
+            </p>
+          </div>
+        </details>
       </section>
     </main>
 
@@ -340,19 +304,19 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         if (state === "success") {
           const heading = document.createElement("strong");
           const friendlyTier = {
-            tier_day_pass: "paid access",
-            tier_solo: "paid access",
-            tier_teams: "Pro access",
-            tier_free: "Free Preview"
-          }[payload.tier] || "paid access";
-          heading.textContent = `Thank you! You now have a ${friendlyTier}.`;
+            tier_day_pass: "paid SVG/3D access",
+            tier_solo: "paid SVG/3D access",
+            tier_teams: "paid SVG/3D access",
+            tier_free: "free JPG/PNG"
+          }[payload.tier] || "paid SVG/3D access";
+          heading.textContent = `Thank you! You now have ${friendlyTier}.`;
           const code = document.createElement("code");
           code.textContent = payload.api_key;
           const note = document.createElement("p");
           note.textContent = "Your API key is shown once. Save it in your password manager before leaving this page.";
           const next = document.createElement("p");
           next.textContent =
-            "Use this key to generate production SVG, PNG, JPG, CSV, JSON, STL, GLB, STL_ZIP, OBJ_ZIP, and instance_json outputs.";
+            "Use this key for paid SVG and 3D exporters (CSV, JSON, STL, GLB, and related packs). JPG/PNG previews work on free keys.";
           claimBox.append(heading, code, note, next);
           history.replaceState(null, "", "docs.html#access");
           clearSessionId();
@@ -418,6 +382,14 @@ GET /v1/downloads/{job_id}/{filename}?exp=...&amp;sig=...</code></pre>
         }
       }
       claimKey();
+
+      // Open a docs fold when deep-linked (e.g. docs.html#capabilities).
+      (function openFoldFromHash() {
+        const id = (location.hash || "").replace(/^#/, "");
+        if (!id || id === "access") return;
+        const el = document.getElementById(id);
+        if (el && el.tagName === "DETAILS") el.open = true;
+      })();
 
       const API_BASE = "https://api.aperiodicgenerator.com";
       const API_FALLBACK_BASE = "https://aperiodic-monotile-api.onrender.com";
