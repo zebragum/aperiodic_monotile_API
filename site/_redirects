@@ -1,9 +1,13 @@
-# Force aperiodicgenerator.com root to the generator-first page (200 rewrite).
+# Force aperiodicgenerator.com root to the generator page (200 rewrite — URL stays /).
 # Untiling.com keeps serving /index.html as the hub.
 https://aperiodicgenerator.com/ /generate.html 200
 https://www.aperiodicgenerator.com/ /generate.html 200
 https://aperiodicgenerator.com/index.html /generate.html 200
 https://www.aperiodicgenerator.com/index.html /generate.html 200
+
+# Clean up the ugly filename if someone hits it directly
+https://aperiodicgenerator.com/generate.html / 301
+https://www.aperiodicgenerator.com/generate.html / 301
 
 # Old names → clean URLs
 /landing-legacy.html /web.html 301
