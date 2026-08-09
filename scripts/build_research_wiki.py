@@ -2016,7 +2016,7 @@ ARTICLES: list[Article] = [
 """,
             ),
             Section(
-                "What it proves — and what it does not",
+                "Scope and limits",
                 2,
                 f"""
 <p>
