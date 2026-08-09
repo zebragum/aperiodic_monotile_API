@@ -394,6 +394,15 @@
   box-shadow: var(--shadow);
 }
 
+.wiki-figure-hero {
+  margin: 0 0 1.5rem;
+  border-radius: 1rem;
+}
+
+.wiki-article > .wiki-figure-hero {
+  margin-top: 0.35rem;
+}
+
 .wiki-figure img {
   display: block;
   width: 100%;

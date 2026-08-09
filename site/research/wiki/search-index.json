@@ -44,9 +44,19 @@
     ]
   },
   {
-    "slug": "moire-and-aliasing",
-    "title": "Moir\u00e9 and aliasing",
+    "slug": "moire",
+    "title": "Moir\u00e9",
     "summary": "Layered aperiodic arrays produce moir\u00e9 landscapes, phason rivers, and a navigable perceived 3D space.",
+    "categories": [
+      "Concepts",
+      "Computer graphics",
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "aliasing",
+    "title": "Aliasing",
+    "summary": "How periodic structure creates false patterns under sampling \u2014 and why aperiodic monotile layouts resist them.",
     "categories": [
       "Concepts",
       "Computer graphics",

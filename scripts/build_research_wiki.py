@@ -645,6 +645,7 @@ FIG_MOIRE_1DEG = fig(
     "dimensional even though it is a flat 2D beat pattern. "
     f'<a href="{ASSET}/aperiodicmoire.png">Full resolution</a>',
     width=1400,
+    extra_class="wiki-figure-hero",
 )
 FIG_MOIRE_60DEG = fig(
     "aperiodicrivers-web.png",
@@ -653,6 +654,31 @@ FIG_MOIRE_60DEG = fig(
     "concentrates into jagged, river-like channels — phason rivers — that cross the field in broad "
     "horizontal and vertical strokes. "
     f'<a href="{ASSET}/aperiodicrivers.png">Full resolution</a>',
+    width=1400,
+)
+FIG_ALIAS_COVER = fig(
+    "aliasing-cover-web.jpg",
+    "Dense checker-like landscape with strong sampling and aliasing artifacts",
+    "<strong>Aliasing on a periodic lattice.</strong> When high-frequency regular structure meets "
+    "limited resolution — a camera, a screen, a texture sampler — false low-frequency patterns appear. "
+    f'<a href="{ASSET}/aliasing-cover.jpg">Full resolution</a>',
+    width=1400,
+    extra_class="wiki-figure-hero",
+)
+FIG_ALIAS_CLEAN = fig(
+    "aliasing-monotile-clean-web.jpg",
+    "Natural rolling landscape textured with aperiodic monotile packing without obvious aliasing bands",
+    "<strong>Monotile packing without the bands.</strong> An aperiodic layout has no single dominant "
+    "lattice frequency to lock onto the sample grid, so the surface reads as continuous structure "
+    "rather than shimmering stripes.",
+    width=1400,
+)
+FIG_ALIAS_CHECKER = fig(
+    "aliasing-checker-artifacts-web.jpg",
+    "Same scene style with checker / periodic shading showing strong aliasing and moiré-like bands",
+    "<strong>Periodic shading with aliasing.</strong> The same kind of scene, but with repeating "
+    "checker structure: at distance the pattern beats against the pixel grid and collapses into "
+    "false bands, sparkle, and crawling edges.",
     width=1400,
 )
 FIG_4D_LIFT = fig(
@@ -683,6 +709,7 @@ class Article:
     infobox: dict[str, str] = field(default_factory=dict)
     sections: list[Section] = field(default_factory=list)
     is_main: bool = False
+    hero: str = ""
 
 
 ARTICLES: list[Article] = [
@@ -718,10 +745,11 @@ ARTICLES: list[Article] = [
                 f"""
 <ul class="wiki-feature-list">
   <li>{link("aperiodic-monotile", "Aperiodic monotile")} — the core definition and why it matters</li>
+  <li>{link("moire", "Moiré")} — layered arrays, phason rivers, and navigable beat patterns</li>
+  <li>{link("aliasing", "Aliasing")} — sampling artifacts, periodic risk, and monotile resistance</li>
   <li>{link("spectre-tile", "Spectre tile")} — the strictly chiral monotile discovered in 2023</li>
   <li>{link("hat-tile", "Hat tile")} — the first aperiodic monotile, March 2023</li>
   <li>{link("substitution-tiling", "Substitution tiling")} — how one tile grows into an infinite hierarchy</li>
-  <li>{link("moire-and-aliasing", "Moiré and aliasing")} — layered arrays, phason rivers, and moiré navigation</li>
 </ul>
 """,
             ),
@@ -732,7 +760,7 @@ ARTICLES: list[Article] = [
 <div class="wiki-category-grid">
   <a class="wiki-category-card" href="aperiodic-monotile.html">
     <h3>Concepts</h3>
-    <p>Aperiodic order, monohedral tilings, chiral vs achiral tiles</p>
+    <p>Aperiodic order, moiré, aliasing, and monohedral tilings</p>
     <span class="wiki-category-cta">Start with Aperiodic monotile &rarr;</span>
   </a>
   <a class="wiki-category-card" href="spectre-tile.html">
@@ -1122,32 +1150,36 @@ ARTICLES: list[Article] = [
     ),
     # ------------------------------------------------------------------ #
     Article(
-        slug="moire-and-aliasing",
-        title="Moiré and aliasing",
+        slug="moire",
+        title="Moiré",
         summary="Layered aperiodic arrays produce moiré landscapes, phason rivers, and a navigable perceived 3D space.",
         categories=["Concepts", "Computer graphics", "Research frontiers"],
-        see_also=["computer-graphics", "signal-processing", "aperiodic-monotile"],
+        see_also=["aliasing", "computer-graphics", "signal-processing", "aperiodic-monotile"],
+        hero=FIG_MOIRE_1DEG,
         infobox={
             "Core effect": "Beat interference between layered arrays",
             "Controls": "Translation (tx, ty), rotation",
             "Near-alignment": "Rosette cells, depth-like navigation",
             "Large rotation": "Phason rivers (open research)",
-            "Regular grids": "High risk of aliasing",
+            "Related": f'{link("aliasing", "Aliasing")}',
         },
         sections=[
             Section(
-                "The artifact problem",
+                "What moiré is",
                 2,
                 f"""
 <p>
-  Regular grids and repeating textures create aliasing and moiré interference when sampled, displayed, or
-  printed at certain scales — the spatial frequencies of the pattern beat against the sampling frequency.
-  Random noise avoids repetition but sacrifices structure and reproducibility. Aperiodic monotile patches
-  offer a third family: <strong>ordered but non-repeating</strong> layouts whose spectrum has no single
-  dominant lattice frequency to beat against, while remaining deterministic and seed-stable.{cite(6)}{cite(27)}
-  Sensor-array simulations on Hat-family layouts show the same principle in hardware: aperiodic monotile
-  arrays can outperform tested periodic and other aperiodic baselines for spatial sampling and
-  reconstruction.{cite(37)}
+  In optics and imaging, a <strong>moiré pattern</strong> is a large-scale interference figure that appears
+  when two similar periodic or quasi-periodic structures are overlaid — fabrics, fences, screens, or
+  printed grids. The eye (or a camera) does not see either layer’s fine detail; it sees the
+  <em>beat</em> between them: bright and dark regions where local alignment reinforces or cancels.
+</p>
+<p>
+  Aperiodic monotile arrays make that classic idea richer. Because each layer is ordered but
+  non-repeating, the beat field does not collapse into ordinary wallpaper. Instead it yields
+  cells, channels, and gradients that stay deterministic and seed-stable while still feeling
+  organic.{cite(6)} For the related sampling problem — false patterns from under-resolving a single
+  lattice — see {link("aliasing", "Aliasing")}.
 </p>
 """,
             ),
@@ -1156,11 +1188,11 @@ ARTICLES: list[Article] = [
                 2,
                 """
 <p>
-  Moiré is not only a sampling accident. Take one aperiodic monotile array and <strong>layer a second copy
-  on top</strong> — same seed, same tile scale, but offset by a small transform: a translation
-  (<em>tx</em>, <em>ty</em>) and/or a rotation θ away from perfect alignment. Where the two structured
-  layers agree locally, contrast cancels; where they disagree, macroscopic bright and dark regions appear.
-  The result is a <strong>new visual field</strong> that was not present in either layer alone.
+  Take one aperiodic monotile array and <strong>layer a second copy on top</strong> — same seed, same tile
+  scale, but offset by a small transform: a translation (<em>tx</em>, <em>ty</em>) and/or a rotation θ
+  away from perfect alignment. Where the two structured layers agree locally, contrast cancels; where
+  they disagree, macroscopic bright and dark regions appear. The result is a <strong>new visual
+  field</strong> that was not present in either layer alone.
 </p>
 <p>
   Because both layers are aperiodic, the beat pattern does not settle into a simple repeating wallpaper.
@@ -1172,15 +1204,15 @@ ARTICLES: list[Article] = [
             ),
             Section(
                 "Near-alignment: rosettes and perceived depth",
-                3,
-                f"""
+                2,
+                """
 <p>
   At very small rotations from pure alignment — on the order of <strong>one degree</strong> — the
   interference often organizes into radial <strong>rosette</strong> or cell-like structures: a bright or
   dark focal center surrounded by lobes that read almost like flowers or lenses. These are not random
-  halos; they are the macroscopic signature of microscopic tile disagreement accumulating across the patch.
+  halos; they are the macroscopic signature of microscopic tile disagreement accumulating across the
+  patch (see the hero figure above).
 </p>
-{FIG_MOIRE_1DEG}
 <p>
   Observers often describe this field as a <strong>navigable 3D space</strong>: nudging <em>tx</em> and
   <em>ty</em> pans across the moiré terrain, while small changes in rotation θ act like a zoom or
@@ -1238,12 +1270,122 @@ ARTICLES: list[Article] = [
                 2,
                 f"""
 <ul>
-  <li>Texture mapping, decals, hatching, and stippling in real-time graphics</li>
-  <li>Procedural scatter and environment layout in Blender or game engines</li>
-  <li>Print and fabrication pipelines where halftone grids interact with material grain</li>
-  <li>Layered aperiodic moiré as a research substrate for phason rivers and spatial encoding</li>
+  <li>Layered overlays for generative art and data visualization</li>
+  <li>Experimental interfaces that treat (tx, ty, θ) as a navigable space</li>
+  <li>Print and fabrication stacks where two structured layers meet</li>
+  <li>Research into phason-like channels on aperiodic lattices</li>
 </ul>
-<p>See {link("computer-graphics", "Computer graphics")} and {link("signal-processing", "Signal processing and imaging")} for workflow detail.</p>
+<p>
+  Related sampling and display artifacts are covered under {link("aliasing", "Aliasing")}.
+  See also {link("computer-graphics", "Computer graphics")} and
+  {link("signal-processing", "Signal processing and imaging")}.
+</p>
+""",
+            ),
+        ],
+    ),
+    # ------------------------------------------------------------------ #
+    Article(
+        slug="aliasing",
+        title="Aliasing",
+        summary="How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them.",
+        categories=["Concepts", "Computer graphics", "Research frontiers"],
+        see_also=["moire", "computer-graphics", "signal-processing", "aperiodic-monotile"],
+        hero=FIG_ALIAS_COVER,
+        infobox={
+            "Core effect": "False low-frequency patterns from undersampling",
+            "Classic cause": "Periodic lattice vs. pixel / sensor grid",
+            "Periodic risk": "High (checkers, grids, bricks)",
+            "Monotile role": "Ordered layout without a single lattice beat",
+            "Related": f'{link("moire", "Moiré")}',
+        },
+        sections=[
+            Section(
+                "What aliasing is",
+                2,
+                f"""
+<p>
+  In signal processing and computer graphics, <strong>aliasing</strong> is the appearance of false
+  structure when a continuous (or finely detailed) signal is sampled too coarsely. A high frequency that
+  the sampler cannot resolve does not disappear — it <em>folds</em> into a lower frequency the system
+  <em>can</em> represent. On a screen that looks like shimmering edges, crawling lines, or striped bands
+  that were never in the scene. The Nyquist–Shannon sampling theorem is the classical statement: to
+  reconstruct a band-limited signal faithfully, you must sample at least twice its highest frequency.
+</p>
+<p>
+  Spatial aliasing is the same idea in 2D. A brick wall, a fence, a checkerboard, or a dense hatched fill
+  has a dominant lattice frequency. When that frequency approaches the pixel (or sensor, or print-dot)
+  frequency, the two grids beat — and you see a pattern that belongs to neither grid alone. That beat is
+  closely related to {link("moire", "moiré")}; aliasing is the sampling-side story, moiré the overlay story.
+</p>
+""",
+            ),
+            Section(
+                "Why regular tilings are fragile",
+                2,
+                f"""
+<p>
+  Periodic monohedral tilings — squares, hexagons, brickwork — are efficient and familiar, but they put
+  almost all of their energy on a few reciprocal-lattice peaks. Point a camera, mipmap a texture, or
+  print at an awkward DPI, and those peaks are exactly what collide with the sample lattice.
+</p>
+<p>
+  Anti-aliasing filters (mipmaps, supersampling, anisotropic filtering) try to remove frequencies the
+  display cannot carry. They help, but they also blur. Random noise textures dodge the lattice problem
+  by having no coherent peaks — at the cost of structure, reproducibility, and clean fabrication IDs.
+</p>
+<p>
+  Aperiodic monotile patches sit between those extremes: <strong>ordered but non-repeating</strong>,
+  with diffraction more like a quasicrystal than a crystal — sharp features, yet no single translational
+  lattice to lock onto the sample grid.{cite(6)}{cite(27)} Sensor-array simulations on Hat-family layouts
+  show the same principle in hardware: aperiodic monotile arrays can outperform tested periodic and other
+  aperiodic baselines for spatial sampling and reconstruction.{cite(37)}
+</p>
+""",
+            ),
+            Section(
+                "A cleaner monotile surface",
+                2,
+                f"""
+<p>
+  Below, a landscape shaded with an aperiodic monotile packing. There is still plenty of edge detail, but
+  the structure does not present one repeating period for the image grid to quarrel with — so the surface
+  stays readable instead of dissolving into false bands.
+</p>
+{FIG_ALIAS_CLEAN}
+""",
+            ),
+            Section(
+                "The periodic failure mode",
+                2,
+                f"""
+<p>
+  Contrast that with a checker / periodic shading of a similar scene. As soon as the repeating cells
+  approach the pixel scale, aliasing takes over: sparkle, moiré-like stripes, and crawling edges that
+  move when the camera or the mip level changes. The geometry of the hills is the same idea; the
+  <em>lattice</em> is what breaks.
+</p>
+{FIG_ALIAS_CHECKER}
+""",
+            ),
+            Section(
+                "Practical takeaways for monotile work",
+                2,
+                f"""
+<ul>
+  <li><strong>Textures and decals</strong> — prefer aperiodic packing when the pattern will be viewed
+  across many scales (games cameras, print proofs, video).</li>
+  <li><strong>Scatter and fill</strong> — monotile instance layouts avoid the row/column bands of a grid
+  scatter without looking random.</li>
+  <li><strong>Halftone and fabrication</strong> — when a screen or toolpath is itself periodic, pairing it
+  with a periodic artwork doubles the risk; an aperiodic artwork removes one of the two lattices.</li>
+  <li><strong>Do not confuse the two effects</strong> — deliberate layered overlays are {link("moire", "moiré")}
+  research; accidental undersampling of one lattice is aliasing.</li>
+</ul>
+<p>
+  See {link("computer-graphics", "Computer graphics")} and
+  {link("signal-processing", "Signal processing and imaging")} for workflow detail.
+</p>
 """,
             ),
         ],
@@ -1254,7 +1396,7 @@ ARTICLES: list[Article] = [
         title="Computer graphics",
         summary="Using aperiodic monotile patches for scenes, textures, meshes, and sampling studies.",
         categories=["Applications"],
-        see_also=["moire-and-aliasing", "design-and-architecture"],
+        see_also=["moire", "aliasing", "design-and-architecture"],
         infobox={
             "Status": "Immediately practical",
             "Formats": "SVG, GLB, STL, PNG, JSON",
@@ -1505,7 +1647,7 @@ ARTICLES: list[Article] = [
         title="Signal processing and imaging",
         summary="Deterministic non-periodic sampling layouts for reconstruction and sensor geometry.",
         categories=["Research frontiers"],
-        see_also=["moire-and-aliasing", "waves-and-photonics"],
+        see_also=["moire", "aliasing", "waves-and-photonics"],
         infobox={"Status": "Research frontier", "Key property": "No lattice frequency to alias against"},
         sections=[
             Section(
@@ -1542,7 +1684,7 @@ ARTICLES: list[Article] = [
   limited-scan beamforming studies{cite(38)}; patent filings propose Hat polykite elements for SATCOM
   arrays (proposal only).{cite(68)}</li>
   <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
-  <li>Anti-aliasing masks and halftone screens; see {link("moire-and-aliasing", "Moiré and aliasing")}</li>
+  <li>Anti-aliasing masks and halftone screens; see {link("aliasing", "Aliasing")} and {link("moire", "Moiré")}</li>
 </ul>
 """,
             ),
@@ -1979,7 +2121,7 @@ ARTICLES: list[Article] = [
 ]
 
 NAV_GROUPS = [
-    ("Concepts", ["aperiodic-monotile", "moire-and-aliasing"]),
+    ("Concepts", ["aperiodic-monotile", "moire", "aliasing"]),
     ("Mathematics", ["spectre-tile", "hat-tile", "substitution-tiling", "four-dimensional-lift"]),
     ("Applications", [
         "computer-graphics", "design-and-architecture", "materials-and-fabrication", "education",
@@ -2116,6 +2258,7 @@ def render_page(article: Article) -> str:
           <h1 class="wiki-title">{html.escape(article.title)}</h1>
           <p class="wiki-tagline">{html.escape(article.summary)}</p>
         </header>
+        {article.hero if article.hero else ""}
         {toc}
         <div class="wiki-content">
           {infobox}
@@ -2309,6 +2452,25 @@ def main() -> None:
         out = WIKI_ROOT / ("index.html" if article.slug == "index" else f"{article.slug}.html")
         out.write_text(render_page(article), encoding="utf-8")
         print(f"wrote {out.relative_to(SITE_ROOT)}")
+
+    # Legacy combined URL → moiré article
+    (WIKI_ROOT / "moire-and-aliasing.html").write_text(
+        """<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=moire.html" />
+    <link rel="canonical" href="https://untiling.com/research/wiki/moire.html" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>This page split into <a href="moire.html">Moire</a> and <a href="aliasing.html">Aliasing</a>.</p>
+  </body>
+</html>
+""",
+        encoding="utf-8",
+    )
+    print("wrote research/wiki/moire-and-aliasing.html (redirect)")
 
     (RESEARCH_ROOT / "index.html").write_text(render_research_hub(), encoding="utf-8")
     print(f"wrote {RESEARCH_ROOT.relative_to(SITE_ROOT)}/index.html")
