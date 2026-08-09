@@ -73,10 +73,47 @@
                   <input id="wgSize" type="number" min="1" step="any" value="20" />
                 </label>
               </div>
+              <label class="webgen-field">
+                <span>Tile size</span>
+                <input id="wgTileSize" type="number" min="0.05" max="20" step="0.05" value="1" />
+              </label>
             </fieldset>
 
             <fieldset>
-              <legend>2. What do you want?</legend>
+              <legend>2. Style</legend>
+              <label class="webgen-field">
+                <span>Side style</span>
+                <select id="wgSideStyle" name="side_style">
+                  <option value="flat" selected>Flat</option>
+                  <option value="curvy">Curvy</option>
+                  <option value="wavy">Wavy</option>
+                  <option value="jagged">Jagged</option>
+                  <option value="blocky">Blocky</option>
+                </select>
+              </label>
+              <div class="webgen-row">
+                <label class="webgen-field" id="wgAmpWrap">
+                  <span>Side style amount</span>
+                  <input id="wgAmplitude" type="number" min="0" max="0.75" step="0.01" value="0.12" disabled />
+                </label>
+                <label class="webgen-field" id="wgWavyWrap">
+                  <span>Wavy detail</span>
+                  <input id="wgWavySegs" type="number" min="4" max="64" step="1" value="10" disabled />
+                </label>
+              </div>
+              <label class="webgen-field" id="wgColorWrap">
+                <span>Coloring</span>
+                <select id="wgColor" name="color_mode">
+                  <option value="greyscale" selected>Greyscale</option>
+                  <option value="random">Each random</option>
+                  <option value="mystics">Mystics (Gamma)</option>
+                  <option value="rainbow">Rainbow (by type)</option>
+                </select>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>3. What do you want?</legend>
               <label class="webgen-field">
                 <span>Format</span>
                 <select id="wgFormat" name="format">
@@ -84,16 +121,24 @@
                   <option value="jpg">Picture (JPG) — free</option>
                   <option value="svg">Drawing (SVG) — paid</option>
                   <option value="glb">3D model (GLB) — paid</option>
+                  <option value="stl">3D mesh (STL) — paid</option>
                 </select>
               </label>
               <label class="webgen-field" id="wgDepthWrap">
                 <span>Thickness</span>
                 <input id="wgDepth" type="number" min="0" step="any" value="0" disabled />
               </label>
+              <label class="webgen-field" id="wgCompactWrap">
+                <span>Smaller SVG file</span>
+                <select id="wgCompact" name="svg_compact">
+                  <option value="true" selected>Yes (instanced tiles; still SVG)</option>
+                  <option value="false">No (expanded paths)</option>
+                </select>
+              </label>
             </fieldset>
 
             <fieldset>
-              <legend>3. API key (for SVG / 3D)</legend>
+              <legend>4. API key (for SVG / 3D)</legend>
               <label class="webgen-field">
                 <span>Key</span>
                 <input id="wgKey" type="password" placeholder="Paste after checkout" />
@@ -123,7 +168,7 @@
 
     <footer class="footer">
       <p>
-        <a href="/">Home</a> ·
+        <a href="/generate.html">Home</a> ·
         <a href="pricing.html">Pricing</a> ·
         <a href="docs.html">Docs</a> ·
         <a href="https://untiling.com/">Untiling</a>

@@ -4,18 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Rhino script | Aperiodic Generator</title>
-    <meta name="description" content="Rhino / Grasshopper script to fetch aperiodic monotile patches from the API." />
+    <meta
+      name="description"
+      content="Rhino / Grasshopper script for aperiodic monotile patches — side styles, coloring, and curve import."
+    />
     <link rel="canonical" href="https://aperiodicgenerator.com/rhino.html" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">
+      <a class="brand" href="/generate.html">
         <img class="brand-mark" src="assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
         <span>Aperiodic Generator</span>
       </a>
       <nav class="nav">
-        <a href="/#tools">Tools</a>
+        <a href="/generate.html#tools">Tools</a>
+        <a href="web.html">Web</a>
         <a href="docs.html">API Docs</a>
         <a href="https://untiling.com/">Untiling</a>
       </nav>
@@ -26,26 +30,28 @@
     <main>
       <section class="section docs-hero">
         <p class="eyebrow">Rhino</p>
-        <h1>Script-editor fetch into a folder.</h1>
+        <h1>Fetch a patch. Draw the curves.</h1>
         <p class="hero-text">
-          Basic Python for Rhino / Grasshopper: set formats and mask, run, files land on disk.
-          Mesh formats use depth 0 by default.
+          Same generation options as Inkscape and Blender: side styles, coloring, tile scale,
+          mask shapes. Run interactively in Rhino or call from Grasshopper.
         </p>
         <div class="hero-actions">
           <a class="button" href="assets/downloads/untiling_rhino_script.zip" download>Download Rhino script</a>
-          <a class="button secondary" href="docs.html#access">Get started</a>
+          <a class="button secondary" href="docs.html#access">Get a key</a>
         </div>
       </section>
       <section class="section">
         <ul class="feature-list">
-          <li><strong>Edit</strong> <code>FORMATS</code>, mask size, <code>OUTPUT_DIR</code>, and API key.</li>
-          <li><strong>Run</strong> in the Rhino script editor, or call <code>fetch_and_save(...)</code> from Grasshopper.</li>
-          <li><strong>Depth</strong> defaults to 0 for STL/GLB unless you raise it.</li>
+          <li><strong>Interactive</strong> — prompts for format, mask, tile size, side style, and coloring.</li>
+          <li><strong>Imports curves</strong> — places closed tile outlines on a Monotile layer (from instance JSON).</li>
+          <li><strong>Side styles</strong> — flat, curvy, wavy, jagged, blocky.</li>
+          <li><strong>Coloring</strong> — greyscale, each random, mystics (Gamma), rainbow by type (SVG / PNG / JPG).</li>
+          <li><strong>Depth</strong> — defaults to 0 for STL/GLB; extrude in Rhino when you want thickness.</li>
         </ul>
       </section>
     </main>
     <footer class="footer">
-      <p><a href="/">Generator</a> · <a href="docs.html">Docs</a></p>
+      <p><a href="/generate.html">Generator</a> · <a href="docs.html">Docs</a></p>
     </footer>
   </body>
 </html>

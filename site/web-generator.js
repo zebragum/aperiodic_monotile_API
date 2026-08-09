@@ -1,10 +1,27 @@
-/** Browser twin of the Windows Aperiodic Generator app. */
+/** Browser twin of the desktop tools — Inkscape / Blender option parity. */
 (function () {
   const cfg = window.SITE_CONFIG || {};
   const bases = [cfg.apiBase, ...(cfg.apiFallbacks || [])].filter(Boolean);
 
   const PAID = new Set(["svg", "glb", "stl", "json", "csv"]);
   const KEY_STORE = "monotile.webgen.apiKey.v1";
+  const COLOR_MODES = new Set(["greyscale", "random", "mystics", "rainbow"]);
+
+  const GREY_FILL = "#cdd6ea";
+  const GREY_STROKE = "#171b38";
+  const LABEL_COLORS = {
+    Gamma: "#E8B923",
+    Delta: "#2E86AB",
+    Theta: "#A23B72",
+    Lambda: "#F18F01",
+    Xi: "#C73E1D",
+    Pi: "#3B1F2B",
+    Sigma: "#44AF69",
+    Phi: "#5C4D7D",
+    Psi: "#9B5DE5",
+    Gamma1: "#F4D35E",
+    Gamma2: "#FFE066",
+  };
 
   const el = {
     form: document.querySelector("#webgenForm"),
@@ -15,9 +32,19 @@
     size: document.querySelector("#wgSize"),
     width: document.querySelector("#wgWidth"),
     height: document.querySelector("#wgHeight"),
+    tileSize: document.querySelector("#wgTileSize"),
+    sideStyle: document.querySelector("#wgSideStyle"),
+    amplitude: document.querySelector("#wgAmplitude"),
+    ampWrap: document.querySelector("#wgAmpWrap"),
+    wavySegs: document.querySelector("#wgWavySegs"),
+    wavyWrap: document.querySelector("#wgWavyWrap"),
+    color: document.querySelector("#wgColor"),
+    colorWrap: document.querySelector("#wgColorWrap"),
     format: document.querySelector("#wgFormat"),
     depth: document.querySelector("#wgDepth"),
     depthWrap: document.querySelector("#wgDepthWrap"),
+    compact: document.querySelector("#wgCompact"),
+    compactWrap: document.querySelector("#wgCompactWrap"),
     key: document.querySelector("#wgKey"),
     getKey: document.querySelector("#wgGetKey"),
     make: document.querySelector("#wgMake"),
@@ -36,6 +63,11 @@
     if (el.status) el.status.textContent = msg;
   }
 
+  function setDisabled(wrap, input, disabled) {
+    if (input) input.disabled = disabled;
+    if (wrap) wrap.classList.toggle("is-disabled", disabled);
+  }
+
   function refreshFields() {
     const shape = el.shape.value;
     const isRect = shape === "rectangle";
@@ -51,9 +83,17 @@
 
     const fmt = el.format.value;
     const needsDepth = fmt === "glb" || fmt === "stl";
-    el.depth.disabled = !needsDepth;
-    el.depthWrap.classList.toggle("is-disabled", !needsDepth);
+    setDisabled(el.depthWrap, el.depth, !needsDepth);
     if (!needsDepth) el.depth.value = "0";
+
+    const style = el.sideStyle.value;
+    const styled = style !== "flat";
+    setDisabled(el.ampWrap, el.amplitude, !styled);
+    setDisabled(el.wavyWrap, el.wavySegs, style !== "wavy");
+
+    const visual = fmt === "svg" || fmt === "png" || fmt === "jpg";
+    setDisabled(el.colorWrap, el.color, !visual);
+    setDisabled(el.compactWrap, el.compact, fmt !== "svg");
   }
 
   function buildMask() {
@@ -66,6 +106,87 @@
     if (shape === "triangle") return { type: "triangle", side_length: size };
     if (shape === "regular_hexagon") return { type: "regular_hexagon", circumradius: size };
     return { type: "rectangle", width, height };
+  }
+
+  function paletteEntry(fill) {
+    return { fill, stroke: GREY_STROKE };
+  }
+
+  function colorRequestFields(mode) {
+    const colorMode = COLOR_MODES.has(mode) ? mode : "greyscale";
+    if (colorMode === "random") {
+      return {
+        svg_fill: GREY_FILL,
+        svg_stroke: GREY_STROKE,
+        svg_deterministic_palette: true,
+      };
+    }
+    if (colorMode === "mystics") {
+      return {
+        svg_fill: GREY_FILL,
+        svg_stroke: GREY_STROKE,
+        palette_by_label: {
+          Gamma: paletteEntry("#E8B923"),
+          Gamma1: paletteEntry("#F4D35E"),
+          Gamma2: paletteEntry("#FFE066"),
+          "*": paletteEntry("#b8becc"),
+        },
+      };
+    }
+    if (colorMode === "rainbow") {
+      const palette = Object.fromEntries(
+        Object.entries(LABEL_COLORS).map(([label, fill]) => [label, paletteEntry(fill)])
+      );
+      palette["*"] = paletteEntry(GREY_FILL);
+      return {
+        svg_fill: GREY_FILL,
+        svg_stroke: GREY_STROKE,
+        palette_by_label: palette,
+      };
+    }
+    return {
+      svg_fill: GREY_FILL,
+      svg_stroke: GREY_STROKE,
+      svg_deterministic_palette: false,
+    };
+  }
+
+  function buildBody() {
+    const fmt = el.format.value;
+    const scale = Math.max(0.05, Number(el.tileSize.value) || 1);
+    const body = {
+      mask: buildMask(),
+      formats: [fmt],
+      scale,
+      stl_extrusion_mm: Number(el.depth.value) || 0,
+      png_width_px: 1200,
+      png_height_px: 1200,
+      jpg_width_px: 1200,
+      jpg_height_px: 1200,
+    };
+
+    const style = (el.sideStyle.value || "flat").toLowerCase();
+    if (style !== "flat") {
+      body.side_style = style;
+      body.side_style_amplitude = Math.max(
+        0,
+        Math.min(0.75, Number(el.amplitude.value) || 0.12)
+      );
+      if (style === "wavy") {
+        body.side_style_wavy_segments = Math.max(
+          4,
+          Math.min(64, Number(el.wavySegs.value) || 10)
+        );
+      }
+    }
+
+    if (fmt === "svg" || fmt === "png" || fmt === "jpg") {
+      Object.assign(body, colorRequestFields(el.color.value));
+    }
+    if (fmt === "svg") {
+      body.svg_compact = el.compact.value !== "false";
+    }
+    return body;
   }
 
   async function apiFetch(path, options = {}) {
@@ -161,16 +282,7 @@
     el.downloads.replaceChildren();
     setStatus("Working…");
 
-    const body = {
-      mask: buildMask(),
-      formats: [fmt],
-      scale: 1,
-      stl_extrusion_mm: Number(el.depth.value) || 0,
-      png_width_px: 1200,
-      png_height_px: 1200,
-      jpg_width_px: 1200,
-      jpg_height_px: 1200,
-    };
+    const body = buildBody();
 
     try {
       const createRes = await apiFetch("/v1/patch", {
@@ -220,6 +332,7 @@
 
   el.shape.addEventListener("change", refreshFields);
   el.format.addEventListener("change", refreshFields);
+  el.sideStyle.addEventListener("change", refreshFields);
   el.getKey.addEventListener("click", startCheckout);
   el.form.addEventListener("submit", runJob);
   refreshFields();
