@@ -10,8 +10,10 @@ and inserts it into the current document.
    - `untiling_monotile.inx`
    - `untiling_monotile.py`
    - `cacert.pem` (required — Inkscape’s Python often has no CA store on Windows)
-2. Restart Inkscape (or open Extensions → Refresh if available).
+2. **Fully quit and reopen Inkscape** (do not rely on Extensions → Refresh).
 3. Open **Extensions → Aperiodic Monotile → Aperiodic Monotile Patch (API)**.
+
+Hot-reload / “Refresh Extensions” often freezes Inkscape on Windows after dropping new files in. A full restart is the reliable path — if it locked up once, close it from Task Manager if needed, then open again; the extension should be there.
 
 ### Extensions folder locations
 
