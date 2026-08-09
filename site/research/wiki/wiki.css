@@ -388,19 +388,44 @@
 .wiki-figure {
   margin: 1.5rem 0 1.75rem;
   border: 1px solid var(--line);
-  border-radius: 0.9rem;
+  border-radius: 0.55rem;
   overflow: hidden;
   background: rgba(9, 11, 19, 0.65);
   box-shadow: var(--shadow);
 }
 
-.wiki-figure-hero {
-  margin: 0 0 1.5rem;
-  border-radius: 1rem;
+/* Wikipedia-style floating thumbs — text wraps beside them */
+.wiki-figure-float-left,
+.wiki-figure-float-right {
+  margin-top: 0.15rem;
+  margin-bottom: 0.85rem;
+  max-width: min(18rem, 46%);
+  width: min(18rem, 46%);
+  clear: none;
 }
 
-.wiki-article > .wiki-figure-hero {
-  margin-top: 0.35rem;
+.wiki-figure-float-left {
+  float: left;
+  margin-right: 1.05rem;
+  margin-left: 0;
+}
+
+.wiki-figure-float-right {
+  float: right;
+  margin-left: 1.05rem;
+  margin-right: 0;
+}
+
+.wiki-figure-sm {
+  max-width: min(12.5rem, 40%);
+  width: min(12.5rem, 40%);
+}
+
+.wiki-figure-float-left figcaption,
+.wiki-figure-float-right figcaption {
+  padding: 0.55rem 0.65rem 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 .wiki-figure img {
@@ -500,6 +525,15 @@
     float: none;
     width: 100%;
     margin: 0 0 1rem;
+  }
+
+  .wiki-figure-float-left,
+  .wiki-figure-float-right,
+  .wiki-figure-sm {
+    float: none;
+    width: min(18rem, 100%);
+    max-width: 18rem;
+    margin: 0.75rem auto 1.1rem;
   }
 
   .wiki-search-form {

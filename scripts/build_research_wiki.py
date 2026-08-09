@@ -473,6 +473,23 @@ def fig(asset: str, alt: str, caption: str, *, width: int | None = None, extra_c
 """
 
 
+def fig_thumb(
+    asset: str,
+    alt: str,
+    caption: str,
+    *,
+    width: int | None = None,
+    side: str = "left",
+    size: str = "",
+) -> str:
+    """Wikipedia-style floating thumbnail (text wraps around it)."""
+
+    classes = [f"wiki-figure-float-{side}"]
+    if size:
+        classes.append(f"wiki-figure-{size}")
+    return fig(asset, alt, caption, width=width, extra_class=" ".join(classes))
+
+
 def fig_video(asset: str, caption: str, *, poster: str | None = None, extra_class: str = "") -> str:
     klass = "wiki-figure wiki-figure-video"
     if extra_class:
@@ -496,13 +513,15 @@ FIG_TILE_VARIANTS = fig(
     "way; only the boundary decoration changes.",
     width=1100,
 )
-FIG_MIKI_IMURA = fig(
+FIG_MIKI_IMURA = fig_thumb(
     "miki-imura-modulo-krinkle.png",
     "Miki Imura Modulo Krinkle monotile: equilateral polygon with zig-zag sides and labeled angles",
     "<strong>Miki Imura monotile</strong> (Modulo Krinkle). An equilateral monohedral tile that can assemble "
     "into striking non-periodic patterns (often spirals). Unlike Hat / Spectre, it also admits periodic "
     "tilings, so it is not an aperiodic monotile in the einstein sense.",
-    width=480,
+    width=220,
+    side="left",
+    size="sm",
 )
 FIG_TILING_ARRAY = fig_video(
     "tiling-array-zoom.mp4",
@@ -637,15 +656,15 @@ FIG_ALGORITHMS = fig(
     "embeddings, and geometric machine-learning experiments.",
     width=1400,
 )
-FIG_MOIRE_1DEG = fig(
+FIG_MOIRE_1DEG = fig_thumb(
     "aperiodicmoire-web.png",
     "Aperiodic moiré at 1° rotation: radial rosette cells emerging from layered monotile arrays",
     "<strong>1° rotation.</strong> Two aperiodic monotile arrays overlaid with a 1° twist. Near-alignment "
     "produces large rosette cells with a strong central focal point — a moiré landscape that feels "
     "dimensional even though it is a flat 2D beat pattern. "
     f'<a href="{ASSET}/aperiodicmoire.png">Full resolution</a>',
-    width=1400,
-    extra_class="wiki-figure-hero",
+    width=320,
+    side="left",
 )
 FIG_MOIRE_60DEG = fig(
     "aperiodicrivers-web.png",
@@ -656,14 +675,14 @@ FIG_MOIRE_60DEG = fig(
     f'<a href="{ASSET}/aperiodicrivers.png">Full resolution</a>',
     width=1400,
 )
-FIG_ALIAS_COVER = fig(
+FIG_ALIAS_COVER = fig_thumb(
     "aliasing-cover-web.jpg",
     "Dense checker-like landscape with strong sampling and aliasing artifacts",
     "<strong>Aliasing on a periodic lattice.</strong> When high-frequency regular structure meets "
     "limited resolution — a camera, a screen, a texture sampler — false low-frequency patterns appear. "
     f'<a href="{ASSET}/aliasing-cover.jpg">Full resolution</a>',
-    width=1400,
-    extra_class="wiki-figure-hero",
+    width=320,
+    side="left",
 )
 FIG_ALIAS_CLEAN = fig(
     "aliasing-monotile-clean-web.jpg",
@@ -1211,7 +1230,7 @@ ARTICLES: list[Article] = [
   interference often organizes into radial <strong>rosette</strong> or cell-like structures: a bright or
   dark focal center surrounded by lobes that read almost like flowers or lenses. These are not random
   halos; they are the macroscopic signature of microscopic tile disagreement accumulating across the
-  patch (see the hero figure above).
+  patch (see the figure at left).
 </p>
 <p>
   Observers often describe this field as a <strong>navigable 3D space</strong>: nudging <em>tx</em> and
@@ -2258,9 +2277,9 @@ def render_page(article: Article) -> str:
           <h1 class="wiki-title">{html.escape(article.title)}</h1>
           <p class="wiki-tagline">{html.escape(article.summary)}</p>
         </header>
-        {article.hero if article.hero else ""}
         {toc}
         <div class="wiki-content">
+          {article.hero if article.hero else ""}
           {infobox}
           {render_article_body(article)}
         </div>
