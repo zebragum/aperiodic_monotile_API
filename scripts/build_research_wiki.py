@@ -271,6 +271,10 @@ REFERENCES: list[dict] = [
          title="Constrained models in aperiodic systems",
          url="https://orca.cardiff.ac.uk/id/eprint/181483/",
          note="Cardiff PhD thesis: Spectre dimer models, optimization, and quasicrystalline graphs."),
+    dict(n=71, authors="Miki Imura",
+         title="A Family of Non-Periodic Tilings, Describable Using Elementary Tools and Exhibiting a New Kind of Structural Regularity",
+         arxiv="2506.07638",
+         note="Modulo Krinkle monohedral tiles: elementary non-periodic (often spiral) tilings; not an einstein."),
 ]
 
 WEB_RESOURCES = [
@@ -492,6 +496,14 @@ FIG_TILE_VARIANTS = fig(
     "way; only the boundary decoration changes.",
     width=1100,
 )
+FIG_MIKI_IMURA = fig(
+    "miki-imura-modulo-krinkle.png",
+    "Miki Imura Modulo Krinkle monotile: equilateral polygon with zig-zag sides and labeled angles",
+    "<strong>Miki Imura monotile</strong> (Modulo Krinkle). An equilateral monohedral tile that can assemble "
+    "into striking non-periodic patterns (often spirals). Unlike Hat / Spectre, it also admits periodic "
+    "tilings, so it is not an aperiodic monotile in the einstein sense.",
+    width=480,
+)
 FIG_TILING_ARRAY = fig_video(
     "tiling-array-zoom.mp4",
     "<strong>Tiling array.</strong> A steady camera zoom into a dense Spectre / Tile(1,1) field and back out "
@@ -692,11 +704,9 @@ ARTICLES: list[Article] = [
   forever without ever repeating.
 </p>
 <p>
-  This wiki is part of
-  <a href="../../index.html">Untiling</a>. It distills the peer-reviewed literature
+  It distills the peer-reviewed literature
   ({len(REFERENCES)} sources and counting), tooling lineage, and practical workflows into cross-linked
-  articles you can cite, share, and build on. Every figure is real generated monotile geometry — no
-  placeholder patterns.
+  articles you can cite, share, and build on.
 </p>
 {FIG_TILE_VARIANTS}
 {FIG_TILING_ARRAY}
@@ -789,10 +799,10 @@ ARTICLES: list[Article] = [
                 2,
                 f"""
 <p>
-  An <strong>aperiodic monotile</strong> is a single closed topological disk in the plane whose congruent copies
+  An <strong>aperiodic monotile</strong> is a single closed shape in the plane whose congruent copies
   can tile the entire plane, but <em>only</em> in non-periodic arrangements. Unlike Penrose kite-and-dart sets
   or other multi-tile aperiodic systems, a monotile uses one shape — though reflected copies may be required
-  depending on the tile's chirality.{cite(1)}{cite(3)}
+  depending on whether each side is equal or not.{cite(1)}{cite(3)}
 </p>
 <p>
   The long-standing <strong>einstein problem</strong> (German <em>ein Stein</em>, "one stone") asked whether such
@@ -861,6 +871,25 @@ ARTICLES: list[Article] = [
   part cannot be flipped; a shape that tiles without reflections is cheaper to manufacture and impossible to
   install wrong-side-up.
 </p>
+""",
+            ),
+            Section(
+                "Miki Imura monotile",
+                2,
+                f"""
+<p>
+  Not every monotile that makes non-periodic patterns is an aperiodic monotile. In 2025,
+  <strong>Miki Imura</strong> published a family of equilateral “Modulo Krinkle” tiles that tile the plane
+  with a single shape and can form striking non-periodic arrangements — often spiral or ring-like —
+  using only elementary modular-arithmetic constructions.{cite(71)}
+</p>
+<p>
+  The catch, which Imura states explicitly: the same prototile also admits an ordinary periodic tiling.
+  So it is a monohedral tile with rich non-periodic modes, not an einstein. It belongs on this page because
+  the popular conversation lumps “one shape that tiles without repeating” together; the mathematical
+  distinction is whether <em>every</em> tiling must be non-periodic, or only some of them.
+</p>
+{FIG_MIKI_IMURA}
 """,
             ),
         ],
