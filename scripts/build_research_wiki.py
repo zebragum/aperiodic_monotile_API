@@ -1449,9 +1449,11 @@ ARTICLES: list[Article] = [
 <p>
   The split render above makes the argument visually: identical glazed-ceramic material, identical sun,
   one seam. The hexagonal floor on the left is calm but relentlessly repetitive — the eye finds rows
-  instantly, and at render scale those rows become aliasing bands. The Spectre floor on the right has the
+  instantly, and at render scale those rows become
+  <a href="aliasing.html">aliasing</a> bands. The Spectre floor on the right has the
   same tile density and the same manufacturing simplicity (one shape!), but every neighborhood is unique.
-  Nothing marches; nothing bands.
+  Nothing marches; nothing bands. For the sampling story behind those bands, see
+  {link("aliasing", "Aliasing")}.
 </p>
 {FIG_CG_SUNSET}
 {FIG_CG_BRASS}
@@ -1537,7 +1539,9 @@ ARTICLES: list[Article] = [
   8-to-9-tile clusters from the substitution system, then place clusters — the same hierarchy the
   mathematics uses. See {link("substitution-tiling", "Substitution tiling")}.</li>
   <li><strong>Or skip layout entirely:</strong> generate the exact patch for your wall's dimensions with a
-  clipping mask, and deliver the installer a numbered plan where every tile has an ID and position.</li>
+  clipping mask at
+  <a href="https://aperiodicgenerator.com/" rel="noopener noreferrer">aperiodicgenerator.com</a>,
+  and deliver the installer a numbered plan where every tile has an ID and position.</li>
 </ol>
 <p>
   For hybrid designs, research on interfaces between aperiodic and periodic tilings shows how a Spectre
