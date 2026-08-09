@@ -35,10 +35,14 @@ SVG export needs a **paid** API key (free tier is raster-only).
 
 ## Parameters
 
-| UI field | API mapping |
-|----------|-------------|
-| Mask width / height | `mask: { type: rectangle, width, height }` |
-| Tile scale | `scale` |
+| UI field | Behavior |
+|----------|----------|
+| Match page aspect ratio | On by default — mask uses the page’s aspect (short side ≈ 21, like A4 21×29) |
+| Mask width / height | Used only when match-page is off (defaults 21×29) |
+| Tile size | Larger = bigger / chunkier tiles (API `scale`) |
+| Side style | Flat / Curvy / Wavy / Jagged / Blocky (same presets as Blender; no custom guide line yet) |
+| Side style amount | How strong curvy/wavy/jagged/blocky is |
+| Center and fit to page | On by default — scales and centers the import on the page |
 | Compact SVG | `svg_compact` |
 | Max wait | Client-side poll timeout (seconds) |
 

@@ -4,9 +4,20 @@
   <id>com.aperiodicgenerator.untiling.monotile</id>
   <param name="api_key" type="string" gui-text="API key (or leave blank for UNTILING_API_KEY / config)"> </param>
   <param name="api_base" type="string" gui-text="API base URL">https://api.aperiodicgenerator.com</param>
-  <param name="width" type="float" precision="2" min="1.0" max="1000.0" gui-text="Mask width">40.0</param>
-  <param name="height" type="float" precision="2" min="1.0" max="1000.0" gui-text="Mask height">24.0</param>
-  <param name="scale" type="float" precision="3" min="0.05" max="20.0" gui-text="Tile scale">1.0</param>
+  <param name="match_page" type="bool" gui-text="Match page aspect ratio">true</param>
+  <param name="width" type="float" precision="2" min="1.0" max="1000.0" gui-text="Mask width (if not matching page)">21.0</param>
+  <param name="height" type="float" precision="2" min="1.0" max="1000.0" gui-text="Mask height (if not matching page)">29.0</param>
+  <param name="tile_size" type="float" precision="3" min="0.05" max="20.0" gui-text="Tile size (larger = bigger / chunkier tiles)">1.0</param>
+  <param name="side_style" type="optiongroup" appearance="combo" gui-text="Side style">
+    <option value="flat">Flat</option>
+    <option value="curvy">Curvy</option>
+    <option value="wavy">Wavy</option>
+    <option value="jagged">Jagged</option>
+    <option value="blocky">Blocky</option>
+  </param>
+  <param name="side_style_amplitude" type="float" precision="3" min="0.0" max="0.75" gui-text="Side style amount">0.12</param>
+  <param name="side_style_wavy_segments" type="int" min="4" max="64" gui-text="Wavy detail">10</param>
+  <param name="fit_to_page" type="bool" gui-text="Center and fit to page">true</param>
   <param name="wait_timeout" type="int" min="15" max="1800" gui-text="Max wait (seconds)">180</param>
   <param name="svg_compact" type="bool" gui-text="Compact SVG">true</param>
   <effect>

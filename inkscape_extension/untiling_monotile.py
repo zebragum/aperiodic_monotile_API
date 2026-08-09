@@ -24,11 +24,18 @@ import urllib.request
 from pathlib import Path
 
 import inkex
-from inkex import etree
+from inkex import Transform, etree
 
 DEFAULT_API_BASE = "https://api.aperiodicgenerator.com"
 CONFIG_FILENAME = "untiling_api_key.txt"
 CA_BUNDLE_FILENAME = "cacert.pem"
+
+# Portrait reference close to A4 (210×297 → 21×29.7). Used when matching page aspect.
+DEFAULT_SHORT_SIDE = 21.0
+DEFAULT_MASK_WIDTH = 21.0
+DEFAULT_MASK_HEIGHT = 29.0
+
+SIDE_STYLES = ("flat", "curvy", "wavy", "jagged", "blocky")
 
 
 def _script_dir() -> Path:
@@ -133,6 +140,61 @@ def _absolute_url(api_base: str, url: str) -> str:
     return f"{api_base}{url}" if url.startswith("/") else url
 
 
+def _page_size_px(svg) -> tuple[float, float]:
+    """Return the document page size in user units (fallback: 21×29 aspect)."""
+
+    try:
+        width = float(svg.viewport_width)
+        height = float(svg.viewport_height)
+        if width > 0 and height > 0:
+            return width, height
+    except Exception:
+        pass
+    try:
+        vb = svg.get_viewbox()
+        if vb and len(vb) >= 4 and float(vb[2]) > 0 and float(vb[3]) > 0:
+            return float(vb[2]), float(vb[3])
+    except Exception:
+        pass
+    return DEFAULT_MASK_WIDTH * 10.0, DEFAULT_MASK_HEIGHT * 10.0
+
+
+def _mask_size_for_page(
+    *,
+    match_page: bool,
+    page_w: float,
+    page_h: float,
+    width: float,
+    height: float,
+) -> tuple[float, float]:
+    """Choose API mask width/height. Match page aspect when requested."""
+
+    if not match_page:
+        return max(1.0, float(width)), max(1.0, float(height))
+
+    if page_w <= 0 or page_h <= 0:
+        return DEFAULT_MASK_WIDTH, DEFAULT_MASK_HEIGHT
+
+    # Keep the short side near 21 (A4-like), stretch the long side to the page ratio.
+    if page_w <= page_h:
+        mask_w = DEFAULT_SHORT_SIDE
+        mask_h = DEFAULT_SHORT_SIDE * (page_h / page_w)
+    else:
+        mask_h = DEFAULT_SHORT_SIDE
+        mask_w = DEFAULT_SHORT_SIDE * (page_w / page_h)
+    return float(mask_w), float(mask_h)
+
+
+def _tile_size_to_scale(tile_size: float) -> float:
+    """UI 'Tile size': larger = bigger / chunkier tiles.
+
+    The API ``scale`` grows tiles the same way. Older 'scale' wording felt
+    backwards to people reading it as thickness, so the label is Tile size.
+    """
+
+    return max(0.05, float(tile_size))
+
+
 def _run_patch_job(
     *,
     api_base: str,
@@ -142,13 +204,25 @@ def _run_patch_job(
     scale: float,
     wait_timeout: int,
     svg_compact: bool,
+    side_style: str,
+    side_style_amplitude: float,
+    side_style_wavy_segments: int,
 ) -> tuple[str, bytes]:
-    body = {
+    body: dict = {
         "formats": ["svg"],
         "mask": {"type": "rectangle", "width": float(width), "height": float(height)},
         "scale": float(scale),
         "svg_compact": bool(svg_compact),
     }
+    style = (side_style or "flat").strip().lower()
+    if style not in SIDE_STYLES:
+        style = "flat"
+    if style != "flat":
+        body["side_style"] = style
+        body["side_style_amplitude"] = max(0.0, min(0.75, float(side_style_amplitude)))
+        if style == "wavy":
+            body["side_style_wavy_segments"] = max(4, min(64, int(side_style_wavy_segments)))
+
     response = _json_request("POST", f"{api_base}/v1/patch", api_key=api_key, body=body)
     job_id = response.get("job_id")
     if not job_id:
@@ -178,13 +252,52 @@ def _run_patch_job(
     return job_id, svg_bytes
 
 
+def _center_and_fit_group(svg, group, *, fit_to_page: bool, margin: float = 0.92) -> None:
+    """Scale (optional) and translate the imported group to the page center."""
+
+    bbox = group.bounding_box()
+    if bbox is None:
+        return
+    try:
+        gw = float(bbox.width)
+        gh = float(bbox.height)
+        left = float(bbox.left)
+        top = float(bbox.top)
+    except Exception:
+        return
+    if gw <= 0 or gh <= 0:
+        return
+
+    page_w, page_h = _page_size_px(svg)
+    scale = 1.0
+    if fit_to_page and page_w > 0 and page_h > 0:
+        scale = min((page_w * margin) / gw, (page_h * margin) / gh)
+
+    # Current visual center
+    cx = left + gw / 2.0
+    cy = top + gh / 2.0
+    # After uniform scale about origin, center moves by scale; place at page center.
+    target_x = page_w / 2.0
+    target_y = page_h / 2.0
+    dx = target_x - cx * scale
+    dy = target_y - cy * scale
+    group.transform = Transform(translate=(dx, dy)) @ Transform(scale=scale) @ group.transform
+
+
 class UntilingMonotileEffect(inkex.EffectExtension):
     def add_arguments(self, pars):
         pars.add_argument("--api_key", type=str, default="")
         pars.add_argument("--api_base", type=str, default=DEFAULT_API_BASE)
-        pars.add_argument("--width", type=float, default=40.0)
-        pars.add_argument("--height", type=float, default=24.0)
-        pars.add_argument("--scale", type=float, default=1.0)
+        pars.add_argument("--match_page", type=inkex.Boolean, default=True)
+        pars.add_argument("--width", type=float, default=DEFAULT_MASK_WIDTH)
+        pars.add_argument("--height", type=float, default=DEFAULT_MASK_HEIGHT)
+        pars.add_argument("--tile_size", type=float, default=1.0)
+        # Back-compat if an old .inx still sends --scale
+        pars.add_argument("--scale", type=float, default=None)
+        pars.add_argument("--side_style", type=str, default="flat")
+        pars.add_argument("--side_style_amplitude", type=float, default=0.12)
+        pars.add_argument("--side_style_wavy_segments", type=int, default=10)
+        pars.add_argument("--fit_to_page", type=inkex.Boolean, default=True)
         pars.add_argument("--wait_timeout", type=int, default=180)
         pars.add_argument("--svg_compact", type=inkex.Boolean, default=True)
 
@@ -197,21 +310,38 @@ class UntilingMonotileEffect(inkex.EffectExtension):
             )
 
         api_base = _clean_base_url(self.options.api_base)
+        page_w, page_h = _page_size_px(self.svg)
+        mask_w, mask_h = _mask_size_for_page(
+            match_page=bool(self.options.match_page),
+            page_w=page_w,
+            page_h=page_h,
+            width=self.options.width,
+            height=self.options.height,
+        )
+
+        tile_size = self.options.tile_size
+        if getattr(self.options, "scale", None) is not None and self.options.scale is not None:
+            # Old dialogs may still pass --scale only.
+            if abs(float(self.options.tile_size) - 1.0) < 1e-9:
+                tile_size = float(self.options.scale)
+        scale = _tile_size_to_scale(tile_size)
+
         try:
             job_id, svg_bytes = _run_patch_job(
                 api_base=api_base,
                 api_key=api_key,
-                width=self.options.width,
-                height=self.options.height,
-                scale=self.options.scale,
+                width=mask_w,
+                height=mask_h,
+                scale=scale,
                 wait_timeout=self.options.wait_timeout,
                 svg_compact=bool(self.options.svg_compact),
+                side_style=str(self.options.side_style or "flat"),
+                side_style_amplitude=float(self.options.side_style_amplitude),
+                side_style_wavy_segments=int(self.options.side_style_wavy_segments),
             )
         except Exception as exc:
             raise inkex.AbortExtension(str(exc)) from exc
 
-        # Prefer merging into the open document. Also keep a tempfile for debugging /
-        # alternate workflows that consume a file path.
         tmp = Path(tempfile.gettempdir()) / f"untiling_monotile_{job_id[:8]}.svg"
         tmp.write_bytes(svg_bytes)
 
@@ -226,31 +356,39 @@ class UntilingMonotileEffect(inkex.EffectExtension):
         group.set("id", f"untiling-monotile-{job_id[:8]}")
         group.label = f"Monotile {job_id[:8]}"
 
-        # Drop nested <svg> chrome; keep drawable children.
         if imported.tag.endswith("svg"):
             for child in list(imported):
                 group.append(child)
         else:
             group.append(imported)
 
-        self.svg.get_current_layer().append(group)
-        inkex.errormsg(f"Imported monotile patch {job_id} (also saved to {tmp})")
+        layer = self.svg.get_current_layer()
+        layer.append(group)
+        # Bounding boxes need the node in the document tree.
+        _center_and_fit_group(
+            self.svg,
+            group,
+            fit_to_page=bool(self.options.fit_to_page),
+        )
+        inkex.errormsg(
+            f"Imported monotile patch {job_id} "
+            f"({mask_w:.1f}×{mask_h:.1f}, style={self.options.side_style}; also saved to {tmp})"
+        )
 
 
 if __name__ == "__main__":
-    # Allow CLI dry-run without Inkscape: write SVG to stdout when --stdout is passed.
     if "--stdout" in sys.argv:
         sys.argv = [a for a in sys.argv if a != "--stdout"]
-        # Minimal argparse-free CLI for packaging tests.
         api_key = _load_api_key(os.environ.get("UNTILING_API_KEY_UI", ""))
         if not api_key:
             sys.stderr.write("Missing API key\n")
             sys.exit(2)
-        width = float(os.environ.get("UNTILING_WIDTH", "40"))
-        height = float(os.environ.get("UNTILING_HEIGHT", "24"))
+        width = float(os.environ.get("UNTILING_WIDTH", str(DEFAULT_MASK_WIDTH)))
+        height = float(os.environ.get("UNTILING_HEIGHT", str(DEFAULT_MASK_HEIGHT)))
         scale = float(os.environ.get("UNTILING_SCALE", "1"))
         timeout = int(os.environ.get("UNTILING_WAIT", "180"))
         base = _clean_base_url(os.environ.get("UNTILING_API_BASE", DEFAULT_API_BASE))
+        style = os.environ.get("UNTILING_SIDE_STYLE", "flat")
         _, svg_bytes = _run_patch_job(
             api_base=base,
             api_key=api_key,
@@ -259,6 +397,9 @@ if __name__ == "__main__":
             scale=scale,
             wait_timeout=timeout,
             svg_compact=True,
+            side_style=style,
+            side_style_amplitude=float(os.environ.get("UNTILING_SIDE_AMP", "0.12")),
+            side_style_wavy_segments=int(os.environ.get("UNTILING_SIDE_WAVY", "10")),
         )
         sys.stdout.buffer.write(svg_bytes)
         sys.exit(0)
