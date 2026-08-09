@@ -1,6 +1,9 @@
-/** Shared site/API origins — loaded before app.js on pages that call the API. */
+/** Shared site/API origins — loaded before app scripts on pages that call the API. */
 (function () {
   window.SITE_CONFIG = {
+    untilingOrigin: "https://untiling.com",
+    generatorOrigin: "https://aperiodicgenerator.com",
+    // Back-compat aliases
     siteOrigin: "https://untiling.com",
     legacySiteOrigin: "https://aperiodicgenerator.com",
     apiBase: "https://api.untiling.com",

@@ -3,6 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Shared static deploy: Render does not honor host-conditional _redirects.
+      AperiodicGenerator.com must land on the generator, not this Untiling hub.
+    -->
+    <script>
+      (function () {
+        var host = (location.hostname || "").toLowerCase().replace(/^www\./, "");
+        if (host === "aperiodicgenerator.com") {
+          location.replace("/generate.html");
+        }
+      })();
+    </script>
     <title>Untiling | Surfaces that never repeat</title>
     <meta
       name="description"
