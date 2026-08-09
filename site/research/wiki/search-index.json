@@ -122,7 +122,7 @@
   {
     "slug": "robotics-and-mobility",
     "title": "Robotics and mobility",
-    "summary": "Aperiodic surfaces as navigation substrates: every neighborhood is a unique landmark.",
+    "summary": "Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays.",
     "categories": [
       "Research frontiers"
     ]
@@ -130,7 +130,7 @@
   {
     "slug": "biology-and-medicine",
     "title": "Biology and medicine",
-    "summary": "Geometric scaffolds for packing, growth, folding, and implant design studies.",
+    "summary": "Geometric scaffolds for packing, growth, folding, implant design \u2014 and concrete navigation experiments.",
     "categories": [
       "Research frontiers"
     ]
@@ -164,7 +164,7 @@
   {
     "slug": "bibliography",
     "title": "Bibliography",
-    "summary": "71 curated scholarly references, tools index, and an automated discovery registry.",
+    "summary": "72 curated scholarly references, tools index, and an automated discovery registry.",
     "categories": [
       "References"
     ]

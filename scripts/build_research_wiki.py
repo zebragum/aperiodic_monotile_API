@@ -275,6 +275,10 @@ REFERENCES: list[dict] = [
          title="A Family of Non-Periodic Tilings, Describable Using Elementary Tools and Exhibiting a New Kind of Structural Regularity",
          arxiv="2506.07638",
          note="Modulo Krinkle monohedral tiles: elementary non-periodic (often spiral) tilings; not an einstein."),
+    dict(n=72, authors="Peter Wide and Holger Schellwat",
+         title="Position detection of an autonomous robot by aperiodic tilings",
+         doi="10.1109/IMTC.1997.604016",
+         note="Early robotics result: aperiodic floor patterns for absolute pose from local tile configuration."),
 ]
 
 WEB_RESOURCES = [
@@ -1580,7 +1584,7 @@ ARTICLES: list[Article] = [
         },
         sections=[
             Section(
-                "One geometry, many outputs",
+                "Cutting, molding, and toolpaths",
                 2,
                 f"""
 <p>
@@ -1826,47 +1830,100 @@ ARTICLES: list[Article] = [
     Article(
         slug="robotics-and-mobility",
         title="Robotics and mobility",
-        summary="Aperiodic surfaces as navigation substrates: every neighborhood is a unique landmark.",
+        summary="Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays.",
         categories=["Research frontiers"],
-        see_also=["algorithms-and-machine-learning"],
+        see_also=["signal-processing", "aliasing", "algorithms-and-machine-learning"],
         infobox={
-            "Status": "Research frontier (no published robotics demo yet)",
-            "Key benefit": "Position from local appearance",
+            "Status": "Research frontier with deep antecedents",
+            "Key benefit": "Unique local neighborhoods; regenerable maps",
+            "Sensors": f'{link("signal-processing", "Signal processing and imaging")}',
         },
         sections=[
             Section(
-                "Why aperiodic beats periodic here",
+                "The localization argument",
                 2,
                 f"""
 <p>
-  <em>No published robotics application uses monotile floors yet; the argument below is a research
-  direction, not a demonstrated product.</em> Regular grids are the worst possible texture for visual
-  localization: every cell looks like every other cell, so a camera looking at a periodic floor learns
-  nothing about <em>where</em> it is. Random textures
-  are locally distinctive but cannot be regenerated or queried. An aperiodic monotile surface is the
-  interesting middle: <strong>every neighborhood is provably unique</strong>,{cite(2)} yet the whole
-  surface is deterministic — a robot that recognizes its local tile configuration can, in principle, look
-  up its exact pose. The tiling is simultaneously the floor and the map.
+  Periodic floors are hostile to visual localization: every cell looks like every other cell, so a downward
+  camera learns almost nothing about <em>where</em> it is. Random textures are locally distinctive but
+  cannot be regenerated, queried, or shared as a ground-truth map across labs. An aperiodic monotile
+  surface sits in the useful middle: <strong>every sufficiently large neighborhood is unique</strong>,{cite(2)}
+  yet the whole field is deterministic — a robot that reads its local tile configuration can, in principle,
+  recover absolute pose from a lookup table built from the same seed.
 </p>
 {FIG_ROBOTICS_HORIZON}
 <p>
-  Algorithmic groundwork exists: exact extraction of finite tessellation structure from observed
-  fragments{cite(25)} is precisely the primitive a localization system needs, and computational tiling
-  search shows the machinery scales.{cite(17)} Fibonacci-structured tile counts give the hierarchy usable
-  statistical signatures at every scale.{cite(12)}
+  This is not only a 2023 idea. Autonomous-robot localization from aperiodic floor patterns was already
+  proposed and implemented with Penrose-like tilings in the 1990s: scan a local patch, decode position from
+  configuration, and improve precision as the scanned neighborhood grows — with better robustness to missed
+  line counts than a rectangular grid.{cite(72)} Monotiles sharpen the same program: one prototile, no
+  matching rules to paint, stable IDs and affines for every tile, and regenerable patches for any arena size
+  from {link("resources-and-tools", "generators")} such as
+  <a href="https://aperiodicgenerator.com/" rel="noopener noreferrer">aperiodicgenerator.com</a>.
 </p>
 """,
             ),
             Section(
-                "Test surfaces and mechanics",
+                "Sensors, arrays, and sampling",
                 2,
-                """
+                f"""
+<p>
+  Robotics is not only cameras on floors. Where you <em>place</em> sensors — lidar stations, microphones,
+  ultrasonic beacons, pressure taxels, RF nodes — is a spatial sampling problem. Periodic lattices alias;
+  purely random deployments are hard to certify. Aperiodic monotile centroids and adjacency graphs give
+  <strong>ordered, non-repeating sample layouts</strong> with documented spectral advantages over regular
+  grids for wavefield sampling and beamforming.{cite(37)} That literature lives on
+  {link("signal-processing", "Signal processing and imaging")} and
+  {link("aliasing", "Aliasing")}; robotics inherits it for:
+</p>
 <ul>
-  <li>Repeatable benchmark terrains: deterministic aperiodic ground for SLAM and motion-planning papers,
-  regenerable exactly from a seed by any lab</li>
-  <li>Grasping and traction textures with no periodic slip planes</li>
+  <li><strong>Multi-robot and WSN coverage</strong> — place nodes at tile centroids so coverage has no
+  periodic blind corridors and clone/intrusion routes are harder to predict from local structure.</li>
+  <li><strong>Active sensing footprints</strong> — raster or spiral coverage paths that follow substitution
+  hierarchy instead of lawnmower rows, reducing resonant vibration on the vehicle and patterned wear on
+  the floor.</li>
+  <li><strong>Tactile and force arrays</strong> — taxel layouts without a single lattice frequency, so
+  slip and contact signatures do not lock to the sensor grid.</li>
+</ul>
+""",
+            ),
+            Section(
+                "SLAM, planning, and shared benchmarks",
+                2,
+                f"""
+<p>
+  Because every patch regenerates exactly from a seed, an aperiodic arena is a <strong>shared
+  benchmark terrain</strong>: two labs can print or project the same floor, publish trajectories against
+  the same tile IDs, and compare SLAM or planning papers without arguing about texture randomness.
+  Algorithmic primitives already exist for recovering finite tessellation structure from observed
+  fragments{cite(25)} and for searching tiling space at scale.{cite(17)} Hierarchical tile counts
+  (Fibonacci / Lucas signatures) give multi-scale statistical fingerprints a localizer can use when
+  vision is partial.{cite(12)}
+</p>
+<p>
+  Open problems that serious roboticists will recognize as load-bearing:
+</p>
+<ul>
+  <li>How large a neighborhood must a downward camera see to uniquely identify pose under occlusion,
+  dirt, and lighting change?</li>
+  <li>Can substitution hierarchy be used as a coarse-to-fine localization cascade (cluster → tile →
+  sub-vertex)?</li>
+  <li>What happens to visual odometry drift on aperiodic vs checkerboard floors at the same spatial
+  frequency content?</li>
+  <li>How should motion planners exploit unique corridors without reintroducing periodic cost maps?</li>
+</ul>
+""",
+            ),
+            Section(
+                "Mechanics and contact",
+                2,
+                f"""
+<ul>
+  <li>Grasping and traction textures with no periodic slip planes — related to aperiodic lattice
+  mechanics in {link("materials-science", "Materials science and fluids")}</li>
   <li>Tire tread, road surface, and rail-bed studies where periodic patterns excite resonance</li>
-  <li>Deployable structures and folding mechanisms; flat-foldability synthesis tools point the way</li>
+  <li>Soft-robot skin layouts and conformal sensor meshes derived from clipped monotile patches</li>
+  <li>Deployable / folding mobility structures; flat-foldability synthesis points the way{cite(26)}{cite(51)}</li>
 </ul>
 """,
             ),
@@ -1876,10 +1933,10 @@ ARTICLES: list[Article] = [
     Article(
         slug="biology-and-medicine",
         title="Biology and medicine",
-        summary="Geometric scaffolds for packing, growth, folding, and implant design studies.",
+        summary="Geometric scaffolds for packing, growth, folding, implant design — and concrete navigation experiments.",
         categories=["Research frontiers"],
-        see_also=["materials-science"],
-        infobox={"Status": "Research frontier"},
+        see_also=["materials-science", "robotics-and-mobility", "education"],
+        infobox={"Status": "Research frontier", "Suggested experiment": "Aperiodic mouse / rodent maze"},
         sections=[
             Section(
                 "Clean scaffolds for messy questions",
@@ -1901,13 +1958,49 @@ ARTICLES: list[Article] = [
 """,
             ),
             Section(
-                "Directions",
+                "Suggested experiment: the aperiodic mouse maze",
+                2,
+                f"""
+<p>
+  Spatial navigation labs already know that cue layout changes behavior: radial-arm mazes, Barnes mazes,
+  and Morris water mazes carefully control distal landmarks because rodents (and their place / grid cell
+  systems) exploit them. An aperiodic monotile floor or wall field is a stronger, still controllable
+  intervention: <strong>every local patch is unique</strong>, so “same corridor, different place” is
+  geometrically enforced — unlike a checkerboard or brick floor, where many local views are identical.
+</p>
+<p>
+  A concrete protocol sketch:
+</p>
+<ol>
+  <li><strong>Build two matched arenas</strong> of equal area and wall height — one with a periodic tile
+  or grid floor, one with a Spectre / Tile(1,1) patch generated for the exact footprint (same tile count
+  order of magnitude, same contrast paint).</li>
+  <li><strong>Train rodents on a goal location</strong> (food / escape / platform) with identical distal
+  room cues in both arenas.</li>
+  <li><strong>Probe under cue conflict</strong>: rotate or shift a local floor region, or start the animal
+  from a geometrically analogous but non-identical monotile neighborhood. Ask whether path efficiency,
+  heading error, and re-orientation latency differ between periodic and aperiodic floors.</li>
+  <li><strong>Optional electrophysiology / imaging</strong>: compare place-field stability and remapping
+  when the animal revisits a visually similar corridor that is <em>not</em> the same tile neighborhood
+  (impossible to arrange cleanly on a periodic lattice).</li>
+</ol>
+<p>
+  The point is not that brains “use monotiles.” It is that monotile geometry gives experimentalists a
+  regenerable, ID-addressable landmark field where uniqueness is a theorem, not a hope — the same reason
+  {link("robotics-and-mobility", "robotics")} cares about aperiodic floors for localization.{cite(72)}
+</p>
+""",
+            ),
+            Section(
+                "Other directions",
                 2,
                 """
 <ul>
   <li>Morphogenesis, shell growth, protein folding, cellular packing, and neural geometry studies</li>
   <li>Implants, prosthetics, vascular stents, tissue scaffolds, and surgical planning</li>
   <li>Crystal nucleation templates, catalysts, zeolites, and molecular cage geometry</li>
+  <li>Microfluidic channel layouts without periodic recirculation traps</li>
+  <li>Behavioral arenas for insects and fish with regenerable aperiodic visual texture</li>
 </ul>
 """,
             ),

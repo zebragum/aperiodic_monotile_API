@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Robotics and mobility | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
-    <meta name="description" content="Aperiodic surfaces as navigation substrates: every neighborhood is a unique landmark." />
+    <meta name="description" content="Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays." />
     <link rel="canonical" href="https://untiling.com/research/wiki/robotics-and-mobility.html" />
     <meta name="robots" content="index,follow" />
     <link rel="stylesheet" href="../../styles.css" />
@@ -74,13 +74,15 @@
         <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Robotics and mobility</span></p>
         <header class="wiki-header">
           <h1 class="wiki-title">Robotics and mobility</h1>
-          <p class="wiki-tagline">Aperiodic surfaces as navigation substrates: every neighborhood is a unique landmark.</p>
+          <p class="wiki-tagline">Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays.</p>
         </header>
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Why aperiodic beats periodic here</a></li>
-<li><a href="#section-1">Test surfaces and mechanics</a></li>
+<li><a href="#section-0">The localization argument</a></li>
+<li><a href="#section-1">Sensors, arrays, and sampling</a></li>
+<li><a href="#section-2">SLAM, planning, and shared benchmarks</a></li>
+<li><a href="#section-3">Mechanics and contact</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -88,19 +90,17 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Robotics and mobility</p>
-  <table><tr><th>Status</th><td>Research frontier (no published robotics demo yet)</td></tr><tr><th>Key benefit</th><td>Position from local appearance</td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier with deep antecedents</td></tr><tr><th>Key benefit</th><td>Unique local neighborhoods; regenerable maps</td></tr><tr><th>Sensors</th><td><a href="signal-processing.html">Signal processing and imaging</a></td></tr></table>
 </aside>
 
-          <h2 id="section-0">Why aperiodic beats periodic here</h2>
+          <h2 id="section-0">The localization argument</h2>
 <p>
-  <em>No published robotics application uses monotile floors yet; the argument below is a research
-  direction, not a demonstrated product.</em> Regular grids are the worst possible texture for visual
-  localization: every cell looks like every other cell, so a camera looking at a periodic floor learns
-  nothing about <em>where</em> it is. Random textures
-  are locally distinctive but cannot be regenerated or queried. An aperiodic monotile surface is the
-  interesting middle: <strong>every neighborhood is provably unique</strong>,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet the whole
-  surface is deterministic — a robot that recognizes its local tile configuration can, in principle, look
-  up its exact pose. The tiling is simultaneously the floor and the map.
+  Periodic floors are hostile to visual localization: every cell looks like every other cell, so a downward
+  camera learns almost nothing about <em>where</em> it is. Random textures are locally distinctive but
+  cannot be regenerated, queried, or shared as a ground-truth map across labs. An aperiodic monotile
+  surface sits in the useful middle: <strong>every sufficiently large neighborhood is unique</strong>,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+  yet the whole field is deterministic — a robot that reads its local tile configuration can, in principle,
+  recover absolute pose from a lookup table built from the same seed.
 </p>
 
 <figure class="wiki-figure">
@@ -109,20 +109,64 @@
 </figure>
 
 <p>
-  Algorithmic groundwork exists: exact extraction of finite tessellation structure from observed
-  fragments<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> is precisely the primitive a localization system needs, and computational tiling
-  search shows the machinery scales.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> Fibonacci-structured tile counts give the hierarchy usable
-  statistical signatures at every scale.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup>
+  This is not only a 2023 idea. Autonomous-robot localization from aperiodic floor patterns was already
+  proposed and implemented with Penrose-like tilings in the 1990s: scan a local patch, decode position from
+  configuration, and improve precision as the scanned neighborhood grows — with better robustness to missed
+  line counts than a rectangular grid.<sup class="citation"><a href="bibliography.html#ref-72">[72]</a></sup> Monotiles sharpen the same program: one prototile, no
+  matching rules to paint, stable IDs and affines for every tile, and regenerable patches for any arena size
+  from <a href="resources-and-tools.html">generators</a> such as
+  <a href="https://aperiodicgenerator.com/" rel="noopener noreferrer">aperiodicgenerator.com</a>.
 </p>
-<h2 id="section-1">Test surfaces and mechanics</h2>
+<h2 id="section-1">Sensors, arrays, and sampling</h2>
+<p>
+  Robotics is not only cameras on floors. Where you <em>place</em> sensors — lidar stations, microphones,
+  ultrasonic beacons, pressure taxels, RF nodes — is a spatial sampling problem. Periodic lattices alias;
+  purely random deployments are hard to certify. Aperiodic monotile centroids and adjacency graphs give
+  <strong>ordered, non-repeating sample layouts</strong> with documented spectral advantages over regular
+  grids for wavefield sampling and beamforming.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup> That literature lives on
+  <a href="signal-processing.html">Signal processing and imaging</a> and
+  <a href="aliasing.html">Aliasing</a>; robotics inherits it for:
+</p>
 <ul>
-  <li>Repeatable benchmark terrains: deterministic aperiodic ground for SLAM and motion-planning papers,
-  regenerable exactly from a seed by any lab</li>
-  <li>Grasping and traction textures with no periodic slip planes</li>
-  <li>Tire tread, road surface, and rail-bed studies where periodic patterns excite resonance</li>
-  <li>Deployable structures and folding mechanisms; flat-foldability synthesis tools point the way</li>
+  <li><strong>Multi-robot and WSN coverage</strong> — place nodes at tile centroids so coverage has no
+  periodic blind corridors and clone/intrusion routes are harder to predict from local structure.</li>
+  <li><strong>Active sensing footprints</strong> — raster or spiral coverage paths that follow substitution
+  hierarchy instead of lawnmower rows, reducing resonant vibration on the vehicle and patterned wear on
+  the floor.</li>
+  <li><strong>Tactile and force arrays</strong> — taxel layouts without a single lattice frequency, so
+  slip and contact signatures do not lock to the sensor grid.</li>
 </ul>
-<h2>See also</h2><p><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></p>
+<h2 id="section-2">SLAM, planning, and shared benchmarks</h2>
+<p>
+  Because every patch regenerates exactly from a seed, an aperiodic arena is a <strong>shared
+  benchmark terrain</strong>: two labs can print or project the same floor, publish trajectories against
+  the same tile IDs, and compare SLAM or planning papers without arguing about texture randomness.
+  Algorithmic primitives already exist for recovering finite tessellation structure from observed
+  fragments<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> and for searching tiling space at scale.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> Hierarchical tile counts
+  (Fibonacci / Lucas signatures) give multi-scale statistical fingerprints a localizer can use when
+  vision is partial.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup>
+</p>
+<p>
+  Open problems that serious roboticists will recognize as load-bearing:
+</p>
+<ul>
+  <li>How large a neighborhood must a downward camera see to uniquely identify pose under occlusion,
+  dirt, and lighting change?</li>
+  <li>Can substitution hierarchy be used as a coarse-to-fine localization cascade (cluster → tile →
+  sub-vertex)?</li>
+  <li>What happens to visual odometry drift on aperiodic vs checkerboard floors at the same spatial
+  frequency content?</li>
+  <li>How should motion planners exploit unique corridors without reintroducing periodic cost maps?</li>
+</ul>
+<h2 id="section-3">Mechanics and contact</h2>
+<ul>
+  <li>Grasping and traction textures with no periodic slip planes — related to aperiodic lattice
+  mechanics in <a href="materials-science.html">Materials science and fluids</a></li>
+  <li>Tire tread, road surface, and rail-bed studies where periodic patterns excite resonance</li>
+  <li>Soft-robot skin layouts and conformal sensor meshes derived from clipped monotile patches</li>
+  <li>Deployable / folding mobility structures; flat-foldability synthesis points the way<sup class="citation"><a href="bibliography.html#ref-26">[26]</a></sup><sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup></li>
+</ul>
+<h2>See also</h2><p><a href="signal-processing.html">Signal processing and imaging</a>, <a href="aliasing.html">Aliasing</a>, <a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
