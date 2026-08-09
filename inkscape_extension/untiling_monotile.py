@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import ssl
 import sys
 import tempfile
 import time
@@ -27,10 +28,45 @@ from inkex import etree
 
 DEFAULT_API_BASE = "https://api.aperiodicgenerator.com"
 CONFIG_FILENAME = "untiling_api_key.txt"
+CA_BUNDLE_FILENAME = "cacert.pem"
 
 
 def _script_dir() -> Path:
     return Path(__file__).resolve().parent
+
+
+def _ssl_context() -> ssl.SSLContext:
+    """Build a verify context Inkscape's embedded Python can actually use.
+
+    Inkscape on Windows often ships a Python without a usable CA store, which
+    surfaces as CERTIFICATE_VERIFY_FAILED against Let's Encrypt / Render.
+    Prefer a CA bundle next to this script, then certifi, then the system default.
+    """
+
+    bundled = _script_dir() / CA_BUNDLE_FILENAME
+    if bundled.is_file():
+        return ssl.create_default_context(cafile=str(bundled))
+    try:
+        import certifi  # type: ignore
+
+        return ssl.create_default_context(cafile=certifi.where())
+    except Exception:
+        pass
+    return ssl.create_default_context()
+
+
+def _urlopen(request: urllib.request.Request, *, timeout: int):
+    try:
+        return urllib.request.urlopen(request, timeout=timeout, context=_ssl_context())
+    except urllib.error.URLError as exc:
+        reason = str(getattr(exc, "reason", exc))
+        if "CERTIFICATE_VERIFY_FAILED" in reason or "SSL" in reason.upper():
+            raise RuntimeError(
+                "TLS certificate verify failed. Re-install the Inkscape extension "
+                f"and keep {CA_BUNDLE_FILENAME} next to untiling_monotile.py "
+                f"(same folder as the .inx). Detail: {exc}"
+            ) from exc
+        raise
 
 
 def _load_api_key(ui_value: str) -> str:
@@ -68,7 +104,7 @@ def _json_request(
         headers["X-API-Key"] = api_key.strip()
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with _urlopen(request, timeout=timeout) as response:
             raw = response.read().decode("utf-8")
             return json.loads(raw or "{}")
     except urllib.error.HTTPError as exc:
@@ -89,7 +125,7 @@ def _json_request(
 
 def _download_bytes(url: str, *, timeout: int = 180) -> bytes:
     request = urllib.request.Request(url, headers={"Accept": "*/*"}, method="GET")
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    with _urlopen(request, timeout=timeout) as response:
         return response.read()
 
 
