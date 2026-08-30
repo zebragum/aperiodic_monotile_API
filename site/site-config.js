@@ -1,4 +1,4 @@
-/** Shared site/API origins — loaded before app scripts on pages that call the API. */
+/** Shared site/API origins, loaded before app scripts on pages that call the API. */
 (function () {
   window.SITE_CONFIG = {
     untilingOrigin: "https://untiling.com",

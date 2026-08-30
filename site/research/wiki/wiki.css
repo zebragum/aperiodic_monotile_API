@@ -1,4 +1,4 @@
-/* Research wiki — Wikipedia-like structure, site palette */
+/* Research wiki, Wikipedia-like structure, site palette */
 
 .wiki-body {
   --wiki-sidebar: 15.5rem;
@@ -394,7 +394,7 @@
   box-shadow: var(--shadow);
 }
 
-/* Wikipedia-style floating thumbs — text wraps beside them */
+/* Wikipedia-style floating thumbs, text wraps beside them */
 .wiki-figure-float-left,
 .wiki-figure-float-right {
   margin-top: 0.15rem;

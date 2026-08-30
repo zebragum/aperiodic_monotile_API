@@ -4,16 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Aliasing | Research Wiki | Untiling</title>
-    <meta name="description" content="How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them." />
+    <meta name="description" content="How periodic structure creates false patterns under sampling, and why aperiodic monotile layouts resist them." />
     <link rel="canonical" href="https://untiling.com/research/wiki/aliasing.html" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Aliasing | Untiling Research Wiki" />
-    <meta property="og:description" content="How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them." />
+    <meta property="og:description" content="How periodic structure creates false patterns under sampling, and why aperiodic monotile layouts resist them." />
     <meta property="og:url" content="https://untiling.com/research/wiki/aliasing.html" />
     <meta property="og:site_name" content="Untiling" />
     <meta name="twitter:card" content="summary" />
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Aliasing", "description": "How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them.", "url": "https://untiling.com/research/wiki/aliasing.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Aliasing", "description": "How periodic structure creates false patterns under sampling, and why aperiodic monotile layouts resist them.", "url": "https://untiling.com/research/wiki/aliasing.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -87,7 +87,7 @@
         <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Aliasing</span></p>
         <header class="wiki-header">
           <h1 class="wiki-title">Aliasing</h1>
-          <p class="wiki-tagline">How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them.</p>
+          <p class="wiki-tagline">How periodic structure creates false patterns under sampling, and why aperiodic monotile layouts resist them.</p>
         </header>
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
@@ -104,7 +104,7 @@
           
 <figure class="wiki-figure wiki-figure-float-left">
   <img src="../../assets/research/wiki/aliasing-cover-web.jpg" alt="Dense checker-like landscape with strong sampling and aliasing artifacts" width="320" loading="lazy" decoding="async" />
-  <figcaption><strong>Aliasing on a periodic lattice.</strong> When high-frequency regular structure meets limited resolution — a camera, a screen, a texture sampler — false low-frequency patterns appear. <a href="../../assets/research/wiki/aliasing-cover.jpg">Full resolution</a></figcaption>
+  <figcaption><strong>Aliasing on a periodic lattice.</strong> When high-frequency regular structure meets limited resolution, a camera, a screen, a texture sampler, false low-frequency patterns appear. <a href="../../assets/research/wiki/aliasing-cover.jpg">Full resolution</a></figcaption>
 </figure>
 
           
@@ -117,31 +117,31 @@
 <p>
   In signal processing and computer graphics, <strong>aliasing</strong> is the appearance of false
   structure when a continuous (or finely detailed) signal is sampled too coarsely. A high frequency that
-  the sampler cannot resolve does not disappear — it <em>folds</em> into a lower frequency the system
+  the sampler cannot resolve does not disappear, it <em>folds</em> into a lower frequency the system
   <em>can</em> represent. On a screen that looks like shimmering edges, crawling lines, or striped bands
-  that were never in the scene. The Nyquist–Shannon sampling theorem is the classical statement: to
+  that were never in the scene. The Nyquist-Shannon sampling theorem is the classical statement: to
   reconstruct a band-limited signal faithfully, you must sample at least twice its highest frequency.
 </p>
 <p>
   Spatial aliasing is the same idea in 2D. A brick wall, a fence, a checkerboard, or a dense hatched fill
   has a dominant lattice frequency. When that frequency approaches the pixel (or sensor, or print-dot)
-  frequency, the two grids beat — and you see a pattern that belongs to neither grid alone. That beat is
+  frequency, the two grids beat, and you see a pattern that belongs to neither grid alone. That beat is
   closely related to <a href="moire.html">moiré</a>; aliasing is the sampling-side story, moiré the overlay story.
 </p>
 <h2 id="section-1">Why regular tilings are fragile</h2>
 <p>
-  Periodic monohedral tilings — squares, hexagons, brickwork — are efficient and familiar, but they put
+  Periodic monohedral tilings, squares, hexagons, brickwork, are efficient and familiar, but they put
   almost all of their energy on a few reciprocal-lattice peaks. Point a camera, mipmap a texture, or
   print at an awkward DPI, and those peaks are exactly what collide with the sample lattice.
 </p>
 <p>
   Anti-aliasing filters (mipmaps, supersampling, anisotropic filtering) try to remove frequencies the
   display cannot carry. They help, but they also blur. Random noise textures dodge the lattice problem
-  by having no coherent peaks — at the cost of structure, reproducibility, and clean fabrication IDs.
+  by having no coherent peaks, at the cost of structure, reproducibility, and clean fabrication IDs.
 </p>
 <p>
   Aperiodic monotile patches sit between those extremes: <strong>ordered but non-repeating</strong>,
-  with diffraction more like a quasicrystal than a crystal — sharp features, yet no single translational
+  with diffraction more like a quasicrystal than a crystal, sharp features, yet no single translational
   lattice to lock onto the sample grid.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup> Synthetic beamforming on selected Hat-family layouts
   reports lower sidelobes than tested regular and aperiodic controls, but this is not hardware or an
   image-reconstruction result.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
@@ -149,7 +149,7 @@
 <h2 id="section-2">A cleaner monotile surface</h2>
 <p>
   Below, a landscape shaded with an aperiodic monotile packing. There is still plenty of edge detail, but
-  the structure does not present one repeating period for the image grid to quarrel with — so the surface
+  the structure does not present one repeating period for the image grid to quarrel with, so the surface
   stays readable instead of dissolving into false bands.
 </p>
 
@@ -171,13 +171,13 @@
 </figure>
 <h2 id="section-4">Practical takeaways for monotile work</h2>
 <ul>
-  <li><strong>Textures and decals</strong> — prefer aperiodic packing when the pattern will be viewed
+  <li><strong>Textures and decals</strong>, prefer aperiodic packing when the pattern will be viewed
   across many scales (games cameras, print proofs, video).</li>
-  <li><strong>Scatter and fill</strong> — monotile instance layouts avoid the row/column bands of a grid
+  <li><strong>Scatter and fill</strong>, monotile instance layouts avoid the row/column bands of a grid
   scatter without looking random.</li>
-  <li><strong>Halftone and fabrication</strong> — when a screen or toolpath is itself periodic, pairing it
+  <li><strong>Halftone and fabrication</strong>, when a screen or toolpath is itself periodic, pairing it
   with a periodic artwork doubles the risk; an aperiodic artwork removes one of the two lattices.</li>
-  <li><strong>Do not confuse the two effects</strong> — deliberate layered overlays are <a href="moire.html">moiré</a>
+  <li><strong>Do not confuse the two effects</strong>, deliberate layered overlays are <a href="moire.html">moiré</a>
   research; accidental undersampling of one lattice is aliasing.</li>
 </ul>
 <p>

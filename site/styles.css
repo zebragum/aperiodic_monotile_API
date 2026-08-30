@@ -843,7 +843,7 @@ ul.pricing-value-list {
 }
 
 .docs-fold[open] summary::after {
-  content: "–";
+  content: "-";
 }
 
 .docs-fold-label {

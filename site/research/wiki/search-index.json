@@ -2,7 +2,7 @@
   {
     "slug": "index",
     "title": "Main Page",
-    "summary": "The aperiodic monotile research wiki \u2014 concepts, mathematics, and application frontiers.",
+    "summary": "The aperiodic monotile research wiki, concepts, mathematics, and application frontiers.",
     "categories": [
       "Research"
     ]
@@ -109,7 +109,7 @@
   {
     "slug": "aliasing",
     "title": "Aliasing",
-    "summary": "How periodic structure creates false patterns under sampling \u2014 and why aperiodic monotile layouts resist them.",
+    "summary": "How periodic structure creates false patterns under sampling, and why aperiodic monotile layouts resist them.",
     "categories": [
       "Concepts",
       "Computer graphics",
@@ -135,7 +135,7 @@
   {
     "slug": "materials-and-fabrication",
     "title": "Materials and fabrication",
-    "summary": "From relief panels to STL toolpaths \u2014 one patch, many physical outputs.",
+    "summary": "From relief panels to STL toolpaths, one patch, many physical outputs.",
     "categories": [
       "Applications"
     ]
@@ -159,7 +159,7 @@
   {
     "slug": "waves-and-photonics",
     "title": "Waves, acoustics, and photonics",
-    "summary": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies \u2014 now with experimental results.",
+    "summary": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies, now with experimental results.",
     "categories": [
       "Research frontiers"
     ]
@@ -183,7 +183,7 @@
   {
     "slug": "biology-and-medicine",
     "title": "Biology and medicine",
-    "summary": "Geometric scaffolds for packing, growth, folding, implant design \u2014 and concrete navigation experiments.",
+    "summary": "Geometric scaffolds for packing, growth, folding, implant design, and concrete navigation experiments.",
     "categories": [
       "Research frontiers"
     ]

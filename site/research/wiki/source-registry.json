@@ -1149,7 +1149,7 @@
       "url": "https://doi.org/10.1063/5.0264955",
       "venue": "Journal of Mathematical Physics",
       "type": "journal-article",
-      "abstract": "The diffraction spectra of the Hat and Spectre monotile tilings, which are known to be pure point, are derived and computed explicitly. This is done via model set representatives of self-similar members in the topological conjugacy classes of the Hat and the Spectre tiling, which are the CAP and the CASPr tiling, respectively. This is followed by suitable reprojections of the model sets to represent the original Hat and Spectre tilings, which also allows to calculate their Fourier–Bohr coefficients explicitly. Since the windows of the underlying model sets have fractal boundaries, these coefficients need to be computed via an exact renormalization cocycle in internal space.",
+      "abstract": "The diffraction spectra of the Hat and Spectre monotile tilings, which are known to be pure point, are derived and computed explicitly. This is done via model set representatives of self-similar members in the topological conjugacy classes of the Hat and the Spectre tiling, which are the CAP and the CASPr tiling, respectively. This is followed by suitable reprojections of the model sets to represent the original Hat and Spectre tilings, which also allows to calculate their Fourier-Bohr coefficients explicitly. Since the windows of the underlying model sets have fractal boundaries, these coefficients need to be computed via an exact renormalization cocycle in internal space.",
       "subjects": [
         "math-ph",
         "math.MG"

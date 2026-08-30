@@ -111,27 +111,27 @@
 <p>
   Sampling means measuring a field at selected locations. On a regular grid, detail finer than the spacing
   can masquerade as a false coarse pattern: this is <strong>aliasing</strong>. In an antenna or microphone
-  array, the analogous false directions are <strong>grating lobes</strong>—extra beams caused by repeated
+  array, the analogous false directions are <strong>grating lobes</strong>, extra beams caused by repeated
   element spacing. Random layouts spread these errors but introduce variance. Aperiodic monotile layouts
   offer a deterministic third geometry with no translational lattice.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
 </p>
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/signal-processing-sampling.png" alt="Tile centroids as a deterministic non-periodic sampling layout" width="1400" loading="lazy" decoding="async" />
-  <figcaption><strong>Sampling layout.</strong> Each tile centroid is a reproducible sample point — an alternative to regular grids and jittered noise for imaging and sensor-array experiments.</figcaption>
+  <figcaption><strong>Sampling layout.</strong> Each tile centroid is a reproducible sample point, an alternative to regular grids and jittered noise for imaging and sensor-array experiments.</figcaption>
 </figure>
 
 <p>
   Mordret and Grushin tested Hat-family arrays against periodic and other aperiodic baselines and reported
   improved aliasing behavior for the studied spatial-sampling tasks.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup> This is evidence for those
-  array definitions, apertures, and metrics—not a universal theorem that every monotile sampling pattern is
+  array definitions, apertures, and metrics, not a universal theorem that every monotile sampling pattern is
   optimal. Tile centroids, vertices, or edges produce different point sets and spectra.
 </p>
 <h2 id="section-1">Evidence from array studies</h2>
 <p>
   Ref.&nbsp;37 compares finite arrays through array-response functions and synthetic seismic
-  beamforming—not image reconstruction. For roughly 310-sensor single-source arrays, favorable Tile(p)
-  windows narrowed to p=0.41–0.43, 0.495–0.505, and 0.57–0.59, with sidelobes more than 2.5 times below the
+  beamforming, not image reconstruction. For roughly 310-sensor single-source arrays, favorable Tile(p)
+  windows narrowed to p=0.41-0.43, 0.495-0.505, and 0.57-0.59, with sidelobes more than 2.5 times below the
   tested regular arrays. Hat and Turtle counterexamples show that aperiodicity alone is insufficient; the
   unusually uniform distance and azimuth distributions mattered.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup> A separate simulated Hat
   subarray retained about 90% aperture efficiency and grating lobes below −14 dB over ±18°; it has no
@@ -141,7 +141,7 @@
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/physics-arrays-centroid-redraw.png" alt="Same-square-aperture comparison of a filled regular sensor grid and real Hat/Spectre tile centroids with schematic array responses" width="1400" loading="lazy" decoding="async" />
-  <figcaption><strong>Same FOV, no blind corners.</strong> Top: both layouts fill the gold dashed square aperture at equal count — an <em>n</em>×<em>n</em> lattice versus actual Tile(1,1) centroids from a generated patch. Bottom: schematic far-field responses. Aliases are redistributed, not erased. Not a Blender sculpture and not a traced paper plot.</figcaption>
+  <figcaption><strong>Same FOV, no blind corners.</strong> Top: both layouts fill the gold dashed square aperture at equal count, an <em>n</em>×<em>n</em> lattice versus actual Tile(1,1) centroids from a generated patch. Bottom: schematic far-field responses. Aliases are redistributed, not erased. Not a Blender sculpture and not a traced paper plot.</figcaption>
 </figure>
 <h2 id="section-2">Benchmark design</h2>
 <p>

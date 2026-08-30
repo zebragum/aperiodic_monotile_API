@@ -1,4 +1,4 @@
-/** Mint an API key after Stripe Checkout — shared by docs.html and web.html. */
+/** Mint an API key after Stripe Checkout, shared by docs.html and web.html. */
 (function () {
   const cfg = window.SITE_CONFIG || {};
   const bases = [cfg.apiBase, ...(cfg.apiFallbacks || [])].filter(Boolean);

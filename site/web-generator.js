@@ -1,4 +1,4 @@
-/** Browser twin of the desktop tools — Inkscape / Blender option parity. */
+/** Browser twin of the desktop tools, Inkscape / Blender option parity. */
 (function () {
   const cfg = window.SITE_CONFIG || {};
   const bases = [cfg.apiBase, ...(cfg.apiFallbacks || [])].filter(Boolean);
@@ -272,7 +272,7 @@
     const key = (el.key.value || "").trim();
     if (PAID.has(fmt) && !key) {
       const go = confirm(
-        "SVG and 3D need a paid key.\n\n$5 Day Pass — 24 hours, full exports, no subscription.\nPNG/JPG stay free.\n\nOpen checkout now?"
+        "SVG and 3D need a paid key.\n\n$5 Day Pass, 24 hours, full exports, no subscription.\nPNG/JPG stay free.\n\nOpen checkout now?"
       );
       if (go) startCheckout("day_pass");
       return;

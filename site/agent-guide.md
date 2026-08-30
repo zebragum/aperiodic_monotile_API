@@ -111,9 +111,9 @@ Substitution placement stays canonical **Tile(1,1)**. These fields only change h
 | Field | Default | Notes |
 | --- | --- | --- |
 | `side_style` | `"flat"` | `flat`, `curvy`, `wavy`, `jagged`, `blocky` (`curved` → `curvy`) |
-| `side_style_amplitude` | `0.12` | `0`–`0.75`; bulge on alternating edges |
-| `tile_edge_ratio` | `1.0` | `0.25`–`4.0`; anisotropic stretch of export outline (not true Tile(a,b) substitution) |
-| `side_style_wavy_segments` | `10` | `4`–`64`; subdivisions per edge when `side_style` is `wavy` |
+| `side_style_amplitude` | `0.12` | `0`-`0.75`; bulge on alternating edges |
+| `tile_edge_ratio` | `1.0` | `0.25`-`4.0`; anisotropic stretch of export outline (not true Tile(a,b) substitution) |
+| `side_style_wavy_segments` | `10` | `4`-`64`; subdivisions per edge when `side_style` is `wavy` |
 | `palette_by_label` | (none) | Per-label `fill`, `stroke`, `opacity`, `stroke_width`; use `"*"` as wildcard |
 
 Example (curvy SVG with stretched edges):

@@ -110,15 +110,15 @@
           <h2 id="section-0">The problem with repeats</h2>
 <p>
   Every graphics artist knows the failure mode: a tiled texture or instanced grid looks fine up close, then
-  the camera pulls back and the repetition snaps into view — visible seams, moiré shimmer, wallpaper
+  the camera pulls back and the repetition snaps into view, visible seams, moiré shimmer, wallpaper
   patterns marching across the frame. The classic fixes all trade something away. Larger textures cost
   memory; randomized scatter loses structure and is hard to make deterministic; blend-based tiling blurs
   detail.
 </p>
 <p>
   An aperiodic monotile patch attacks the root cause. The geometry itself is mathematically incapable of
-  translational repetition,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet it is a single instanced shape — one mesh, one material slot, one
-  draw-call strategy — and every placement is deterministic and seed-stable. You get grid-like production
+  translational repetition,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet it is a single instanced shape, one mesh, one material slot, one
+  draw-call strategy, and every placement is deterministic and seed-stable. You get grid-like production
   economics with no translational repetition in the generated layout. Memory and draw-call costs still
   depend on implementation.
 </p>
@@ -130,7 +130,7 @@
 <h2 id="section-1">Same material, different geometry</h2>
 <p>
   The split render above makes the argument visually: identical glazed-ceramic material, identical sun,
-  one seam. The hexagonal floor on the left is calm but visibly repetitive — the eye finds rows
+  one seam. The hexagonal floor on the left is calm but visibly repetitive, the eye finds rows
   quickly, and at some render scales those rows can become
   <a href="aliasing.html">aliasing</a> bands. The Spectre floor on the right has the
   same nominal tile density and one base outline, but lacks a translational repeat. Finite motifs still
@@ -140,61 +140,61 @@
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/computer-graphics-sunset.jpg" alt="Aperiodic monotile floor at sunset with terracotta tones stretching to the horizon" width="1400" loading="lazy" decoding="async" />
-  <figcaption><strong>Environmental scatter.</strong> Eye-height procedural ground plane — aperiodic monotile instances with warm PBR materials, useful for scenes that need ordered but non-repeating structure.</figcaption>
+  <figcaption><strong>Environmental scatter.</strong> Eye-height procedural ground plane, aperiodic monotile instances with warm PBR materials, useful for scenes that need ordered but non-repeating structure.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/computer-graphics-brass.jpg" alt="Brass aperiodic monotile relief panel with beveled edges and dramatic lighting" width="1400" loading="lazy" decoding="async" />
-  <figcaption><strong>Material and lighting study.</strong> Instanced monotile meshes with metallic shading — the same patch data drives real-time previews, offline renders, and exported GLB assets.</figcaption>
+  <figcaption><strong>Material and lighting study.</strong> Instanced monotile meshes with metallic shading, the same patch data drives real-time previews, offline renders, and exported GLB assets.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/lumen-vault.jpg" aria-label="&lt;strong&gt;Lumen Vault.&lt;/strong&gt; Slow orbit of an iridescent circular patch of curvy Spectre tiles — real API geometry, Blender EEVEE materials. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/lumen-vault.jpg" aria-label="&lt;strong&gt;Lumen Vault.&lt;/strong&gt; Slow orbit of an iridescent circular patch of curvy Spectre tiles, real API geometry, Blender EEVEE materials. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
     <source src="../../assets/research/wiki/lumen-vault.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>Lumen Vault.</strong> Slow orbit of an iridescent circular patch of curvy Spectre tiles — real API geometry, Blender EEVEE materials. Also on the <a href="../../art.html">art page</a>.</figcaption>
+  <figcaption><strong>Lumen Vault.</strong> Slow orbit of an iridescent circular patch of curvy Spectre tiles, real API geometry, Blender EEVEE materials. Also on the <a href="../../art.html">art page</a>.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ink-gold.jpg" aria-label="&lt;strong&gt;Ink &amp;amp; Gold.&lt;/strong&gt; Wet lacquer Spectre disc with molten gold seams and leaf inlays — raking light sweep over real API geometry. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ink-gold.jpg" aria-label="&lt;strong&gt;Ink &amp;amp; Gold.&lt;/strong&gt; Wet lacquer Spectre disc with molten gold seams and leaf inlays, raking light sweep over real API geometry. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
     <source src="../../assets/research/wiki/ink-gold.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>Ink &amp; Gold.</strong> Wet lacquer Spectre disc with molten gold seams and leaf inlays — raking light sweep over real API geometry. Also on the <a href="../../art.html">art page</a>.</figcaption>
+  <figcaption><strong>Ink &amp; Gold.</strong> Wet lacquer Spectre disc with molten gold seams and leaf inlays, raking light sweep over real API geometry. Also on the <a href="../../art.html">art page</a>.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/rolling-hills-moon.jpg" aria-label="&lt;strong&gt;Rolling terrain, one tile.&lt;/strong&gt; Eye-height walk across a curvy monotile landscape under moonlight — the same generated patch language used for production scenes. &lt;a href=&quot;../../assets/research/wiki/rolling-hills-hero.png&quot;&gt;Hero still&lt;/a&gt;">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/rolling-hills-moon.jpg" aria-label="&lt;strong&gt;Rolling terrain, one tile.&lt;/strong&gt; Eye-height walk across a curvy monotile landscape under moonlight, the same generated patch language used for production scenes. &lt;a href=&quot;../../assets/research/wiki/rolling-hills-hero.png&quot;&gt;Hero still&lt;/a&gt;">
     <source src="../../assets/research/wiki/rolling-hills-moon.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>Rolling terrain, one tile.</strong> Eye-height walk across a curvy monotile landscape under moonlight — the same generated patch language used for production scenes. <a href="../../assets/research/wiki/rolling-hills-hero.png">Hero still</a></figcaption>
+  <figcaption><strong>Rolling terrain, one tile.</strong> Eye-height walk across a curvy monotile landscape under moonlight, the same generated patch language used for production scenes. <a href="../../assets/research/wiki/rolling-hills-hero.png">Hero still</a></figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/falcor-city.jpg" aria-label="&lt;strong&gt;City-scale instancing.&lt;/strong&gt; A Spectre-city flythrough built from deterministic tile transforms — one outline, no translational wallpaper.">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/falcor-city.jpg" aria-label="&lt;strong&gt;City-scale instancing.&lt;/strong&gt; A Spectre-city flythrough built from deterministic tile transforms, one outline, no translational wallpaper.">
     <source src="../../assets/research/wiki/falcor-city.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>City-scale instancing.</strong> A Spectre-city flythrough built from deterministic tile transforms — one outline, no translational wallpaper.</figcaption>
+  <figcaption><strong>City-scale instancing.</strong> A Spectre-city flythrough built from deterministic tile transforms, one outline, no translational wallpaper.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/hill-orbit.jpg" aria-label="&lt;strong&gt;Orbit study.&lt;/strong&gt; Camera circle around a single curvy monotile hill — useful for lighting and silhouette checks before locking a hero shot.">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/hill-orbit.jpg" aria-label="&lt;strong&gt;Orbit study.&lt;/strong&gt; Camera circle around a single curvy monotile hill, useful for lighting and silhouette checks before locking a hero shot.">
     <source src="../../assets/research/wiki/hill-orbit.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>Orbit study.</strong> Camera circle around a single curvy monotile hill — useful for lighting and silhouette checks before locking a hero shot.</figcaption>
+  <figcaption><strong>Orbit study.</strong> Camera circle around a single curvy monotile hill, useful for lighting and silhouette checks before locking a hero shot.</figcaption>
 </figure>
 
 
 <figure class="wiki-figure wiki-figure-video">
-  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ball-roll.jpg" aria-label="&lt;strong&gt;Contact and bounce.&lt;/strong&gt; A reflective ball rolling on monotile terrain — the layout stays seed-stable while motion reads the surface continuously.">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ball-roll.jpg" aria-label="&lt;strong&gt;Contact and bounce.&lt;/strong&gt; A reflective ball rolling on monotile terrain, the layout stays seed-stable while motion reads the surface continuously.">
     <source src="../../assets/research/wiki/ball-roll.mp4" type="video/mp4" />
   </video>
-  <figcaption><strong>Contact and bounce.</strong> A reflective ball rolling on monotile terrain — the layout stays seed-stable while motion reads the surface continuously.</figcaption>
+  <figcaption><strong>Contact and bounce.</strong> A reflective ball rolling on monotile terrain, the layout stays seed-stable while motion reads the surface continuously.</figcaption>
 </figure>
 <h2 id="section-2">Production pipeline</h2>
 <p>

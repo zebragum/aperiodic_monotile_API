@@ -48,7 +48,7 @@
         if (!response.ok) {
           throw new Error((payload.detail && String(payload.detail)) || `HTTP ${response.status}`);
         }
-        if (status) status.textContent = "Thanks — we'll email you when new packs and tools ship.";
+        if (status) status.textContent = "Thanks, we'll email you when new packs and tools ship.";
         form.reset();
       } catch (err) {
         if (status) status.textContent = "Could not save. Try again or email zach@shopcloudburst.com.";
