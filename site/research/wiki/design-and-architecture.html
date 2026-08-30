@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Design, art, and architecture | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Design, art, and architecture | Research Wiki | Untiling</title>
     <meta name="description" content="Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions." />
     <link rel="canonical" href="https://untiling.com/research/wiki/design-and-architecture.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Design, art, and architecture | Untiling Research Wiki" />
+    <meta property="og:description" content="Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/design-and-architecture.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Design, art, and architecture", "description": "Repeat-free ornamental surfaces, facades, textiles, and real-world tiling instructions.", "url": "https://untiling.com/research/wiki/design-and-architecture.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,9 +92,12 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Surfaces that never wallpaper</a></li>
+<li><a href="#section-0">One shape, no repeating motif</a></li>
 <li><a href="#section-1">Tiling a real surface: practical instructions</a></li>
-<li><a href="#section-2">Applications</a></li>
+<li><a href="#section-2">Composition, color, and scale</a></li>
+<li><a href="#section-3">Lifted wall modules and interfaces</a></li>
+<li><a href="#section-4">Fabrication and installation planning</a></li>
+<li><a href="#section-5">Constraints and open design questions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -92,12 +108,14 @@
   <table><tr><th>Status</th><td>Immediately practical</td></tr><tr><th>Exports</th><td>Vector SVG, fabrication meshes</td></tr><tr><th>Real-world install</th><td>Single orientation, no flips</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Surfaces that never wallpaper</h2>
+          <h2 id="section-0">One shape, no repeating motif</h2>
 <p>
-  Ornament has always negotiated between order and monotony. Historic zellige, azulejo, and parquet crafts
-  solved it with hand variation; modern manufacturing lost that solution the moment patterns became
-  repeatable. The aperiodic monotile restores it structurally: one manufactured shape, infinite
-  non-repeating arrangements, provable by theorem rather than promised by a craftsman.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  Historic zellige, azulejo, and parquet crafts fought monotony with hand variation. Industrial printing
+  and molding made exact repeats cheap — and made wallpaper repeats obvious at wall scale. An aperiodic
+  monotile restores structure without a translational repeat unit: one manufactured outline, arrangements
+  that cannot tile by lattice translation, proved rather than promised.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  More finished stills and loops live on the
+  <a href="../../art.html">art page</a>.
 </p>
 
 <figure class="wiki-figure">
@@ -105,10 +123,25 @@
   <figcaption><strong>Glazed ceramic feature wall.</strong> Every Spectre tile is a physical chip with thickness, grout, and a slight random tilt, so the glaze glints tile-by-tile like handmade zellige. Rendered in Cycles from a generated Tile(1,1) patch.</figcaption>
 </figure>
 
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/rolling-hills-hero.png" alt="Curvy aperiodic monotile hills as a landscape still" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>Landscape still.</strong> A generated curvy-edge monotile field as environmental design reference — also on the <a href="../../art.html">art page</a>.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ceramic-dusk.jpg" aria-label="&lt;strong&gt;Ceramic dusk POV.&lt;/strong&gt; Ground-level walk across a glazed monotile floor at dusk — material and palette as data on fixed geometry.">
+    <source src="../../assets/research/wiki/ceramic-dusk.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Ceramic dusk POV.</strong> Ground-level walk across a glazed monotile floor at dusk — material and palette as data on fixed geometry.</figcaption>
+</figure>
+
 <p>
   Because the tiling is deterministic, a designer can sign off on the <em>exact</em> layout before
   fabrication — every tile position is known, exportable, and reproducible. And because Tile(1,1) needs no
-  reflected copies, production tooling stays single-sided: one mold, one die, one glaze line.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+  reflected copies, a homochiral design can avoid a second mirrored outline. Whether production can use one
+  mold, die, or glaze workflow depends on edge treatment, finish, and process.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
 
 <figure class="wiki-figure">
@@ -121,12 +154,15 @@
   tile artisans. The working recipe, distilled from the research community's own guides:
 </p>
 <ol>
-  <li><strong>Choose the Spectre, not the Hat, for physical work.</strong> Hat tilings require reflected
-  copies — for glazed or finished tiles that means two distinct products. The Spectre tiles with one
-  handedness only.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
-  <li><strong>Use curved or keyed edges.</strong> The straight-edged Tile(1,1) <em>can</em> be assembled
-  into a periodic pattern by a well-meaning installer. Curved Spectre edges physically refuse periodic
-  and reflected placements — the geometry enforces correctness.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
+  <li><strong>Choose the geometry for the manufacturing constraint.</strong> Hat tilings require
+  reflected copies, so one-sided glazed or finished parts become two SKUs. Homochiral Spectre or
+  Tile(1,1) layouts avoid that second outline when the process cannot flip parts. If both faces are
+  identical, Hat may still be acceptable. The choice is a manufacturing tradeoff, not a universal
+  Spectre preference.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
+  <li><strong>Prefer curved or keyed edges when installers must not invent periodicity.</strong> The
+  straight-edged Tile(1,1) <em>can</em> be assembled into a periodic pattern by a well-meaning installer
+  using both handednesses. Curved Spectre edges physically refuse periodic and reflected placements —
+  the geometry enforces correctness.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup></li>
   <li><strong>Get the outline from a trusted source.</strong> Kaplan's
   <a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">project page</a> publishes SVG
   outlines; community repositories provide OpenSCAD, STL, and DXF for 3D printing, laser cutting, and CNC
@@ -141,24 +177,80 @@
   and deliver the installer a numbered plan where every tile has an ID and position.</li>
 </ol>
 <p>
-  For hybrid designs, research on interfaces between aperiodic and periodic tilings shows how a Spectre
-  field can hand off cleanly to a conventional grid at a boundary — useful where a feature wall meets
-  standard tile.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+  Coates studies hexagonal quasiperiodic decorations of periodic lattices as a transferable geometric
+  precedent; vertices may remain periodic while bonds are quasiperiodic.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+  The cited work does not prove a coherent periodic–Spectre interface, so a Spectre handoff still requires
+  an explicit boundary coding, metric fit, tolerance study, and physical validation.
 </p>
-<h2 id="section-2">Applications</h2>
+<h2 id="section-2">Composition, color, and scale</h2>
+<p>
+  The outline supplies structure, not a finished composition. Color can follow tile orientation,
+  substitution parent, distance from a focal point, or a small constrained palette. Use hierarchy labels
+  for broad fields and per-tile IDs for fine variation; this preserves visual continuity without inventing
+  a repeat unit. Mock up the full elevation or floor at viewing distance, because dense joints and high
+  contrast can dominate the shape.
+</p>
+<p>
+  Jowers and Moat expose another design layer by connecting selected Hat-family vertices with straight
+  segments. The resulting subsidiary systems contain mostly convex polygons aligned with larger metatile
+  structure, opening alternatives for color fields, screens, and multi-part assemblies.<sup class="citation"><a href="bibliography.html#ref-66">[66]</a></sup> Some
+  newly proposed derivatives are described by their authors as <em>assumed</em> aperiodic rather than
+  proved, so geometric exploration must not be promoted as a new monotile theorem.
+</p>
 <ul>
   <li>Feature walls, floors, and facades with provable non-repetition — including built limestone terraces
   assembled from hundreds of waterjet-cut Spectre pieces (see <a href="bibliography.html">bibliography</a>)</li>
-  <li>Three-dimensional topological interlocking assemblies from identical aperiodic blocks<sup class="citation"><a href="bibliography.html#ref-50">[50]</a></sup></li>
+  <li>Mathematically constructed three-dimensional topological-interlocking systems made from identical
+  aperiodic blocks; physical load testing remains open<sup class="citation"><a href="bibliography.html#ref-50">[50]</a></sup></li>
   <li>Generative sculpture, ornamental screens, and visual illusions</li>
   <li>Textiles, wallpaper, packaging, embossing, and engraving with no repeat unit</li>
   <li>Lightweight shells, tensile structures, and spatial studies for built environments</li>
 </ul>
+<h2 id="section-3">Lifted wall modules and interfaces</h2>
+<p>
+  Van Dongen’s <em>Lifted Aperiodic Hat and Turtle</em> replaces each double-kite with a polyhedral surface
+  module, then glues modules into congruent three-dimensional Hat or Turtle units. The resulting assemblies
+  can carry a continuous non-periodic wall texture; paper layouts and an alternate square-grid lift make
+  the geometry reproducible.<sup class="citation"><a href="bibliography.html#ref-69">[69]</a></sup>
+</p>
+<p>
+  This is a geometric and artistic construction, not structural engineering and not Nan Ma’s ℝ⁴ edge lift.
+  It reports no load, joint, weathering, fire, drainage, code, tolerance, or scale tests. Likewise, Coates’s
+  periodic–aperiodic interfaces are methodological precedent rather than proof that a periodic wall can
+  meet a Spectre field coherently without a separately designed boundary map.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+</p>
+<h2 id="section-4">Fabrication and installation planning</h2>
+<p>
+  Freeze the canonical outline, units, handedness, joint width, and boundary policy before nesting parts.
+  Number pieces or clusters on the drawing and on removable labels. Dry-fit substitution clusters, survey
+  cumulative error, then install from fixed datums rather than following a drifting edge. Record partial
+  boundary pieces separately from whole tiles and reserve spares by orientation.
+</p>
+<p>
+  For floors and walls, account for substrate flatness, adhesive bed, grout movement joints, drainage,
+  cleanability, slip resistance, fire behavior, weathering, and replacement access. Structural facades
+  require an independent support and fastening design; the mathematical tiling is not a building system.
+  Built terraces and community installations show that physical assembly is feasible. Coates’s
+  periodic–aperiodic interface work is precedent for boundary design, not a validated Spectre installation
+  recipe.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+</p>
+<h2 id="section-5">Constraints and open design questions</h2>
+<p>
+  A single outline does not guarantee one mold, lower cost, code compliance, or easy replacement. Curved
+  edges may increase cutting time; one-sided finishes can create handed inventory; small acute features
+  may chip; and clipped boundaries can dominate waste. Compare nesting yield, tool time, part count,
+  installer error, maintenance access, and total installed cost with a conventional module.
+</p>
+<p>
+  Ornament, tested mechanical lattices, and proposed architectural shells are different evidence levels.
+  Describe a built installation as built, a simulation as simulated, and an untested facade or textile
+  concept as a candidate direction.
+</p>
 <h2>See also</h2><p><a href="computer-graphics.html">Computer graphics</a>, <a href="materials-and-fabrication.html">Materials and fabrication</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-applications">Applications</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

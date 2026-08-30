@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dimers and constrained models | Research Wiki | Untiling</title>
+    <meta name="description" content="Exact classical and quantum dimer results on a regularized Spectre graph, with their physical limits." />
+    <link rel="canonical" href="https://untiling.com/research/wiki/dimers-and-constrained-models.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Dimers and constrained models | Untiling Research Wiki" />
+    <meta property="og:description" content="Exact classical and quantum dimer results on a regularized Spectre graph, with their physical limits." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/dimers-and-constrained-models.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Dimers and constrained models", "description": "Exact classical and quantum dimer results on a regularized Spectre graph, with their physical limits.", "url": "https://untiling.com/research/wiki/dimers-and-constrained-models.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Untiling</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../art.html">Art</a>
+        <a href="../index.html">Research</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
+        <a href="../../apparel/">Shop</a>
+        <a href="index.html" aria-current="page">Wiki</a>
+      </nav>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire.html">Moiré</a></li>
+<li><a href="aliasing.html">Aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li class="is-active"><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
+<li><a href="resources-and-tools.html">Resources and tools</a></li>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Dimers and constrained models</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Dimers and constrained models</h1>
+          <p class="wiki-tagline">Exact classical and quantum dimer results on a regularized Spectre graph, with their physical limits.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">What a dimer model asks</a></li>
+<li><a href="#section-1">Exact classical and quantum results</a></li>
+<li><a href="#section-2">Interpretation and limits</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Dimers and constrained models</p>
+  <table><tr><th>Model</th><td>Perfect matchings on a Spectre-derived graph</td></tr><tr><th>Exact count</th><td>Z = 2^(N_Mystic + 1)</td></tr><tr><th>Evidence</th><td>Theorem/model + numerical verification</td></tr><tr><th>Not evidence for</th><td>A measured quantum material</td></tr></table>
+</aside>
+
+          <h2 id="section-0">What a dimer model asks</h2>
+<p>
+  A perfect matching covers every graph vertex exactly once with selected edges called dimers. Singh and
+  Flicker regularize the Spectre graph by adding a “gold” vertex to 13-edge environments so each decorated
+  tile contributes identical connectivity and the graph remains bipartite. Forced dimers then leave
+  independent two-way choices on Upper Mystics plus one boundary choice. Some raw finite Spectre patches
+  admit no perfect matching until that boundary/decorative construction is regularized, so the exact
+  result is graph-decoration dependent.<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup>
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/physics-dimers-blender-redraw.png" alt="Original three-dimensional redraw of a regularized Spectre dimer graph with free Mystic choices highlighted" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Exact dimer counting.</strong> Original Blender reconstruction of the regularized bipartite Spectre graph from ref.&nbsp;22. Forced dimers are pale; free Mystic choices glow. The exact count Z=2<sup>N<sub>Mystic</sub>+1</sup> is combinatorial, not a measured material property.</figcaption>
+</figure>
+<h2 id="section-1">Exact classical and quantum results</h2>
+<p>
+  The classical partition function is exactly
+  Z=2<sup>N<sub>Mystic</sub>+1</sup>. The thermodynamic free energy per dimer is
+  ln(2)/[3(5+√15)]≈0.02604, much smaller than the cited square-lattice value 0.583. Finite-patch FKT counts
+  on S2–S6 verify the combinatorial result.<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup>
+</p>
+<p>
+  In the Rokhsar–Kivelson quantum model, the independent Mystic choices give an exact eigenbasis for every
+  V/t; a flipped Mystic costs 2t. Test monomers can separate arbitrarily far at no additional energy, so
+  the model is deconfined across the stated parameter family. Singh’s 2025 thesis places this result beside
+  algorithms and constrained models on Ammann–Beenker, Penrose, and random graphs.<sup class="citation"><a href="bibliography.html#ref-70">[70]</a></sup>
+</p>
+<h2 id="section-2">Interpretation and limits</h2>
+<p>
+  These are exact results for a specified regularized adjacency graph, not measurements on a tile-shaped
+  solid. Aperiodicity alone does not imply a quantum spin liquid, and changing vertices, couplings,
+  boundaries, or graph regularization changes the model. A physical proposal must identify microscopic
+  degrees of freedom, energy scales, disorder, preparation, and observables before borrowing the exact
+  combinatorial language.
+</p>
+<h2>See also</h2><p><a href="materials-science.html">Materials science and fluids</a>, <a href="waves-and-photonics.html">Waves, acoustics, and photonics</a>, <a href="spectre-tile.html">Spectre tile</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-physics">Physics</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

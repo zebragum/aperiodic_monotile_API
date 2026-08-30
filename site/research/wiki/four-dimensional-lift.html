@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Four-dimensional lift | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Four-dimensional lift | Research Wiki | Untiling</title>
     <meta name="description" content="Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory." />
     <link rel="canonical" href="https://untiling.com/research/wiki/four-dimensional-lift.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Four-dimensional lift | Untiling Research Wiki" />
+    <meta property="og:description" content="Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/four-dimensional-lift.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Four-dimensional lift", "description": "Nan Ma’s coherent ℝ⁴ edge lift, and how it differs from CAP/CASPr cut-and-project theory.", "url": "https://untiling.com/research/wiki/four-dimensional-lift.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li class="is-active"><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,7 +92,7 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">The observation</a></li>
+<li><a href="#section-0">A two-shadow analogy</a></li>
 <li><a href="#section-1">How the lift works</a></li>
 <li><a href="#section-2">Scope and limits</a></li>
 <li><a href="#section-3">Six dimensions and diffraction</a></li>
@@ -94,9 +107,16 @@
   <table><tr><th>Initial idea</th><td>Nan Ma</td></tr><tr><th>Exposition</th><td>Arnaud Chéritat with Nan Ma</td></tr><tr><th>First dated artifact</th><td>9 June 2023</td></tr><tr><th>Ambient space</th><td>ℝ⁴ = ℝ² × ℝ²</td></tr><tr><th>Key distinction</th><td>Edge lift ≠ cut-and-project proof</td></tr></table>
 </aside>
 
-          <h2 id="section-0">The observation</h2>
+          <h2 id="section-0">A two-shadow analogy</h2>
 <p>
-  The whole Hat or Spectre tiling can be treated as a single static object in four-dimensional space.
+  Imagine drawing one path with two transparent inks, then making a flat image by giving each ink a
+  different scale. Changing those two scales changes the shadow, while the colored source path stays the
+  same. Nan Ma’s lift applies this idea to the two direction classes in the Hat family: store them in two
+  separate coordinate planes, producing four coordinates in total, then project back to two or three
+  dimensions.<sup class="citation"><a href="bibliography.html#ref-54">[54]</a></sup>
+</p>
+<p>
+  In that sense the whole Hat or Spectre tiling can be treated as a single static object in four-dimensional space.
   Arnaud Chéritat credits the initial idea to Nan Ma: not merely lifting one Tile(<em>a,b</em>) outline,
   but assigning coherent ℝ⁴ coordinates to every vertex in an entire simply connected tiling.<sup class="citation"><a href="bibliography.html#ref-54">[54]</a></sup>
   Ma’s earliest securely dated public artifact is the
@@ -143,6 +163,12 @@
   Rauzy-fractal windows, proving pure-point spectrum and diffraction.<sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup> These frameworks use
   algebraic return modules, Galois conjugation, and acceptance windows—not Ma’s edge coloring.
 </p>
+<p>
+  A third meaning of “lift” appears in architecture: van Dongen constructs three-dimensional polyhedral
+  Hat and Turtle wall modules from lifted double-kites.<sup class="citation"><a href="bibliography.html#ref-69">[69]</a></sup> That work concerns a buildable surface
+  vocabulary, not ℝ⁴ coordinates or a model set. For formal definitions and a checklist, see
+  <a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a>.
+</p>
 <h2 id="section-3">Six dimensions and diffraction</h2>
 <p>
   Socolar’s independent Golden Key construction embeds a related Hat metatiling in a six-dimensional
@@ -162,11 +188,17 @@
   <li><a href="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/" rel="noopener noreferrer">Interactive 4D projection applet</a> (CC BY-SA)</li>
   <li><a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">Nan Ma’s Wolfram Language repository</a> (no license; link only)</li>
 </ul>
-<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
+<p>
+  A practical visualization starts with a small validated Tile(<em>a,b</em>) patch, assigns the two edge
+  classes contrasting colors, integrates lifted vertex coordinates, and animates a linear projection to
+  3D. Show the original 2D patch beside the projection and preserve tile IDs so viewers can track one face.
+  Self-intersection in the 3D view is a projection effect, not necessarily a defect in the lifted surface.
+</p>
+<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a>, <a href="substitution-tiling.html">Substitution tiling</a>, <a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-visualizations">Visualizations</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

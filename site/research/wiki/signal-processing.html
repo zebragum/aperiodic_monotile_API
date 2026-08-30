@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Signal processing and imaging | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Signal processing and imaging | Research Wiki | Untiling</title>
     <meta name="description" content="Deterministic non-periodic sampling layouts for reconstruction and sensor geometry." />
     <link rel="canonical" href="https://untiling.com/research/wiki/signal-processing.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Signal processing and imaging | Untiling Research Wiki" />
+    <meta property="og:description" content="Deterministic non-periodic sampling layouts for reconstruction and sensor geometry." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/signal-processing.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Signal processing and imaging", "description": "Deterministic non-periodic sampling layouts for reconstruction and sensor geometry.", "url": "https://untiling.com/research/wiki/signal-processing.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,8 +92,11 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Between the grid and the dice roll</a></li>
-<li><a href="#section-1">Experiment directions</a></li>
+<li><a href="#section-0">Sampling without a repeating grid</a></li>
+<li><a href="#section-1">Evidence from array studies</a></li>
+<li><a href="#section-2">Benchmark design</a></li>
+<li><a href="#section-3">Candidate experiments</a></li>
+<li><a href="#section-4">Limitations</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -91,12 +107,13 @@
   <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key property</th><td>No lattice frequency to alias against</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Between the grid and the dice roll</h2>
+          <h2 id="section-0">Sampling without a repeating grid</h2>
 <p>
-  Regular sampling aliases: any signal content near the lattice frequency folds into artifacts. Random
-  sampling trades aliasing for noise and loses reproducibility. Aperiodic monotile layouts offer a third
-  option with a genuinely different spectrum — the quasicrystalline diffraction structure of monotile
-  tilings means sharp spectral features but no periodic lattice to beat against.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
+  Sampling means measuring a field at selected locations. On a regular grid, detail finer than the spacing
+  can masquerade as a false coarse pattern: this is <strong>aliasing</strong>. In an antenna or microphone
+  array, the analogous false directions are <strong>grating lobes</strong>—extra beams caused by repeated
+  element spacing. Random layouts spread these errors but introduce variance. Aperiodic monotile layouts
+  offer a deterministic third geometry with no translational lattice.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
 </p>
 
 <figure class="wiki-figure">
@@ -105,30 +122,62 @@
 </figure>
 
 <p>
-  Recent work on 2D histogram binning shows the practical direction: non-square binning geometries
-  materially change what structure an analysis can resolve.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup> Tile centroids, edges, and adjacency
-  graphs from a generated patch provide deterministic, reproducible sampling frames for the same kind of
-  experiments in reconstruction, denoising, and compression. Mordret and Grushin demonstrate the payoff in
-  simulated sensor arrays: Hat-family monotile layouts beat tested periodic and aperiodic baselines for
-  spatial sampling and aliasing resistance.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
+  Mordret and Grushin tested Hat-family arrays against periodic and other aperiodic baselines and reported
+  improved aliasing behavior for the studied spatial-sampling tasks.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup> This is evidence for those
+  array definitions, apertures, and metrics—not a universal theorem that every monotile sampling pattern is
+  optimal. Tile centroids, vertices, or edges produce different point sets and spectra.
 </p>
-<h2 id="section-1">Experiment directions</h2>
+<h2 id="section-1">Evidence from array studies</h2>
+<p>
+  Ref.&nbsp;37 compares finite arrays through array-response functions and synthetic seismic
+  beamforming—not image reconstruction. For roughly 310-sensor single-source arrays, favorable Tile(p)
+  windows narrowed to p=0.41–0.43, 0.495–0.505, and 0.57–0.59, with sidelobes more than 2.5 times below the
+  tested regular arrays. Hat and Turtle counterexamples show that aperiodicity alone is insufficient; the
+  unusually uniform distance and azimuth distributions mattered.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup> A separate simulated Hat
+  subarray retained about 90% aperture efficiency and grating lobes below −14 dB over ±18°; it has no
+  fabricated-array validation.<sup class="citation"><a href="bibliography.html#ref-38">[38]</a></sup> A pending 85-element, 31-GHz SATCOM patent is a proposal, not
+  experimental evidence.<sup class="citation"><a href="bibliography.html#ref-68">[68]</a></sup>
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/physics-arrays-centroid-redraw.png" alt="Same-square-aperture comparison of a filled regular sensor grid and real Hat/Spectre tile centroids with schematic array responses" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>Same FOV, no blind corners.</strong> Top: both layouts fill the gold dashed square aperture at equal count — an <em>n</em>×<em>n</em> lattice versus actual Tile(1,1) centroids from a generated patch. Bottom: schematic far-field responses. Aliases are redistributed, not erased. Not a Blender sculpture and not a traced paper plot.</figcaption>
+</figure>
+<h2 id="section-2">Benchmark design</h2>
+<p>
+  Compare equal aperture, sensor count, minimum spacing, and noise budget. Baselines should include square
+  and hexagonal grids, jittered grids, blue-noise or Poisson-disk samples, a random ensemble, and another
+  deterministic aperiodic set. Repeat random baselines with multiple seeds.
+</p>
+<ul>
+  <li><strong>Imaging:</strong> reconstruction error, modulation transfer, artifact energy, robustness to
+  missing sensors, and compute cost.</li>
+  <li><strong>Arrays:</strong> peak sidelobe and grating-lobe level, beam width, scan range, aperture
+  efficiency, calibration sensitivity, and mutual coupling.</li>
+  <li><strong>Provenance:</strong> publish the canonical patch, selected point decoration, boundary mask,
+  units, transforms, solver settings, and code.</li>
+</ul>
+<h2 id="section-3">Candidate experiments</h2>
 <ul>
   <li>Sampling theory: compare monotile centroids against grids, jittered grids, blue noise, and Penrose
   point sets in reconstruction benchmarks</li>
-  <li>Sensor arrays: radar, sonar, MRI, and CT geometry studies where periodic element spacing creates
-  grating lobes<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup><sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup></li>
-  <li>Phased arrays: simulated Hat layouts achieve low grating lobes and high aperture efficiency in
-  limited-scan beamforming studies<sup class="citation"><a href="bibliography.html#ref-38">[38]</a></sup>; patent filings propose Hat polykite elements for SATCOM
-  arrays (proposal only).<sup class="citation"><a href="bibliography.html#ref-68">[68]</a></sup></li>
+  <li>Sensor arrays: radar, sonar, ultrasound, MRI, and CT geometry studies where periodic spacing can
+  create directional ambiguities; each modality needs its own forward model.</li>
   <li>Compressed sensing: deterministic non-periodic measurement patterns with stable addressing</li>
   <li>Anti-aliasing masks and halftone screens; see <a href="aliasing.html">Aliasing</a> and <a href="moire.html">Moiré</a></li>
 </ul>
+<h2 id="section-4">Limitations</h2>
+<p>
+  No layout escapes sampling theory: insufficient density still loses information. Aperiodic arrays can
+  have strong non-lattice spectral peaks, awkward wiring, edge bias, unequal nearest-neighbor spacing, and
+  difficult calibration. Finite aperture and the chosen decoration may matter more than the tile theorem.
+  Claims should therefore name the signal class, baseline, aperture, metric, and tested patch.
+</p>
 <h2>See also</h2><p><a href="moire.html">Moiré</a>, <a href="aliasing.html">Aliasing</a>, <a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

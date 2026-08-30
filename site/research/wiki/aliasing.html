@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aliasing | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Aliasing | Research Wiki | Untiling</title>
     <meta name="description" content="How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them." />
     <link rel="canonical" href="https://untiling.com/research/wiki/aliasing.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Aliasing | Untiling Research Wiki" />
+    <meta property="og:description" content="How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/aliasing.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Aliasing", "description": "How periodic structure creates false patterns under sampling — and why aperiodic monotile layouts resist them.", "url": "https://untiling.com/research/wiki/aliasing.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -84,6 +97,7 @@
 <li><a href="#section-2">A cleaner monotile surface</a></li>
 <li><a href="#section-3">The periodic failure mode</a></li>
 <li><a href="#section-4">Practical takeaways for monotile work</a></li>
+<li><a href="#section-5">Limits</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -128,9 +142,9 @@
 <p>
   Aperiodic monotile patches sit between those extremes: <strong>ordered but non-repeating</strong>,
   with diffraction more like a quasicrystal than a crystal — sharp features, yet no single translational
-  lattice to lock onto the sample grid.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup><sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup> Sensor-array simulations on Hat-family layouts
-  show the same principle in hardware: aperiodic monotile arrays can outperform tested periodic and other
-  aperiodic baselines for spatial sampling and reconstruction.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
+  lattice to lock onto the sample grid.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup> Synthetic beamforming on selected Hat-family layouts
+  reports lower sidelobes than tested regular and aperiodic controls, but this is not hardware or an
+  image-reconstruction result.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
 </p>
 <h2 id="section-2">A cleaner monotile surface</h2>
 <p>
@@ -170,11 +184,19 @@
   See <a href="computer-graphics.html">Computer graphics</a> and
   <a href="signal-processing.html">Signal processing and imaging</a> for workflow detail.
 </p>
+<h2 id="section-5">Limits</h2>
+<p>
+  Aperiodicity redistributes spectral energy; it does not make a pattern alias-free. Sharp tile edges,
+  high-frequency per-tile textures, strong quasicrystalline peaks, and repeated finite assets can still
+  shimmer or form false structure. Correct remedies remain adequate sampling, prefiltering, mipmapping,
+  supersampling, and temporal testing. Compare patterns at matched feature density and contrast before
+  attributing an improvement to layout.
+</p>
 <h2>See also</h2><p><a href="moire.html">Moiré</a>, <a href="computer-graphics.html">Computer graphics</a>, <a href="signal-processing.html">Signal processing and imaging</a>, <a href="aperiodic-monotile.html">Aperiodic monotile</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-concepts">Concepts</a> · <a href="index.html#category-computer-graphics">Computer graphics</a> · <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hat tile | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Hat tile | Research Wiki | Untiling</title>
     <meta name="description" content="The first aperiodic monotile, an asymmetric polykite announced in March 2023." />
     <link rel="canonical" href="https://untiling.com/research/wiki/hat-tile.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Hat tile | Untiling Research Wiki" />
+    <meta property="og:description" content="The first aperiodic monotile, an asymmetric polykite announced in March 2023." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/hat-tile.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Hat tile", "description": "The first aperiodic monotile, an asymmetric polykite announced in March 2023.", "url": "https://untiling.com/research/wiki/hat-tile.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li class="is-active"><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,9 +92,11 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">Discovery</a></li>
-<li><a href="#section-1">Why reflections matter</a></li>
-<li><a href="#section-2">Physics on the Hat lattice</a></li>
+<li><a href="#section-0">What the Hat is</a></li>
+<li><a href="#section-1">Geometry and the proof idea</a></li>
+<li><a href="#section-2">Why reflections matter</a></li>
+<li><a href="#section-3">Physics on the Hat lattice</a></li>
+<li><a href="#section-4">What is established and what is not</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -92,7 +107,7 @@
   <table><tr><th>Announced</th><td>March 2023</td></tr><tr><th>Authors</th><td>Smith, Myers, Kaplan, Goodman-Strauss</td></tr><tr><th>Construction</th><td>Polykite (8 kites of a hexagon)</td></tr><tr><th>Reflections</th><td>Required in every tiling</td></tr><tr><th>Diffraction</th><td>Quasicrystalline</td></tr><tr><th>Paper</th><td>arXiv:2303.10798</td></tr></table>
 </aside>
 
-          <h2 id="section-0">Discovery</h2>
+          <h2 id="section-0">What the Hat is</h2>
 <p>
   The <strong>Hat</strong> is an asymmetric polykite — eight kites carved from a hexagonal grid — that
   admits tilings of the plane, but none that are periodic. Found by hobbyist David Smith and proven
@@ -106,7 +121,21 @@
   <img src="../../assets/research/wiki/hat-monotile-commons.png" alt="Hat aperiodic monotile construction from hexagon symmetry lines" width="1100" loading="lazy" decoding="async" />
   <figcaption><strong>Hat monotile.</strong> The Hat shape and its construction from hexagon symmetry lines. Diagram by <a href="https://commons.wikimedia.org/wiki/User:Gringer" rel="noopener noreferrer">Gringer</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer">CC BY-SA 4.0</a>; based on Smith, Myers, Kaplan &amp; Goodman-Strauss (2023).</figcaption>
 </figure>
-<h2 id="section-1">Why reflections matter</h2>
+<h2 id="section-1">Geometry and the proof idea</h2>
+<p>
+  A <strong>polykite</strong> is a shape assembled edge-to-edge from kites in a regular kite grid. The
+  Hat uses eight such kites, so its outline inherits a small set of edge directions and lengths. It belongs
+  to the two-parameter Tile(<em>a,b</em>) family: changing the two edge scales deforms the outline while
+  preserving the combinatorial pattern; the Hat is Tile(1,√3), the Turtle is Tile(√3,1), and Tile(1,1)
+  leads to the Spectre construction.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+</p>
+<p>
+  The proof forces any Hat tiling to group into a finite set of labeled metatiles. Those metatiles in turn
+  form larger copies of the same labeled system. Repeating this grouping creates structure on unbounded
+  scales, contradicting any fixed translation period.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup> An independent proof and a direct
+  construction provide useful checks on that hierarchy-based account.<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup><sup class="citation"><a href="bibliography.html#ref-5">[5]</a></sup>
+</p>
+<h2 id="section-2">Why reflections matter</h2>
 <p>
   Every Hat tiling mixes unreflected and reflected tiles at a fixed ratio. Whether that disqualifies it as
   a "true" monotile sparked public debate; the authors and standard references (Grünbaum &amp; Shephard)
@@ -114,25 +143,47 @@
   constructively two months later: the <a href="spectre-tile.html">Spectre</a> tiles aperiodically with no
   reflected copies at all.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
-<h2 id="section-2">Physics on the Hat lattice</h2>
+<h2 id="section-3">Physics on the Hat lattice</h2>
 <p>
   Because the Hat gives physicists their first aperiodic <em>monotile</em> lattice, it quickly became a
   substrate for model systems. Its tilings have quasicrystalline diffraction structure — sharp Bragg-like
   peaks with symmetries forbidden to periodic crystals.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup> Exact diffraction theory now places Hat
   tilings in CAP cut-and-project model sets with computable Fourier–Bohr amplitudes,<sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup>
   while crystallographic analysis shows vertex diffraction riding on an underlying periodic
-  framework.<sup class="citation"><a href="bibliography.html#ref-33">[33]</a></sup> Electronic and vibrational properties of the Hat lattice show behavior distinct from
-  both crystals and random media.<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> Statistical
+  framework.<sup class="citation"><a href="bibliography.html#ref-33">[33]</a></sup> A nearest-neighbor tight-binding model on the Hat vertex graph shows graphene-like
+  features, chirality, and exact zero modes under ideal equal hopping; it is not a vibrational
+  experiment.<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> Statistical
   mechanics has been worked directly on the tiling: the Ising model on the Hat lattice<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup> and dimer
   models on the Spectre tiling<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup> both reveal how aperiodic adjacency changes collective behavior.
   For anyone designing materials, these papers are the evidence base that monotile geometry is not just
-  decoration — it changes physics.
+  decoration in those models. They do not imply that every Hat-shaped material has improved performance.
 </p>
-<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a></p>
+<p>
+  Ref.&nbsp;20 first chooses a graph and Hamiltonian: one orbital on each selected Hat vertex with ideal
+  nearest-neighbor hopping. A honeycomb approximant covers about 53% of vertices and reproduces Dirac-like
+  structure near E≈−0.2t. One H2 patch has eight exact zero modes at zero flux and 22 at half flux, but
+  unequal hopping, boundaries, and finite size can move or broaden them.<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> The Ising study instead
+  uses the underlying kite graph, reaches 939,201 spins, and reports T<sub>c</sub>/J=2.405±0.0005 with
+  ordinary two-dimensional Ising scaling.<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup>
+</p>
+<h2 id="section-4">What is established and what is not</h2>
+<p>
+  Established results include the Hat’s forced aperiodicity with reflected copies, its substitution
+  structure, and rigorous long-range-order descriptions for related CAP representatives.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup>
+  Physical papers cited here specify particular graphs, point sets, or honeycomb constructions; their
+  conclusions should not be transferred to an arbitrary decorative Hat pattern.
+</p>
+<p>
+  Open practical questions include boundary design, defect tolerance, finite-size convergence, and which
+  Tile(<em>a,b</em>) member best serves a given load or wavelength. A laser-cut puzzle demonstrates
+  manufacturability, not mechanical or wave performance. Those claims need matched periodic, random, and
+  alternative aperiodic controls.
+</p>
+<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a>, <a href="discovery-history.html">Discovery history of the Hat and Spectre</a>, <a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

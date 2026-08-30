@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Waves, acoustics, and photonics | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Waves, acoustics, and photonics | Research Wiki | Untiling</title>
     <meta name="description" content="Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies — now with experimental results." />
     <link rel="canonical" href="https://untiling.com/research/wiki/waves-and-photonics.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Waves, acoustics, and photonics | Untiling Research Wiki" />
+    <meta property="og:description" content="Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies — now with experimental results." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/waves-and-photonics.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Waves, acoustics, and photonics", "description": "Non-repeating tiled surfaces for scattering, diffraction, and waveguide studies — now with experimental results.", "url": "https://untiling.com/research/wiki/waves-and-photonics.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,8 +92,11 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">From conjecture to measurement</a></li>
-<li><a href="#section-1">Candidate applications</a></li>
+<li><a href="#section-0">How tiled geometry affects waves</a></li>
+<li><a href="#section-1">Established experiments and theory</a></li>
+<li><a href="#section-2">Simulation and measurement workflow</a></li>
+<li><a href="#section-3">Candidate applications</a></li>
+<li><a href="#section-4">Limitations and open questions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -88,16 +104,38 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Waves, acoustics, and photonics</p>
-  <table><tr><th>Status</th><td>Active research (experimental)</td></tr><tr><th>Landmark</th><td>Chiral diffraction measured (2025)</td></tr></table>
+  <table><tr><th>Status</th><td>Active research (experimental)</td></tr><tr><th>Landmark</th><td>Chiral Hat diffraction measured (2026)</td></tr></table>
 </aside>
 
-          <h2 id="section-0">From conjecture to measurement</h2>
+          <h2 id="section-0">How tiled geometry affects waves</h2>
 <p>
-  This is the monotile application area with real laboratory results. Moritake, Takiguchi, Aihara, and
-  Notomi fabricated a photonic lattice arranged as a Spectre monotile tiling and measured its diffraction:
-  the pattern shows <strong>chiral diffraction</strong> — handedness-dependent optical response arising
-  purely from the aperiodic chiral geometry, with no chiral material required.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup> The theoretical
-  foundation is the quasicrystalline diffraction structure of monotile tilings.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
+  <strong>Diffraction</strong> is the far-field pattern produced when waves scatter from many features.
+  <strong>Scattering</strong> means that an obstacle redirects part of a wave. A structure is
+  <strong>chiral</strong> when it has a handedness that cannot be aligned with its mirror image. A
+  monotile point or resonator array can therefore change which directions and frequencies reinforce,
+  cancel, or respond differently to opposite handedness.
+</p>
+<p>
+  Moritake, Takiguchi, Aihara, and Notomi fabricated a <strong>Hat-centroid quasilattice</strong>: circular
+  holes of radius 100&nbsp;nm were placed at tile centroids in an H6 Hat metatile, then etched into a
+  350-nm silicon-nitride film. The roughly 500 × 500&nbsp;μm sample contained 372,100 holes; the
+  pseudo-period <em>a</em> was swept from 600 to 750&nbsp;nm. Illumination used a 532-nm laser expanded
+  to about 1&nbsp;mm, exceeding the patterned area, with diffraction recorded 75&nbsp;mm downstream. It
+  was not a Spectre-shaped material lattice. The measured far field showed sharp,
+  illumination-position-independent Bragg peaks, a sixfold pinwheel whose twist relative to radial
+  directions was 15.52°, a sign reversal under mirroring, and a response that changed relative peak
+  intensity (but not peak position) under left- versus right-circular polarization. Honeycomb and Penrose
+  controls did not reproduce the Hat-specific chiral pinwheel.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup>
+</p>
+<p>
+  Those observations establish long-range quasiperiodic order and planar chirality for that point
+  decoration under ordinary Maxwell electrodynamics. Finite-aperture Fourier transforms cannot exclude
+  continuous spectral weight, so position-independent Bragg peaks support long-range order without by
+  themselves proving pure-point diffraction. The diffraction had C6 intensity symmetry through
+  Friedel’s law even though the centroid set had exact C3 rotational symmetry without mirror symmetry.
+  A Fourier transform of the measured point coordinates reproduced the peak positions; finite hole size
+  reduced high-wavevector intensity relative to ideal delta-function calculations.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup> The broader
+  theoretical foundation is the quasicrystalline diffraction structure of Hat-family tilings.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
 </p>
 
 <figure class="wiki-figure">
@@ -105,28 +143,108 @@
   <figcaption><strong>Simulation-ready boundaries.</strong> Polygonal cells for comparing how periodic, random, and aperiodic scatterers interact with waves.</figcaption>
 </figure>
 
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/wave-propagation.jpg" aria-label="&lt;strong&gt;Wavefront across a monotile lattice.&lt;/strong&gt; A luminous crest expands tile-by-tile through a generated patch — the medium stays visible so you can watch the wave move, not just light rings in black space.">
+    <source src="../../assets/research/wiki/wave-propagation.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Wavefront across a monotile lattice.</strong> A luminous crest expands tile-by-tile through a generated patch — the medium stays visible so you can watch the wave move, not just light rings in black space.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/physics-diffraction-blender-redraw.png" alt="Original three-dimensional redraw of a Hat-centroid hole array beside a twisted sixfold diffraction pinwheel" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Hat-centroid diffraction.</strong> Original Blender reconstruction of the experimental concept in ref.&nbsp;19: a membrane punctured at tile centroids and a schematic sixfold pinwheel with the reported 15.52° twist. Not a reproduction of the published photograph or diffraction image.</figcaption>
+</figure>
+
 <p>
-  Condensed-matter theory adds depth: the electronic and vibrational properties of the Hat lattice differ
-  measurably from periodic and random baselines,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> Ising spins on the Hat tiling order
-  differently,<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup> and dimer statistics on the Spectre tiling reveal distinctive combinatorial
-  structure.<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup> Together these establish that monotile geometry changes wave and lattice physics —
-  the open question is where that change is useful. Experimental polariton realizations on monotile lattices
-  now show Bragg peaks and long-range coherence,<sup class="citation"><a href="bibliography.html#ref-40">[40]</a></sup> with theory predicting critical states and
-  anomalous transport in related optical setups.<sup class="citation"><a href="bibliography.html#ref-41">[41]</a></sup> Tile-shape geometry can tune topological phases
-  and the quantum geometric tensor in model systems.<sup class="citation"><a href="bibliography.html#ref-39">[39]</a></sup>
+  Condensed-matter theory adds depth: an ideal nearest-neighbor tight-binding model on the Hat vertex graph
+  (mean coordination ≈2.31, mean bond length ≈1.37<em>a</em>) has graphene-like features and a macroscopic
+  zero-energy manifold of compact localized states, many concentrated around reflected “anti-hat”
+  environments, under specified hopping and flux choices,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup>
+  Ising spins on the underlying kite graph order with critical temperatures
+  <em>T</em><sub>c</sub>/<em>J</em>=2.405±0.0005 and <em>T</em><sub>c</sub><sup>*</sup>/<em>J</em>=2.143±0.0005
+  while satisfying Kramers–Wannier duality to 1.000±0.001 and collapsing with ordinary 2D Ising
+  exponents,<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup>
+  and dimer statistics on a regularized Spectre graph admit the exact count
+  Z=2<sup>N<sub>Mystic</sub>+1</sup>.<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup> Together these establish that monotile geometry changes wave
+  and lattice physics — the open question is where that change is useful. Experimental polariton
+  realizations on monotile lattices now show Bragg peaks and long-range coherence,<sup class="citation"><a href="bibliography.html#ref-40">[40]</a></sup> with theory
+  predicting critical states and anomalous transport in related optical setups.<sup class="citation"><a href="bibliography.html#ref-41">[41]</a></sup> Tile-shape
+  geometry can tune topological phases and the quantum geometric tensor in model systems: one geometric
+  parameter continuously connects Chevron, Spectre, Turtle, and Comet, with a reported bulk Chern marker
+  C≈0.98 at ℓ=0.33 and survival under onsite disorder through roughly <em>W</em>/<em>t</em>≤1.<sup class="citation"><a href="bibliography.html#ref-39">[39]</a></sup>
 </p>
-<h2 id="section-1">Candidate applications</h2>
+<h2 id="section-1">Established experiments and theory</h2>
+<p>
+  Peer-reviewed experimental evidence includes fabricated chiral diffraction from a Hat-centroid
+  quasilattice.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup> A separate experimental preprint reports a finite, optically written
+  aperiodic polariton realization with Bragg peaks and coherence.<sup class="citation"><a href="bibliography.html#ref-40">[40]</a></sup> Rigorous and
+  numerical work describes Hat/Spectre diffraction,<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup><sup class="citation"><a href="bibliography.html#ref-33">[33]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup> a Hat-graph tight-binding
+  model,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> and predicted critical transport in a related polariton proposal.<sup class="citation"><a href="bibliography.html#ref-41">[41]</a></sup>
+  These studies use different physical decorations; they should not be merged into one generic “Spectre
+  material” claim.
+</p>
+<p>
+  In the polariton preprint, a spatial light modulator writes finite Hat-vertex pump arrays with
+  M=1, 4, and 13 tiles into a GaAs microcavity. At about 1.15 times threshold, the M=13 array shows narrow
+  C6 peaks; changing characteristic spacing from D=27.2 μm to 22.6 μm changes favored nearest-neighbor
+  locking from in-phase to out-of-phase. Periodic triangular and Penrose arrays are controls. This is a
+  driven-dissipative experiment under preprint review, not a passive bulk material.<sup class="citation"><a href="bibliography.html#ref-40">[40]</a></sup>
+</p>
+<p>
+  Ref.&nbsp;41 is a prediction, not an experiment. A finite-difference polariton model with Gaussian
+  scatterers at Hat vertices finds critical states near low-energy pseudogaps and representative transport
+  exponents ν≈0.72 and ν≈0.40. Finite-grid mismatch affects the superdiffusive front, and comparable
+  behavior in Penrose calculations leaves monotile specificity unresolved.<sup class="citation"><a href="bibliography.html#ref-41">[41]</a></sup>
+</p>
+<h2 id="section-2">Simulation and measurement workflow</h2>
+<p>
+  The HLV optical benchmark protocol supplied to this project is useful here only as a
+  <strong>claim-disciplined methods template</strong>. It correctly treats the Hat diffraction experiment
+  as a positive control for Fourier and full-wave solvers, not as evidence for HLV. Its broader HLV carrier,
+  phase-channel, and memory-channel proposals are unpublished and unvalidated.<sup class="citation"><a href="bibliography.html#ref-74">[74]</a></sup>
+</p>
+<ol>
+  <li>Select the physical decoration—points, holes, resonators, struts, or material domains—and state how
+  it is derived from the canonical tiling.</li>
+  <li>Match periodic, random, and alternative aperiodic controls by area fraction, feature count, minimum
+  spacing, material, thickness, and outer boundary.</li>
+  <li>Converge finite-element, finite-difference time-domain, or boundary-element meshes and absorbing
+  boundaries; sweep patch size to separate bulk behavior from edge effects.</li>
+  <li>Report transmission/reflection spectra, angular scattering, polarization or handedness contrast,
+  quality factor, loss, uncertainty, and raw geometry.</li>
+  <li>Fabricate and image the sample, measure dimensional disorder, and feed the as-built geometry back
+  into the model.</li>
+</ol>
+<p>
+  A rigorous benchmark should lock geometry and metrics before target runs, separate calibration,
+  validation, and sealed holdouts, and include matched nulls: honeycomb, Penrose, radial-phase-randomized,
+  pair-correlation-matched, and mirrored structures. Mirror reversal, polarization response, aperture
+  scaling, and illumination-position invariance should be explicit gates. A visually striking pinwheel is
+  not enough; the target must predict held-out observables better than equally flexible conventional
+  alternatives.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup><sup class="citation"><a href="bibliography.html#ref-74">[74]</a></sup>
+</p>
+<h2 id="section-3">Candidate applications</h2>
 <ul>
-  <li>Acoustic diffusers and panels: aperiodic surfaces scatter without the flutter echoes of periodic ones</li>
+  <li>Acoustic diffusers and panels tested for angular uniformity and flutter-echo reduction</li>
   <li>Photonic and phononic structures with engineered chiral response</li>
   <li>Antenna and metasurface layouts that suppress grating lobes<sup class="citation"><a href="bibliography.html#ref-38">[38]</a></sup></li>
   <li>Simulation-ready polygon exports for comparing periodic, random, and aperiodic boundaries in FDTD/FEM</li>
 </ul>
-<h2>See also</h2><p><a href="materials-science.html">Materials science and fluids</a>, <a href="signal-processing.html">Signal processing and imaging</a></p>
+<h2 id="section-4">Limitations and open questions</h2>
+<p>
+  Aperiodicity does not guarantee a band gap, isotropic scattering, low sidelobes, or useful chirality.
+  Response depends on wavelength-to-feature ratio, losses, coupling, boundary, disorder, and the selected
+  points or domains. Acoustic and electromagnetic analogies are helpful only after their boundary
+  conditions and constitutive physics are specified. The main open engineering task is to identify where a
+  canonical monotile layout beats well-tuned periodic, random, and established quasicrystal controls.
+</p>
+<h2>See also</h2><p><a href="materials-science.html">Materials science and fluids</a>, <a href="signal-processing.html">Signal processing and imaging</a>, <a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a>, <a href="dimers-and-constrained-models.html">Dimers and constrained models</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

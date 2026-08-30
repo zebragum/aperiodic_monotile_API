@@ -3,7 +3,8 @@ Allow: /
 Allow: /agent-guide.md
 Allow: /agents.html
 
-# AI agents: start with the markdown integration brief.
-# https://aperiodicgenerator.com/agent-guide.md
+# Content & research (canonical on untiling.com)
+Sitemap: https://untiling.com/sitemap-untiling.xml
 
-Sitemap: https://aperiodicgenerator.com/sitemap.xml
+# Generator, API, and product pages (canonical on aperiodicgenerator.com)
+Sitemap: https://aperiodicgenerator.com/sitemap-aperiodicgenerator.xml

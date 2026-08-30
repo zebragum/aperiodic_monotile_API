@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spectre tile | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Spectre tile | Research Wiki | Untiling</title>
     <meta name="description" content="A strictly chiral aperiodic monotile, also known as Tile(1,1), discovered in 2023." />
     <link rel="canonical" href="https://untiling.com/research/wiki/spectre-tile.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Spectre tile | Untiling Research Wiki" />
+    <meta property="og:description" content="A strictly chiral aperiodic monotile, also known as Tile(1,1), discovered in 2023." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/spectre-tile.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Spectre tile", "description": "A strictly chiral aperiodic monotile, also known as Tile(1,1), discovered in 2023.", "url": "https://untiling.com/research/wiki/spectre-tile.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li class="is-active"><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -82,7 +95,9 @@
 <li><a href="#section-0">Overview</a></li>
 <li><a href="#section-1">Geometry and structure</a></li>
 <li><a href="#section-2">Substitution structure</a></li>
-<li><a href="#section-3">Relationship to the Hat</a></li>
+<li><a href="#section-3">What the chiral theorem proves</a></li>
+<li><a href="#section-4">Relationship to the Hat</a></li>
+<li><a href="#section-5">Evidence and limitations</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -160,7 +175,20 @@
   stable tile IDs and transforms, and exporters (SVG, STL, GLB, CSV, JSON) — the exact pipeline used to
   produce the renders across this wiki.
 </p>
-<h2 id="section-3">Relationship to the Hat</h2>
+<h2 id="section-3">What the chiral theorem proves</h2>
+<p>
+  The proof concerns mathematically exact tiles and allowed rigid motions. Local fits force a small family
+  of larger clusters, and recognizability lets those clusters be recovered at every scale. A translational
+  period cannot survive this unbounded hierarchy. Reflection creates the opposite-handed tiling space; it
+  is not an orientation required inside one strict Spectre tiling.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+</p>
+<p>
+  A one-monotile theorem can still require many decorated substitution states. Those labels remember
+  orientation, local role, and parent boundary so that hierarchy is recognizable; they are bookkeeping
+  states, not extra physical tile shapes. Straight polygonal encodings with matching marks are useful for
+  software but must not be substituted silently for the exact unmarked curved geometry.
+</p>
+<h2 id="section-4">Relationship to the Hat</h2>
 <p>
   The Hat is Tile(1,√3) and the Turtle is Tile(√3,1); the Spectre's Tile(1,1) sits at the equilateral point
   of the same continuum.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Every Spectre tiling is closely related to a tiling with sparse hats in a
@@ -168,11 +196,31 @@
   Kaplan's historical survey traces the whole path from Penrose tiles to these modern monotiles.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
   Wang-tile machinery provides yet another route to both shapes.<sup class="citation"><a href="bibliography.html#ref-7">[7]</a></sup>
 </p>
-<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
+<p>
+  Family members can share combinatorial adjacency while differing metrically. Moving through
+  Tile(<em>a,b</em>) changes distances, angles, clearances, diffraction peak locations, and physical
+  couplings. A theorem preserved under the family deformation does not make every Euclidean or material
+  observable identical.
+</p>
+<h2 id="section-5">Evidence and limitations</h2>
+<p>
+  Aperiodicity and chirality are established by the substitution and combinatorial arguments in the
+  discovery paper.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Diffraction is a different observable: it describes how a point decoration or
+  fabricated lattice scatters waves. Theory predicts pure-point long-range order for CASPr
+  representatives,<sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup> crystallographic work finds non-periodic chiral sixfold diffraction,<sup class="citation"><a href="bibliography.html#ref-34">[34]</a></sup>
+  while a fabricated Hat-centroid quasilattice has produced handed optical response.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup>
+</p>
+<p>
+  Results depend on what is placed on the tiling—vertices, centroids, resonators, edges, or material
+  domains—and on finite-patch boundaries. The straight Tile(1,1) polygon must not be described as strictly
+  aperiodic when reflections are allowed. Nor does one successful optical experiment establish benefits
+  for acoustics, mechanics, graphics, or antennas; those require their own baselines and measurements.
+</p>
+<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a>, <a href="discovery-history.html">Discovery history of the Hat and Spectre</a>, <a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

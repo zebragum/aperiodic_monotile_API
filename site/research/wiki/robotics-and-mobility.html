@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Robotics and mobility | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Robotics and mobility | Research Wiki | Untiling</title>
     <meta name="description" content="Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays." />
     <link rel="canonical" href="https://untiling.com/research/wiki/robotics-and-mobility.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Robotics and mobility | Untiling Research Wiki" />
+    <meta property="og:description" content="Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/robotics-and-mobility.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Robotics and mobility", "description": "Aperiodic surfaces and sensor layouts as localization substrates, coverage geometry, and sampling arrays.", "url": "https://untiling.com/research/wiki/robotics-and-mobility.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -83,6 +96,7 @@
 <li><a href="#section-1">Sensors, arrays, and sampling</a></li>
 <li><a href="#section-2">SLAM, planning, and shared benchmarks</a></li>
 <li><a href="#section-3">Mechanics and contact</a></li>
+<li><a href="#section-4">Limits and validation</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -90,7 +104,7 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Robotics and mobility</p>
-  <table><tr><th>Status</th><td>Research frontier with deep antecedents</td></tr><tr><th>Key benefit</th><td>Unique local neighborhoods; regenerable maps</td></tr><tr><th>Sensors</th><td><a href="signal-processing.html">Signal processing and imaging</a></td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier with deep antecedents</td></tr><tr><th>Key benefit</th><td>Position-informative local patches; regenerable maps</td></tr><tr><th>Sensors</th><td><a href="signal-processing.html">Signal processing and imaging</a></td></tr></table>
 </aside>
 
           <h2 id="section-0">The localization argument</h2>
@@ -98,21 +112,21 @@
   Periodic floors are hostile to visual localization: every cell looks like every other cell, so a downward
   camera learns almost nothing about <em>where</em> it is. Random textures are locally distinctive but
   cannot be regenerated, queried, or shared as a ground-truth map across labs. An aperiodic monotile
-  surface sits in the useful middle: <strong>every sufficiently large neighborhood is unique</strong>,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
-  yet the whole field is deterministic — a robot that reads its local tile configuration can, in principle,
-  recover absolute pose from a lookup table built from the same seed.
+  surface sits in the useful middle. Finite motifs recur, but within a <em>fixed finite mapped patch</em>, a
+  sufficiently large local neighborhood can identify position. A robot that reads enough of the local tile
+  configuration can therefore test absolute-pose lookup against a map generated from the same patch.
 </p>
 
 <figure class="wiki-figure">
-  <img src="../../assets/research/wiki/robotics-horizon-walk.jpg" alt="Eye-height view over an aperiodic monotile ground plane stretching to a sunset horizon" width="1600" loading="lazy" decoding="async" />
-  <figcaption><strong>A ground plane with no repeats.</strong> An eye-height camera over a generated monotile terrain. Because no two neighborhoods are identical, every camera frame carries a unique local signature — a property regular grids cannot offer.</figcaption>
+  <img src="../../assets/research/wiki/robotics-pose-lookup-redraw.png" alt="Side-by-side: periodic floor FOV is ambiguous versus aperiodic floor FOV that maps to a unique pose" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>Where am I?</strong> A downward camera on a checkerboard sees a neighborhood that could be anywhere. On a generated monotile floor, the same FOV highlights a unique neighborhood that can look up pose in a regenerable map.</figcaption>
 </figure>
 
 <p>
   This is not only a 2023 idea. Autonomous-robot localization from aperiodic floor patterns was already
-  proposed and implemented with Penrose-like tilings in the 1990s: scan a local patch, decode position from
-  configuration, and improve precision as the scanned neighborhood grows — with better robustness to missed
-  line counts than a rectangular grid.<sup class="citation"><a href="bibliography.html#ref-72">[72]</a></sup> Monotiles sharpen the same program: one prototile, no
+  proposed for Penrose-like tilings in the 1990s: scan a local patch, decode position from configuration,
+  and improve precision as the scanned neighborhood grows. The accessible record is an antecedent and
+  implementation discussion, not a modern controlled pose benchmark.<sup class="citation"><a href="bibliography.html#ref-72">[72]</a></sup> Monotiles sharpen the same program: one prototile, no
   matching rules to paint, stable IDs and affines for every tile, and regenerable patches for any arena size
   from <a href="resources-and-tools.html">generators</a> such as
   <a href="https://aperiodicgenerator.com/" rel="noopener noreferrer">aperiodicgenerator.com</a>.
@@ -128,11 +142,10 @@
   <a href="aliasing.html">Aliasing</a>; robotics inherits it for:
 </p>
 <ul>
-  <li><strong>Multi-robot and WSN coverage</strong> — place nodes at tile centroids so coverage has no
-  periodic blind corridors and clone/intrusion routes are harder to predict from local structure.</li>
-  <li><strong>Active sensing footprints</strong> — raster or spiral coverage paths that follow substitution
-  hierarchy instead of lawnmower rows, reducing resonant vibration on the vehicle and patterned wear on
-  the floor.</li>
+  <li><strong>Multi-robot and WSN coverage</strong> — test centroid layouts for coverage holes and
+  directional bias against regular, random, and blue-noise placements.</li>
+  <li><strong>Active sensing footprints</strong> — compare hierarchy-following paths with lawnmower and
+  spiral paths for travel cost, revisit time, vibration spectra, and wear.</li>
   <li><strong>Tactile and force arrays</strong> — taxel layouts without a single lattice frequency, so
   slip and contact signatures do not lock to the sensor grid.</li>
 </ul>
@@ -141,8 +154,9 @@
   Because every patch regenerates exactly from a seed, an aperiodic arena is a <strong>shared
   benchmark terrain</strong>: two labs can print or project the same floor, publish trajectories against
   the same tile IDs, and compare SLAM or planning papers without arguing about texture randomness.
-  Algorithmic primitives already exist for recovering finite tessellation structure from observed
-  fragments<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> and for searching tiling space at scale.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> Hierarchical tile counts
+  Adjacent algorithmic work can extract repeated rectangular forms from exact finite symbolic grids; it
+  does not recover polygonal tilings from camera fragments.<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> SAT methods can search finite
+  polyform placement spaces at scale.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> Hierarchical tile counts
   (Fibonacci / Lucas signatures) give multi-scale statistical fingerprints a localizer can use when
   vision is partial.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup>
 </p>
@@ -160,17 +174,34 @@
 </ul>
 <h2 id="section-3">Mechanics and contact</h2>
 <ul>
-  <li>Grasping and traction textures with no periodic slip planes — related to aperiodic lattice
+  <li>Grasping and traction textures tested for directional slip and wear — related to aperiodic lattice
   mechanics in <a href="materials-science.html">Materials science and fluids</a></li>
   <li>Tire tread, road surface, and rail-bed studies where periodic patterns excite resonance</li>
   <li>Soft-robot skin layouts and conformal sensor meshes derived from clipped monotile patches</li>
   <li>Deployable / folding mobility structures; flat-foldability synthesis points the way<sup class="citation"><a href="bibliography.html#ref-26">[26]</a></sup><sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup></li>
 </ul>
+<p>
+  These are proposed tests, not established monotile advantages. Use matched roughness, material, load,
+  speed, and tread geometry, and report whether the canonical tiling or only an inspired texture was used.
+</p>
+<h2 id="section-4">Limits and validation</h2>
+<p>
+  Localization depends on field of view, patch boundary, repeated finite motifs, occlusion, illumination,
+  camera calibration, wear, and map accuracy. Ref.&nbsp;72 establishes the broader feasibility of position
+  detection from an aperiodic tiling, not turnkey performance for Hat or Spectre floors.<sup class="citation"><a href="bibliography.html#ref-72">[72]</a></sup> A useful
+  benchmark reports pose error and failure rate versus visible neighborhood size, then tests held-out
+  starts, rotated cameras, missing lines, dirt, and changed lighting.
+</p>
+<p>
+  Sensor-layout and contact proposals inherit ordinary constraints: wiring, minimum spacing, repair,
+  traction, drainage, and safety. Aperiodicity is a layout property, not a guarantee of observability,
+  coverage, security, or mechanical advantage.
+</p>
 <h2>See also</h2><p><a href="signal-processing.html">Signal processing and imaging</a>, <a href="aliasing.html">Aliasing</a>, <a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

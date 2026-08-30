@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Materials science and fluids | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Materials science and fluids | Research Wiki | Untiling</title>
     <meta name="description" content="Metamaterials, lattices, electrodes, exchangers, and porous media candidates." />
     <link rel="canonical" href="https://untiling.com/research/wiki/materials-science.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Materials science and fluids | Untiling Research Wiki" />
+    <meta property="og:description" content="Metamaterials, lattices, electrodes, exchangers, and porous media candidates." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/materials-science.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Materials science and fluids", "description": "Metamaterials, lattices, electrodes, exchangers, and porous media candidates.", "url": "https://untiling.com/research/wiki/materials-science.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -80,7 +93,14 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">Geometry as a material parameter</a></li>
-<li><a href="#section-1">Directions</a></li>
+<li><a href="#section-1">Canonical Hat-family honeycombs</a></li>
+<li><a href="#section-2">Multiphase composites and interlocking interfaces</a></li>
+<li><a href="#section-3">Minimal surfaces, networks, and polycrystal analogues</a></li>
+<li><a href="#section-4">Monotile-inspired three-dimensional derivatives</a></li>
+<li><a href="#section-5">Wave and electronic evidence</a></li>
+<li><a href="#section-6">Fluid and thermal candidates</a></li>
+<li><a href="#section-7">Controls and geometry provenance</a></li>
+<li><a href="#section-8">Limitations</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -88,7 +108,7 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Materials science and fluids</p>
-  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Evidence base</th><td>Hat-lattice physics papers</td></tr></table>
+  <table><tr><th>Status</th><td>Active research</td></tr><tr><th>Evidence base</th><td>Experiments, simulation, and theory</td></tr></table>
 </aside>
 
           <h2 id="section-0">Geometry as a material parameter</h2>
@@ -105,40 +125,233 @@
 </figure>
 
 <p>
-  The evidence that this matters physically is accumulating: distinct electronic and vibrational spectra on
-  the Hat lattice,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> modified phase behavior for spins,<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup> distinctive dimer combinatorics,<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup>
+  The evidence that this matters physically is accumulating: a specified tight-binding spectrum on the Hat
+  vertex graph,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> modified phase behavior for spins,<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup> distinctive dimer combinatorics,<sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup>
   and measured chiral optical response.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup> Related lattice families from Sturmian systems<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup>
   and iterated function systems<sup class="citation"><a href="bibliography.html#ref-14">[14]</a></sup> extend the design space beyond the monotile itself.
 </p>
 <p>
-  Mechanical evidence is now substantial. Printed Hat honeycombs achieve isotropic zero Poisson’s
-  ratio,<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup> converge toward isotropic continuum elasticity,<sup class="citation"><a href="bibliography.html#ref-43">[43]</a></sup> and allow independent tuning
-  of modulus and Poisson ratio across Hat-family variants.<sup class="citation"><a href="bibliography.html#ref-44">[44]</a></sup> Comparative studies map effective
-  properties across Hat, Turtle, and Spectre lattices.<sup class="citation"><a href="bibliography.html#ref-45">[45]</a></sup> In composites, aperiodic monotile
-  reinforcements outperform tested honeycomb controls in stiffness, strength, and toughness,<sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup>
-  with follow-on work using machine learning to explore the family<sup class="citation"><a href="bibliography.html#ref-47">[47]</a></sup> and multi-phase curvature
-  engineering.<sup class="citation"><a href="bibliography.html#ref-48">[48]</a></sup> Interlocking aperiodic assemblies show dramatic fracture-resistance gains over
-  periodic honeycombs.<sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup> TPMS cells patterned on Hat, Turtle, and Spectre tilings offer another
-  design axis for thin-walled metamaterials,<sup class="citation"><a href="bibliography.html#ref-60">[60]</a></sup> and phase-field studies explore polycrystalline
-  evolution on Hat-family meshes.<sup class="citation"><a href="bibliography.html#ref-61">[61]</a></sup>
+  Mechanical evidence is substantial but heterogeneous. It includes printed Hat-wall honeycombs,<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup>
+  numerical continuum limits,<sup class="citation"><a href="bibliography.html#ref-43">[43]</a></sup> Tile(<em>a,b</em>) parameter sweeps,<sup class="citation"><a href="bibliography.html#ref-44">[44]</a></sup> ideal beam
+  networks,<sup class="citation"><a href="bibliography.html#ref-45">[45]</a></sup> multiphase fracture panels,<sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup><sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup> and three-dimensional lattices that
+  are only <em>inspired</em> by monotiles.<sup class="citation"><a href="bibliography.html#ref-64">[64]</a></sup><sup class="citation"><a href="bibliography.html#ref-65">[65]</a></sup> Those are different specimens and different
+  claims. The sections below keep their materials, controls, methods, and evidence levels separate.
 </p>
 <p class="ref-note">
   Several papers label new lattices “einstein monotile” while using geometry <em>inspired by</em> rather
   than identical to Smith’s Hat or Spectre — see refs.&nbsp;[62] and [64]–[65]. Always verify whether a
   source uses canonical tile outlines or a derivative mesh.
 </p>
-<h2 id="section-1">Directions</h2>
+<h2 id="section-1">Canonical Hat-family honeycombs</h2>
+<p>
+  <strong>Poisson’s ratio</strong> measures sideways strain under axial loading. Clarke and colleagues
+  printed 50 × 50 × 50&nbsp;mm PLA cellular specimens whose walls followed a finite Hat tiling. An
+  Ultimaker&nbsp;S3 deposited two-toolpath, 0.5&nbsp;mm walls through a 0.4&nbsp;mm nozzle in
+  0.2&nbsp;mm layers. ASTM&nbsp;D1621 compression used a 50&nbsp;kN Instron load cell at
+  0.5&nbsp;mm/min to 25% strain; digital image correlation used 31-pixel subsets. Relative-density and
+  orientation sweeps were compared with a hexagonal honeycomb. The Hat architecture returned Poisson
+  ratios of 0.010–0.048 above relative density 0.225 and 0.018–0.075 at or below it.<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup> “Zero”
+  here means experimentally near zero for these finite specimens, not an exact property of every
+  Hat-shaped object.
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/materials-compression-blender-redraw.png" alt="Original three-dimensional redraw of a finite monotile wall network compressed between rigid platens" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Finite compression specimen.</strong> Original Blender reconstruction of the test concept in ref.&nbsp;42: a cropped monotile-derived wall network between compression platens. It is an explanatory redraw, not the paper’s specimen photograph or a calibrated mechanical simulation.</figcaption>
+</figure>
+
+<p>
+  Rieger and Danescu asked a different question: whether increasingly large ideal Hat networks approach
+  continuum isotropy. In spring-and-angle and Timoshenko-beam simulations, the mean anisotropy index fell
+  from about 6.8 × 10<sup>−2</sup> at radius 10<em>a</em> to 4.3 × 10<sup>−4</sup> at
+  300<em>a</em>, using ten realizations at each scale.<sup class="citation"><a href="bibliography.html#ref-43">[43]</a></sup> The first seven inflation generations
+  contain 4, 25, 169, 1,156, 7,921, 54,289, and 372,100 polygons, which helps explain the slow approach
+  to a continuum response. This is a computational scale-limit result; a small printed panel can remain
+  boundary-dominated and direction-dependent. The demonstrated Timoshenko-beam convergence also used an
+  internal beam scale comparable to the tile edge. The more realistic slender-beam regime remains open.
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/materials-convergence-blender-redraw.png" alt="Three increasingly large circular monotile networks representing a scale-dependent continuum study" width="1600" loading="lazy" decoding="async" />
+  <figcaption><strong>Scale changes the question.</strong> Original Blender reconstruction of the domain-size sweep in ref.&nbsp;43. The rendered networks illustrate 10<em>a</em>, 100<em>a</em>, and 300<em>a</em> domains; the published anisotropy values come from simulation, not from this rendering.</figcaption>
+</figure>
+
+<p>
+  The continuous Tile(<em>a,b</em>) family adds geometry as a design variable. Selected experiments and a
+  larger computational map found Poisson ratios from about 0.006 to 0.491 and normalized moduli from
+  approximately 0.003 to 0.056 across relative densities near 0.2–0.4.<sup class="citation"><a href="bibliography.html#ref-44">[44]</a></sup> Hat is
+  Tile(1,√3); the family’s Tile(0,1), Tile(1,1), and Tile(1,0) endpoints admit periodic tilings even
+  though generic intermediate members are aperiodic. Hat and Tile(1,1) entered a smooth,
+  bending-dominated plateau, while other tested family members showed an initial stress drop; endpoint
+  designs began densifying near 15% strain, versus roughly 25% for the other cases. Separate finite-element
+  comparisons of Hat-, Turtle-, and straight-Spectre-type beam lattices at 10–40% relative density found
+  nearly isotropic effective moduli, while some Hat cases retained direction-dependent negative Poisson
+  ratios.<sup class="citation"><a href="bibliography.html#ref-45">[45]</a></sup> Isotropic stiffness and isotropic lateral contraction are therefore separate claims.
+</p>
+<h2 id="section-2">Multiphase composites and interlocking interfaces</h2>
+<p>
+  Jung, Chen, and Gu assigned rigid VeroClear to tile interiors and soft TangoBlackPlus to boundaries in
+  50 × 125 × 3&nbsp;mm PolyJet panels with a 10&nbsp;mm notch. At least three specimens per design were
+  pulled at 2&nbsp;mm/min and compared with periodic honeycomb and square-grid controls, including rotated
+  controls and translated or rotated crack placements. For the published 80% stiff-phase comparison, the
+  selected aperiodic panels averaged about 130% higher modulus, 65.2% higher strength, and 31.6% higher
+  toughness than HC80, with more tortuous crack paths.<sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup> (An earlier preprint reported smaller
+  gains, so values should always be tied to the cited version.) Fracture stayed within TangoBlackPlus
+  rather than following a VeroClear-interface debond. Longer initial notches reduced modulus, strength,
+  and toughness, and simulated crack paths diverged from experiments because print anisotropy and defects
+  were omitted. The headline result therefore belongs to those phases, crops, notches, and controls.
+</p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/materials-fracture-blender-redraw.png" aria-label="&lt;strong&gt;Notched multiphase panel.&lt;/strong&gt; Original Blender reconstruction of the architecture and failure mechanism studied in ref.&amp;nbsp;46. Rigid tile cores sit in a continuous soft phase; the glowing line is a schematic tortuous crack growing under tension, not copied experimental data. &lt;a href=&quot;../../assets/research/wiki/materials-fracture-blender-redraw.png&quot;&gt;Still frame&lt;/a&gt;">
+    <source src="../../assets/research/wiki/materials-fracture-blender-redraw.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Notched multiphase panel.</strong> Original Blender reconstruction of the architecture and failure mechanism studied in ref.&nbsp;46. Rigid tile cores sit in a continuous soft phase; the glowing line is a schematic tortuous crack growing under tension, not copied experimental data. <a href="../../assets/research/wiki/materials-fracture-blender-redraw.png">Still frame</a></figcaption>
+</figure>
+
+<p>
+  Follow-on work uses Gaussian-process regression to navigate a larger simulated composite family and
+  estimate uncertainty,<sup class="citation"><a href="bibliography.html#ref-47">[47]</a></sup> while curved chiral interfaces introduce curvature as another variable
+  affecting interface length, connectivity, and stress concentration.<sup class="citation"><a href="bibliography.html#ref-48">[48]</a></sup> These are design and
+  optimization studies, not independent demonstrations that any curved Spectre outline is stronger.
+</p>
+<p>
+  A bio-inspired interlocking derivative produced the largest reported fracture gain in this literature.
+  Its rigid and ductile phases met along strongly interdigitated monotile-derived edges. The selected
+  specimen reached roughly 20 times the fracture resistance of its honeycomb control, six times that of
+  the straight-edge aperiodic control, and 148% more than a semicircular-edge variant.<sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup> The control
+  ladder shows that local key-and-socket geometry and global layout both matter. This is evidence for that
+  engineered interface—not a twentyfold advantage of the canonical Hat or Spectre.
+</p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/materials-interlocking-blender-redraw.png" aria-label="&lt;strong&gt;Derivative interlocking interface.&lt;/strong&gt; Original Blender reconstruction of the mechanism discussed in ref.&amp;nbsp;49, redrawn with a flat-top bulb / undercut dovetail profile. The animation separates complementary necks and heads; this boundary is engineered, not a canonical Hat or Spectre edge. &lt;a href=&quot;../../assets/research/wiki/materials-interlocking-blender-redraw.png&quot;&gt;Still frame&lt;/a&gt;">
+    <source src="../../assets/research/wiki/materials-interlocking-blender-redraw.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Derivative interlocking interface.</strong> Original Blender reconstruction of the mechanism discussed in ref.&nbsp;49, redrawn with a flat-top bulb / undercut dovetail profile. The animation separates complementary necks and heads; this boundary is engineered, not a canonical Hat or Spectre edge. <a href="../../assets/research/wiki/materials-interlocking-blender-redraw.png">Still frame</a></figcaption>
+</figure>
+<h2 id="section-3">Minimal surfaces, networks, and polycrystal analogues</h2>
+<p>
+  Daynes generated smooth <strong>aperiodic minimal-surface shells</strong> inside monotile-derived cells
+  and swept orientation, local configuration, topology, density, and representative-volume size with
+  finite-element analysis. Selected designs approached in-plane stiffness isotropy, and variance decreased
+  as the modeled region grew; Gaussian-process models predicted modulus and anisotropy with uncertainty.
+  These structures are not conventional triply periodic minimal surfaces, and the study reports no printed
+  strength, thermal, acoustic, or band-gap experiment.<sup class="citation"><a href="bibliography.html#ref-60">[60]</a></sup>
+</p>
+<p>
+  Holden and Vasil provide a more general continuum bridge. Starting from diffusion or wave equations on
+  dense metric graphs with Kirchhoff node conditions, they derive a coarse-grained PDE retaining local
+  conductivity, capacity, and vertex density. Periodic, random, and aperiodic-monotile graphs are numerical
+  convergence examples.<sup class="citation"><a href="bibliography.html#ref-63">[63]</a></sup> The framework can guide future heat, sound, or transport models, but it
+  is not itself a measurement of any of those properties.
+</p>
+<p>
+  A phase-field study instead interprets a monotile pattern as an initial grain-boundary map. Under its
+  idealized two-dimensional grain-growth law, boundaries migrate and junctions reorganize, so the imposed
+  network does not remain an equilibrium polycrystal.<sup class="citation"><a href="bibliography.html#ref-61">[61]</a></sup> “Instability” here means microstructure
+  evolution in that model—not mechanical failure of a Hat lattice or spontaneous Hat grains in an alloy.
+</p>
+<h2 id="section-4">Monotile-inspired three-dimensional derivatives</h2>
+<p>
+  Several high-performing structures borrow aperiodic organization without preserving a canonical tile.
+  A semi-re-entrant derivative is studied through compression, bending, energy absorption, and
+  Poisson-ratio evolution; it is an auxetic-lattice paper, not evidence of a phononic band gap.<sup class="citation"><a href="bibliography.html#ref-62">[62]</a></sup>
+</p>
+<p>
+  Printed aperiodic-unit-cell microlattices were compared with selected periodic microlattices at matched
+  relative density. The DLP specimens used Standard Gray&nbsp;8K resin. Strut thicknesses of
+  0.4–0.8&nbsp;mm produced relative densities from 0.0971 to 0.3441; the baseline was 0.206. Against
+  simple-cubic, FCC, and BCC controls, the reported design achieved at least 830% higher fracture strain,
+  300% higher energy absorption, 130% higher crushing-stress efficiency, and a 160% higher smoothness
+  metric; after recovery from 30% compressive strain it retained 76% of ultimate stress.<sup class="citation"><a href="bibliography.html#ref-64">[64]</a></sup>
+  Periodic controls developed catastrophic buckling, detachment, or diagonal shear bands around
+  0.1 strain, whereas the aperiodic derivative spread deformation across local bands and then compacted.
+  These numbers belong to that three-dimensional truss, resin, density range, and recovery protocol.
+</p>
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/impact-front.jpg" aria-label="&lt;strong&gt;Normal impact on a monotile sheet.&lt;/strong&gt; Schematic slow-motion: a punch opens a hole and a stress/energy ring races outward through interlocking cells. Illustration for energy-absorption and impact-mitigation research interest — not a measured crash test.">
+    <source src="../../assets/research/wiki/impact-front.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Normal impact on a monotile sheet.</strong> Schematic slow-motion: a punch opens a hole and a stress/energy ring races outward through interlocking cells. Illustration for energy-absorption and impact-mitigation research interest — not a measured crash test.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/impact-oblique.jpg" aria-label="&lt;strong&gt;Oblique impact.&lt;/strong&gt; Same schematic sheet, angled strike — the disturbed neighborhood and outgoing ring stay readable on the aperiodic mesh.">
+    <source src="../../assets/research/wiki/impact-oblique.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Oblique impact.</strong> Same schematic sheet, angled strike — the disturbed neighborhood and outgoing ring stay readable on the aperiodic mesh.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/impact-lateral.jpg" aria-label="&lt;strong&gt;Lateral slice.&lt;/strong&gt; Cutaway of the same impact sequence, emphasizing how deformation and the outgoing wave occupy neighboring cells rather than a single lattice corridor.">
+    <source src="../../assets/research/wiki/impact-lateral.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Lateral slice.</strong> Cutaway of the same impact sequence, emphasizing how deformation and the outgoing wave occupy neighboring cells rather than a single lattice corridor.</figcaption>
+</figure>
+
+<p>
+  Those loops are schematic impact illustrations on a monotile sheet — useful intuition for why
+  energy-absorption and crushing studies matter to vehicle / protective-structure research, not a
+  substitute for instrumented crash tests. Keep them next to the measured lattice numbers above.
+</p>
+<p>
+  A related interpenetrating-phase composite combines an additively manufactured Ti-6Al-4V truss with
+  epoxy infiltration in roughly 24.75 × 24.85 × 25&nbsp;mm specimens. Selective-laser-melted
+  Ti-6Al-4V struts ranged from 500 to 860&nbsp;µm before vacuum-assisted epoxy curing. Its strongest tested
+  configuration reported a 246.61% compressive-strength increase and specific energy absorption of
+  46.2&nbsp;J&nbsp;g<sup>−1</sup>. In an equal-mass comparison, the composite used 13.75% titanium plus
+  86.25% epoxy against a 36.74% titanium-only lattice, increasing strength by 221.91%, plateau strength by
+  215.7%, and specific energy absorption by 185.39%.<sup class="citation"><a href="bibliography.html#ref-65">[65]</a></sup> The polymer suppressed abrupt stress drops,
+  delayed densification toward 0.6 strain, and distributed damage, although the highest-strut-fraction
+  specimen still fluctuated. Metal-printing defects, infiltration, interface adhesion, density, and damage
+  sequencing are inseparable from that result. Both studies should be called
+  <strong>monotile-inspired</strong>, not direct tests of the two-dimensional monotile theorem.
+</p>
+<h2 id="section-5">Wave and electronic evidence</h2>
+<p>
+  Hat-graph tight-binding models show distinct electronic and wave behavior under specified couplings,<sup class="citation"><a href="bibliography.html#ref-20">[20]</a></sup> and Spectre/Hat work covers
+  dimers, spins, diffraction, and tunable quantum geometry.<sup class="citation"><a href="bibliography.html#ref-21">[21]</a></sup><sup class="citation"><a href="bibliography.html#ref-22">[22]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup><sup class="citation"><a href="bibliography.html#ref-39">[39]</a></sup> A fabricated
+  Hat-centroid quasilattice has measured chiral diffraction.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup> These results concern specified
+  graphs or resonator decorations, not the bulk chemistry of a Hat-shaped solid.
+</p>
+<h2 id="section-6">Fluid and thermal candidates</h2>
 <ul>
-  <li>Metamaterials, auxetic lattices, acoustic cloaking, and programmable matter</li>
-  <li>Battery electrodes, fuel cells, solar concentrators, thermal exchangers, and porous media</li>
-  <li>Crack-arrest and impact structures: no periodic cleavage planes for failures to follow</li>
-  <li>Drag reduction, turbulence control, microfluidics, and surface texturing</li>
+  <li>Porous media and heat exchangers: compare pressure drop, mixing, heat-transfer coefficient, hot spots,
+  fouling, and manufacturability at matched porosity and hydraulic diameter.</li>
+  <li>Electrodes and catalysts: compare accessible area, tortuosity, transport, current distribution, and
+  degradation against periodic and stochastic networks.</li>
+  <li>Microfluidics and surface texture: test residence-time distribution, recirculation, dispersion, drag,
+  and sensitivity to fabrication error. These remain proposals unless linked to direct measurements.</li>
 </ul>
+<h2 id="section-7">Controls and geometry provenance</h2>
+<p>
+  Match density, feature-size distribution, connectivity, boundary shape, constituent material, and
+  manufacturing process before attributing a result to aperiodic order. Sweep patch size and orientation;
+  report defects and confidence intervals. Periodic, randomized, and non-monotile quasicrystalline controls
+  answer different questions and should not be collapsed into one baseline.
+</p>
+<p>
+  Preserve the canonical polygon and transform table when the research question is about the Hat or
+  Spectre. If struts are curved, cells merged, vertices moved, or a 3D lattice merely borrows the silhouette,
+  call it <strong>monotile-inspired</strong>. Refs.&nbsp;62, 64, and 65 are examples where that distinction
+  matters.
+</p>
+<h2 id="section-8">Limitations</h2>
+<p>
+  Removing translational symmetry does not remove weak directions, resonances, stress concentrations, or
+  processing defects. Benefits may disappear after matching density or boundary conditions. A canonical
+  pattern may also be inferior to an optimized derivative. Treat geometry as one design variable, publish
+  negative results, and reserve general claims for studies that span multiple patches and controls.
+</p>
 <h2>See also</h2><p><a href="materials-and-fabrication.html">Materials and fabrication</a>, <a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

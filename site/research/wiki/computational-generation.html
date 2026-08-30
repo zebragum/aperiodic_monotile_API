@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Computational generation and navigation | Research Wiki | Untiling</title>
+    <meta name="description" content="Exact patch generation, hierarchical addresses, finite-state navigation, GPU rendering, and independent validation." />
+    <link rel="canonical" href="https://untiling.com/research/wiki/computational-generation.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Computational generation and navigation | Untiling Research Wiki" />
+    <meta property="og:description" content="Exact patch generation, hierarchical addresses, finite-state navigation, GPU rendering, and independent validation." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/computational-generation.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Computational generation and navigation", "description": "Exact patch generation, hierarchical addresses, finite-state navigation, GPU rendering, and independent validation.", "url": "https://untiling.com/research/wiki/computational-generation.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Untiling</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../art.html">Art</a>
+        <a href="../index.html">Research</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
+        <a href="../../apparel/">Shop</a>
+        <a href="index.html" aria-current="page">Wiki</a>
+      </nav>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire.html">Moiré</a></li>
+<li><a href="aliasing.html">Aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li class="is-active"><a href="computational-generation.html">Computational generation and navigation</a></li>
+<li><a href="resources-and-tools.html">Resources and tools</a></li>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Computational generation and navigation</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Computational generation and navigation</h1>
+          <p class="wiki-tagline">Exact patch generation, hierarchical addresses, finite-state navigation, GPU rendering, and independent validation.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">Five different computational problems</a></li>
+<li><a href="#section-1">Exact coordinates and hierarchy addresses</a></li>
+<li><a href="#section-2">Finite-state navigation and automatic refinement</a></li>
+<li><a href="#section-3">GPU rendering without losing provenance</a></li>
+<li><a href="#section-4">Tool choice and scope</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Computational generation and navigation</p>
+  <table><tr><th>Core representation</th><td>State + affine transform + hierarchy address</td></tr><tr><th>Preferred geometry</th><td>Exact or symbolic</td></tr><tr><th>Navigation</th><td>Recursive or finite-state</td></tr><tr><th>Validation</th><td>Topology and geometry, independently</td></tr></table>
+</aside>
+
+          <h2 id="section-0">Five different computational problems</h2>
+<p>
+  <strong>Generation</strong> produces one legal substitution patch. <strong>Recognition</strong> recovers
+  parent supertiles from children. <strong>Local validation</strong> checks contacts and labels.
+  <strong>Extension</strong> asks whether a finite frontier belongs to an infinite tiling, while
+  <strong>enumeration</strong> asks for all legal patches. A hierarchy can make the first three practical
+  without automatically solving the last two.
+</p>
+<p>
+  Undecidability results concern specified broad input classes: three connected polyhypercubes in 4D,
+  translational monotiles in ℤ<sup>d</sup> for <em>d</em>≥3, and three polycubes in a 3D translational
+  setting.<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup><sup class="citation"><a href="bibliography.html#ref-56">[56]</a></sup><sup class="citation"><a href="bibliography.html#ref-59">[59]</a></sup> They do not make explicit Hat or Spectre substitution generation
+  undecidable. Seven-polyomino aperiodic sets likewise illuminate the small-set frontier without changing
+  the one-planar-monotile theorem.<sup class="citation"><a href="bibliography.html#ref-58">[58]</a></sup> Separately, SAT methods can certify isohedral polyforms, but
+  no general algorithm is known for recognizing aperiodic monotiles as an input class.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup>
+</p>
+<h2 id="section-1">Exact coordinates and hierarchy addresses</h2>
+<p>
+  Store every tile as a discrete state, orientation, exact or high-precision affine transform, and a stable
+  path from the root supertile. Expand the hierarchy before clipping. Exact symbolic coordinates prevent
+  tiny roundoff discrepancies from becoming false gaps or overlaps; floating-point coordinates remain
+  appropriate for final rendering after topology is fixed.
+</p>
+<p>
+  Voss’s MATLAB constructor translates the S/M composition rules into coordinates and was visually checked
+  through level eight, containing 16,908,641 Tile(1,1) instances.<sup class="citation"><a href="bibliography.html#ref-29">[29]</a></sup> Tatham’s combinatorial coordinate
+  system instead rewrites hierarchical addresses to cross tile edges, generating a local neighborhood
+  without materializing a giant enclosing supertile. The symbolic-spectre-tiles repository provides an
+  MPL-2.0 exact-coordinate export path; both independent implementations still require comparison with the
+  official rules.
+</p>
+<h2 id="section-2">Finite-state navigation and automatic refinement</h2>
+<p>
+  Recursive neighbor lookup can become expensive or ambiguous near infinite-order boundaries. Finite-state
+  transducers read and rewrite hierarchy-address strings directly, giving bounded-state navigation for
+  supported substitution presentations. Tatham’s neighborhood-refinement method splits ambiguous tile
+  states until deterministic transitions become possible, then minimizes equivalent states; on Hat and
+  Spectre inputs it recovers known refined systems. The author does not claim a universal theorem for every
+  substitution.
+</p>
+<h2 id="section-3">GPU rendering without losing provenance</h2>
+<p>
+  GPU renderers should instance one canonical mesh and upload compact transforms or split algebraic
+  components. Reusser’s WebGPU notebook separates transform components so Hat–Spectre–Turtle morphs become
+  per-frame projections and reports roughly 17 million depth-eight instances. Deep zoom can generate
+  supertiles on demand and replace subpixel detail with simpler instances, but extreme scales expose
+  floating-point failure and level-of-detail seams.
+</p>
+<p>
+  Rendering speed is not geometric validation. Archive the rule table, root state, depth, coordinate
+  convention, clipping mask, transform precision, renderer revision, and file hashes. Validate polygon
+  closure, overlap, uncovered area, edge contacts, legal states, hierarchy counts, and handedness in a
+  separate code path.
+</p>
+<h2 id="section-4">Tool choice and scope</h2>
+<p>
+  Prefer the official BSD-licensed <code>hatviz</code> and <code>hatvalidate</code> repositories for Hat
+  reference generation and proof-case replay. The MIT TileOneOne code generates the straight weakly chiral
+  polygon; it does not add strict Spectre edge modifications. Browser studios are excellent for exploration
+  but may permit overlaps, reflections, or freeform invalid layouts. License, geometry variant, revision,
+  and export semantics must be checked tool by tool.
+</p>
+<h2>See also</h2><p><a href="substitution-tiling.html">Substitution tiling</a>, <a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a>, <a href="resources-and-tools.html">Resources and tools</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-computer-graphics">Computer graphics</a> · <a href="index.html#category-algorithms">Algorithms</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

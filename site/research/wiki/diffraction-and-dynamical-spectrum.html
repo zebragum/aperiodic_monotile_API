@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diffraction and dynamical spectrum | Research Wiki | Untiling</title>
+    <meta name="description" content="How infinite-volume correlations become Bragg and continuous diffraction, and what finite FFTs can actually show." />
+    <link rel="canonical" href="https://untiling.com/research/wiki/diffraction-and-dynamical-spectrum.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Diffraction and dynamical spectrum | Untiling Research Wiki" />
+    <meta property="og:description" content="How infinite-volume correlations become Bragg and continuous diffraction, and what finite FFTs can actually show." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/diffraction-and-dynamical-spectrum.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Diffraction and dynamical spectrum", "description": "How infinite-volume correlations become Bragg and continuous diffraction, and what finite FFTs can actually show.", "url": "https://untiling.com/research/wiki/diffraction-and-dynamical-spectrum.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Untiling</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../art.html">Art</a>
+        <a href="../index.html">Research</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
+        <a href="../../apparel/">Shop</a>
+        <a href="index.html" aria-current="page">Wiki</a>
+      </nav>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire.html">Moiré</a></li>
+<li><a href="aliasing.html">Aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li class="is-active"><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
+<li><a href="resources-and-tools.html">Resources and tools</a></li>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Diffraction and dynamical spectrum</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Diffraction and dynamical spectrum</h1>
+          <p class="wiki-tagline">How infinite-volume correlations become Bragg and continuous diffraction, and what finite FFTs can actually show.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">From a tiling to a diffraction measure</a></li>
+<li><a href="#section-1">Bragg and continuous components</a></li>
+<li><a href="#section-2">What finite Fourier transforms miss</a></li>
+<li><a href="#section-3">Hat and Spectre evidence</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Diffraction and dynamical spectrum</p>
+  <table><tr><th>Input</th><td>Weighted Dirac comb</td></tr><tr><th>Core limit</th><td>Volume-averaged autocorrelation</td></tr><tr><th>Output</th><td>Diffraction measure</td></tr><tr><th>Warning</th><td>Finite FFT ≠ proof of spectral type</td></tr></table>
+</aside>
+
+          <h2 id="section-0">From a tiling to a diffraction measure</h2>
+<p>
+  Diffraction belongs to a specified decoration, not to a tile name. Choose control points
+  <em>x</em><sub>j</sub> and weights <em>w</em><sub>j</sub>, then form the weighted Dirac comb
+  ω=Σ<em>w</em><sub>j</sub>δ<sub><em>x</em><sub>j</sub></sub>. Its autocorrelation γ is the
+  volume-averaged limit of ω restricted to larger regions convolved with its reflected conjugate. The
+  mathematical diffraction measure is the Fourier transform γ̂.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup>
+</p>
+<p>
+  Atomic or resonator motifs modify amplitudes through form factors. Moving a repeated decoration within
+  every Spectre changes nearest-neighbor distances, extinctions, and Fourier intensity even when the
+  underlying tile adjacency is unchanged.<sup class="citation"><a href="bibliography.html#ref-30">[30]</a></sup> A control-point theorem therefore cannot be copied
+  unchanged to holes, antennas, struts, or a multiphase specimen.
+</p>
+<h2 id="section-1">Bragg and continuous components</h2>
+<p>
+  The pure-point part of γ̂ consists of delta peaks—Bragg diffraction. Singular-continuous and
+  absolutely-continuous parts are spread rather than concentrated, but they encode different kinds of
+  order and disorder. Pure-point diffraction is not synonymous with “aperiodic,” “substitution,” or
+  “quasicrystalline-looking.” CAP and CASPr model-set constructions provide the extra hypotheses needed
+  for exact Hat- and Spectre-family Fourier–Bohr amplitudes.<sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup><sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup>
+</p>
+<p>
+  Dynamical spectrum concerns translation acting on the entire tiling hull; diffraction concerns a
+  chosen weighted point set. They are related under standard ergodic hypotheses but are not interchangeable
+  labels. Substitution matrices first provide growth and frequencies; pair correlations and geometric
+  displacement data are additional inputs to spectral classification.<sup class="citation"><a href="bibliography.html#ref-36">[36]</a></sup>
+</p>
+<h2 id="section-2">What finite Fourier transforms miss</h2>
+<p>
+  A finite FFT multiplies the infinite structure by a window. Peak width, sidelobes, pixel smoothing,
+  clipping, and boundary shape can create or conceal weak components. A sharp image is evidence of
+  organized correlations in that approximant, not by itself a proof of pure-point diffraction. Report
+  point weights, physical motif, aperture, normalization, boundary, patch generation, and convergence
+  across increasing windows.
+</p>
+<p>
+  Exact renormalization is stronger. Inflation maps displacement classes across scale, yielding matrix
+  recursions for pair-correlation measures and Fourier cocycles. These equations let large-patch FFTs be
+  checked against hierarchy-implied frequencies rather than interpreted only by eye.<sup class="citation"><a href="bibliography.html#ref-36">[36]</a></sup>
+</p>
+<h2 id="section-3">Hat and Spectre evidence</h2>
+<p>
+  The Hat has several distinct diffraction statements. Socolar gives a six-dimensional Golden Key
+  construction; CAP supplies a regular-model-set description; one vertex decoration also has diffraction
+  on an underlying periodic framework.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup><sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup><sup class="citation"><a href="bibliography.html#ref-33">[33]</a></sup> Spectre/CASPr has Rauzy-fractal windows
+  and pure-point order, while crystallographic work finds non-periodic chiral sixfold diffraction for a
+  specified decoration.<sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup><sup class="citation"><a href="bibliography.html#ref-34">[34]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup>
+</p>
+<p>
+  Moritake and colleagues fabricated 372,100 circular holes of radius 100&nbsp;nm at Hat centroids in a
+  roughly 500 × 500&nbsp;μm, 350-nm silicon-nitride specimen, with pseudo-period swept from 600 to
+  750&nbsp;nm. The measured pinwheel twist was 15.52° relative to radial directions. Exact model-set
+  calculations supply complementary intensities: a CAP equal-weight central peak of order
+  1/(75φ<sup>4</sup>)≈0.001945 and a CASPr brightest equal-weight peak of order
+  (31−8√15)/972≈1.66×10<sup>−5</sup>. Position-independent peaks, mirror-reversed pinwheels, and circular-
+  polarization contrast establish planar-chiral optical diffraction for that specimen. They do not prove
+  a band gap or universal Spectre response.<sup class="citation"><a href="bibliography.html#ref-19">[19]</a></sup><sup class="citation"><a href="bibliography.html#ref-35">[35]</a></sup>
+</p>
+<h2>See also</h2><p><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a>, <a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a>, <a href="hat-tile.html">Hat tile</a>, <a href="spectre-tile.html">Spectre tile</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-research-frontiers">Research frontiers</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

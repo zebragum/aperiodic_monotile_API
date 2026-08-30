@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aperiodic monotile | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Aperiodic monotile | Research Wiki | Untiling</title>
     <meta name="description" content="A single shape that tiles the plane without any repeating translational pattern." />
     <link rel="canonical" href="https://untiling.com/research/wiki/aperiodic-monotile.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Aperiodic monotile | Untiling Research Wiki" />
+    <meta property="og:description" content="A single shape that tiles the plane without any repeating translational pattern." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/aperiodic-monotile.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Aperiodic monotile", "description": "A single shape that tiles the plane without any repeating translational pattern.", "url": "https://untiling.com/research/wiki/aperiodic-monotile.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -84,6 +97,7 @@
 <li><a href="#section-2">Ordered without repeating</a></li>
 <li><a href="#section-3">Weak vs strict chirality</a></li>
 <li><a href="#section-4">Miki Imura monotile</a></li>
+<li><a href="#section-5">Evidence, use, and limits</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -96,10 +110,11 @@
 
           <h2 id="section-0">Definition</h2>
 <p>
-  An <strong>aperiodic monotile</strong> is a single closed shape in the plane whose congruent copies
-  can tile the entire plane, but <em>only</em> in non-periodic arrangements. Unlike Penrose kite-and-dart sets
-  or other multi-tile aperiodic systems, a monotile uses one shape — though reflected copies may be required
-  depending on whether each side is equal or not.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  Three terms are easy to confuse. A <strong>monotile</strong> is one shape used to cover the plane.
+  A <strong>monohedral non-periodic tiling</strong> is one particular non-repeating arrangement of one
+  shape, even if that shape also permits a repeating arrangement. An <strong>aperiodic monotile</strong>
+  is stronger: congruent copies cover the plane, but <em>no</em> valid tiling has translational
+  periodicity.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
 </p>
 <p>
   The long-standing <strong>einstein problem</strong> (German <em>ein Stein</em>, "one stone") asked whether such
@@ -120,7 +135,7 @@
   square tiles. Raphael Robinson cut that to six; Penrose reached two with the kite and dart in 1974. For
   nearly fifty years the count sat at two, with mathematicians unsure whether a single-shape solution existed
   at all. Recent work continues to map where the boundary of decidability lies — translational tiling
-  becomes undecidable with as few as three tiles,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> translational monotiles are undecidable in
+  is undecidable for three connected polyhypercubes in four dimensions,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> translational monotiles are undecidable in
   higher dimensions,<sup class="citation"><a href="bibliography.html#ref-56">[56]</a></sup> and the structured-versus-wild dichotomy for translational tilings remains
   an active frontier.<sup class="citation"><a href="bibliography.html#ref-23">[23]</a></sup>
 </p>
@@ -136,11 +151,12 @@
   quasicrystalline — sharp peaks, like a crystal, but with symmetries no crystal can have.<sup class="citation"><a href="bibliography.html#ref-6">[6]</a></sup>
 </p>
 <p>
-  For practical work this means patches can be regenerated from a seed, scaled, and exported with stable
-  tile IDs — reproducible geometric datasets, not noise. That combination of global order, local variety,
-  and zero translational repetition is exactly what makes monotile geometry valuable as a design and
-  engineering primitive: it fills space as reliably as a grid while guaranteeing that no two regions ever
-  look the same.
+  For practical work, a chosen substitution construction can regenerate a patch, scale it, and export
+  stable tile IDs. That gives a reproducible geometric dataset rather than random noise. Aperiodicity does
+  <em>not</em> mean that every small neighborhood is unique: finite motifs recur. Within one fixed finite
+  patch, however, a sufficiently large local neighborhood can identify position, which is useful for
+  experiments in localization and indexing. Those are engineering opportunities, not consequences proved
+  for every sensor or every generated patch.
 </p>
 
 <figure class="wiki-figure wiki-figure-video">
@@ -151,17 +167,18 @@
 </figure>
 <h2 id="section-3">Weak vs strict chirality</h2>
 <p>
-  The Hat tile is asymmetric: every tiling mixes unreflected and reflected copies. Some observers argued this
-  makes it a two-shape system; standard tiling literature counts reflected congruent copies as the same
-  tile.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
+  The Hat tile is asymmetric: every Hat tiling contains mostly one handedness and a smaller, required
+  population of reflected copies. Standard tiling terminology normally allows every rigid motion,
+  including reflection, when it calls two copies congruent; a fabrication process with decorated faces
+  may nevertheless have to treat the two handed parts as distinct products.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
 </p>
 <p>
   The Spectre tile closed the question. Tile(1,1) is <em>weakly</em> chiral — banning reflections by rule
   leaves only non-periodic tilings — and its curved-edge Spectre variants are <em>strictly</em> chiral: the
   geometry itself makes reflected copies unusable, so only single-handed non-periodic tilings exist.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
-  That distinction matters physically. A glazed ceramic tile, a stamped metal panel, or an injection-molded
-  part cannot be flipped; a shape that tiles without reflections is cheaper to manufacture and impossible to
-  install wrong-side-up.
+  That distinction matters physically. A glazed ceramic tile or other one-sided part may not be usable
+  face-down. A homochiral layout can reduce part variants, but it does not by itself determine tooling cost
+  or prevent installation errors; edge keys, markings, tolerances, and the selected patch still matter.
 </p>
 <h2 id="section-4">Miki Imura monotile</h2>
 <p>
@@ -181,11 +198,26 @@
   <img src="../../assets/research/wiki/miki-imura-modulo-krinkle.png" alt="Miki Imura Modulo Krinkle monotile: equilateral polygon with zig-zag sides and labeled angles" width="220" loading="lazy" decoding="async" />
   <figcaption><strong>Miki Imura monotile</strong> (Modulo Krinkle). An equilateral monohedral tile that can assemble into striking non-periodic patterns (often spirals). Unlike Hat / Spectre, it also admits periodic tilings, so it is not an aperiodic monotile in the einstein sense.</figcaption>
 </figure>
+<h2 id="section-5">Evidence, use, and limits</h2>
+<p>
+  The established result is mathematical: the Hat and Spectre papers prove that valid infinite tilings
+  exist and that periodic ones are excluded under their stated congruence and reflection rules.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
+  The proof strategy is not “the patch looks irregular.” It converts tiles into a finite collection of
+  labeled clusters or metatiles, proves that every tiling must decompose into those larger units, and repeats
+  that decomposition at arbitrarily large scales. A finite translation period cannot survive that forced
+  hierarchy. Independent proofs and direct constructions check the conclusion by different routes.<sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup><sup class="citation"><a href="bibliography.html#ref-5">[5]</a></sup>
+</p>
+<p>
+  Finite exports are samples of an infinite system, so clipping a patch can hide hierarchy and create
+  boundary fragments. Claims about strength, optics, localization, or visual quality require separate
+  controls; aperiodicity alone proves none of them. The practical value is a precisely specified,
+  non-periodic geometry on which those questions can be tested.
+</p>
 <h2>See also</h2><p><a href="spectre-tile.html">Spectre tile</a>, <a href="hat-tile.html">Hat tile</a>, <a href="substitution-tiling.html">Substitution tiling</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-concepts">Concepts</a> · <a href="index.html#category-mathematics">Mathematics</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Computer graphics | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Computer graphics | Research Wiki | Untiling</title>
     <meta name="description" content="Using aperiodic monotile patches for scenes, textures, meshes, and sampling studies." />
     <link rel="canonical" href="https://untiling.com/research/wiki/computer-graphics.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Computer graphics | Untiling Research Wiki" />
+    <meta property="og:description" content="Using aperiodic monotile patches for scenes, textures, meshes, and sampling studies." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/computer-graphics.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Computer graphics", "description": "Using aperiodic monotile patches for scenes, textures, meshes, and sampling studies.", "url": "https://untiling.com/research/wiki/computer-graphics.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li class="is-active"><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -81,7 +94,9 @@
 <ol>
 <li><a href="#section-0">The problem with repeats</a></li>
 <li><a href="#section-1">Same material, different geometry</a></li>
-<li><a href="#section-2">Workflows</a></li>
+<li><a href="#section-2">Production pipeline</a></li>
+<li><a href="#section-3">Instancing, sampling, and level of detail</a></li>
+<li><a href="#section-4">Limitations</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -104,21 +119,22 @@
   An aperiodic monotile patch attacks the root cause. The geometry itself is mathematically incapable of
   translational repetition,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> yet it is a single instanced shape — one mesh, one material slot, one
   draw-call strategy — and every placement is deterministic and seed-stable. You get grid-like production
-  economics with guaranteed non-repetition.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup>
+  economics with no translational repetition in the generated layout. Memory and draw-call costs still
+  depend on implementation.
 </p>
 
 <figure class="wiki-figure">
   <img src="../../assets/research/wiki/periodic-vs-aperiodic.jpg" alt="Split render: periodic hexagon floor on the left, aperiodic Spectre tile floor on the right, same glazed ceramic material" width="2048" loading="lazy" decoding="async" />
-  <figcaption><strong>Periodic vs aperiodic.</strong> Same glazed ceramic, same light, one seam. The hexagonal grid (left) repeats identically in every direction; the Spectre floor (right) is equally ordered but never repeats — every neighborhood is unique. Both are real geometry: an equal-area hex grid and a generated Tile(1,1) patch.</figcaption>
+  <figcaption><strong>Periodic vs aperiodic.</strong> Same glazed ceramic, same light, one seam. The hexagonal grid (left) repeats identically in every direction; the Spectre floor (right) is equally ordered but has no translational repeat. Finite motifs may recur. Both are real geometry: an equal-area hex grid and a generated Tile(1,1) patch.</figcaption>
 </figure>
 <h2 id="section-1">Same material, different geometry</h2>
 <p>
   The split render above makes the argument visually: identical glazed-ceramic material, identical sun,
-  one seam. The hexagonal floor on the left is calm but relentlessly repetitive — the eye finds rows
-  instantly, and at render scale those rows become
+  one seam. The hexagonal floor on the left is calm but visibly repetitive — the eye finds rows
+  quickly, and at some render scales those rows can become
   <a href="aliasing.html">aliasing</a> bands. The Spectre floor on the right has the
-  same tile density and the same manufacturing simplicity (one shape!), but every neighborhood is unique.
-  Nothing marches; nothing bands. For the sampling story behind those bands, see
+  same nominal tile density and one base outline, but lacks a translational repeat. Finite motifs still
+  recur, and the render remains subject to filtering and edge aliasing. For the sampling story, see
   <a href="aliasing.html">Aliasing</a>.
 </p>
 
@@ -132,28 +148,100 @@
   <img src="../../assets/research/wiki/computer-graphics-brass.jpg" alt="Brass aperiodic monotile relief panel with beveled edges and dramatic lighting" width="1400" loading="lazy" decoding="async" />
   <figcaption><strong>Material and lighting study.</strong> Instanced monotile meshes with metallic shading — the same patch data drives real-time previews, offline renders, and exported GLB assets.</figcaption>
 </figure>
-<h2 id="section-2">Workflows</h2>
-<ul>
-  <li><strong>Environment scatter and grounds</strong> — instance one tile mesh over patch transforms
-  (CSV/JSON export) in Blender, Houdini, Unreal, or Three.js; the renders on this page use exactly this
-  pipeline.</li>
-  <li><strong>Texture synthesis</strong> — bake a patch to a texture whose autocorrelation has no lattice
-  peaks; useful for anti-moiré hatching, stippling, and decals.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup></li>
-  <li><strong>Meshes and subdivision</strong> — clipped SVG/GLB patches as base meshes for relief,
-  displacement, and parametric surface studies.</li>
-  <li><strong>Sampling studies</strong> — tile centroids as deterministic non-periodic sample points; see
-  <a href="signal-processing.html">Signal processing and imaging</a>.</li>
-</ul>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/lumen-vault.jpg" aria-label="&lt;strong&gt;Lumen Vault.&lt;/strong&gt; Slow orbit of an iridescent circular patch of curvy Spectre tiles — real API geometry, Blender EEVEE materials. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
+    <source src="../../assets/research/wiki/lumen-vault.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Lumen Vault.</strong> Slow orbit of an iridescent circular patch of curvy Spectre tiles — real API geometry, Blender EEVEE materials. Also on the <a href="../../art.html">art page</a>.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ink-gold.jpg" aria-label="&lt;strong&gt;Ink &amp;amp; Gold.&lt;/strong&gt; Wet lacquer Spectre disc with molten gold seams and leaf inlays — raking light sweep over real API geometry. Also on the &lt;a href=&quot;../../art.html&quot;&gt;art page&lt;/a&gt;.">
+    <source src="../../assets/research/wiki/ink-gold.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Ink &amp; Gold.</strong> Wet lacquer Spectre disc with molten gold seams and leaf inlays — raking light sweep over real API geometry. Also on the <a href="../../art.html">art page</a>.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/rolling-hills-moon.jpg" aria-label="&lt;strong&gt;Rolling terrain, one tile.&lt;/strong&gt; Eye-height walk across a curvy monotile landscape under moonlight — the same generated patch language used for production scenes. &lt;a href=&quot;../../assets/research/wiki/rolling-hills-hero.png&quot;&gt;Hero still&lt;/a&gt;">
+    <source src="../../assets/research/wiki/rolling-hills-moon.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Rolling terrain, one tile.</strong> Eye-height walk across a curvy monotile landscape under moonlight — the same generated patch language used for production scenes. <a href="../../assets/research/wiki/rolling-hills-hero.png">Hero still</a></figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/falcor-city.jpg" aria-label="&lt;strong&gt;City-scale instancing.&lt;/strong&gt; A Spectre-city flythrough built from deterministic tile transforms — one outline, no translational wallpaper.">
+    <source src="../../assets/research/wiki/falcor-city.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>City-scale instancing.</strong> A Spectre-city flythrough built from deterministic tile transforms — one outline, no translational wallpaper.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/hill-orbit.jpg" aria-label="&lt;strong&gt;Orbit study.&lt;/strong&gt; Camera circle around a single curvy monotile hill — useful for lighting and silhouette checks before locking a hero shot.">
+    <source src="../../assets/research/wiki/hill-orbit.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Orbit study.</strong> Camera circle around a single curvy monotile hill — useful for lighting and silhouette checks before locking a hero shot.</figcaption>
+</figure>
+
+
+<figure class="wiki-figure wiki-figure-video">
+  <video autoplay loop muted playsinline poster="../../assets/research/wiki/ball-roll.jpg" aria-label="&lt;strong&gt;Contact and bounce.&lt;/strong&gt; A reflective ball rolling on monotile terrain — the layout stays seed-stable while motion reads the surface continuously.">
+    <source src="../../assets/research/wiki/ball-roll.mp4" type="video/mp4" />
+  </video>
+  <figcaption><strong>Contact and bounce.</strong> A reflective ball rolling on monotile terrain — the layout stays seed-stable while motion reads the surface continuously.</figcaption>
+</figure>
+<h2 id="section-2">Production pipeline</h2>
 <p>
-  Because tile IDs are stable across regenerations, look-dev iterates safely: change the palette, the
-  material, or the displacement while the layout stays pinned. The interface between aperiodic and
-  periodic regions can even be controlled explicitly when a scene needs both.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+  Start with one canonical polygon and a transform table. Generate beyond the camera footprint, clip only
+  if the asset needs a hard boundary, triangulate the base tile once, and apply each row’s translation and
+  rotation as an instance transform. Keep geometry coordinates, tile ID, hierarchy label, and material
+  class in separate attributes so layout changes do not invalidate shading.
+</p>
+<ol>
+  <li>Generate and validate a patch at world scale; retain provenance and units.</li>
+  <li>Import CSV/JSON transforms for instancing, or GLB for a portable scene; use SVG for masks and decals.</li>
+  <li>Assign colors or texture offsets from stable IDs or hierarchy labels rather than frame-dependent randomness.</li>
+  <li>Bake normals, displacement, or albedo only after deciding the camera-distance and texel-density targets.</li>
+  <li>Test animated cameras with temporal anti-aliasing, mipmapping, and anisotropic filtering enabled.</li>
+</ol>
+<p>
+  Interfaces with periodic regions can be designed explicitly when a scene needs both.<sup class="citation"><a href="bibliography.html#ref-18">[18]</a></sup>
+</p>
+<h2 id="section-3">Instancing, sampling, and level of detail</h2>
+<p>
+  For large patches, avoid one object and one draw call per tile. Store the mesh once, batch transforms in
+  an instance buffer, frustum-cull by hierarchy cluster, and merge only distant clusters. A hierarchy gives
+  natural level-of-detail units, but coarse meshes must preserve silhouettes and material statistics or
+  they will pop. Measure frame time, GPU memory, draw calls, overdraw, and visible seam count against a
+  periodic grid and a randomized scatter with the same tile density. Finished scene loops from the same
+  pipeline are collected on the <a href="../../art.html">art page</a>.
+</p>
+<p>
+  Aperiodic placement changes the spectrum of the layout; it does not band-limit the texture painted on
+  each tile. Use mipmaps for color, filtered displacement or normal maps, adequate UV gutters, and
+  supersampled vector rasterization. Tile centroids can also serve as deterministic sample points, but
+  reconstruction quality must be measured against grids, jittered grids, and blue noise rather than
+  inferred from appearance.<sup class="citation"><a href="bibliography.html#ref-37">[37]</a></sup>
+</p>
+<h2 id="section-4">Limitations</h2>
+<p>
+  Aperiodicity does not automatically remove texture seams, UV discontinuities, jagged silhouettes,
+  temporal shimmer, clipping artifacts, or poor level-of-detail transitions. A finite patch can still show
+  large-scale bias, and a repeated finite patch is periodic regardless of how it was generated. The safest
+  claim is narrower: canonical monotile transforms provide a deterministic layout without translational
+  repetition, leaving ordinary graphics engineering responsible for filtering and performance.
 </p>
 <h2>See also</h2><p><a href="moire.html">Moiré</a>, <a href="aliasing.html">Aliasing</a>, <a href="design-and-architecture.html">Design, art, and architecture</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-applications">Applications</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

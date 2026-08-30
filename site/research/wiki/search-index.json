@@ -44,6 +44,59 @@
     ]
   },
   {
+    "slug": "sturmian-lattices",
+    "title": "Sturmian lattices and aperiodic tile sets",
+    "summary": "Balanced mechanical words, three line families, and finite aperiodic tile sets for quadratic slopes.",
+    "categories": [
+      "Mathematics"
+    ]
+  },
+  {
+    "slug": "diffraction-and-dynamical-spectrum",
+    "title": "Diffraction and dynamical spectrum",
+    "summary": "How infinite-volume correlations become Bragg and continuous diffraction, and what finite FFTs can actually show.",
+    "categories": [
+      "Mathematics",
+      "Research frontiers"
+    ]
+  },
+  {
+    "slug": "cut-and-project-and-model-sets",
+    "title": "Cut-and-project schemes and model sets",
+    "summary": "Physical and internal space, lattices, star maps, windows, and the evidence required for a Spectre lift claim.",
+    "categories": [
+      "Mathematics"
+    ]
+  },
+  {
+    "slug": "discovery-history",
+    "title": "Discovery history of the Hat and Spectre",
+    "summary": "A dated account of physical search, computation, proof, and the official records behind the 2023 discoveries.",
+    "categories": [
+      "History",
+      "Mathematics"
+    ]
+  },
+  {
+    "slug": "computational-generation",
+    "title": "Computational generation and navigation",
+    "summary": "Exact patch generation, hierarchical addresses, finite-state navigation, GPU rendering, and independent validation.",
+    "categories": [
+      "Mathematics",
+      "Computer graphics",
+      "Algorithms"
+    ]
+  },
+  {
+    "slug": "dimers-and-constrained-models",
+    "title": "Dimers and constrained models",
+    "summary": "Exact classical and quantum dimer results on a regularized Spectre graph, with their physical limits.",
+    "categories": [
+      "Mathematics",
+      "Physics"
+    ]
+  },
+  {
     "slug": "moire",
     "title": "Moir\u00e9",
     "summary": "Layered aperiodic arrays produce moir\u00e9 landscapes, phason rivers, and a navigable perceived 3D space.",
@@ -164,7 +217,7 @@
   {
     "slug": "bibliography",
     "title": "Bibliography",
-    "summary": "72 curated scholarly references, tools index, and an automated discovery registry.",
+    "summary": "76 curated scholarly references, tools index, and an automated discovery registry.",
     "categories": [
       "References"
     ]

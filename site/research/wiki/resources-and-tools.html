@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Resources and tools | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Resources and tools | Research Wiki | Untiling</title>
     <meta name="description" content="Generators, datasets, museums, fabrication files, OEIS sequences, and built installations." />
     <link rel="canonical" href="https://untiling.com/research/wiki/resources-and-tools.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Resources and tools | Untiling Research Wiki" />
+    <meta property="og:description" content="Generators, datasets, museums, fabrication files, OEIS sequences, and built installations." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/resources-and-tools.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Resources and tools", "description": "Generators, datasets, museums, fabrication files, OEIS sequences, and built installations.", "url": "https://untiling.com/research/wiki/resources-and-tools.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li class="is-active"><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -80,8 +93,11 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">How to use this index</a></li>
-<li><a href="#section-1">Catalog</a></li>
-<li><a href="#section-2">Still missing?</a></li>
+<li><a href="#section-1">Trust tiers and actual capabilities</a></li>
+<li><a href="#section-2">Catalog</a></li>
+<li><a href="#section-3">Task-oriented starting points</a></li>
+<li><a href="#section-4">Licenses, geometry, and provenance</a></li>
+<li><a href="#section-5">Still missing?</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -89,7 +105,7 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Resources and tools</p>
-  <table><tr><th>Scope</th><td>Public web resources through July 2026</td></tr><tr><th>Scholarly papers</th><td>See <a href="bibliography.html">Bibliography</a> (72 refs)</td></tr><tr><th>Auto-discovery</th><td>Crossref/arXiv registry JSON</td></tr><tr><th>Terminology</th><td>Tile(1,1) ≠ Spectre</td></tr></table>
+  <table><tr><th>Scope</th><td>Public web resources reviewed August 2026</td></tr><tr><th>Scholarly papers</th><td>See <a href="bibliography.html">Bibliography</a> (76 refs)</td></tr><tr><th>Auto-discovery</th><td>Crossref/arXiv registry JSON</td></tr><tr><th>Terminology</th><td>Tile(1,1) ≠ Spectre</td></tr></table>
 </aside>
 
           <h2 id="section-0">How to use this index</h2>
@@ -109,9 +125,64 @@
   <a href="source-registry.json">source registry</a> for literature discovery. The lists below are
   human-curated and tiered: link freely, but check each site’s license before republishing assets.
 </p>
-<h2 id="section-1">Catalog</h2>
-<h3>Official project pages and discoverer accounts</h3><ul class="references-list references-web"><li><a href="https://isohedral.ca/aperiodic-monotiles/" rel="noopener noreferrer">Kaplan, <em>Aperiodic Monotiles</em> — discovery chronology and community links</a></li><li><a href="https://hedraweb.blogspot.com/" rel="noopener noreferrer">David Smith, Hedraweb — discoverer blog and physical experiments</a></li><li><a href="https://hedraweb.wordpress.com/2023/06/02/the-special-one/" rel="noopener noreferrer">David Smith, <em>The Special One</em> — first-person Tile(1,1) / Spectre story</a></li><li><a href="https://www.polyomino.org.uk/publications/" rel="noopener noreferrer">Joseph Myers — publications and preprints</a></li><li><a href="https://chaimgoodmanstrauss.com/papers/" rel="noopener noreferrer">Chaim Goodman-Strauss — papers and notes</a></li><li><a href="https://doi.org/10.5070/c64163843" rel="noopener noreferrer">Combinatorial Theory — Hat paper (open access)</a></li><li><a href="https://doi.org/10.5070/c64264241" rel="noopener noreferrer">Combinatorial Theory — Spectre paper (open access)</a></li></ul><h3>Generators, code, and datasets</h3><ul class="references-list references-web"><li><a href="https://github.com/isohedral/hatviz" rel="noopener noreferrer">isohedral/hatviz — official Hat patch builder (BSD-3-Clause)</a></li><li><a href="https://github.com/isohedral/hatvalidate" rel="noopener noreferrer">isohedral/hatvalidate — computer-assisted aperiodicity verification</a></li><li><a href="https://github.com/henningle/TileOneOne" rel="noopener noreferrer">henningle/TileOneOne — reference Tile(1,1) MATLAB generator (MIT)</a></li><li><a href="https://github.com/jsm28/AperiodicMonotilesLean" rel="noopener noreferrer">jsm28/AperiodicMonotilesLean — Lean formalization staging repo</a></li><li><a href="https://github.com/reversi-fun/symbolic-spectre-tiles" rel="noopener noreferrer">reversi-fun/symbolic-spectre-tiles — symbolic coordinates and CSV/SVG export (MPL-2.0)</a></li><li><a href="https://apps.charliekrug.com/monotile/" rel="noopener noreferrer">ctkrug/monotile — infinite Spectre pan/zoom studio</a></li><li><a href="https://rreusser.github.io/notebooks/aperiodic-monotile/" rel="noopener noreferrer">Ricky Reusser — WebGPU aperiodic monotile rendering notebook</a></li><li><a href="https://rreusser.github.io/notebooks/zooming-aperiodic-monotile/" rel="noopener noreferrer">Ricky Reusser — deep-zoom aperiodic monotile notebook</a></li><li><a href="https://jpdsmith.github.io/AperiodicCube/" rel="noopener noreferrer">James Smith — AperiodicCube 3D interactive demo</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-tilings/" rel="noopener noreferrer">Simon Tatham — coordinate algorithms for Hat tilings</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-transducers/" rel="noopener noreferrer">Simon Tatham — finite-state transducers for Hat and Spectre</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-refine/" rel="noopener noreferrer">Simon Tatham — refinable frontier (H7/H8 and Spectre hex types)</a></li><li><a href="https://www.jaapsch.net/puzzles/polysolver.htm" rel="noopener noreferrer">Jaap Scherphuis — PolyForm Puzzle Solver (discovery-era search tool)</a></li><li><a href="https://bnaskrecki.faculty.wmi.amu.edu.pl/spectre/" rel="noopener noreferrer">Spectre Tiling Playground — manual editor with TILE coordinate format</a></li><li><a href="https://beach-spectre-practise.think.somethingorotherwhatever.com/" rel="noopener noreferrer">Beach Spectre Practise — touch-friendly substitution trainer</a></li></ul><h3>Institutional references and OEIS</h3><ul class="references-list references-web"><li><a href="https://tilings.math.uni-bielefeld.de/substitution/hat/" rel="noopener noreferrer">Tilings Encyclopedia — Hat substitution record</a></li><li><a href="https://tilings.math.uni-bielefeld.de/substitution/cap/" rel="noopener noreferrer">Tilings Encyclopedia — CAP representative</a></li><li><a href="https://tilings.math.uni-bielefeld.de/glossary/aperiodic-monotile/" rel="noopener noreferrer">Tilings Encyclopedia — aperiodic monotile glossary</a></li><li><a href="https://oeis.org/A363445" rel="noopener noreferrer">OEIS A363445 — Hat perimeter fractal turn sequence</a></li><li><a href="https://oeis.org/A397115" rel="noopener noreferrer">OEIS A397115–A397123 — Spectre hierarchical cluster counts (2026)</a></li></ul><h3>Museums, competitions, and workshops</h3><ul class="references-list references-web"><li><a href="https://ukmt.org.uk/hat-awards" rel="noopener noreferrer">UKMT Einstein Mad Hat Awards — competition archive</a></li><li><a href="https://sites.google.com/view/thegrimmnetwork/hatfest" rel="noopener noreferrer">Hatfest — Oxford / Grimm Network conference archive</a></li><li><a href="https://www.maths.cam.ac.uk/features/tip-hat-celebrating-aperiodic-monotile-discovery" rel="noopener noreferrer">Cambridge Faculty of Mathematics — Tip of the Hat celebration</a></li><li><a href="https://academic.mseri.me/pe.htm" rel="noopener noreferrer">Marcello Seri — Spectres, Hats and Maths workshop kits (CC BY 4.0)</a></li><li><a href="https://archive.bridgesmathart.org/2024/bridges2024-385.html" rel="noopener noreferrer">Bridges 2024 — Group activity to build a Spectre tiling</a></li><li><a href="https://www.youtube.com/watch?v=_ZS3Oqg1AX0" rel="noopener noreferrer">Numberphile — Discovery of the Aperiodic Monotile</a></li><li><a href="https://www.quantamagazine.org/hobbyist-finds-maths-elusive-einstein-tile-20230404/" rel="noopener noreferrer">Quanta — Hobbyist finds maths elusive Einstein tile</a></li></ul><h3>Fabrication, installations, and products</h3><ul class="references-list references-web"><li><a href="https://beachspectres.com/" rel="noopener noreferrer">Beach Spectres — public sand-tiling project and how-to guides</a></li><li><a href="https://www.printables.com/model/574374-einstein-tiles-original-and-chiral" rel="noopener noreferrer">Printables — Einstein Tiles family (Hat, Tile(1,1), Spectre variants)</a></li><li><a href="https://github.com/Spirko/SpectreOpenSCAD" rel="noopener noreferrer">Spirko/SpectreOpenSCAD — parametric Spectre STL generator (GPL-3.0)</a></li><li><a href="https://github.com/vmagnin/hat_polykite" rel="noopener noreferrer">vmagnin/hat_polykite — laser-cut Hat and Tile(1,1) sheets</a></li><li><a href="https://n-e-r-v-o-u-s.com/shop/product.php?code=409" rel="noopener noreferrer">Nervous System — wooden Spectre puzzle (111 pieces)</a></li></ul><h3>Curated quick links</h3><ul class="references-list references-web"><li><a href="https://cs.uwaterloo.ca/~csk/hat/" rel="noopener noreferrer">Kaplan et al., <em>An aperiodic monotile</em> project page — interactive patch builders, source code, and CC&nbsp;BY sample images</a></li><li><a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">Kaplan et al., <em>A chiral aperiodic monotile</em> project page — Tile(1,1) patch app and Spectre SVG outlines for cutting and printing</a></li><li><a href="https://github.com/christianp/aperiodic-monotile" rel="noopener noreferrer">christianp/aperiodic-monotile — OpenSCAD, STL, and SVG files for fabricating Hat, Turtle, and Spectre tiles</a></li><li><a href="https://www.printables.com/model/520972-spectre-chiral-aperiodic-monotile" rel="noopener noreferrer">Printables: Spectre chiral aperiodic monotile — parametric 3D-printable tiles with this-way-up orientation grids</a></li><li><a href="https://momath.org/the-hat/" rel="noopener noreferrer">National Museum of Mathematics: The Hat and the Spectre — exhibits and the Einstein Mad Hat competition</a></li><li><a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">Nan Ma, aperiodic-monotile-4d — original Wolfram Language code and projection experiments (no license; link only)</a></li><li><a href="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/" rel="noopener noreferrer">Arnaud Chéritat and Nan Ma, interactive 4D projection applet — CC BY-SA</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-spectre/" rel="noopener noreferrer">Simon Tatham, Combinatorial Coordinates for the Aperiodic Spectre Tiling</a></li><li><a href="https://github.com/christianp/aperiodic-monotile" rel="noopener noreferrer">Christian Lawson-Perfect et al., multi-format monotile assets — CC0 SVG, DXF, OpenSCAD, and STL</a></li><li><a href="https://github.com/necocen/spectre" rel="noopener noreferrer">Infinite Spectres — MIT-licensed Rust/WebGPU deep-zoom viewer</a></li><li><a href="https://tilings.math.uni-bielefeld.de/substitution/spectre/" rel="noopener noreferrer">Tilings Encyclopedia: Spectre — institutional patch and reference record</a></li><li><a href="https://www.gathering4gardner.org/large-spectre-tiling/" rel="noopener noreferrer">Large Spectre Tiling — 488-piece hierarchical group activity</a></li><li><a href="https://anarchive.fo.am/silver/spectres/" rel="noopener noreferrer">Terracing with Spectres — built CNC-waterjet limestone terrace and process archive</a></li><li><a href="https://archive.bridgesmathart.org/2024/bridges2024-389.html" rel="noopener noreferrer">Hats in Grout — practical fabrication and installation geometry</a></li><li><a href="https://oeis.org/A363348" rel="noopener noreferrer">OEIS A363348 — recursive turn sequence for drawing an infinite Hat tiling</a></li></ul>
-<h2 id="section-2">Still missing?</h2>
+<h2 id="section-1">Trust tiers and actual capabilities</h2>
+<ul>
+  <li><strong>Official theorem sources:</strong> the Hat/Spectre project pages and open-access papers define
+  canonical terminology and geometry. Use them before community summaries.</li>
+  <li><strong>Official reference code:</strong> <code>hatviz</code> generates Hat patches under BSD-3-Clause;
+  <code>hatvalidate</code> replays encoded proof checks. Generation and proof verification are different
+  jobs.</li>
+  <li><strong>Independent generators:</strong> TileOneOne (MIT) emits straight Tile(1,1) patches; symbolic-
+  spectre-tiles (MPL-2.0) emphasizes exact coordinates; Tatham’s tools provide hierarchical navigation and
+  transducers. Validate each against official rules.</li>
+  <li><strong>Viewers and editors:</strong> WebGPU/deep-zoom tools optimize display. Manual playgrounds may
+  permit mirrors, overlaps, or illegal frontiers and are not legality certificates.</li>
+  <li><strong>Fabrication assets:</strong> CC0 multi-format outlines, GPL OpenSCAD, community Printables
+  models, and laser-sheet generators differ in license, units, geometry variant, and manufacturing intent.
+  A downloadable STL is not automatically canonical.</li>
+  <li><strong>Education and installations:</strong> museum archives, workshop kits, terraces, grout papers,
+  and public builds establish engagement or feasibility, not theorem, pedagogy, or structural performance.</li>
+</ul>
+<p>
+  The computational distinctions—substitution generation, recognition, finite-state navigation, GPU
+  rendering, and independent geometry checks—are explained in
+  <a href="computational-generation.html">Computational generation and navigation</a>. Discovery accounts are
+  evaluated separately in <a href="discovery-history.html">Discovery history</a>.
+</p>
+<p>
+  The <code>funbin</code> package accompanying ref.&nbsp;27 can bin data into arbitrary polygons, including
+  Hat-family cells, using point-in-polygon tests and spatial indexing. Its paper is intentionally satirical
+  and supplies no controlled bias, error, readability, anti-aliasing, or reconstruction benchmark. Treat it
+  as a creative visualization tool, not scientific evidence that aperiodic bins improve inference.<sup class="citation"><a href="bibliography.html#ref-27">[27]</a></sup>
+</p>
+<h2 id="section-2">Catalog</h2>
+<h3>Official project pages and discoverer accounts</h3><ul class="references-list references-web"><li><a href="https://isohedral.ca/aperiodic-monotiles/" rel="noopener noreferrer">Kaplan, <em>Aperiodic Monotiles</em> — discovery chronology and community links</a></li><li><a href="https://hedraweb.blogspot.com/" rel="noopener noreferrer">David Smith, Hedraweb — discoverer blog and physical experiments</a></li><li><a href="https://hedraweb.wordpress.com/2023/06/02/the-special-one/" rel="noopener noreferrer">David Smith, <em>The Special One</em> — first-person Tile(1,1) / Spectre story</a></li><li><a href="https://www.polyomino.org.uk/publications/" rel="noopener noreferrer">Joseph Myers — publications and preprints</a></li><li><a href="https://chaimgoodmanstrauss.com/papers/" rel="noopener noreferrer">Chaim Goodman-Strauss — papers and notes</a></li><li><a href="https://doi.org/10.5070/c64163843" rel="noopener noreferrer">Combinatorial Theory — Hat paper (open access)</a></li><li><a href="https://doi.org/10.5070/c64264241" rel="noopener noreferrer">Combinatorial Theory — Spectre paper (open access)</a></li></ul><h3>Generators, code, and datasets</h3><ul class="references-list references-web"><li><a href="https://github.com/isohedral/hatviz" rel="noopener noreferrer">isohedral/hatviz — official Hat patch builder (BSD-3-Clause)</a></li><li><a href="https://github.com/isohedral/hatvalidate" rel="noopener noreferrer">isohedral/hatvalidate — computer-assisted aperiodicity verification</a></li><li><a href="https://github.com/henningle/TileOneOne" rel="noopener noreferrer">henningle/TileOneOne — reference Tile(1,1) MATLAB generator (MIT)</a></li><li><a href="https://github.com/jsm28/AperiodicMonotilesLean" rel="noopener noreferrer">jsm28/AperiodicMonotilesLean — Lean formalization staging repo</a></li><li><a href="https://github.com/reversi-fun/symbolic-spectre-tiles" rel="noopener noreferrer">reversi-fun/symbolic-spectre-tiles — symbolic coordinates and CSV/SVG export (MPL-2.0)</a></li><li><a href="https://apps.charliekrug.com/monotile/" rel="noopener noreferrer">ctkrug/monotile — infinite Spectre pan/zoom studio</a></li><li><a href="https://rreusser.github.io/notebooks/aperiodic-monotile/" rel="noopener noreferrer">Ricky Reusser — WebGPU aperiodic monotile rendering notebook</a></li><li><a href="https://rreusser.github.io/notebooks/zooming-aperiodic-monotile/" rel="noopener noreferrer">Ricky Reusser — deep-zoom aperiodic monotile notebook</a></li><li><a href="https://jpdsmith.github.io/AperiodicCube/" rel="noopener noreferrer">James Smith — AperiodicCube 3D interactive demo</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-tilings/" rel="noopener noreferrer">Simon Tatham — coordinate algorithms for Hat tilings</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-transducers/" rel="noopener noreferrer">Simon Tatham — finite-state transducers for Hat and Spectre</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-refine/" rel="noopener noreferrer">Simon Tatham — refinable frontier (H7/H8 and Spectre hex types)</a></li><li><a href="https://www.jaapsch.net/puzzles/polysolver.htm" rel="noopener noreferrer">Jaap Scherphuis — PolyForm Puzzle Solver (discovery-era search tool)</a></li><li><a href="https://bnaskrecki.faculty.wmi.amu.edu.pl/spectre/" rel="noopener noreferrer">Spectre Tiling Playground — manual editor with TILE coordinate format</a></li><li><a href="https://beach-spectre-practise.think.somethingorotherwhatever.com/" rel="noopener noreferrer">Beach Spectre Practise — touch-friendly substitution trainer</a></li></ul><h3>Institutional references and OEIS</h3><ul class="references-list references-web"><li><a href="https://tilings.math.uni-bielefeld.de/substitution/hat/" rel="noopener noreferrer">Tilings Encyclopedia — Hat substitution record</a></li><li><a href="https://tilings.math.uni-bielefeld.de/substitution/cap/" rel="noopener noreferrer">Tilings Encyclopedia — CAP representative</a></li><li><a href="https://tilings.math.uni-bielefeld.de/glossary/aperiodic-monotile/" rel="noopener noreferrer">Tilings Encyclopedia — aperiodic monotile glossary</a></li><li><a href="https://oeis.org/A363445" rel="noopener noreferrer">OEIS A363445 — Hat perimeter fractal turn sequence</a></li><li><a href="https://oeis.org/A397115" rel="noopener noreferrer">OEIS A397115–A397123 — Spectre hierarchical cluster counts (2026)</a></li></ul><h3>Museums, competitions, and workshops</h3><ul class="references-list references-web"><li><a href="https://ukmt.org.uk/hat-awards" rel="noopener noreferrer">UKMT Einstein Mad Hat Awards — competition archive</a></li><li><a href="https://sites.google.com/view/thegrimmnetwork/hatfest" rel="noopener noreferrer">Hatfest — Oxford / Grimm Network conference archive</a></li><li><a href="https://www.maths.cam.ac.uk/features/tip-hat-celebrating-aperiodic-monotile-discovery" rel="noopener noreferrer">Cambridge Faculty of Mathematics — Tip of the Hat celebration</a></li><li><a href="https://academic.mseri.me/pe.htm" rel="noopener noreferrer">Marcello Seri — Spectres, Hats and Maths workshop kits (CC BY 4.0)</a></li><li><a href="https://archive.bridgesmathart.org/2024/bridges2024-385.html" rel="noopener noreferrer">Bridges 2024 — Group activity to build a Spectre tiling</a></li><li><a href="https://www.youtube.com/watch?v=_ZS3Oqg1AX0" rel="noopener noreferrer">Numberphile — Discovery of the Aperiodic Monotile</a></li><li><a href="https://www.quantamagazine.org/hobbyist-finds-maths-elusive-einstein-tile-20230404/" rel="noopener noreferrer">Quanta — Hobbyist finds maths elusive Einstein tile</a></li></ul><h3>Fabrication, installations, and products</h3><ul class="references-list references-web"><li><a href="https://beachspectres.com/" rel="noopener noreferrer">Beach Spectres — public sand-tiling project and how-to guides</a></li><li><a href="https://www.printables.com/model/574374-einstein-tiles-original-and-chiral" rel="noopener noreferrer">Printables — Einstein Tiles family (Hat, Tile(1,1), Spectre variants)</a></li><li><a href="https://github.com/Spirko/SpectreOpenSCAD" rel="noopener noreferrer">Spirko/SpectreOpenSCAD — parametric Spectre STL generator (GPL-3.0)</a></li><li><a href="https://github.com/vmagnin/hat_polykite" rel="noopener noreferrer">vmagnin/hat_polykite — laser-cut Hat and Tile(1,1) sheets</a></li><li><a href="https://n-e-r-v-o-u-s.com/shop/product.php?code=409" rel="noopener noreferrer">Nervous System — wooden Spectre puzzle (111 pieces)</a></li></ul><h3>Curated quick links</h3><ul class="references-list references-web"><li><a href="https://cs.uwaterloo.ca/~csk/hat/" rel="noopener noreferrer">Kaplan et al., <em>An aperiodic monotile</em> project page — interactive patch builders, source code, and CC&nbsp;BY sample images</a></li><li><a href="https://cs.uwaterloo.ca/~csk/spectre/" rel="noopener noreferrer">Kaplan et al., <em>A chiral aperiodic monotile</em> project page — Tile(1,1) patch app and Spectre SVG outlines for cutting and printing</a></li><li><a href="https://www.printables.com/model/520972-spectre-chiral-aperiodic-monotile" rel="noopener noreferrer">Printables: Spectre chiral aperiodic monotile — parametric 3D-printable tiles with this-way-up orientation grids</a></li><li><a href="https://momath.org/the-hat/" rel="noopener noreferrer">National Museum of Mathematics: The Hat and the Spectre — exhibits and the Einstein Mad Hat competition</a></li><li><a href="https://github.com/nanma80/aperiodic-monotile-4d" rel="noopener noreferrer">Nan Ma, aperiodic-monotile-4d — original Wolfram Language code and projection experiments (no license; link only)</a></li><li><a href="https://www.math.univ-toulouse.fr/~cheritat/AppletsDivers/Monotile-4D-lift/3-outlines/" rel="noopener noreferrer">Arnaud Chéritat and Nan Ma, interactive 4D projection applet — CC BY-SA</a></li><li><a href="https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/aperiodic-spectre/" rel="noopener noreferrer">Simon Tatham, Combinatorial Coordinates for the Aperiodic Spectre Tiling</a></li><li><a href="https://github.com/christianp/aperiodic-monotile" rel="noopener noreferrer">Christian Lawson-Perfect et al., multi-format monotile assets — CC0 SVG, DXF, OpenSCAD, and STL</a></li><li><a href="https://github.com/necocen/spectre" rel="noopener noreferrer">Infinite Spectres — MIT-licensed Rust/WebGPU deep-zoom viewer</a></li><li><a href="https://tilings.math.uni-bielefeld.de/substitution/spectre/" rel="noopener noreferrer">Tilings Encyclopedia: Spectre — institutional patch and reference record</a></li><li><a href="https://www.gathering4gardner.org/large-spectre-tiling/" rel="noopener noreferrer">Large Spectre Tiling — 488-piece hierarchical group activity</a></li><li><a href="https://anarchive.fo.am/silver/spectres/" rel="noopener noreferrer">Terracing with Spectres — built CNC-waterjet limestone terrace and process archive</a></li><li><a href="https://archive.bridgesmathart.org/2024/bridges2024-389.html" rel="noopener noreferrer">Hats in Grout — practical fabrication and installation geometry</a></li><li><a href="https://oeis.org/A363348" rel="noopener noreferrer">OEIS A363348 — recursive turn sequence for drawing an infinite Hat tiling</a></li></ul>
+<h2 id="section-3">Task-oriented starting points</h2>
+<ul>
+  <li><strong>Learn the theorem:</strong> start with the official Hat and Spectre papers and project pages,
+  then compare the independent proof and survey.<sup class="citation"><a href="bibliography.html#ref-1">[1]</a></sup><sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup><sup class="citation"><a href="bibliography.html#ref-4">[4]</a></sup></li>
+  <li><strong>Generate patches:</strong> choose a repository with an explicit license, documented
+  substitution rules, coordinate conventions, and reproducible export.</li>
+  <li><strong>Fabricate:</strong> obtain canonical SVG/DXF or a parametric source, verify handedness and
+  units, then follow <a href="materials-and-fabrication.html">Materials and fabrication</a>.</li>
+  <li><strong>Run research:</strong> begin from a cited physical or computational paper, reproduce its
+  geometry and baselines, and archive the exact patch manifest.</li>
+  <li><strong>Teach:</strong> use museum/workshop kits whose redistribution terms permit classroom copies,
+  and state which observations illustrate rather than prove aperiodicity.</li>
+</ul>
+<h2 id="section-4">Licenses, geometry, and provenance</h2>
+<p>
+  A public URL is not a reuse license. Check the repository root, release asset, and individual file for a
+  license; record its version, attribution requirements, and whether commercial use or modification is
+  allowed. If no license is present, link to the source but do not redistribute its files.
+</p>
+<p>
+  Validate geometry against an official outline or paper: units, vertex order, edge lengths, handedness,
+  straight Tile(1,1) versus edge-modified Spectre, and allowed reflections.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Record source URL,
+  commit or release, retrieval date, file hash, generator parameters, seed/root, generation, clipping rule,
+  transforms, and any repairs. A screenshot is not adequate data provenance.
+</p>
+<h2 id="section-5">Still missing?</h2>
 <p>
   No single index can guarantee completeness on the open web. If you maintain a generator, dataset,
   fabrication guide, or installation archive that belongs here,
@@ -121,7 +192,7 @@
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-references">References</a> · <a href="index.html#category-meta">Meta</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

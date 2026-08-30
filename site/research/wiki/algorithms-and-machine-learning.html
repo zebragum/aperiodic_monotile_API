@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Algorithms and machine learning | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Algorithms and machine learning | Research Wiki | Untiling</title>
     <meta name="description" content="Structured non-repeating benchmark geometry for spatial algorithms and geometric ML." />
     <link rel="canonical" href="https://untiling.com/research/wiki/algorithms-and-machine-learning.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Algorithms and machine learning | Untiling Research Wiki" />
+    <meta property="og:description" content="Structured non-repeating benchmark geometry for spatial algorithms and geometric ML." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/algorithms-and-machine-learning.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Algorithms and machine learning", "description": "Structured non-repeating benchmark geometry for spatial algorithms and geometric ML.", "url": "https://untiling.com/research/wiki/algorithms-and-machine-learning.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li class="is-active"><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -79,8 +92,11 @@
         <nav class="wiki-toc" aria-label="Table of contents">
 <p>Contents</p>
 <ol>
-<li><a href="#section-0">A benchmark that cannot be memorized</a></li>
-<li><a href="#section-1">Experiment directions</a></li>
+<li><a href="#section-0">A structured geometric dataset</a></li>
+<li><a href="#section-1">Benchmark tasks and representations</a></li>
+<li><a href="#section-2">Baselines, splits, and metrics</a></li>
+<li><a href="#section-3">Algorithms and computational limits</a></li>
+<li><a href="#section-4">Limitations and crypto caution</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -88,16 +104,21 @@
           
 <aside class="wiki-infobox" aria-label="Article summary">
   <p class="wiki-infobox-title">Algorithms and machine learning</p>
-  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key property</th><td>Structured, non-memorizable, reproducible</td></tr></table>
+  <table><tr><th>Status</th><td>Research frontier</td></tr><tr><th>Key property</th><td>Structured, non-periodic, reproducible</td></tr></table>
 </aside>
 
-          <h2 id="section-0">A benchmark that cannot be memorized</h2>
+          <h2 id="section-0">A structured geometric dataset</h2>
 <p>
-  Machine learning systems exploit repetition; aperiodic monotile geometry is repetition-proof by theorem.
-  Because every patch regenerates exactly from stable IDs and transforms, it makes an unusual benchmark
-  input: <strong>structured enough to learn on, impossible to memorize globally, and perfectly
-  reproducible</strong>.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Monotiles are also nearly absent from pre-2023 training corpora, which
-  makes them a probe for how models handle genuinely novel geometric structure.
+  A monotile patch can be represented as polygons plus affine transforms, or as a graph whose nodes are
+  tiles and whose edges mean “shares a boundary.” Node features may include orientation, hierarchy label,
+  area, centroid, or parent metatile. A <strong>graph embedding</strong> is a learned numeric vector that
+  summarizes such a node or whole patch for prediction and comparison.
+</p>
+<p>
+  Deterministic generation supports reproducible benchmarks, but it does not prevent memorization. Models
+  can memorize finite IDs, seeds, boundaries, or recurring motifs, and web provenance is difficult to rule
+  out. Splits must therefore hold out entire parent supertiles, patch regions, scales, or generator
+  configurations rather than randomly splitting neighboring tiles.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup>
 </p>
 
 <figure class="wiki-figure">
@@ -107,26 +128,81 @@
 
 <p>
   The theoretical backdrop is rich. Tiling problems sit at the edge of computability — translational tiling
-  is undecidable with three tiles,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> and the structured-vs-wild dichotomy is an open research
+  is undecidable for three connected polyhypercubes in four dimensions,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup> and the
+  structured-vs-wild dichotomy is an open research
   program.<sup class="citation"><a href="bibliography.html#ref-23">[23]</a></sup> On the constructive side, SAT solvers detect isohedral polyforms,<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup> exact
-  algorithms extract tessellation generators from data,<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> and group-theoretic formulations connect
+  algorithms extract rectangular repeated forms from exact symbolic grids,<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup> and group-theoretic formulations connect
   tilings to algebra.<sup class="citation"><a href="bibliography.html#ref-9">[9]</a></sup> Percolation thresholds on Hat-family lattices are now being mapped by Monte
   Carlo simulation,<sup class="citation"><a href="bibliography.html#ref-52">[52]</a></sup> giving concrete statistical signatures for random-process models on monotile
   graphs. Batle and Bednorz extend Li–Boyle quantum error-correcting codes to Hat and Spectre tilings,
   grounding recoverability in the supertile hierarchy and CAP torus parametrization.<sup class="citation"><a href="bibliography.html#ref-55">[55]</a></sup>
 </p>
-<h2 id="section-1">Experiment directions</h2>
+<h2 id="section-1">Benchmark tasks and representations</h2>
 <ul>
-  <li>Spatial indexing, nearest-neighbor search, graph embeddings, and geometric hashing over tile adjacency graphs</li>
-  <li>Geometric deep learning: equivariant models tested on structure with no translation group</li>
-  <li>Procedural benchmarks for SLAM, navigation, and reconstruction (see Robotics)</li>
-  <li>Cryptographic experiments — geometric trapdoors and hardness ideas — research-only unless formally reviewed</li>
+  <li><strong>Node/edge prediction:</strong> infer missing orientation, label, adjacency, or parent cluster
+  from a partially observed graph.</li>
+  <li><strong>Patch classification:</strong> distinguish canonical legal patches from overlaps, gaps,
+  reflected errors, perturbed geometry, or other tiling families.</li>
+  <li><strong>Localization:</strong> retrieve a query neighborhood in a larger fixed patch under noise,
+  occlusion, rotation, and scale change; connect to <a href="robotics-and-mobility.html">robotics</a>.</li>
+  <li><strong>Generation:</strong> complete a legal frontier or predict the next substitution level, with
+  geometric validity checked independently of pixel similarity.</li>
+  <li><strong>Physics surrogate:</strong> predict a published simulation target only after preserving the
+  exact graph, boundary, and material parameters used to create labels.</li>
 </ul>
-<h2>See also</h2><p><a href="robotics-and-mobility.html">Robotics and mobility</a>, <a href="signal-processing.html">Signal processing and imaging</a></p>
+<h2 id="section-2">Baselines, splits, and metrics</h2>
+<p>
+  Baselines should include coordinate-only multilayer perceptrons, convolutional models on rasterized
+  patches, message-passing graph networks, SE(2)-equivariant models, nearest-neighbor retrieval, and simple
+  hierarchy rules. Compare with periodic grids, Penrose or other aperiodic tilings, and perturbed controls
+  at matched node count and density.
+</p>
+<p>
+  Use region- or supertile-held-out splits with no shared descendants across train and test. Report task
+  accuracy or F1, localization distance and angular error, graph-edit or validity rate, calibration,
+  robustness curves, inference time, parameter count, and seed variance. Release the generator revision,
+  split manifest, normalization, and duplicate-detection procedure.
+</p>
+<h2 id="section-3">Algorithms and computational limits</h2>
+<p>
+  Useful non-learning methods include exact or tolerance-aware edge matching, spatial indexes over
+  centroids, graph isomorphism tests, geometric hashing, SAT search, and substitution parsers.<sup class="citation"><a href="bibliography.html#ref-17">[17]</a></sup>
+  Tiling undecidability results show that no algorithm solves every unrestricted tiling problem in the
+  relevant settings,<sup class="citation"><a href="bibliography.html#ref-24">[24]</a></sup><sup class="citation"><a href="bibliography.html#ref-56">[56]</a></sup> but they do not make routine finite-patch tasks cryptographically
+  hard or justify security claims.
+</p>
+<p>
+  Ref.&nbsp;25 is deliberately narrow: it trims and decomposes exact rectangular symbolic matrices. On a
+  synthetic 6×8 mixed grid it processed four of 14 composites, extracted 20 primes, and found three
+  two-placement decompositions in 8.43 ms; worst-case growth remains exponential. It does not address
+  perspective, curved boundaries, measurement noise, or Hat/Spectre hierarchy recovery.<sup class="citation"><a href="bibliography.html#ref-25">[25]</a></sup>
+</p>
+<p>
+  Percolation likewise requires a declared graph, site-versus-bond occupation, spanning rule, and
+  finite-size scaling; a threshold belongs to that model, not to the outline alone.<sup class="citation"><a href="bibliography.html#ref-52">[52]</a></sup> Proposed
+  Hat/Spectre quantum codes must report stabilizer construction, rate, distance, check weight, decoder, and
+  threshold over growing systems; a valid finite code is not yet evidence of fault-tolerance advantage.<sup class="citation"><a href="bibliography.html#ref-55">[55]</a></sup>
+  The operational distinctions and implementation contract are developed in
+  <a href="computational-generation.html">Computational generation and navigation</a>.
+</p>
+<h2 id="section-4">Limitations and crypto caution</h2>
+<p>
+  Results can leak through coordinates, clipping boundaries, stable IDs, generation depth, or near-duplicate
+  neighborhoods. A model that succeeds on one deterministic family may only have learned its generator.
+  Test out-of-distribution scales and alternative legal patches, and distinguish exact geometry from
+  rasterization artifacts.
+</p>
+<p>
+  Aperiodicity is not a cryptographic assumption. Do not use monotile geometry for keys, trapdoors,
+  authentication, or obfuscation without a formal threat model, reduction or extensive cryptanalysis, and
+  review by security specialists. Visual complexity and undecidable tiling theorems do not supply practical
+  security.
+</p>
+<h2>See also</h2><p><a href="robotics-and-mobility.html">Robotics and mobility</a>, <a href="signal-processing.html">Signal processing and imaging</a>, <a href="computational-generation.html">Computational generation and navigation</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-research-frontiers">Research frontiers</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

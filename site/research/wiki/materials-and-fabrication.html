@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Materials and fabrication | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Materials and fabrication | Research Wiki | Untiling</title>
     <meta name="description" content="From relief panels to STL toolpaths — one patch, many physical outputs." />
     <link rel="canonical" href="https://untiling.com/research/wiki/materials-and-fabrication.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Materials and fabrication | Untiling Research Wiki" />
+    <meta property="og:description" content="From relief panels to STL toolpaths — one patch, many physical outputs." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/materials-and-fabrication.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Materials and fabrication", "description": "From relief panels to STL toolpaths — one patch, many physical outputs.", "url": "https://untiling.com/research/wiki/materials-and-fabrication.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -80,7 +93,10 @@
 <p>Contents</p>
 <ol>
 <li><a href="#section-0">Cutting, molding, and toolpaths</a></li>
-<li><a href="#section-1">Directions</a></li>
+<li><a href="#section-1">Choosing and preparing an export</a></li>
+<li><a href="#section-2">Tolerance, kerf, grout, and chirality</a></li>
+<li><a href="#section-3">Validation workflow</a></li>
+<li><a href="#section-4">Evidence and candidate directions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -104,30 +120,76 @@
 </figure>
 
 <p>
-  The chirality result is a manufacturing feature, not a footnote: because Spectre tilings never need
-  mirrored parts, one mold or die covers the entire surface.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Community fabrication files —
+  The chirality result can simplify part inventory: Spectre tilings do not require a second mirrored
+  outline.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> Tool count still depends on edge variants, draft, finish, and process. Community fabrication files —
   OpenSCAD models, STLs with orientation grids, laser-cut outlines — are indexed in the
-  <a href="bibliography.html">bibliography</a> and <a href="resources-and-tools.html">Resources and tools</a>. Experimental Hat honeycombs and aperiodic composite panels
-  demonstrate that these exports translate into measurable mechanical gains,<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup><sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup><sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup>
-  and deployable monotile kirigami shows how flat sheets fold into aperiodic surface
-  structures.<sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup>
+  <a href="bibliography.html">bibliography</a> and <a href="resources-and-tools.html">Resources and tools</a>. Digital
+  monotile geometry has been used to manufacture PLA Hat-wall honeycombs<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup> and PolyJet multiphase
+  fracture panels.<sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup><sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup> Their measured performance came from the complete specimen—topology,
+  materials, interfaces, dimensions, process, and loading—not from the export format. Monotile kirigami
+  currently establishes deployable geometry theoretically and computationally; force, fatigue, thickness,
+  and fabrication-tolerance tests remain open.<sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup>
 </p>
-<h2 id="section-1">Directions</h2>
+<h2 id="section-1">Choosing and preparing an export</h2>
 <ul>
-  <li>Toolpath and infill experiments — aperiodic infill avoids the resonance planes of periodic infill</li>
+  <li><strong>SVG/DXF:</strong> planar outlines for laser, waterjet, router, plotter, or print. Confirm units,
+  closed paths, winding, duplicate edges, and whether shared edges should be cut once.</li>
+  <li><strong>STL:</strong> watertight triangulated solids for printing. STL carries no reliable units,
+  materials, hierarchy, or instance semantics, so include a manifest.</li>
+  <li><strong>GLB:</strong> compact meshes, materials, and scene transforms for review or instancing. Check
+  axis convention, transform baking, normals, and material licensing.</li>
+  <li><strong>CSV/JSON:</strong> tile IDs, labels, parent clusters, positions, rotations, scale, and source
+  version for CAM, robotics, or custom scripts. Publish a schema and coordinate convention.</li>
+</ul>
+<h2 id="section-2">Tolerance, kerf, grout, and chirality</h2>
+<p>
+  <strong>Kerf</strong> is material removed by a cutting beam or tool. Offset toolpaths by the measured
+  kerf, not the nominal machine setting, and cut a multi-tile coupon before a full sheet. For molded or
+  printed parts, include shrinkage, clearance, corner radii, minimum wall thickness, and surface finish.
+  For architectural tile, design the grout gap into the placement geometry; independently offsetting every
+  complex outline can change which corners meet.
+</p>
+<p>
+  Preserve handedness through export and nesting. Straight Tile(1,1) and edge-modified Spectres have
+  different reflection rules,<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup> while face decoration or draft angle may make even a geometrically
+  flippable part one-sided. Add an orientation mark and reject accidental mirror transforms in validation.
+</p>
+<h2 id="section-3">Validation workflow</h2>
+<ol>
+  <li>Hash or version the source outline and record units, scale, patch seed/root, and generator revision.</li>
+  <li>Check closed polygons, self-intersection, overlap, gaps, duplicate paths, and transform handedness.</li>
+  <li>Simulate nesting and tool reach; manufacture a coupon containing representative joints and corners.</li>
+  <li>Measure actual dimensions, fit, warpage, and surface quality; update compensation from measurements.</li>
+  <li>Dry-assemble a numbered cluster, then archive the final files, manifest, machine settings, and inspection results.</li>
+</ol>
+<h2 id="section-4">Evidence and candidate directions</h2>
+<ul>
+  <li><strong>Measured in specific specimens:</strong> printed Hat honeycombs and multiphase composite
+  panels, including an interdigitated derivative interface.<sup class="citation"><a href="bibliography.html#ref-42">[42]</a></sup><sup class="citation"><a href="bibliography.html#ref-46">[46]</a></sup><sup class="citation"><a href="bibliography.html#ref-49">[49]</a></sup></li>
+  <li><strong>Constructed mathematically or computationally:</strong> topologically interlocking
+  Spectre-derived blocks<sup class="citation"><a href="bibliography.html#ref-50">[50]</a></sup> and deployable monotile kirigami.<sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup> These papers establish
+  geometric or kinematic possibility, not structural load capacity.</li>
+  <li><strong>Paper prototyping:</strong> fold-and-cut templates produce Hat, Turtle, and straight
+  Tile(1,1) outlines after flat folding and one cut.<sup class="citation"><a href="bibliography.html#ref-67">[67]</a></sup></li>
+  <li><strong>Candidate experiment:</strong> compare aperiodic and periodic infill at matched mass, process
+  parameters, and boundary conditions; do not assume resonance or strength gains in advance.</li>
   <li>Support-free printing studies, topology optimization, and surface finishing</li>
   <li>Architectural panels, molds, product surfaces, screens, and repeat-free decoration</li>
-  <li>Three-dimensional topological interlocking assemblies built from identical aperiodic
-  blocks<sup class="citation"><a href="bibliography.html#ref-50">[50]</a></sup></li>
-  <li>Origami-adjacent folding studies: flat-foldable synthesis environments show how computational tools
-  explore fold-pattern spaces<sup class="citation"><a href="bibliography.html#ref-26">[26]</a></sup>; monotile kirigami extends this to deployable aperiodic
-  sheets<sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup></li>
+  <li>Physical prototyping and load testing of mathematically constructed three-dimensional
+  topological-interlocking blocks<sup class="citation"><a href="bibliography.html#ref-50">[50]</a></sup></li>
 </ul>
+<p>
+  Origami-adjacent folding studies and flat-foldable synthesis environments show how computational tools
+  explore fold-pattern spaces<sup class="citation"><a href="bibliography.html#ref-26">[26]</a></sup>; monotile kirigami extends this to deployable aperiodic
+  sheets.<sup class="citation"><a href="bibliography.html#ref-51">[51]</a></sup> Mechanical performance belongs to the complete specimen—material, strut thickness,
+  joints, defects, boundaries, and loading—not to the outline alone. “Monotile-inspired” lattices should be
+  labeled as such when they modify the canonical geometry.
+</p>
 <h2>See also</h2><p><a href="design-and-architecture.html">Design, art, and architecture</a>, <a href="materials-science.html">Materials science and fluids</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-applications">Applications</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>

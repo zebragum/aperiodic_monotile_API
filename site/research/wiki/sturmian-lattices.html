@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sturmian lattices and aperiodic tile sets | Research Wiki | Untiling</title>
+    <meta name="description" content="Balanced mechanical words, three line families, and finite aperiodic tile sets for quadratic slopes." />
+    <link rel="canonical" href="https://untiling.com/research/wiki/sturmian-lattices.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Sturmian lattices and aperiodic tile sets | Untiling Research Wiki" />
+    <meta property="og:description" content="Balanced mechanical words, three line families, and finite aperiodic tile sets for quadratic slopes." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/sturmian-lattices.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Sturmian lattices and aperiodic tile sets", "description": "Balanced mechanical words, three line families, and finite aperiodic tile sets for quadratic slopes.", "url": "https://untiling.com/research/wiki/sturmian-lattices.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body class="wiki-body">
+    <header class="site-header">
+      <a class="brand" href="../../index.html">
+        <img class="brand-mark" src="../../assets/brand-mark.svg" alt="" width="32" height="32" decoding="async" />
+        <span>Untiling</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="../../art.html">Art</a>
+        <a href="../index.html">Research</a>
+        <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
+        <a href="../../apparel/">Shop</a>
+        <a href="index.html" aria-current="page">Wiki</a>
+      </nav>
+    </header>
+
+    <div class="wiki-toolbar">
+      <div class="wiki-toolbar-inner">
+        <a href="index.html">Main Page</a>
+        <button type="button" class="wiki-random" data-wiki-random>Random article</button>
+        <form class="wiki-search-form" role="search" action="index.html" method="get">
+          <label class="visually-hidden" for="wiki-search">Search wiki</label>
+          <input id="wiki-search" name="q" type="search" placeholder="Search the wiki" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="wiki-shell">
+      <nav class="wiki-nav" aria-label="Wiki navigation">
+<p class="wiki-nav-title"><a href="index.html">Wiki</a></p>
+<p class="wiki-nav-group">Concepts</p><ul>
+<li><a href="aperiodic-monotile.html">Aperiodic monotile</a></li>
+<li><a href="moire.html">Moiré</a></li>
+<li><a href="aliasing.html">Aliasing</a></li>
+</ul>
+<p class="wiki-nav-group">Mathematics</p><ul>
+<li><a href="spectre-tile.html">Spectre tile</a></li>
+<li><a href="hat-tile.html">Hat tile</a></li>
+<li><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li class="is-active"><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
+<li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
+</ul>
+<p class="wiki-nav-group">Applications</p><ul>
+<li><a href="computer-graphics.html">Computer graphics</a></li>
+<li><a href="design-and-architecture.html">Design, art, and architecture</a></li>
+<li><a href="materials-and-fabrication.html">Materials and fabrication</a></li>
+<li><a href="education.html">Education</a></li>
+</ul>
+<p class="wiki-nav-group">Research frontiers</p><ul>
+<li><a href="signal-processing.html">Signal processing and imaging</a></li>
+<li><a href="waves-and-photonics.html">Waves, acoustics, and photonics</a></li>
+<li><a href="materials-science.html">Materials science and fluids</a></li>
+<li><a href="robotics-and-mobility.html">Robotics and mobility</a></li>
+<li><a href="biology-and-medicine.html">Biology and medicine</a></li>
+<li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
+</ul>
+<p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
+<li><a href="resources-and-tools.html">Resources and tools</a></li>
+<li><a href="bibliography.html">Bibliography</a></li>
+</ul>
+</nav>
+      <article class="wiki-article">
+        <p class="wiki-breadcrumbs"><a href="../index.html">Research</a> · <a href="index.html">Wiki</a> · <span aria-current="page">Sturmian lattices and aperiodic tile sets</span></p>
+        <header class="wiki-header">
+          <h1 class="wiki-title">Sturmian lattices and aperiodic tile sets</h1>
+          <p class="wiki-tagline">Balanced mechanical words, three line families, and finite aperiodic tile sets for quadratic slopes.</p>
+        </header>
+        <nav class="wiki-toc" aria-label="Table of contents">
+<p>Contents</p>
+<ol>
+<li><a href="#section-0">From balanced words to lines</a></li>
+<li><a href="#section-1">The four parameter classes</a></li>
+<li><a href="#section-2">Nuts, Bolts, and the density equation</a></li>
+<li><a href="#section-3">The theorem and a 29-tile example</a></li>
+<li><a href="#section-4">Evidence and limits</a></li>
+</ol>
+</nav>
+        <div class="wiki-content">
+          
+          
+<aside class="wiki-infobox" aria-label="Article summary">
+  <p class="wiki-infobox-title">Sturmian lattices and aperiodic tile sets</p>
+  <table><tr><th>Basic object</th><td>Three Sturmian line families</td></tr><tr><th>Parameters</th><td>κ, η, α, ρ</td></tr><tr><th>Main theorem</th><td>Finite aperiodic set for each quadratic irrational α</td></tr><tr><th>Not claimed</th><td>A single aperiodic monotile</td></tr></table>
+</aside>
+
+          <h2 id="section-0">From balanced words to lines</h2>
+<p>
+  A Sturmian word is the least complicated binary sequence that is still aperiodic. Its number of distinct
+  length-<em>n</em> factors is <em>n</em>+1, and it is <strong>balanced</strong>: two equal-length factors
+  differ in their number of 1s by at most one. Lower and upper <strong>mechanical words</strong> obtain the
+  symbols by coding an irrational rotation; the slope gives the frequency of long gaps and the intercept
+  gives their phase.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup><sup class="citation"><a href="bibliography.html#ref-73">[73]</a></sup>
+</p>
+<p>
+  Akiyama, Hamada, and Ito turn this one-dimensional order into a planar lattice using three families of
+  parallel lines at angles 0, 2π/3, and 4π/3. Coordinates take the mechanical-word form
+  <em>a(i)=iκ+η<sub>0</sub>+⟦iα+ρ<sub>0</sub>⟧</em>, with analogous formulas for <em>b(j)</em> and
+  <em>c(k)</em>, subject to the zero-sum constraints
+  η<sub>0</sub>+η<sub>1</sub>+η<sub>2</sub>=ρ<sub>0</sub>+ρ<sub>1</sub>+ρ<sub>2</sub>=0. Whenever
+  <em>i+j+k=0</em>, one has |<em>a(i)+b(j)+c(k)</em>|=1/2, so relevant triples bound a uniformly small
+  equilateral triangle instead of meeting at one point. Consecutive gaps are at least one. Irrational
+  systems admit only the trivial period; rational cases are classified separately and are eventually or
+  fully periodic except for explicitly described singular choices. The discontinuous parameter set is dense
+  but has two-dimensional Lebesgue measure zero.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup><sup class="citation"><a href="bibliography.html#ref-73">[73]</a></sup>
+</p>
+<p>
+  This line system was motivated by structure extracted from Smith Turtle tilings, but the construction
+  stands as a separate finite-tile-set theory. Ref.&nbsp;73 is a seven-page 2026 announcement whose full
+  proofs live in ref.&nbsp;13; cite both for completeness, not as independent confirmations.
+</p>
+<h2 id="section-1">The four parameter classes</h2>
+<p>
+  Four kinds of data must be kept separate. <strong>κ</strong> fixes the minimum passage or gap scale;
+  the vector <strong>η</strong> translates the three line families; the irrational
+  <strong>α</strong> is the density of long gaps; and the intercept vector <strong>ρ</strong> arranges
+  those gaps. The components of η and ρ obey zero-sum constraints. Changing α changes the long-range
+  frequency, while changing ρ changes phase or boundary termination without changing that frequency.
+</p>
+<p>
+  Finite evidence can falsify a proposed Sturmian coding but cannot prove the infinite property by itself.
+  Compute factor complexity, balance, long-gap frequency, and return words over growing windows. A single
+  complexity value other than <em>n</em>+1, or a symbol-count discrepancy above one for equal-length
+  factors, rules out Sturmian behavior for that coding.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup>
+</p>
+<h2 id="section-2">Nuts, Bolts, and the density equation</h2>
+<p>
+  The construction uses three annular <strong>Nuts</strong>, labelled S, M, and L, carrying Ammann bars
+  that force the three line families. Disk-like <strong>Bolts</strong> constrain how frequently the three
+  local classes occur. Their center densities must satisfy
+</p>
+<p class="wiki-equation">
+  δ(S) : δ(M) : δ(L) = (1−α)<sup>2</sup> : 2α(1−α) : α<sup>2</sup>.
+</p>
+<p>
+  Thus α is recoverable from frequencies rather than assumed from a drawing. The proof organizes Bolt
+  centers as Delone sets and uses <strong>bounded displacement</strong>: matched points may move, but by a
+  distance bounded uniformly over the infinite set. Many-to-many bounded-displacement correspondences
+  divide centers into bounded groups, which unfold into finitely many patch-tile shapes.<sup class="citation"><a href="bibliography.html#ref-73">[73]</a></sup>
+</p>
+<h2 id="section-3">The theorem and a 29-tile example</h2>
+<p>
+  The theorem states that for every quadratic irrational α there is a finite aperiodic tile set
+  𝒜(α) enforcing α or its Galois conjugate. Its expansion constant is a unit of the real quadratic field
+  ℚ(α). A stronger cardinality estimate is Card(𝒜<sub>λ</sub>)≤2λ+O(1). The mechanism is frequency plus
+  bounded displacement; it does not assume that every tiling displays an obvious self-similar inflation.
+  Self-similarity is not required by the proof: ref.&nbsp;13 also constructs a tiling space with positive
+  topological entropy.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup><sup class="citation"><a href="bibliography.html#ref-73">[73]</a></sup>
+</p>
+<p>
+  For α=√6−2, Nuts enforce Ammann bars and Bolts enforce the density ratio
+  (1−α)<sup>2</sup>:2α(1−α):α<sup>2</sup>. A class containing 3S+2L, M, and the three Nuts forces
+  (1−α)<sup>2</sup>:α<sup>2</sup>=3:2. The fundamental unit is 5+2√6, and unfolding the bounded groups
+  gives 29 patch-tiles. These may be decorated, colored, or disconnected and use matching information.
+  The result is therefore a finite aperiodic <em>tile set</em>, not a Hat- or Spectre-like monotile.
+  The Nuts / Bolts / density ratio are combinatorial matching constraints in the papers — not a physical
+  fastener kit — so this page keeps the quantitative statement rather than a decorative redraw.
+</p>
+<h2 id="section-4">Evidence and limits</h2>
+<p>
+  Ref.&nbsp;73 is a 2026 preprint note summarizing and extending the fuller treatment in ref.&nbsp;13.
+  The definitions, classification, and theorem are mathematical claims; no manufacturing, mechanical, or
+  wave advantage follows. The construction is valuable because it shows how symbolic balance, planar line
+  geometry, density invariants, and aperiodic matching rules fit together without collapsing those layers
+  into “looks quasiperiodic.”
+</p>
+<h2>See also</h2><p><a href="substitution-tiling.html">Substitution tiling</a>, <a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a>, <a href="aperiodic-monotile.html">Aperiodic monotile</a></p>
+<p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a></p>
+        </div>
+        <footer class="wiki-footer-meta">
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
+        </footer>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <a href="../../index.html">Home</a> ·
+        <a href="../index.html">Research</a> ·
+        <a href="index.html">Wiki</a> ·
+        <a href="../../docs.html">Docs</a> ·
+        <a href="../../attribution.html">Attribution</a>
+      </p>
+    </footer>
+    <script src="wiki.js" defer></script>
+  </body>
+</html>

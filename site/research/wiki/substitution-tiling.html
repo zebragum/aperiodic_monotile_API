@@ -3,10 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Substitution tiling | Research Wiki | Aperiodic Monotile wiki | Untiling</title>
+    <title>Substitution tiling | Research Wiki | Untiling</title>
     <meta name="description" content="A hierarchical method that refines metatiles to produce arbitrarily large aperiodic patches." />
     <link rel="canonical" href="https://untiling.com/research/wiki/substitution-tiling.html" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Substitution tiling | Untiling Research Wiki" />
+    <meta property="og:description" content="A hierarchical method that refines metatiles to produce arbitrarily large aperiodic patches." />
+    <meta property="og:url" content="https://untiling.com/research/wiki/substitution-tiling.html" />
+    <meta property="og:site_name" content="Untiling" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Substitution tiling", "description": "A hierarchical method that refines metatiles to produce arbitrarily large aperiodic patches.", "url": "https://untiling.com/research/wiki/substitution-tiling.html", "dateModified": "2026-08-29", "author": {"@type": "Organization", "name": "Untiling"}, "publisher": {"@type": "Organization", "name": "Untiling", "url": "https://untiling.com/"}, "isPartOf": {"@type": "WebSite", "name": "Untiling Research Wiki", "url": "https://untiling.com/research/wiki/"}}</script>
     <link rel="stylesheet" href="../../styles.css" />
     <link rel="stylesheet" href="wiki.css" />
   </head>
@@ -17,7 +24,7 @@
         <span>Untiling</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
-        <a href="../../use-cases/generative-art.html">Art</a>
+        <a href="../../art.html">Art</a>
         <a href="../index.html">Research</a>
         <a class="nav-generator" href="https://aperiodicgenerator.com/">Generator</a>
         <a href="../../apparel/">Shop</a>
@@ -49,7 +56,11 @@
 <li><a href="spectre-tile.html">Spectre tile</a></li>
 <li><a href="hat-tile.html">Hat tile</a></li>
 <li class="is-active"><a href="substitution-tiling.html">Substitution tiling</a></li>
+<li><a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a></li>
+<li><a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></li>
+<li><a href="diffraction-and-dynamical-spectrum.html">Diffraction and dynamical spectrum</a></li>
 <li><a href="four-dimensional-lift.html">Four-dimensional lift</a></li>
+<li><a href="dimers-and-constrained-models.html">Dimers and constrained models</a></li>
 </ul>
 <p class="wiki-nav-group">Applications</p><ul>
 <li><a href="computer-graphics.html">Computer graphics</a></li>
@@ -66,6 +77,8 @@
 <li><a href="algorithms-and-machine-learning.html">Algorithms and machine learning</a></li>
 </ul>
 <p class="wiki-nav-group">Meta</p><ul>
+<li><a href="discovery-history.html">Discovery history of the Hat and Spectre</a></li>
+<li><a href="computational-generation.html">Computational generation and navigation</a></li>
 <li><a href="resources-and-tools.html">Resources and tools</a></li>
 <li><a href="bibliography.html">Bibliography</a></li>
 </ul>
@@ -82,6 +95,8 @@
 <li><a href="#section-0">How substitution works</a></li>
 <li><a href="#section-1">Structure inside the hierarchy</a></li>
 <li><a href="#section-2">Practical generation</a></li>
+<li><a href="#section-3">Validation and recurrence</a></li>
+<li><a href="#section-4">Limits and open questions</a></li>
 </ol>
 </nav>
         <div class="wiki-content">
@@ -94,11 +109,11 @@
 
           <h2 id="section-0">How substitution works</h2>
 <p>
-  <strong>Substitution tilings</strong> start from a small set of metatiles and repeatedly replace each
-  metatile with a configuration of smaller copies. Iterating produces patches at every scale, and in the
-  limit, an infinite tiling whose local structure is hierarchical but never repeats periodically.<sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
-  For the Spectre system, nine labeled tile classes (Gamma through Psi) combine into superclusters of
-  roughly eight tiles, which combine into super-superclusters, and so on forever.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup>
+  A <strong>substitution rule</strong> is a geometric recipe: replace one labeled large shape with a fixed
+  patch of smaller labeled shapes. Reading the recipe from large to small is <strong>deflation</strong>;
+  rescaling the small patch back up and grouping it as one larger unit is <strong>inflation</strong>.
+  A <strong>metatile</strong> is one of those labeled groups. Labels record roles or orientations that the
+  bare outline may not reveal.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-3">[3]</a></sup>
 </p>
 
 <figure class="wiki-figure wiki-figure-video">
@@ -109,28 +124,78 @@
 </figure>
 
 <p>
-  The animation above is generated from the real Tile(1,1) substitution rules: one tile becomes a cluster
-  of 9, which becomes a supercluster of 71. Each color marks a first-generation cluster, so you can watch
-  the same structural motif recur at each level — the geometric signature of aperiodic order.
+  In the Spectre construction, a finite family of labeled clusters combines into larger clusters and then
+  repeats that hierarchy indefinitely.<sup class="citation"><a href="bibliography.html#ref-2">[2]</a></sup><sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup> The animation shows a finite rendering of that
+  idea. Substitution is not automatically a proof of aperiodicity: one must also show that legal tilings
+  are forced to admit the hierarchy and that the hierarchy rules out a translation period.
 </p>
 <h2 id="section-1">Structure inside the hierarchy</h2>
 <p>
-  The hierarchy is not just qualitative. Tile counts per generation follow Fibonacci and Lucas number
-  recurrences,<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> Spectre tilings decompose into recognizable hexagonal clusters,<sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup> and the
-  whole system embeds in a rhombic tiling framework shared by the Hat and Turtle.<sup class="citation"><a href="bibliography.html#ref-8">[8]</a></sup> Substitution
-  systems can even be built from overlapping iterated function systems, connecting tilings to fractal
-  geometry.<sup class="citation"><a href="bibliography.html#ref-14">[14]</a></sup> Sturmian sequences — the one-dimensional cousins of aperiodic order — provide lattice
-  models with closely related structure.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup> Labbé and Selinger give an explicit torus Markov
-  partition construction for Hat tilings with fractal boundaries,<sup class="citation"><a href="bibliography.html#ref-53">[53]</a></sup> complementing the inflation
-  picture above.
+  The hierarchy is quantitative. For the homochiral Spectre construction, writing
+  <em>N</em><sub>Γ</sub> and <em>N</em><sub>Ω</sub> for eight- and nine-tile cluster counts, one
+  generation acts by the 2×2 inflation
+</p>
+<p class="wiki-equation">
+  (<em>N</em><sub>Γ</sub>, <em>N</em><sub>Ω</sub>) ↦
+  (<em>N</em><sub>Γ</sub>+<em>N</em><sub>Ω</sub>,
+  6<em>N</em><sub>Γ</sub>+7<em>N</em><sub>Ω</sub>).
+</p>
+<p>
+  The Perron root is 4+√15≈7.873, and the asymptotic Ω:Γ ratio is the same value.<sup class="citation"><a href="bibliography.html#ref-10">[10]</a></sup> Six
+  orientations of each cluster give twelve metatile states.
+</p>
+
+<figure class="wiki-figure">
+  <img src="../../assets/research/wiki/substitution-hierarchy-still.png" alt="Color-coded Hat substitution hierarchy showing clustered metatile superclusters" width="1400" loading="lazy" decoding="async" />
+  <figcaption><strong>Substitution hierarchy.</strong> Color-coded metatile clusters in a Hat patch — the hierarchy that forces structure on unbounded scales. Same still as the hierarchy animation.</figcaption>
+</figure>
+
+<p>
+  Independently, Hat-family supervectors
+  obey <em>V</em><sub>n</sub>=3<em>V</em><sub>n−1</sub>−<em>V</em><sub>n−2</sub> and, for the
+  normalized Hat, <em>V</em><sub>n</sub>=(<em>F</em><sub>2n</sub>, √3 <em>L</em><sub>2n</sub>), so
+  Fibonacci and Lucas counts appear as concrete coordinates rather than slogans.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> Spectre
+  tilings also decompose into triangular hex-clusters of 1, 3, or 6 hexagons dual to the H8/H9
+  hierarchy,<sup class="citation"><a href="bibliography.html#ref-11">[11]</a></sup> and the whole system embeds in a rhombic framework shared by the Hat and
+  Turtle.<sup class="citation"><a href="bibliography.html#ref-8">[8]</a></sup>
+</p>
+<p>
+  Substitution systems can even be built from overlapping iterated function systems, connecting tilings
+  to fractal geometry.<sup class="citation"><a href="bibliography.html#ref-14">[14]</a></sup> Sturmian sequences — the one-dimensional cousins of aperiodic order —
+  provide lattice models with closely related structure.<sup class="citation"><a href="bibliography.html#ref-13">[13]</a></sup> A newer construction starts from three
+  families of Ammann-bar lines whose short and long gaps follow balanced Sturmian words. Irrational slope
+  removes translational periods; for every quadratic irrational slope, the authors construct an aperiodic
+  tile set whose expansion factor is a unit of the corresponding real quadratic field.<sup class="citation"><a href="bibliography.html#ref-73">[73]</a></sup> Ref.&nbsp;73
+  is a concise note whose complete classification and proofs point back to ref.&nbsp;13; the two should not
+  be read as independent corroboration. The construction produces finite <em>tile sets</em>, not new
+  single aperiodic monotiles. Labbé and Selinger give an explicit torus Markov partition construction for
+  Hat tilings with fractal boundaries,<sup class="citation"><a href="bibliography.html#ref-53">[53]</a></sup> complementing the inflation picture above.
+</p>
+<p>
+  A substitution also defines a <strong>tiling hull</strong>: translate admitted tilings and close the
+  resulting family in the local topology. Patch frequencies and measurable spectral statements belong to
+  this ensemble, not to one arbitrarily clipped rendering. Under primitivity and recognizability, invariant
+  measures stabilize frequencies; pure-point diffraction still needs geometric or spectral hypotheses.
+</p>
+<p>
+  Detailed treatments continue in <a href="sturmian-lattices.html">Sturmian lattices</a>,
+  <a href="cut-and-project-and-model-sets.html">cut-and-project schemes</a>, and
+  <a href="diffraction-and-dynamical-spectrum.html">diffraction and dynamical spectrum</a>.
 </p>
 <h2 id="section-2">Practical generation</h2>
 <p>
-  For engineering and graphics, substitution runs until a patch covers a requested mask (rectangle, circle,
-  custom polygon), then edge tiles are clipped to the boundary. Each tile carries an ID, a label, an affine
-  transform, and adjacency data — turning abstract mathematics into reproducible geometry files. Because
-  the recurrence is deterministic, the same request always returns the same patch: essential for version
-  control, physical fabrication, and scientific reproducibility.
+  For engineering and graphics, inflate until a supertile safely covers the requested rectangle, circle,
+  or polygon; transform all child tiles; reject tiles outside the mask; then either retain whole boundary
+  tiles or geometrically clip them. Record the seed or root metatile, generation, scale, coordinate
+  convention, labels, affine transforms, and clipping policy. IDs are stable only if the generator defines
+  and versions that convention.
+</p>
+<p>
+  Do not conflate generation, hierarchy recognition, local validation, global extension, and exhaustive
+  enumeration. An explicit substitution can generate and label millions of tiles efficiently while saying
+  nothing by itself about whether an arbitrary user-supplied frontier extends. See
+  <a href="computational-generation.html">Computational generation and navigation</a> for exact coordinates,
+  hierarchy addresses, finite-state methods, and GPU rendering.
 </p>
 
 <figure class="wiki-figure wiki-figure-video">
@@ -139,11 +204,34 @@
   </video>
   <figcaption><strong>Tiling array.</strong> A steady camera zoom into a dense Spectre / Tile(1,1) field and back out — the same real generated patch read as texture at a distance and as individual tiles up close. <a href="../../assets/research/wiki/tiling-array-web.jpg">Full-resolution still</a></figcaption>
 </figure>
-<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a></p>
+<h2 id="section-3">Validation and recurrence</h2>
+<p>
+  Validate a generated patch by checking polygon closure, edge-to-edge contacts, overlap, uncovered area,
+  legal labels, and parent–child counts. Compare several generations with the published substitution
+  matrices or known count recurrences; Fibonacci and Lucas sequences occur in Spectre supertile
+  counts.<sup class="citation"><a href="bibliography.html#ref-12">[12]</a></sup> Boundary clipping should be tested separately because it intentionally creates shapes
+  that are no longer copies of the prototile.
+</p>
+<p>
+  At an advanced level, a substitution matrix describes how many children of each label each parent
+  produces. Its dominant eigenvalue controls area growth, while other eigenstructure helps describe
+  frequencies. These algebraic facts do not by themselves establish a cut-and-project or
+  <strong>model-set</strong> description—a model set selects projected lattice points using a window in
+  an auxiliary “internal” space. CAP and CASPr require additional constructions.<sup class="citation"><a href="bibliography.html#ref-31">[31]</a></sup><sup class="citation"><a href="bibliography.html#ref-32">[32]</a></sup>
+</p>
+<h2 id="section-4">Limits and open questions</h2>
+<p>
+  Different legal seeds, boundary choices, and representatives can produce different finite patches even
+  when they belong to the same tiling space. A substitution generator usually produces a controlled subset
+  or parametrization of legal tilings, not necessarily an enumeration of every legal finite patch.
+  Numerical coordinates also accumulate error, so exact symbolic geometry or tolerance-aware validation is
+  preferable for fabrication and diffraction studies.
+</p>
+<h2>See also</h2><p><a href="aperiodic-monotile.html">Aperiodic monotile</a>, <a href="spectre-tile.html">Spectre tile</a>, <a href="computational-generation.html">Computational generation and navigation</a>, <a href="sturmian-lattices.html">Sturmian lattices and aperiodic tile sets</a>, <a href="cut-and-project-and-model-sets.html">Cut-and-project schemes and model sets</a></p>
 <p class="wiki-categories"><strong>Categories:</strong> <a href="index.html#category-mathematics">Mathematics</a> · <a href="index.html#category-concepts">Concepts</a></p>
         </div>
         <footer class="wiki-footer-meta">
-          <p>Last updated 2026-08-09. Content is curated from peer-reviewed sources cited in each article.</p>
+          <p>Last updated 2026-08-29. Established claims, published experiments, and proposals are distinguished; numbered references include peer-reviewed papers, preprints, and documented resources.</p>
         </footer>
       </article>
     </div>
