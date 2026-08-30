@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Digital asset packs | Untiling</title>
+    <title>Studio asset packs | Untiling</title>
     <meta
       name="description"
-      content="Ready-made aperiodic monotile SVG, STL, and PNG packs for laser cutting, 3D print, archviz floors, and game environments. Buy once, use in commercial projects."
+      content="Production GLB floor plates, instance JSON, and lookdev palettes for archviz and game environments. Aperiodic monotile geometry with no visible repeat unit."
     />
     <link rel="canonical" href="https://untiling.com/digital/" />
-    <meta property="og:title" content="Digital asset packs | Untiling" />
-    <meta property="og:description" content="Finished aperiodic monotile files, not a subscription. Laser coasters, floor plates, sci-fi panels, jewelry blanks." />
+    <meta property="og:title" content="Studio asset packs | Untiling" />
+    <meta property="og:description" content="Drop a GLB, assign materials, hide the edges. Floors that survive the dolly shot." />
     <meta property="og:url" content="https://untiling.com/digital/" />
-    <meta property="og:image" content="https://untiling.com/assets/research/wiki/design-zellige-emerald.jpg" />
+    <meta property="og:image" content="https://untiling.com/assets/digital/archviz-cover.jpg" />
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
@@ -33,110 +33,136 @@
 
     <main>
       <section class="section docs-hero">
-        <p class="eyebrow">Buy once</p>
-        <h1>Finished files, not another subscription.</h1>
+        <p class="eyebrow">Studios · buy once</p>
+        <h1>Floors that survive the dolly shot.</h1>
         <p class="hero-text">
-          Each pack is a ZIP of production-ready SVG, STL, and PNG assets built from canonical Tile(1,1)
-          geometry. Personal and commercial use in your projects, no API key required to use the files you buy.
-          Need custom sizes or seeds? Use the <a href="https://aperiodicgenerator.com/pricing.html">generator</a>.
+          Regular grids read as CG the moment the camera moves. These packs ship production-sized
+          <strong>instanced GLB</strong> patches, instance JSON for custom rebuilds, merged STL, palette JSON,
+          and import docs. No API key, no queue, commercial license included.
+          Need custom masks or seeds at runtime? Use the
+          <a href="https://aperiodicgenerator.com/pricing.html">Pro API</a>.
         </p>
       </section>
 
       <section class="section">
         <div class="section-heading">
-          <h2>Asset packs</h2>
-          <p>Listing on Gumroad, links go live as each product publishes.</p>
+          <h2>Studio packs</h2>
+          <p>Live on Gumroad. Cinematic covers, production GLB, commercial license.</p>
         </div>
-        <div class="pricing-grid">
-          <article class="price-card featured">
-            <h3>Archviz &amp; game floors</h3>
-            <p class="price">$19</p>
-            <p class="price-note">3 square floor plates · SVG + STL + PNG · 40-80 unit scales</p>
-            <ul>
-              <li>Drop into Blender / Unreal / Unity</li>
-              <li>Non-repeating ground without shader tricks</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, floors pack</a>
+        <div class="digital-pack-grid">
+          <article class="digital-pack-card featured">
+            <a class="digital-pack-media" href="https://untiling.gumroad.com/l/archviz-floor-kit" rel="noopener noreferrer">
+              <img
+                src="../assets/digital/archviz-cover.jpg"
+                alt="Emerald zellige aperiodic floor render"
+                width="1280"
+                height="720"
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+            <div class="digital-pack-body">
+              <h3>Archviz Floor Kit</h3>
+              <p class="price">$49</p>
+              <p class="price-note">10 m · 15 m · 20 m square plates · GLB + JSON + STL</p>
+              <ul>
+                <li>One GLB node per tile, ready for material slots</li>
+                <li>Zellige, brass, and concrete lookdev PNGs + palette JSON</li>
+                <li>Blender and Unreal import guides</li>
+              </ul>
+              <div class="pricing-actions">
+                <a class="button" href="https://untiling.gumroad.com/l/archviz-floor-kit" rel="noopener noreferrer">Buy on Gumroad</a>
+                <a class="button secondary" href="../studio.html">Studio outreach</a>
+              </div>
             </div>
           </article>
-          <article class="price-card">
-            <h3>Laser coasters &amp; charms</h3>
-            <p class="price">$12</p>
-            <p class="price-note">6 coaster SVGs + wire STLs · jewelry pendant blanks</p>
-            <ul>
-              <li>Scale SVG to your bed size</li>
-              <li>Maker / Etsy friendly</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button secondary" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, maker pack</a>
+
+          <article class="digital-pack-card">
+            <a class="digital-pack-media" href="https://untiling.gumroad.com/l/game-environment-kit" rel="noopener noreferrer">
+              <img
+                src="../assets/digital/game-cover.jpg"
+                alt="Sunset glazed monotile environment render"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <div class="digital-pack-body">
+              <h3>Game Environment Kit</h3>
+              <p class="price">$39</p>
+              <p class="price-note">Corridor plates + circular plaza · curvy / blocky / jagged edges</p>
+              <ul>
+                <li>24×8 m and 36×12 m corridor floors, 24 m plaza</li>
+                <li>Sunset and concrete palettes for sci-fi and fantasy sets</li>
+                <li>Collision and Nanite notes for UE5</li>
+              </ul>
+              <div class="pricing-actions">
+                <a class="button secondary" href="https://untiling.gumroad.com/l/game-environment-kit" rel="noopener noreferrer">Buy on Gumroad</a>
+              </div>
             </div>
           </article>
-          <article class="price-card">
-            <h3>Sci-fi hull panels</h3>
-            <p class="price">$15</p>
-            <p class="price-note">6 rectangular corridor panels · flat &amp; curvy edge styles</p>
-            <ul>
-              <li>Hard-surface detail without tiling artifacts</li>
-              <li>STL for print or retopo reference</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button secondary" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, sci-fi pack</a>
-            </div>
-          </article>
-          <article class="price-card">
-            <h3>Privacy screens &amp; lattice</h3>
-            <p class="price">$18</p>
-            <p class="price-note">4 large screen layouts · laser/CNC SVG + wire STL</p>
-            <ul>
-              <li>Architectural partitions and facades</li>
-              <li>Open lattice, scale to sheet width</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button secondary" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, screens pack</a>
-            </div>
-          </article>
-          <article class="price-card">
-            <h3>Castle / dungeon floors</h3>
-            <p class="price">$14</p>
-            <p class="price-note">3 free teasers + 7 paid variants · jagged stone edges</p>
-            <ul>
-              <li>TTRPG / game level dressing</li>
-              <li>Try free samples before you buy the set</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button secondary" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, dungeon pack</a>
-            </div>
-          </article>
-          <article class="price-card">
-            <h3>Blender production kit</h3>
-            <p class="price">$29</p>
-            <p class="price-note">Add-on + samples + START_HERE guide</p>
-            <ul>
-              <li>Generate GLB patches inside Blender</li>
-              <li>Best for studios needing many variants</li>
-            </ul>
-            <div class="pricing-actions">
-              <a class="button" href="https://aperiodicgenerator.com/pricing.html">API plans</a>
-              <a class="button secondary" href="https://untiling.gumroad.com" rel="noopener noreferrer">Gumroad, Blender kit</a>
+
+          <article class="digital-pack-card">
+            <a class="digital-pack-media" href="https://untiling.gumroad.com/l/comparison-sample" rel="noopener noreferrer">
+              <img
+                src="../assets/digital/sample-cover.jpg"
+                alt="Periodic grid versus aperiodic monotile floor comparison"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <div class="digital-pack-body">
+              <h3>Comparison sample</h3>
+              <p class="price">Free</p>
+              <p class="price-note">5 m floor GLB · periodic vs aperiodic still</p>
+              <ul>
+                <li>Import test before you buy a production kit</li>
+                <li>Share the comparison slide in client decks</li>
+              </ul>
+              <div class="pricing-actions">
+                <a class="button secondary" href="https://untiling.gumroad.com/l/comparison-sample" rel="noopener noreferrer">Download free</a>
+              </div>
             </div>
           </article>
         </div>
-        <p class="pricing-ip-note">
-          <strong>Free lead magnet:</strong> 4K desktop wallpapers (PNG + SVG), email signup on
-          <a href="https://aperiodicgenerator.com/pricing.html">pricing</a> when Gumroad PWYW listing is live.
-          Full-resolution production SVG/STL are not hosted on the public site.
-        </p>
       </section>
 
       <section class="section">
         <div class="section-heading">
-          <h2>Studio license</h2>
-          <p>Multiple seats, custom seeds, or pipeline integration.</p>
+          <h2>Why studios buy files instead of clicking generate</h2>
+        </div>
+        <ul class="hub-link-list">
+          <li><strong>Time:</strong> Production GLB on disk. No tile-limit anxiety during a client review.</li>
+          <li><strong>Pitch:</strong> Show a floor with no translational repeat unit before you win the job.</li>
+          <li><strong>Pipeline:</strong> Per-tile GLB nodes and <code>spectre_instances.json</code> match Blender and Unreal workflows.</li>
+          <li><strong>Honest limits:</strong> Patch edges are not seamless. Hide them with walls, trim, or landscape blend (documented in each pack).</li>
+        </ul>
+        <figure class="digital-lookdev-figure">
+          <img
+            src="../assets/digital/archviz-lookdev.png"
+            alt="Zellige, brass, and concrete palette board for archviz floor kit"
+            width="2560"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Included lookdev boards map atlas labels to zellige, brass, and concrete palettes.</figcaption>
+        </figure>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Custom at scale</h2>
+          <p>Pro API, Blender add-on, or site license.</p>
         </div>
         <p class="hero-text">
-          See <a href="../studio.html">Studios</a> for Pro API pricing ($99/mo, 400k tiles/job) or email
-          <a href="mailto:zach@shopcloudburst.com">zach@shopcloudburst.com</a> for a site license quote.
+          Fixed packs cover the common floor sizes. For infinite seeds, circular masks, or 400k-tile jobs,
+          see <a href="../studio.html">Studios</a> or
+          <a href="https://aperiodicgenerator.com/pricing.html">Pro API ($99/mo)</a>.
+          Email <a href="mailto:zach@shopcloudburst.com">zach@shopcloudburst.com</a> for PO / site license quotes.
         </p>
       </section>
     </main>

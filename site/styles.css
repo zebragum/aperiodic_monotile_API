@@ -755,6 +755,76 @@ ul.pricing-value-list {
   text-align: center;
 }
 
+.digital-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 1.25rem;
+}
+
+.digital-pack-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--panel);
+}
+
+.digital-pack-card.featured {
+  border-color: color-mix(in srgb, var(--accent-2) 45%, var(--line));
+}
+
+.digital-pack-media {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0a0c10;
+}
+
+.digital-pack-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 200ms ease;
+}
+
+.digital-pack-media:hover img {
+  transform: scale(1.03);
+}
+
+.digital-pack-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem 1.35rem 1.35rem;
+}
+
+.digital-pack-body ul {
+  flex: 1;
+  margin: 0 0 0.5rem;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.digital-lookdev-figure {
+  margin: 1.5rem 0 0;
+}
+
+.digital-lookdev-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+}
+
+.digital-lookdev-figure figcaption {
+  margin-top: 0.65rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .pricing-actions .button {
   width: 100%;
   box-sizing: border-box;
