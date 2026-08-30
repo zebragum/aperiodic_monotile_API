@@ -113,6 +113,7 @@ def test_capabilities_ok():
             assert any(f.get("status") == "planned" for f in body["roadmap"]["tile_families"])
             vs = body["visual_styling"]
             assert "curvy" in vs["side_styles"]
+            assert "interlocking" in vs["side_styles"]
             assert vs["palette_by_label"]["supported"] is True
 
 
@@ -613,6 +614,42 @@ def test_billing_endpoints_report_disabled_without_stripe_config():
 
             r = client.post("/v1/billing/checkout", json={"email": "buyer@example.com"})
             assert r.status_code == 503
+
+
+def test_billing_checkout_day_pass_sets_ttl_and_web_return(monkeypatch):
+    with tempfile.TemporaryDirectory() as tmp:
+        app = _build_app(
+            Path(tmp),
+            extra_env={
+                "SPECTRE_PATCH_STRIPE_SECRET_KEY": "sk_test_123",
+                "SPECTRE_PATCH_STRIPE_PRICE_ID_DAY_PASS": "price_day",
+            },
+        )
+        from spectre_patch.api import main as api_main  # noqa: PLC0415
+
+        async def fake_stripe_post(cfg, path, data):
+            assert path == "checkout/sessions"
+            assert data["mode"] == "payment"
+            assert data["line_items[0][price]"] == "price_day"
+            assert data["metadata[tier]"] == "tier_day_pass"
+            assert data["metadata[checkout_plan]"] == "day_pass"
+            assert data["metadata[key_ttl_seconds]"] == "86400"
+            assert "web.html?checkout=success" in data["success_url"]
+            return {"url": "https://checkout.example/day", "id": "cs_test_day"}
+
+        monkeypatch.setattr(api_main, "_stripe_post", fake_stripe_post)
+        with TestClient(app) as client:
+            r = client.get("/v1/billing/status")
+            assert r.status_code == 200
+            assert r.json()["plans"]["day_pass"] is True
+
+            r = client.post(
+                "/v1/billing/checkout",
+                json={"email": "buyer@example.com", "plan": "day_pass", "return_to": "web"},
+            )
+            assert r.status_code == 200
+            assert r.json()["tier"] == "tier_day_pass"
+            assert r.json()["plan"] == "day_pass"
 
 
 def test_billing_checkout_solo_lifetime_uses_payment_mode(monkeypatch):

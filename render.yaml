@@ -44,7 +44,7 @@ services:
       - key: SPECTRE_PATCH_MAX_OUTPUT_BYTES_SOFT
         value: "32212254719"
       - key: SPECTRE_PATCH_CORS_ALLOW_ORIGINS
-        value: https://aperiodicgenerator.com,https://www.aperiodicgenerator.com,https://aperiodic-monotile-site.onrender.com
+        value: https://untiling.com,https://www.untiling.com,https://aperiodicgenerator.com,https://www.aperiodicgenerator.com,https://aperiodic-monotile-site.onrender.com
       - key: SPECTRE_PATCH_LOG_LEVEL
         value: info
       - key: UVICORN_WORKERS

@@ -490,6 +490,23 @@ textarea {
   margin-bottom: 1rem;
 }
 
+.day-pass-card {
+  margin-bottom: 1.25rem;
+}
+
+.webgen-upgrade {
+  padding: 1rem 1.1rem;
+  margin: 0 0 1rem;
+  border-radius: 1rem;
+  background: rgba(228, 185, 35, 0.12);
+  border: 1px solid rgba(228, 185, 35, 0.35);
+}
+
+.webgen-upgrade p {
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
 .checkout-form {
   margin-top: 0.9rem;
 }

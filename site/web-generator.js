@@ -47,6 +47,8 @@
     compactWrap: document.querySelector("#wgCompactWrap"),
     key: document.querySelector("#wgKey"),
     getKey: document.querySelector("#wgGetKey"),
+    buyDayPass: document.querySelector("#wgBuyDayPass"),
+    upgrade: document.querySelector("#wgUpgrade"),
     make: document.querySelector("#wgMake"),
     status: document.querySelector("#wgStatus"),
     preview: document.querySelector("#wgPreview"),
@@ -94,6 +96,8 @@
     const visual = fmt === "svg" || fmt === "png" || fmt === "jpg";
     setDisabled(el.colorWrap, el.color, !visual);
     setDisabled(el.compactWrap, el.compact, fmt !== "svg");
+
+    if (el.upgrade) el.upgrade.hidden = !PAID.has(fmt);
   }
 
   function buildMask() {
@@ -214,16 +218,16 @@
     throw lastErr || new Error("Network error");
   }
 
-  async function startCheckout() {
+  async function startCheckout(plan = "day_pass") {
     setStatus("Opening checkout…");
     try {
       const res = await apiFetch("/v1/billing/checkout", {
         method: "POST",
-        body: JSON.stringify({ plan: "solo_monthly" }),
+        body: JSON.stringify({ plan, return_to: "web" }),
       });
       const payload = await res.json().catch(() => ({}));
       if (!res.ok || !payload.checkout_url) {
-        location.href = "pricing.html";
+        location.href = plan === "day_pass" ? "pricing.html#pricing" : "pricing.html";
         return;
       }
       location.href = payload.checkout_url;
@@ -268,9 +272,9 @@
     const key = (el.key.value || "").trim();
     if (PAID.has(fmt) && !key) {
       const go = confirm(
-        "SVG and 3D need an API key.\n\nPictures (PNG/JPG) are free.\n\nGet a key now?"
+        "SVG and 3D need a paid key.\n\n$5 Day Pass — 24 hours, full exports, no subscription.\nPNG/JPG stay free.\n\nOpen checkout now?"
       );
-      if (go) startCheckout();
+      if (go) startCheckout("day_pass");
       return;
     }
     try {
@@ -296,9 +300,9 @@
           created.detail ||
           `HTTP ${createRes.status}`;
         if (createRes.status === 401 || createRes.status === 403 || createRes.status === 422) {
-          const go = confirm(`${msg}\n\nGet a key?`);
-          if (go) startCheckout();
-          setStatus("Need a key for that format.");
+          const go = confirm(`${msg}\n\nTry a $5 Day Pass for 24 hours of SVG/3D exports?`);
+          if (go) startCheckout("day_pass");
+          setStatus("Need a paid key for that format.");
           return;
         }
         throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
@@ -333,7 +337,8 @@
   el.shape.addEventListener("change", refreshFields);
   el.format.addEventListener("change", refreshFields);
   el.sideStyle.addEventListener("change", refreshFields);
-  el.getKey.addEventListener("click", startCheckout);
+  el.getKey.addEventListener("click", () => startCheckout("day_pass"));
+  if (el.buyDayPass) el.buyDayPass.addEventListener("click", () => startCheckout("day_pass"));
   el.form.addEventListener("submit", runJob);
   refreshFields();
 })();

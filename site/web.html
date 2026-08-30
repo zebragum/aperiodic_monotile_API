@@ -41,6 +41,7 @@
     </header>
 
     <main class="webgen-page" id="top">
+      <div id="checkoutClaim" class="demo-stats" hidden></div>
       <section class="webgen">
         <div class="webgen-copy">
           <h1>Web generator</h1>
@@ -142,6 +143,14 @@
               </label>
             </fieldset>
 
+            <div id="wgUpgrade" class="webgen-upgrade" hidden>
+              <p>
+                <strong>Production export.</strong> SVG for laser/CNC/Inkscape. STL/GLB for 3D print and Blender.
+                <strong>$5 Day Pass</strong> — 24 hours, no subscription.
+              </p>
+              <button type="button" class="button" id="wgBuyDayPass">Unlock for $5</button>
+            </div>
+
             <fieldset>
               <legend>4. API key (for SVG / 3D)</legend>
               <label class="webgen-field">
@@ -149,8 +158,8 @@
                 <input id="wgKey" type="password" placeholder="Paste after checkout" />
               </label>
               <div class="webgen-row">
-                <button type="button" class="button secondary" id="wgGetKey">Get a key</button>
-                <a class="button secondary" href="pricing.html">Pricing</a>
+                <button type="button" class="button secondary" id="wgGetKey">Day Pass — $5</button>
+                <a class="button secondary" href="pricing.html">All plans</a>
               </div>
             </fieldset>
 
@@ -180,6 +189,12 @@
       </p>
     </footer>
     <script src="site-config.js"></script>
+    <script src="checkout-claim.js"></script>
     <script src="web-generator.js"></script>
+    <script>
+      if (window.MonotileCheckoutClaim && MonotileCheckoutClaim.shouldRun()) {
+        MonotileCheckoutClaim.claim({ cleanUrl: "web.html" });
+      }
+    </script>
   </body>
 </html>

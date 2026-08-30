@@ -487,7 +487,8 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
     if not cfg.stripe_secret_key:
         return False
     return bool(
-        cfg.stripe_price_id_solo_monthly
+        cfg.stripe_price_id_day_pass
+        or cfg.stripe_price_id_solo_monthly
         or cfg.stripe_price_id_lifetime
         or cfg.stripe_price_id_teams_monthly
         or cfg.stripe_price_id_teams_yearly
@@ -496,6 +497,7 @@ def _billing_configured(cfg: ServiceSettings) -> bool:
 
 
 _CHECKOUT_PLAN_TO_FIELD: tuple[tuple[str, str, str, str, float | None], ...] = (
+    ("day_pass", "tier_day_pass", "stripe_price_id_day_pass", "payment", 86_400.0),
     ("solo_monthly", "tier_solo", "stripe_price_id_solo_monthly", "subscription", None),
     ("solo_lifetime", "tier_solo", "stripe_price_id_lifetime", "payment", None),
     ("pro_monthly", "tier_teams", "stripe_price_id_teams_monthly", "subscription", None),
@@ -535,6 +537,8 @@ def _checkout_price_and_tier(
         plan = "pro_monthly"
     elif plan in ("commercial_lifetime", "commercial_life", "pro_lifetime", "pro_life"):
         plan = "pro_lifetime"
+    elif plan in ("day", "daypass", "pass", "24h", "24hr", "day_pass"):
+        plan = "day_pass"
 
     if not plan:
         plan = "solo_monthly"
@@ -1010,7 +1014,15 @@ def create_app() -> FastAPI:
             },
             "boundary_behavior": "clip",
             "visual_styling": {
-                "side_styles": ["flat", "curvy", "wavy", "jagged", "blocky", "custom"],
+                "side_styles": [
+                    "flat",
+                    "curvy",
+                    "wavy",
+                    "jagged",
+                    "blocky",
+                    "interlocking",
+                    "custom",
+                ],
                 "side_style_aliases": {"curved": "curvy", "curve": "curvy"},
                 "side_style_amplitude": {"min": 0.0, "max": 0.75, "default": 0.12},
                 "side_profile_normalized": {
@@ -1370,6 +1382,7 @@ def create_app() -> FastAPI:
             "checkout_available": _billing_configured(cfg),
             "studio_checkout_available": _billing_configured(cfg),
             "plans": {
+                "day_pass": bool(cfg.stripe_price_id_day_pass),
                 "solo_monthly": bool(cfg.stripe_price_id_solo_monthly or cfg.stripe_price_id_studio),
                 "solo_lifetime": bool(cfg.stripe_price_id_lifetime),
                 "pro_monthly": bool(cfg.stripe_price_id_teams_monthly),
@@ -1386,8 +1399,9 @@ def create_app() -> FastAPI:
         """Start Stripe Checkout.
 
         Body JSON (optional unless defaulting): ``email``, ``plan`` — one of
-        ``solo_monthly``, ``solo_lifetime``, ``commercial_monthly``, or
-        ``commercial_lifetime``. Omitted ``plan`` defaults to ``solo_monthly``.
+        ``day_pass``, ``solo_monthly``, ``solo_lifetime``, ``pro_monthly``, or
+        ``pro_lifetime``. Optional ``return_to``: ``web`` (web generator) or
+        ``docs`` (default). Omitted ``plan`` defaults to ``solo_monthly``.
         """
 
         if not _billing_configured(cfg):
@@ -1398,7 +1412,12 @@ def create_app() -> FastAPI:
             cfg,
             body.get("plan"),
         )
-        success_url = f"{cfg.public_site_url.rstrip('/')}/docs.html?checkout=success&session_id={{CHECKOUT_SESSION_ID}}#access"
+        return_to = str(body.get("return_to") or "docs").strip().lower()
+        if return_to in ("web", "webgen", "generator"):
+            success_path = "web.html?checkout=success&session_id={CHECKOUT_SESSION_ID}"
+        else:
+            success_path = "docs.html?checkout=success&session_id={CHECKOUT_SESSION_ID}#access"
+        success_url = f"{cfg.public_site_url.rstrip('/')}/{success_path}"
         cancel_url = f"{cfg.public_site_url.rstrip('/')}/pricing.html"
         data = {
             "mode": checkout_mode,

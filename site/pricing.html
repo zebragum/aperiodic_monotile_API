@@ -18,7 +18,7 @@
     <meta property="og:url" content="https://aperiodicgenerator.com/pricing.html" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://aperiodicgenerator.com/assets/generator-video-poster.jpg" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Aperiodic Generator","description":"Software and API for generating aperiodic monotile patches as images, SVG, and 3D.","url":"https://aperiodicgenerator.com/pricing.html","brand":{"@type":"Brand","name":"Aperiodic Generator"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","description":"JPG/PNG preview patches"},{"@type":"Offer","name":"Solo","price":"10","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"10","priceCurrency":"USD","unitText":"MONTH"}},{"@type":"Offer","name":"Pro","price":"99","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"99","priceCurrency":"USD","unitText":"MONTH"}}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Aperiodic Generator","description":"Software and API for generating aperiodic monotile patches as images, SVG, and 3D.","url":"https://aperiodicgenerator.com/pricing.html","brand":{"@type":"Brand","name":"Aperiodic Generator"},"offers":[{"@type":"Offer","name":"Day Pass","price":"5","priceCurrency":"USD","description":"24 hours of SVG and 3D exports"},{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","description":"JPG/PNG preview patches"},{"@type":"Offer","name":"Solo","price":"10","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"10","priceCurrency":"USD","unitText":"MONTH"}},{"@type":"Offer","name":"Pro","price":"99","priceCurrency":"USD","priceSpecification":{"@type":"UnitPriceSpecification","price":"99","priceCurrency":"USD","unitText":"MONTH"}}]}</script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -44,8 +44,25 @@
       <section id="pricing" class="section pricing">
         <div class="section-heading">
           <h2>Pricing</h2>
-          <p>Free JPG/PNG. Paid SVG or 3D.</p>
+          <p>Preview free. Pay when you need production files.</p>
         </div>
+
+        <article class="price-card featured day-pass-card">
+          <p class="eyebrow">Most popular for one project</p>
+          <h3>Day Pass</h3>
+          <p class="price">$5</p>
+          <p class="price-note">24 hours · SVG, STL, GLB, CSV, JSON · up to 40,000 tiles</p>
+          <ul>
+            <li>One laser cut, CNC file, or Blender scene</li>
+            <li>No subscription — key expires after 24 hours</li>
+            <li>Same export power as Solo for the day</li>
+          </ul>
+          <div class="pricing-actions">
+            <button class="button" type="button" data-checkout-plan="day_pass">Get Day Pass — $5</button>
+            <a class="button secondary" href="web.html">Try the web generator first</a>
+          </div>
+        </article>
+
         <div class="pricing-grid">
           <article class="price-card">
             <h3>Free</h3>
@@ -59,7 +76,7 @@
               <a class="button secondary" href="web.html">Open web generator</a>
             </div>
           </article>
-          <article class="price-card featured">
+          <article class="price-card">
             <h3>Solo</h3>
             <p class="price">$10<span class="price-unit">/mo</span></p>
             <p class="price-note">One-person license for production exports</p>
@@ -90,11 +107,31 @@
         </div>
         <p class="checkout-status" id="checkoutStatus" aria-live="polite"></p>
         <p class="pricing-ip-note">
+          <strong>What you're paying for.</strong> JPG/PNG previews are free because they're great for sharing
+          and testing layouts. Production exports — SVG for laser/CNC/Inkscape, STL/GLB for 3D print and Blender —
+          take real compute and storage. A Day Pass covers a single fabrication sprint; Solo/Pro are for ongoing work.
+        </p>
+        <p class="pricing-ip-note">
           <strong>Outputs &amp; rights.</strong> We retain no copyrights in your geometries: API responses are
           deterministic facts about planar substitution, not creative expression on their own. Your project
           becomes protectable once you add design choices, palettes, composites, narration, tooling, brand, or
           integration work. See <a href="docs.html#ownership">docs › ownership</a>.
         </p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Stay in the loop</h2>
+          <p>Fabrication packs, datasets, and new export formats — no spam.</p>
+        </div>
+        <form class="lead-form" data-lead-form data-lead-source="pricing" data-lead-use-case="pricing-page">
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" />
+          </label>
+          <button class="button secondary" type="submit">Notify me</button>
+          <p class="checkout-status" data-lead-status aria-live="polite"></p>
+        </form>
       </section>
 
       <section id="downloads" class="section">
@@ -136,6 +173,7 @@
       </p>
     </footer>
     <script src="site-config.js"></script>
+    <script src="leads.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

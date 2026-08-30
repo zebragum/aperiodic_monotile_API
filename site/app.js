@@ -56,8 +56,11 @@ const demoSvgHost = document.querySelector("#demoSvgHost");
 const checkoutStatus = document.querySelector("#checkoutStatus");
 
 const svgTextCache = new Map();
-const apiBase = "https://api.aperiodicgenerator.com";
-const apiFallbackBase = "https://aperiodic-monotile-api.onrender.com";
+const siteCfg = window.SITE_CONFIG || {};
+const apiBase = siteCfg.apiBase || "https://api.aperiodicgenerator.com";
+const apiFallbackBase =
+  (siteCfg.apiFallbacks && siteCfg.apiFallbacks[0]) ||
+  "https://aperiodic-monotile-api.onrender.com";
 const analyticsVisitorKey = "monotile.analytics.visitor.v1";
 const analyticsSessionKey = "monotile.analytics.session.v1";
 const generatorTileDataUrl = "assets/samples/sample-tiles.json";
