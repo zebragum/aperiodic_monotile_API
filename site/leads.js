@@ -39,6 +39,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email,
+            company: (form.querySelector('input[name="company"]')?.value || "").trim(),
             source: form.getAttribute("data-lead-source") || "website",
             use_case: form.getAttribute("data-lead-use-case") || "",
           }),

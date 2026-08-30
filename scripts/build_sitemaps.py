@@ -56,6 +56,8 @@ def build_untiling() -> str:
     urls = [
         url(f"{UNTILING}/", priority="1.0", changefreq="weekly"),
         url(f"{UNTILING}/art.html", priority="0.9", changefreq="weekly"),
+        url(f"{UNTILING}/digital/index.html", priority="0.88", changefreq="weekly"),
+        url(f"{UNTILING}/studio.html", priority="0.88", changefreq="monthly"),
         url(f"{UNTILING}/research/", priority="0.95", changefreq="weekly"),
         url(f"{UNTILING}/apparel/", priority="0.85", changefreq="weekly"),
         url(f"{UNTILING}/contact.html", priority="0.5", changefreq="yearly"),

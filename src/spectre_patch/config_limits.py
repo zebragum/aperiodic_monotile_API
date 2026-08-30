@@ -44,8 +44,8 @@ TIER_PUBLIC_LABELS: dict[str, str] = {
 
 DEFAULT_TIER_RULES: dict[str, dict[str, int | float | bool]] = {
     "tier_free": {
-        "max_tiles_per_job": 2500,
-        "max_wall_time_sec": 120,
+        "max_tiles_per_job": 1200,
+        "max_wall_time_sec": 90,
         "stl_instancing_required": False,
     },
     "tier_day_pass": {
